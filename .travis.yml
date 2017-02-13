@@ -37,7 +37,7 @@ script:
 notifications:
     email:
         recipients:
-            {AUTHOR_EMAILS}
+            - levi.john.wolf@gmail.com
         on_change: always
         on_failure: always
 
