@@ -5,7 +5,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 import numpy as np
 import scipy.stats as stats
-from .. import weights
+from libpysal import weights
 from .tabular import _univariate_handler
 
 __all__ = ['Geary']
@@ -179,7 +179,7 @@ class Geary(object):
 
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a Geary statistic on a dataframe
 
         Arguments
@@ -194,13 +194,13 @@ class Geary(object):
         inplace     :   bool
                         a boolean denoting whether to operate on the dataframe inplace or to
                         return a series contaning the results of the computation. If
-                        operating inplace, with default configurations, 
+                        operating inplace, with default configurations,
                         the derived columns will be named like 'column_geary' and 'column_p_sim'
         pvalue      :   string
                         a string denoting which pvalue should be returned. Refer to the
                         the Geary statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Geary statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the

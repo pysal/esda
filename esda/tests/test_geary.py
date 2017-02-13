@@ -1,8 +1,8 @@
 """Geary Unittest."""
 import unittest
 
-from ... import open as popen
-from ... import examples
+from libpysal import open as popen
+from libpysal import examples
 from .. import geary
 import numpy as np
 

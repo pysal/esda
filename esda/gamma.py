@@ -6,8 +6,8 @@ Gamma index for spatial autocorrelation
 __author__ = "Luc Anselin <luc.anselin@asu.edu>"
 
 import numpy as np
-from pysal_core.weights.spatial_lag import lag_spatial
-from .tabular import _univariate_handler 
+from libpysal.weights.spatial_lag import lag_spatial
+from .tabular import _univariate_handler
 
 __all__ = ['Gamma']
 
@@ -173,7 +173,7 @@ class Gamma(object):
             p_sim_g = self.__pseudop(self.sim_g, self.g)
             self.p_sim_g = p_sim_g
             self.g_z = (self.g - self.mean_g) / np.std(self.sim_g)
-    
+
     @property
     def _statistic(self):
         return self.g
@@ -222,7 +222,7 @@ class Gamma(object):
         if psim > 0.5:
             psim = (self.permutations - larger + 1.) / (self.permutations + 1.)
         return psim
-   
+
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue = 'sim', outvals = None, **stat_kws):
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,

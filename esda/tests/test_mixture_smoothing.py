@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-import pysal
-from pysal.esda import mixture_smoothing as m_s
+import libpysal as pysal
+from .. import mixture_smoothing as m_s
 
 
 class MS_Tester(unittest.TestCase):

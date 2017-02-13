@@ -2,8 +2,8 @@ import unittest
 import numpy as np
 
 from .. import getisord
-from ...weights.Distance import DistanceBand
-from ...common import pandas
+from libpysal.weights.Distance import DistanceBand
+from libpysal.common import pandas
 
 POINTS = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
 W = DistanceBand(POINTS, threshold=15)
@@ -62,7 +62,7 @@ class G_Local_Tester(unittest.TestCase):
         lg = getisord.G_Local(self.y, self.w, transform='R', star=True)
         self.assertAlmostEquals(lg.Zs[0], -0.62488094, places=8)
         self.assertAlmostEquals(lg.p_sim[0], 0.10100000000000001, places=7)
-    
+
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
         import pandas as pd

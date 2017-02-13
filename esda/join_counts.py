@@ -4,7 +4,7 @@ Spatial autocorrelation for binary attributes
 """
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
-from ..weights.spatial_lag import lag_spatial
+from libpysal.weights.spatial_lag import lag_spatial
 from .tabular import _univariate_handler
 import numpy as np
 
@@ -158,10 +158,10 @@ class Join_Counts(object):
     @property
     def _statistic(self):
         return self.bw
-    
+
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a Join_Count statistic on a dataframe
 
         Arguments
@@ -182,7 +182,7 @@ class Join_Counts(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the Join_Count statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Join_Count statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -201,6 +201,6 @@ class Join_Counts(object):
             outvals = []
             outvals.extend(['bb', 'p_sim_bw', 'p_sim_bb'])
             pvalue = ''
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue, 
+        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
                                    swapname='bw', **stat_kws)

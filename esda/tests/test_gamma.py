@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from ...weights import lat2W
+from libpysal.weights import lat2W
 from ..gamma import Gamma
-from ...common import pandas
+from libpysal.common import pandas
 
 PANDAS_EXTINCT = pandas is None
 class Gamma_Tester(unittest.TestCase):

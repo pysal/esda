@@ -3,10 +3,10 @@
 =================================================
 
 """
-import mapclassify
-import moran
-import smoothing
-import getisord
-import geary
-import join_counts
-import gamma
+from . import mapclassify
+from . import moran
+from . import smoothing
+from . import getisord
+from . import geary
+from . import join_counts
+from . import gamma

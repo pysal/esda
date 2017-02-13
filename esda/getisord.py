@@ -5,7 +5,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Myunghwa Hwang <mhwang4@gmail.com> "
 __all__ = ['G', 'G_Local']
 
 from ..common import np, stats, math
-from ..weights.spatial_lag import lag_spatial as slag
+from libpysal.weights.spatial_lag import lag_spatial as slag
 from .tabular import _univariate_handler
 
 PERMUTATIONS = 999
@@ -167,7 +167,7 @@ class G(object):
 
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a G statistic on a dataframe
 
         Arguments
@@ -187,7 +187,7 @@ class G(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the G statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         G statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -434,7 +434,7 @@ class G_Local(object):
         self.Zs = (self.Gs - self.EGs) / np.sqrt(self.VGs)
 
         self.w.transform = self.w_original
-    
+
     @property
     def _statistic(self):
         """Standardized accessor for esda statistics"""
@@ -442,7 +442,7 @@ class G_Local(object):
 
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a G_Local statistic on a dataframe
 
         Arguments
@@ -462,7 +462,7 @@ class G_Local(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the G_Local statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         G_Local statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -477,8 +477,6 @@ class G_Local(object):
         ---------
         For further documentation, refer to the G_Local class in pysal.esda
         """
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue, 
+        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
                                    swapname=cls.__name__.lower(), **stat_kws)
-    
-    

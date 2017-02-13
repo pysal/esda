@@ -4,7 +4,7 @@ Moran's I Spatial Autocorrelation Statistics
 """
 __author__ = "Sergio J. Rey <srey@asu.edu>, \
         Dani Arribas-Bel <daniel.arribas.bel@gmail.com>"
-from ..weights.spatial_lag import lag_spatial as slag
+from libpysal.weights.spatial_lag import lag_spatial as slag
 from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
 import scipy.stats as stats
@@ -208,7 +208,7 @@ class Moran(object):
 
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a Moran statistic on a dataframe
 
         Arguments
@@ -229,7 +229,7 @@ class Moran(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the Moran statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Moran statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -244,10 +244,10 @@ class Moran(object):
         ---------
         For further documentation, refer to the Moran class in pysal.esda
         """
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue, 
+        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
                                    swapname=cls.__name__.lower(), **stat_kws)
-    
+
 class Moran_BV(object):
     """
     Bivariate Moran's I
@@ -390,10 +390,10 @@ class Moran_BV(object):
     def _statistic(self):
         """More consistent hidden attribute to access ESDA statistics"""
         return self.I
-    
+
     @classmethod
     def by_col(cls, df, x, y=None, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a Moran_BV statistic on a dataframe
 
         Arguments
@@ -403,11 +403,11 @@ class Moran_BV(object):
         X           :   list of strings
                         column name or list of column names to use as X values to compute
                         the bivariate statistic. If no Y is provided, pairwise comparisons
-                        among these variates are used instead. 
+                        among these variates are used instead.
         Y           :   list of strings
                         column name or list of column names to use as Y values to compute
                         the bivariate statistic. if no Y is provided, pariwise comparisons
-                        among the X variates are used instead. 
+                        among the X variates are used instead.
         w           :   pysal weights object
                         a weights object aligned with the dataframe. If not provided, this
                         is searched for in the dataframe's metadata
@@ -420,7 +420,7 @@ class Moran_BV(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the Moran_BV statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Moran_BV statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -436,8 +436,8 @@ class Moran_BV(object):
         ---------
         For further documentation, refer to the Moran_BV class in pysal.esda
         """
-        return _bivariate_handler(df, x, y=y, w=w, inplace=inplace, 
-                                  pvalue = pvalue, outvals = outvals, 
+        return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
+                                  pvalue = pvalue, outvals = outvals,
                                   swapname=cls.__name__.lower(), stat=cls,**stat_kws)
 
 
@@ -621,11 +621,11 @@ class Moran_Rate(Moran):
             y = e * 1.0 / b
         Moran.__init__(self, y, w, transformation=transformation,
                        permutations=permutations, two_tailed=two_tailed)
-    
+
     @classmethod
-    def by_col(cls, df, events, populations, w=None, inplace=False, 
+    def by_col(cls, df, events, populations, w=None, inplace=False,
                pvalue='sim', outvals=None, swapname='',  **stat_kws):
-        """ 
+        """
         Function to compute a Moran_Rate statistic on a dataframe
 
         Arguments
@@ -652,7 +652,7 @@ class Moran_Rate(Moran):
                         a string denoting which pvalue should be returned. Refer to the
                         the Moran_Rate statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Moran_Rate statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -675,7 +675,7 @@ class Moran_Rate(Moran):
             return new
         if isinstance(events, str):
             events = [events]
-        if isinstance(populations, str): 
+        if isinstance(populations, str):
             populations = [populations]
         if len(populations) < len(events):
             populations = populations * len(events)
@@ -691,14 +691,14 @@ class Moran_Rate(Moran):
             swapname = cls.__name__.lower()
 
         rates = [assuncao_rate(df[e], df[pop]) if adj
-                 else df[e].astype(float) / df[pop] 
+                 else df[e].astype(float) / df[pop]
                  for e,pop,adj in zip(events, populations, adjusted)]
         names = ['-'.join((e,p)) for e,p in zip(events, populations)]
         out_df = df.copy()
         rate_df = out_df.from_items(zip(names, rates)) #trick to avoid importing pandas
-        stat_df = _univariate_handler(rate_df, names, w=w, inplace=False, 
-                                      pvalue = pvalue, outvals = outvals, 
-                                      swapname=swapname, 
+        stat_df = _univariate_handler(rate_df, names, w=w, inplace=False,
+                                      pvalue = pvalue, outvals = outvals,
+                                      swapname=swapname,
                                       stat=Moran, #how would this get done w/super?
                                       **stat_kws)
         for col in stat_df.columns:
@@ -834,7 +834,7 @@ class Moran_Local(object):
             self.VI_sim = self.seI_sim * self.seI_sim
             self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
             self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
-        
+
     def calc(self, w, z):
         zl = slag(w, z)
         return self.n_1 * self.z * zl / self.den
@@ -886,10 +886,10 @@ class Moran_Local(object):
     def _statistic(self):
         """More consistent hidden attribute to access ESDA statistics"""
         return self.Is
-    
+
     @classmethod
     def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a Moran_Local statistic on a dataframe
 
         Arguments
@@ -910,7 +910,7 @@ class Moran_Local(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the Moran_Local statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Moran_Local statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -925,7 +925,7 @@ class Moran_Local(object):
         ---------
         For further documentation, refer to the Moran_Local class in pysal.esda
         """
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue, 
+        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
                                    swapname=cls.__name__.lower(), **stat_kws)
 
@@ -1128,7 +1128,7 @@ class Moran_Local_BV(object):
 
     @classmethod
     def by_col(cls, df, x, y=None, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
-        """ 
+        """
         Function to compute a Moran_Local_BV statistic on a dataframe
 
         Arguments
@@ -1138,11 +1138,11 @@ class Moran_Local_BV(object):
         X           :   list of strings
                         column name or list of column names to use as X values to compute
                         the bivariate statistic. If no Y is provided, pairwise comparisons
-                        among these variates are used instead. 
+                        among these variates are used instead.
         Y           :   list of strings
                         column name or list of column names to use as Y values to compute
                         the bivariate statistic. if no Y is provided, pariwise comparisons
-                        among the X variates are used instead. 
+                        among the X variates are used instead.
         w           :   pysal weights object
                         a weights object aligned with the dataframe. If not provided, this
                         is searched for in the dataframe's metadata
@@ -1155,7 +1155,7 @@ class Moran_Local_BV(object):
                         a string denoting which pvalue should be returned. Refer to the
                         the Moran_Local_BV statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Moran_Local_BV statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -1171,8 +1171,8 @@ class Moran_Local_BV(object):
         ---------
         For further documentation, refer to the Moran_Local_BV class in pysal.esda
         """
-        return _bivariate_handler(df, x, y=y, w=w, inplace=inplace, 
-                                  pvalue = pvalue, outvals = outvals, 
+        return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
+                                  pvalue = pvalue, outvals = outvals,
                                   swapname=cls.__name__.lower(), stat=cls,**stat_kws)
 
 class Moran_Local_Rate(Moran_Local):
@@ -1288,11 +1288,11 @@ class Moran_Local_Rate(Moran_Local):
                              transformation=transformation,
                              permutations=permutations,
                              geoda_quads=geoda_quads)
-    
+
     @classmethod
-    def by_col(cls, df, events, populations, w=None, inplace=False, 
+    def by_col(cls, df, events, populations, w=None, inplace=False,
                pvalue='sim', outvals=None, swapname='',  **stat_kws):
-        """ 
+        """
         Function to compute a Moran_Local_Rate statistic on a dataframe
 
         Arguments
@@ -1318,7 +1318,7 @@ class Moran_Local_Rate(Moran_Local):
                         a string denoting which pvalue should be returned. Refer to the
                         the Moran_Local_Rate statistic's documentation for available p-values
         outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the 
+                        list of arbitrary attributes to return as columns from the
                         Moran_Local_Rate statistic
         **stat_kws  :   keyword arguments
                         options to pass to the underlying statistic. For this, see the
@@ -1341,7 +1341,7 @@ class Moran_Local_Rate(Moran_Local):
             return new
         if isinstance(events, str):
             events = [events]
-        if isinstance(populations, str): 
+        if isinstance(populations, str):
             populations = [populations]
         if len(populations) < len(events):
             populations = populations * len(events)
@@ -1357,13 +1357,13 @@ class Moran_Local_Rate(Moran_Local):
             swapname = cls.__name__.lower()
 
         rates = [assuncao_rate(df[e], df[pop]) if adj
-                 else df[e].astype(float) / df[pop] 
+                 else df[e].astype(float) / df[pop]
                  for e,pop,adj in zip(events, populations, adjusted)]
         names = ['-'.join((e,p)) for e,p in zip(events, populations)]
         out_df = df.copy()
         rate_df = out_df.from_items(zip(names, rates)) #trick to avoid importing pandas
-        _univariate_handler(rate_df, names, w=w, inplace=True, 
-                                      pvalue = pvalue, outvals = outvals, 
+        _univariate_handler(rate_df, names, w=w, inplace=True,
+                                      pvalue = pvalue, outvals = outvals,
                                       swapname=swapname,
                                       stat=Moran_Local, #how would this get done w/super?
                                       **stat_kws)

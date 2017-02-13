@@ -1,7 +1,7 @@
 import unittest
-import pysal
+import libpysal as pysal
 from .. import moran
-from ...common import pandas, RTOL, ATOL 
+from ...common import pandas, RTOL, ATOL
 import numpy as np
 
 PANDAS_EXTINCT = pandas is None

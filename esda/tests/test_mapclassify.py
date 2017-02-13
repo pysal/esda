@@ -1,4 +1,4 @@
-import pysal
+import libpysal as pysal
 from ..mapclassify import *
 from ..mapclassify import binC, bin, bin1d
 from ...common import RTOL
@@ -40,7 +40,7 @@ class TestUpdate(unittest.TestCase):
 
         #User-Defined
         ud = User_Defined(self.data, [-20,0,5,20])
-        known_yb = np.array([1,2,1,1,1,2,0,2,1,3]) 
+        known_yb = np.array([1,2,1,1,1,2,0,2,1,3])
         np.testing.assert_allclose(ud.yb, known_yb, rtol=RTOL)
         new_yb = ud.update(self.new_data).yb
         known_new_yb = np.array([1,3,1,1,1,2,1,1,1,2,0,2,1,3])
@@ -58,7 +58,7 @@ class TestFindBin(unittest.TestCase):
     def setUp(self):
         dat = pysal.open(pysal.examples.get_path("calempdensity.csv"))
         self.V = np.array([record[-1] for record in dat])
-    
+
     def test_find_bin(self):
         toclass = [0,1,3,5,50,70,101,202,390,505,800,5000,5001]
         mc = Fisher_Jenks(self.V, k=5)
@@ -74,11 +74,11 @@ class TestMake(unittest.TestCase):
                 np.linspace(-20, 20, num=5)]
         self.ei = Equal_Interval.make()
         self.q5r = Quantiles.make(k=5, rolling=True)
-    
+
     def test_make(self):
         self.assertIsInstance(self.ei, types.FunctionType)
         self.assertIsInstance(self.q5r, types.FunctionType)
-        
+
         assert hasattr(self.ei, '_options')
         self.assertEqual(self.ei._options, dict())
         assert hasattr(self.q5r, '_options')
