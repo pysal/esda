@@ -9,8 +9,8 @@ setup(name='esda', #name of package
       version='1.0.0dev',
       description=, 'Package with statistics for exploratory spatial data analysis',
       url=, 'https://github.com/pysal/esda'
-      maintainer=, 
-      maintainer_email=, 
+      maintainer='', 
+      maintainer_email='', 
       test_suite = 'nose.collector',
       tests_require=['nose'],
       keywords='spatial statistics'
@@ -29,7 +29,7 @@ setup(name='esda', #name of package
         'Programming Language :: Python :: 3.4'
         ],
       license='3-Clause BSD',
-      packages=[],
+      packages=['esda'],
       install_requires=['numpy', 'scipy', 'libpysal'
                         ,],
       zip_safe=False,
