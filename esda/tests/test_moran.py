@@ -4,6 +4,7 @@ from libpysal.common import pandas, RTOL, ATOL
 from .. import moran
 import numpy as np
 
+
 PANDAS_EXTINCT = pandas is None
 
 class Moran_Tester(unittest.TestCase):
@@ -27,7 +28,7 @@ class Moran_Tester(unittest.TestCase):
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
-        import pysal.contrib.pdio as pdio
+        from libpysal.io import geotable as pdio
         df = pdio.read_files(pysal.examples.get_path('sids2.dbf'))
         w = pysal.open(pysal.examples.get_path("sids2.gal")).read()
         mi = moran.Moran.by_col(df, ['SIDR74'], w=w, two_tailed=False)
@@ -51,7 +52,7 @@ class Moran_Rate_Tester(unittest.TestCase):
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
-        import pysal.contrib.pdio as pdio
+        from libpysal.io import geotable as pdio
         df = pdio.read_files(pysal.examples.get_path('sids2.dbf'))
         mi = moran.Moran_Rate.by_col(df, ['SID79'], ['BIR79'], w=self.w, two_tailed=False)
         sidr = np.unique(mi["SID79-BIR79_moran_rate"].values)
@@ -115,7 +116,7 @@ class Moran_Local_BV_Tester(unittest.TestCase):
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
-        import pysal.contrib.pdio as pdio
+        from libpysal.io import geotable as pdio
         df = pdio.read_files(pysal.examples.get_path('sids2.dbf'))
         np.random.seed(12345)
         moran.Moran_Local_BV.by_col(df, ['SIDR74', 'SIDR79'], w=self.w,
@@ -145,7 +146,7 @@ class Moran_Local_Rate_Tester(unittest.TestCase):
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
-        import pysal.contrib.pdio as pdio
+        from libpysal.io import geotable as pdio
         df = pdio.read_files(pysal.examples.get_path('sids2.dbf'))
         lm = moran.Moran_Local_Rate.by_col(df, ['SID79'], ['BIR79'], w=self.w,
                                            outvals=['p_z_sim', 'z_sim'],
