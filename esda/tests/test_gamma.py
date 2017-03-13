@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from libpysal.weights import lat2W
+from libpysal.weights.util import lat2W
 from ..gamma import Gamma
 from libpysal.common import pandas
 

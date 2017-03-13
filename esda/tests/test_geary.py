@@ -3,10 +3,11 @@ import unittest
 
 from libpysal import open as popen
 from libpysal import examples
+from libpysal.common import pandas
+
 from .. import geary
 import numpy as np
 
-from ...common import pandas
 PANDAS_EXTINCT = pandas is None
 
 class Geary_Tester(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 import libpysal as pysal
-from libpysal.weights import KNN
+from libpysal.weights.Distance import KNN, Kernel
 from .. import smoothing as sm
 import numpy as np
 from libpysal.common import RTOL, ATOL, pandas
@@ -344,10 +344,10 @@ class TestKernel_AgeAdj_SM(unittest.TestCase):
         self.s = np.array([98, 88, 15, 29, 20, 23, 33, 25, 76, 80, 89, 66])
         self.points = [(
             10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-        self.kw = pysal.weights.Kernel(self.points)
+        self.kw = Kernel(self.points)
         self.points1 = np.array(self.points) + 5
         self.points1 = np.vstack((self.points1, self.points))
-        self.kw1 = pysal.weights.Kernel(self.points1)
+        self.kw1 = Kernel(self.points1)
         if not self.kw.id_order_set:
             self.kw.id_order = range(0, len(self.points))
         if not PANDAS_EXTINCT:
