@@ -1,7 +1,7 @@
 import unittest
 import libpysal as pysal
+from libpysal.common import pandas, RTOL, ATOL
 from .. import moran
-from ...common import pandas, RTOL, ATOL
 import numpy as np
 
 PANDAS_EXTINCT = pandas is None
@@ -21,7 +21,7 @@ class Moran_Tester(unittest.TestCase):
         w = pysal.open(pysal.examples.get_path("sids2.gal")).read()
         f = pysal.open(pysal.examples.get_path("sids2.dbf"))
         SIDR = np.array(f.by_col("SIDR74"))
-        mi = pysal.Moran(SIDR, w, two_tailed=False)
+        mi = moran.Moran(SIDR, w, two_tailed=False)
         np.testing.assert_allclose(mi.I, 0.24772519320480135, atol=ATOL, rtol=RTOL)
         self.assertAlmostEquals(mi.p_norm,  5.7916539074498452e-05)
 
