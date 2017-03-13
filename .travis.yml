@@ -6,7 +6,10 @@ only:
 python:
   - "2.7"
   - "3.5"
-  - "3.6"
+
+allow_failures:
+    python:
+        - 3.6
 
 env:
   - PYSAL_PLUS=false
