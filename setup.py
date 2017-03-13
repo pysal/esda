@@ -7,13 +7,13 @@ except ImportError:
 
 setup(name='esda', #name of package
       version='1.0.0dev',
-      description=, 'Package with statistics for exploratory spatial data analysis',
-      url=, 'https://github.com/pysal/esda'
-      maintainer='', 
-      maintainer_email='', 
-      test_suite = 'nose.collector',
+      description='Package with statistics for exploratory spatial data analysis',
+      url='https://github.com/pysal/esda',
+      maintainer='Sergio Rey',
+      maintainer_email='sjsrey@gmail.com',
+      test_suite='nose.collector',
       tests_require=['nose'],
-      keywords='spatial statistics'
+      keywords='spatial statistics',
       classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
@@ -31,6 +31,6 @@ setup(name='esda', #name of package
       license='3-Clause BSD',
       packages=['esda'],
       install_requires=['numpy', 'scipy', 'libpysal'
-                        ,],
+                        ],
       zip_safe=False,
-      cmdclass = {'build.py':build_py})
+      cmdclass={'build.py': build_py})
