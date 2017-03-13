@@ -1,7 +1,7 @@
 import libpysal as pysal
+from libpysal.common import RTOL
 from ..mapclassify import *
 from ..mapclassify import binC, bin, bin1d
-from ...common import RTOL
 import numpy as np
 import unittest
 import types

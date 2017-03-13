@@ -6,7 +6,10 @@ only:
 python:
   - "2.7"
   - "3.5"
-  - "3.6"
+
+allow_failures:
+    python:
+        - 3.6
 
 env:
   - PYSAL_PLUS=false
@@ -28,11 +31,15 @@ before_install:
 install:
   - conda install --yes pip
   - conda install --yes --file requirements.txt;
+  - cd ../ && git clone https://github.com/pysal/libpysal.git
+  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then 2to3 -nw libpysal/ > /dev/null; fi
+  - pip install -e ./libpysal
+  - cd esda
   - pip install -r requirements_dev.txt
 
 script:
   - python setup.py sdist >/dev/null
-  - nosetests --with-coverage --cover-package=esda;
+  - nosetests -v --with-coverage --cover-package=esda;
 
 notifications:
     email:

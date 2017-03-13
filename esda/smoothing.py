@@ -14,8 +14,9 @@ Author(s):
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>, David Folch <dfolch@asu.edu>, Luc Anselin <luc.anselin@asu.edu>, Serge Rey <srey@asu.edu"
 
-from libpysal.weights import comb, Kernel, W
-from libpysal.weights.util import get_points_array
+from libpysal.weights.weights import W
+from libpysal.weights.Distance import Kernel
+from libpysal.weights.util import get_points_array, comb
 from libpysal.cg import Point, Ray, LineSegment
 from libpysal.cg import get_angle_between, get_points_dist, get_segment_point_dist,\
                  get_point_at_angle_and_dist, convex_hull, get_bounding_box
@@ -1851,8 +1852,8 @@ class Headbanging_Median_Rate(object):
                 trp_r.sort(order='r')
                 lowest.append(trp_r['r'][0])
                 highest.append(trp_r['r'][-1])
-                lowest_aw.append(self.aw[trp_r['w'][0]])
-                highest_aw.append(self.aw[trp_r['w'][-1]])
+                lowest_aw.append(self.aw[int(round(trp_r['w'][0]))])
+                highest_aw.append(self.aw[int(round(trp_r['w'][-1]))])
             wm_lowest = weighted_median(np.array(lowest), np.array(lowest_aw))
             wm_highest = weighted_median(
                 np.array(highest), np.array(highest_aw))

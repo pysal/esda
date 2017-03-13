@@ -4,7 +4,7 @@ Getis and Ord G statistic for spatial autocorrelation
 __author__ = "Sergio J. Rey <srey@asu.edu>, Myunghwa Hwang <mhwang4@gmail.com> "
 __all__ = ['G', 'G_Local']
 
-from ..common import np, stats, math
+from libpysal.common import np, stats, math
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .tabular import _univariate_handler
 
