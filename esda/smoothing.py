@@ -1852,8 +1852,8 @@ class Headbanging_Median_Rate(object):
                 trp_r.sort(order='r')
                 lowest.append(trp_r['r'][0])
                 highest.append(trp_r['r'][-1])
-                lowest_aw.append(self.aw[trp_r['w'][0]])
-                highest_aw.append(self.aw[trp_r['w'][-1]])
+                lowest_aw.append(self.aw[int(trp_r['w'][0])])
+                highest_aw.append(self.aw[int(trp_r['w'][-1])])
             wm_lowest = weighted_median(np.array(lowest), np.array(lowest_aw))
             wm_highest = weighted_median(
                 np.array(highest), np.array(highest_aw))
