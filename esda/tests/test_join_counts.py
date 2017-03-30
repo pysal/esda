@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 from ..join_counts import Join_Counts
-from libpysal.weights import lat2W
+from libpysal.weights.util import lat2W
 from libpysal.common import pandas
 
 PANDAS_EXTINCT = pandas is None
