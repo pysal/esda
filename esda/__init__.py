@@ -3,7 +3,6 @@
 =================================================
 
 """
-from . import mapclassify
 from . import moran
 from . import smoothing
 from . import getisord

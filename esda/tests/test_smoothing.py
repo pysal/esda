@@ -281,7 +281,8 @@ class TestHB(unittest.TestCase):
             self.bnames = [self.bname, 'BIR79']
             self.sids79r = np.array([.000563, .001659, .001879,
                                      .002410, .002720])
-
+    
+    @unittest.skip('Deprecated')
     def test_Headbanging_Triples(self):
         ht = sm.Headbanging_Triples(self.d, self.w)
         self.assertEqual(len(ht.triples), len(self.d))
@@ -292,7 +293,8 @@ class TestHB(unittest.TestCase):
         self.assertEqual(len(htr.r), len(self.e))
         for i in htr.r:
             self.assertTrue(i is not None)
-
+    
+    @unittest.skip('Deprecated')
     def test_Headbanging_Median_Rate(self):
         s_ht = sm.Headbanging_Triples(self.d, self.w, k=5)
         sids_hb_r = sm.Headbanging_Median_Rate(self.e, self.b, s_ht)
@@ -302,7 +304,8 @@ class TestHB(unittest.TestCase):
         sids_hb_r3 = sm.Headbanging_Median_Rate(self.e, self.b, s_ht, aw=self.b)
         np.testing.assert_array_almost_equal(self.sids_hb_r3r5, sids_hb_r3.r[:5])
 
-    @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
+    #@unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
+    @unittest.skip('Deprecated')
     def test_Headbanging_Median_Rate_tabular(self):
 
         # test that dataframe columns are treated correctly
