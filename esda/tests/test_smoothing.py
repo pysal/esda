@@ -14,8 +14,8 @@ class TestFlatten(unittest.TestCase):
     def test_flatten(self):
         out1 = sm.flatten(self.input)
         out2 = sm.flatten(self.input, unique=False)
-        self.assertEquals(out1, [1, 2, 3, 4, 5, 6])
-        self.assertEquals(out2, [1, 2, 3, 3, 4, 5, 6])
+        self.assertEqual(out1, [1, 2, 3, 4, 5, 6])
+        self.assertEqual(out2, [1, 2, 3, 3, 4, 5, 6])
 
 
 class TestWMean(unittest.TestCase):
@@ -27,8 +27,8 @@ class TestWMean(unittest.TestCase):
     def test_weighted_median(self):
         out1 = sm.weighted_median(self.d, self.w1)
         out2 = sm.weighted_median(self.d, self.w2)
-        self.assertEquals(out1, 4)
-        self.assertEquals(out2, 3.5)
+        self.assertEqual(out1, 4)
+        self.assertEqual(out2, 3.5)
 
 
 class TestAgeStd(unittest.TestCase):
@@ -42,21 +42,21 @@ class TestAgeStd(unittest.TestCase):
     def test_crude_age_standardization(self):
         crude = sm.crude_age_standardization(self.e, self.b, self.n).round(8)
         crude_exp = np.array([0.02375000, 0.02666667])
-        self.assertEquals(list(crude), list(crude_exp))
+        self.assertEqual(list(crude), list(crude_exp))
 
     def test_direct_age_standardization(self):
         direct = np.array(sm.direct_age_standardization(
             self.e, self.b, self.s_b, self.n)).round(8)
         direct_exp = np.array([[0.02374402, 0.01920491,
                                 0.02904848], [0.02665072, 0.02177143, 0.03230508]])
-        self.assertEquals(list(direct.flatten()), list(direct_exp.flatten()))
+        self.assertEqual(list(direct.flatten()), list(direct_exp.flatten()))
 
     def test_indirect_age_standardization(self):
         indirect = np.array(sm.indirect_age_standardization(
             self.e, self.b, self.s_e, self.s_b, self.n)).round(8)
         indirect_exp = np.array([[0.02372382, 0.01940230,
                                   0.02900789], [0.02610803, .02154304, 0.03164035]])
-        self.assertEquals(
+        self.assertEqual(
             list(indirect.flatten()), list(indirect_exp.flatten()))
 
 
@@ -80,7 +80,7 @@ class TestSRate(unittest.TestCase):
         self.stl_e, self.stl_b = np.array(self.stl[:, 10]), np.array(self.stl[:, 13])
         self.stl_w = pysal.open(pysal.examples.get_path('stl.gal'), 'r').read()
         if not self.stl_w.id_order_set:
-            self.stl_w.id_order = range(1, len(self.stl) + 1)
+            self.stl_w.id_order = list(range(1, len(self.stl) + 1))
 
         if not PANDAS_EXTINCT:
             self.df = pysal.open(pysal.examples.get_path('sids2.dbf')).to_df()
@@ -284,12 +284,12 @@ class TestHB(unittest.TestCase):
 
     def test_Headbanging_Triples(self):
         ht = sm.Headbanging_Triples(self.d, self.w)
-        self.assertEquals(len(ht.triples), len(self.d))
+        self.assertEqual(len(ht.triples), len(self.d))
         ht2 = sm.Headbanging_Triples(self.d, self.w, edgecor=True)
         self.assertTrue(hasattr(ht2, 'extra'))
-        self.assertEquals(len(ht2.triples), len(self.d))
+        self.assertEqual(len(ht2.triples), len(self.d))
         htr = sm.Headbanging_Median_Rate(self.e, self.b, ht2, iteration=5)
-        self.assertEquals(len(htr.r), len(self.e))
+        self.assertEqual(len(htr.r), len(self.e))
         for i in htr.r:
             self.assertTrue(i is not None)
 
@@ -349,7 +349,7 @@ class TestKernel_AgeAdj_SM(unittest.TestCase):
         self.points1 = np.vstack((self.points1, self.points))
         self.kw1 = Kernel(self.points1)
         if not self.kw.id_order_set:
-            self.kw.id_order = range(0, len(self.points))
+            self.kw.id_order = list(range(0, len(self.points)))
         if not PANDAS_EXTINCT:
             import pandas as pd
             dfa = np.array([self.e, self.b]).T

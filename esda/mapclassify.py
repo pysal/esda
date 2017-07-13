@@ -255,10 +255,10 @@ def bin1d(x, bins):
     >>> counts
     array([26, 49, 25])
     """
-    left = [-sys.maxint]
+    left = [-sys.maxsize]
     left.extend(bins[0:-1])
     right = bins
-    cuts = zip(left, right)
+    cuts = list(zip(left, right))
     k = len(bins)
     binIds = np.zeros(x.shape, dtype='int')
     while cuts:
@@ -580,7 +580,7 @@ class Map_Classifier(object):
         rolling = kwargs.pop('rolling', False)
         if rolling:
             #just initialize a fake classifier
-            data = range(10)
+            data = list(range(10))
             cls_instance = cls(data, *args, **kwargs)
             #and empty it, since we'll be using the update
             cls_instance.y = np.array([])
@@ -1428,7 +1428,7 @@ class Natural_Breaks(Map_Classifier):
             # find an initial solution and then try to find an improvement
             res0 = natural_breaks(x, k)
             fit = res0[2]
-            for i in xrange(self.initial):
+            for i in range(self.initial):
                 res = natural_breaks(x, k)
                 fit_i = res[2]
                 if fit_i < fit:
@@ -1654,7 +1654,7 @@ class Jenks_Caspall(Map_Classifier):
         xb0 = xb.copy()
         q = xm
         it = 0
-        rk = range(self.k)
+        rk = list(range(self.k))
         while solving:
             xb = np.zeros(xb0.shape, int)
             d = abs(x - q)
@@ -2078,10 +2078,10 @@ class Max_P_Classifier(Map_Classifier):
         best_tss = x.var() * x.shape[0]
         tss_all = np.zeros((self.initial, 1))
         while solution < self.initial:
-            remaining = range(n)
+            remaining = list(range(n))
             seeds = [np.nonzero(di == min(
                 di))[0][0] for di in [np.abs(x - qi) for qi in q]]
-            rseeds = np.random.permutation(range(k)).tolist()
+            rseeds = np.random.permutation(list(range(k))).tolist()
             [remaining.remove(seed) for seed in seeds]
             self.classes = classes = []
             [classes.append([seed]) for seed in seeds]
@@ -2125,7 +2125,7 @@ class Max_P_Classifier(Map_Classifier):
                 a2c[a] = r
         swapping = True
         while swapping:
-            rseeds = np.random.permutation(range(k)).tolist()
+            rseeds = np.random.permutation(list(range(k))).tolist()
             total_moves = 0
             while rseeds:
                 id = rseeds.pop()
@@ -2356,7 +2356,7 @@ class K_classifiers(object):
         best = gadf(y, "Fisher_Jenks", maxk=len(y) - 1, pct=pct)
         pct0 = best[0]
         k0 = best[-1]
-        keys = kmethods.keys()
+        keys = list(kmethods.keys())
         keys.remove("Fisher_Jenks")
         results["Fisher_Jenks"] = best
         for method in keys:
@@ -2412,7 +2412,7 @@ def opt_part(x):
     n = len(x)
     tss = np.inf
     opt_i = -999
-    for i in xrange(1, n):
+    for i in range(1, n):
         left = x[:i].var() * i
         right = x[i:].var() * (n - i)
         tss_i = left + right
