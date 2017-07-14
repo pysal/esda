@@ -125,7 +125,7 @@ class Join_Counts(object):
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y))
-                   for i in xrange(permutations)]
+                   for i in range(permutations)]
             sim_jc = np.array(sim)
             self.sim_bb = sim_jc[:, 0]
             self.min_bb = np.min(self.sim_bb)
