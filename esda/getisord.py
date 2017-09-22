@@ -110,7 +110,7 @@ class G(object):
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y))
-                   for i in xrange(permutations)]
+                   for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.G
             larger = sum(above)
@@ -371,8 +371,8 @@ class G_Local(object):
         y = self.y
         rGs = np.zeros((self.n, self.permutations))
         n_1 = self.n - 1
-        rid = range(n_1)
-        prange = range(self.permutations)
+        rid = list(range(n_1))
+        prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
         rids = np.array([np.random.permutation(rid)[0:k] for i in prange])
         ids = np.arange(self.w.n)

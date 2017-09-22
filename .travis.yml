@@ -6,10 +6,7 @@ only:
 python:
   - "2.7"
   - "3.5"
-
-allow_failures:
-    python:
-        - 3.6
+  - "3.6"
 
 env:
   - PYSAL_PLUS=false
@@ -21,30 +18,27 @@ before_install:
   - ./miniconda.sh -b -p ./miniconda
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
-  - conda config --add channels conda-forge
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
-  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; 
-        then 2to3 -nw esda/ > /dev/null; 
-    fi
 
 install:
-  - conda install --yes pip
+  - conda install --yes pip nose
+  - which pip
   - conda install --yes --file requirements.txt;
-  - cd ../ && git clone https://github.com/pysal/libpysal.git
-  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then 2to3 -nw libpysal/ > /dev/null; fi
-  - pip install -e ./libpysal
-  - cd esda
-  - pip install -r requirements_dev.txt
+  - pip install libpysal
+  - if [[ PYSAL_PLUS ]]; then conda install --yes numba; fi
 
 script:
+  - pwd
+  - ls -al
   - python setup.py sdist >/dev/null
-  - nosetests -v --with-coverage --cover-package=esda;
+  - nosetests -v esda;
 
 notifications:
     email:
         recipients:
-            - levi.john.wolf@gmail.com
+            - levi.john.wolf+travis@gmail.com
+            - sjsrey+travis@gmail.com
         on_change: always
         on_failure: always
 

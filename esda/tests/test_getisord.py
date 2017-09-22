@@ -20,8 +20,8 @@ class G_Tester(unittest.TestCase):
 
     def test_G(self):
         g = getisord.G(self.y, self.w)
-        self.assertAlmostEquals(g.G, 0.55709779, places=8)
-        self.assertAlmostEquals(g.p_norm, 0.1729, places=4)
+        self.assertAlmostEqual(g.G, 0.55709779, places=8)
+        self.assertAlmostEqual(g.p_norm, 0.1729, places=4)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
@@ -33,8 +33,8 @@ class G_Tester(unittest.TestCase):
         this_pval = np.unique(r1.y_p_sim.values)
         np.random.seed(12345)
         stat = getisord.G(self.y, self.w)
-        self.assertAlmostEquals(this_getisord, stat._statistic)
-        self.assertAlmostEquals(this_pval, stat.p_sim)
+        self.assertAlmostEqual(this_getisord, stat._statistic)
+        self.assertAlmostEqual(this_pval, stat.p_sim)
 
 class G_Local_Tester(unittest.TestCase):
 
@@ -45,23 +45,23 @@ class G_Local_Tester(unittest.TestCase):
 
     def test_G_Local_Binary(self):
         lg = getisord.G_Local(self.y, self.w, transform='B')
-        self.assertAlmostEquals(lg.Zs[0], -1.0136729, places=7)
-        self.assertAlmostEquals(lg.p_sim[0], 0.10100000000000001, places=7)
+        self.assertAlmostEqual(lg.Zs[0], -1.0136729, places=7)
+        self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
     def test_G_Local_Row_Standardized(self):
         lg = getisord.G_Local(self.y, self.w, transform='R')
-        self.assertAlmostEquals(lg.Zs[0], -0.62074534, places=7)
-        self.assertAlmostEquals(lg.p_sim[0], 0.10100000000000001, places=7)
+        self.assertAlmostEqual(lg.Zs[0], -0.62074534, places=7)
+        self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
     def test_G_star_Local_Binary(self):
         lg = getisord.G_Local(self.y, self.w, transform='B', star=True)
-        self.assertAlmostEquals(lg.Zs[0], -1.39727626, places=8)
-        self.assertAlmostEquals(lg.p_sim[0], 0.10100000000000001, places=7)
+        self.assertAlmostEqual(lg.Zs[0], -1.39727626, places=8)
+        self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
     def test_G_star_Row_Standardized(self):
         lg = getisord.G_Local(self.y, self.w, transform='R', star=True)
-        self.assertAlmostEquals(lg.Zs[0], -0.62488094, places=8)
-        self.assertAlmostEquals(lg.p_sim[0], 0.10100000000000001, places=7)
+        self.assertAlmostEqual(lg.Zs[0], -0.62488094, places=8)
+        self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):

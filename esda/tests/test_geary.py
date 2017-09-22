@@ -19,13 +19,13 @@ class Geary_Tester(unittest.TestCase):
 
     def test_Geary(self):
         c = geary.Geary(self.y, self.w, permutations=0)
-        self.assertAlmostEquals(c.C, 0.33301083591331254)
-        self.assertAlmostEquals(c.EC, 1.0)
+        self.assertAlmostEqual(c.C, 0.33301083591331254)
+        self.assertAlmostEqual(c.EC, 1.0)
 
-        self.assertAlmostEquals(c.VC_norm, 0.031805300245097874)
-        self.assertAlmostEquals(c.p_norm, 9.2018240680169505e-05)
-        self.assertAlmostEquals(c.z_norm, -3.7399778367629564)
-        self.assertAlmostEquals(c.seC_norm, 0.17834040553138225)
+        self.assertAlmostEqual(c.VC_norm, 0.031805300245097874)
+        self.assertAlmostEqual(c.p_norm, 9.2018240680169505e-05)
+        self.assertAlmostEqual(c.z_norm, -3.7399778367629564)
+        self.assertAlmostEqual(c.seC_norm, 0.17834040553138225)
 
         self.assertAlmostEquals(c.VC_rand,0.033411917666958356)
         self.assertAlmostEquals(c.p_rand,0.00013165646189214729)
@@ -64,8 +64,8 @@ class Geary_Tester(unittest.TestCase):
         this_pval = np.unique(r1.y_p_sim.values)
         np.random.seed(12345)
         c = geary.Geary(self.y, self.w, permutations=999)
-        self.assertAlmostEquals(this_geary, c.C)
-        self.assertAlmostEquals(this_pval, c.p_sim)
+        self.assertAlmostEqual(this_geary, c.C)
+        self.assertAlmostEqual(this_pval, c.p_sim)
 
 
 

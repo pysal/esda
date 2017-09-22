@@ -155,7 +155,7 @@ class Moran(object):
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.z))
-                   for i in xrange(permutations)]
+                   for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.I
             larger = above.sum()
@@ -375,7 +375,7 @@ class Moran_BV(object):
         self.I = self.__calc(zy)
         if permutations:
             nrp = np.random.permutation
-            sim = [self.__calc(nrp(zy)) for i in xrange(permutations)]
+            sim = [self.__calc(nrp(zy)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.I
             larger = above.sum()
@@ -506,7 +506,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     """
 
     k = len(variables)
-    rk = range(0, k - 1)
+    rk = list(range(0, k - 1))
     results = {}
     for i in rk:
         for j in range(i + 1, k):
@@ -705,7 +705,7 @@ class Moran_Rate(Moran):
                  for e,pop,adj in zip(events, populations, adjusted)]
         names = ['-'.join((e,p)) for e,p in zip(events, populations)]
         out_df = df.copy()
-        rate_df = out_df.from_items(zip(names, rates)) #trick to avoid importing pandas
+        rate_df = out_df.from_items(list(zip(names, rates))) #trick to avoid importing pandas
         stat_df = _univariate_handler(rate_df, names, w=w, inplace=False,
                                       pvalue = pvalue, outvals = outvals,
                                       swapname=swapname,
@@ -865,7 +865,7 @@ class Moran_Local(object):
         z = self.z
         lisas = np.zeros((self.n, self.permutations))
         n_1 = self.n - 1
-        prange = range(self.permutations)
+        prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
         nn = self.n - 1
         rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
@@ -874,7 +874,7 @@ class Moran_Local(object):
         w = [self.w.weights[ido[i]] for i in ids]
         wc = [self.w.cardinalities[ido[i]] for i in ids]
 
-        for i in xrange(self.w.n):
+        for i in range(self.w.n):
             idsi = ids[ids != i]
             np.random.shuffle(idsi)
             tmp = z[idsi[rids[:, 0:wc[i]]]]
@@ -1102,7 +1102,7 @@ class Moran_Local_BV(object):
         """
         lisas = np.zeros((self.n, self.permutations))
         n_1 = self.n - 1
-        prange = range(self.permutations)
+        prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
         nn = self.n - 1
         rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
@@ -1113,7 +1113,7 @@ class Moran_Local_BV(object):
 
         zx = self.zx
         zy = self.zy
-        for i in xrange(self.w.n):
+        for i in range(self.w.n):
             idsi = ids[ids != i]
             np.random.shuffle(idsi)
             tmp = zy[idsi[rids[:, 0:wc[i]]]]
@@ -1371,7 +1371,7 @@ class Moran_Local_Rate(Moran_Local):
                  for e,pop,adj in zip(events, populations, adjusted)]
         names = ['-'.join((e,p)) for e,p in zip(events, populations)]
         out_df = df.copy()
-        rate_df = out_df.from_items(zip(names, rates)) #trick to avoid importing pandas
+        rate_df = out_df.from_items(list(zip(names, rates))) #trick to avoid importing pandas
         _univariate_handler(rate_df, names, w=w, inplace=True,
                                       pvalue = pvalue, outvals = outvals,
                                       swapname=swapname,

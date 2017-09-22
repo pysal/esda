@@ -1,12 +1,9 @@
 from setuptools import setup
 
-try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    from distutils.command.build_py import build_py
+from distutils.command.build_py import build_py
 
 setup(name='esda',  # name of package
-      version='1.0.0dev',
+      version='1.0.1dev',
       description='Package with statistics for exploratory spatial data analysis',
       url='https://github.com/pysal/esda',
       maintainer='Sergio Rey',
