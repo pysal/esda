@@ -1,2 +1,8 @@
 *.pyc
 .ipynb_checkpoints/
+
+# Egg metadata
+*.egg-info/
+
+# Distributables
+dist/
