@@ -9,7 +9,7 @@ setup(name='esda',  # name of package
       maintainer='Sergio Rey',
       maintainer_email='sjsrey@gmail.com',
       test_suite='nose.collector',
-      py_modules['esda'],
+      py_modules=['esda'],
       python_requires='>3.4',
       tests_require=['nose'],
       keywords='spatial statistics',
