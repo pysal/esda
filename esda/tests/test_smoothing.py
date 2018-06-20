@@ -281,7 +281,6 @@ class TestHB(unittest.TestCase):
             self.bnames = [self.bname, 'BIR79']
             self.sids79r = np.array([.000563, .001659, .001879,
                                      .002410, .002720])
-    
     @unittest.skip('Deprecated')
     def test_Headbanging_Triples(self):
         ht = sm.Headbanging_Triples(self.d, self.w)
