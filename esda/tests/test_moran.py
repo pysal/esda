@@ -120,16 +120,16 @@ class Moran_Local_Tester(unittest.TestCase):
         import geopandas as gpd
         link = examples.get_path('columbus.shp')
         gdf = gpd.read_file(link)
-        self.y = gdf['HOVAL'].values
-        self.w = lp.Queen.from_dataframe(gdf)
-        self.w.transform = 'r'
-        mloc = moran.Moran_Local(self.y, self.w)
-        fig, _ = mloc.plot(self, gdf, 'HOVAL')
+        y = gdf['HOVAL'].values
+        w = lp.Queen.from_dataframe(gdf)
+        w.transform = 'r'
+        mloc = moran.Moran_Local(y, w)
+        fig, _ = mloc.plot(gdf, 'HOVAL')
         plt.close(fig)
         # also test with quadrant and mask
-        fig, _ = mloc.plot(self, gdf, 'HOVAL', p=0.05,
-                                        region_column='POLYID',
-                                        mask=['1', '2', '3'], quadrant=1)
+        fig, _ = mloc.plot(gdf, 'HOVAL', p=0.05,
+                           region_column='POLYID',
+                           mask=['1', '2', '3'], quadrant=1)
         plt.close(fig)
 
 
@@ -140,14 +140,14 @@ class Moran_Local_Tester(unittest.TestCase):
         import geopandas as gpd
         link = examples.get_path('columbus.shp')
         gdf = gpd.read_file(link)
-        self.y = gdf['HOVAL'].values
-        self.w = lp.Queen.from_dataframe(gdf)
-        self.w.transform = 'r'
-        mloc = moran.Moran_Local(self.y, self.w)
-        fig, _ = mloc.scatterplot(self)
+        y = gdf['HOVAL'].values
+        w = lp.Queen.from_dataframe(gdf)
+        w.transform = 'r'
+        mloc = moran.Moran_Local(y, w)
+        fig, _ = mloc.scatterplot()
         plt.close(fig)
         # also test with quadrant and mask
-        fig, _ = mloc.scatterplot(self, figsize=(10,20))
+        fig, _ = mloc.scatterplot(figsize=(10,20))
         plt.close(fig)
         
 
@@ -158,14 +158,14 @@ class Moran_Local_Tester(unittest.TestCase):
         import geopandas as gpd
         link = examples.get_path('columbus.shp')
         gdf = gpd.read_file(link)
-        self.y = gdf['HOVAL'].values
-        self.w = lp.Queen.from_dataframe(gdf)
-        self.w.transform = 'r'
-        moran_loc = moran.Moran_Local(self.y, self.w)
-        fig, _ = moran_loc.LISA_map(self, gdf)
+        y = gdf['HOVAL'].values
+        w = lp.Queen.from_dataframe(gdf)
+        w.transform = 'r'
+        moran_loc = moran.Moran_Local(y, w)
+        fig, _ = moran_loc.LISA_map(gdf)
         plt.close(fig)
         # also test with quadrant and mask
-        fig, _ = moran_loc.LISA_map(self, gdf, figsize=(10,20))
+        fig, _ = moran_loc.LISA_map(gdf, figsize=(10,20))
         plt.close(fig)
 
 class Moran_Local_BV_Tester(unittest.TestCase):
