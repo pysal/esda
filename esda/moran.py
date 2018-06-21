@@ -9,6 +9,7 @@ from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
 import scipy.stats as stats
 import numpy as np
+import warnings
 
 __all__ = ["Moran", "Moran_Local", "Moran_BV", "Moran_BV_matrix",
            "Moran_Local_BV", "Moran_Rate", "Moran_Local_Rate"]
