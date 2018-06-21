@@ -123,11 +123,11 @@ class Moran_Local_Tester(unittest.TestCase):
         self.y = gdf['HOVAL'].values
         self.w = lp.Queen.from_dataframe(gdf)
         self.w.transform = 'r'
-        self = moran.Moran_Local(self.y, self.w)
-        fig, _ = moran.Moran_Local.plot(self, gdf, 'HOVAL')
+        mloc = moran.Moran_Local(self.y, self.w)
+        fig, _ = mloc.plot(self, gdf, 'HOVAL')
         plt.close(fig)
         # also test with quadrant and mask
-        fig, _ = moran.Moran_Local.plot(self, gdf, 'HOVAL', p=0.05,
+        fig, _ = mloc.plot(self, gdf, 'HOVAL', p=0.05,
                                         region_column='POLYID',
                                         mask=['1', '2', '3'], quadrant=1)
         plt.close(fig)
@@ -143,11 +143,11 @@ class Moran_Local_Tester(unittest.TestCase):
         self.y = gdf['HOVAL'].values
         self.w = lp.Queen.from_dataframe(gdf)
         self.w.transform = 'r'
-        self = moran.Moran_Local(self.y, self.w)
-        fig, _ = moran.Moran_Local.scatterplot(self)
+        mloc = moran.Moran_Local(self.y, self.w)
+        fig, _ = mloc.scatterplot(self)
         plt.close(fig)
         # also test with quadrant and mask
-        fig, _ = moran.Moran_Local.scatterplot(self, figsize=(10,20))
+        fig, _ = mloc.scatterplot(self, figsize=(10,20))
         plt.close(fig)
         
 
@@ -161,11 +161,11 @@ class Moran_Local_Tester(unittest.TestCase):
         self.y = gdf['HOVAL'].values
         self.w = lp.Queen.from_dataframe(gdf)
         self.w.transform = 'r'
-        self = moran.Moran_Local(self.y, self.w)
-        fig, _ = moran.Moran_Local.LISA_map(self, gdf)
+        moran_loc = moran.Moran_Local(self.y, self.w)
+        fig, _ = moran_loc.LISA_map(self, gdf)
         plt.close(fig)
         # also test with quadrant and mask
-        fig, _ = moran.Moran_Local.LISA_map(self, gdf, figsize=(10,20))
+        fig, _ = moran_loc.LISA_map(self, gdf, figsize=(10,20))
         plt.close(fig)
 
 class Moran_Local_BV_Tester(unittest.TestCase):
