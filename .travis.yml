@@ -26,6 +26,9 @@ install:
   - conda install --yes --file requirements.txt;
   - pip install libpysal
   - if [[ PYSAL_PLUS ]]; then conda install --yes numba; fi
+  # We need geopandas master, the legend_kwds is not in 0.3.0
+  - pip install https://github.com/geopandas/geopandas/archive/master.zip
+  # We need splot master, since splot is not released yet
   - pip install https://github.com/pysal/splot/archive/master.zip
   - pip install matplotlib
 
