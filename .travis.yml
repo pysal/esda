@@ -26,6 +26,8 @@ install:
   - conda install --yes --file requirements.txt;
   - pip install libpysal
   - if [[ PYSAL_PLUS ]]; then conda install --yes numba; fi
+  - pip install https://github.com/pysal/splot/archive/master.zip
+  - pip install matplotlib
 
 script:
   - pwd
