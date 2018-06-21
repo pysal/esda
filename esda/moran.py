@@ -1141,7 +1141,7 @@ class Moran_Local(object):
                           UserWarning)
             raise e
 
-        fig, ax = splot.esda.lisa_cluster(self, p=p, **kwargs)
+        fig, ax = splot.esda.lisa_cluster(self, gdf, p=p, **kwargs)
         return fig, ax
 
 

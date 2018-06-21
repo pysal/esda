@@ -113,6 +113,60 @@ class Moran_Local_Tester(unittest.TestCase):
         self.assertAlmostEqual(lm.z_z_sim[0], -0.68493799168603808)
         self.assertAlmostEqual(lm.z_p_z_sim[0],  0.24669152541631179)
 
+    def test_plot(self):
+        import matplotlib.pyplot as plt
+        import libpysal.api as lp
+        from libpysal import examples
+        import geopandas as gpd
+        link = examples.get_path('columbus.shp')
+        gdf = gpd.read_file(link)
+        self.y = gdf['HOVAL'].values
+        self.w = lp.Queen.from_dataframe(gdf)
+        self.w.transform = 'r'
+        self = moran.Moran_Local(self.y, self.w)
+        fig, _ = moran.Moran_Local.plot(self, gdf, 'HOVAL')
+        plt.close(fig)
+        # also test with quadrant and mask
+        fig, _ = moran.Moran_Local.plot(self, gdf, 'HOVAL', p=0.05,
+                                        region_column='POLYID',
+                                        mask=['1', '2', '3'], quadrant=1)
+        plt.close(fig)
+
+
+    def test_scatterplot(self):
+        import matplotlib.pyplot as plt
+        import libpysal.api as lp
+        from libpysal import examples
+        import geopandas as gpd
+        link = examples.get_path('columbus.shp')
+        gdf = gpd.read_file(link)
+        self.y = gdf['HOVAL'].values
+        self.w = lp.Queen.from_dataframe(gdf)
+        self.w.transform = 'r'
+        self = moran.Moran_Local(self.y, self.w)
+        fig, _ = moran.Moran_Local.scatterplot(self)
+        plt.close(fig)
+        # also test with quadrant and mask
+        fig, _ = moran.Moran_Local.scatterplot(self, figsize=(10,20))
+        plt.close(fig)
+        
+
+    def test_LISA_map(self):
+        import matplotlib.pyplot as plt
+        import libpysal.api as lp
+        from libpysal import examples
+        import geopandas as gpd
+        link = examples.get_path('columbus.shp')
+        gdf = gpd.read_file(link)
+        self.y = gdf['HOVAL'].values
+        self.w = lp.Queen.from_dataframe(gdf)
+        self.w.transform = 'r'
+        self = moran.Moran_Local(self.y, self.w)
+        fig, _ = moran.Moran_Local.LISA_map(self, gdf)
+        plt.close(fig)
+        # also test with quadrant and mask
+        fig, _ = moran.Moran_Local.LISA_map(self, gdf, figsize=(10,20))
+        plt.close(fig)
 
 class Moran_Local_BV_Tester(unittest.TestCase):
     def setUp(self):
@@ -144,7 +198,7 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         self.assertAlmostEqual(bvz[0],  1.657427, 5)
         self.assertAlmostEqual(bvzp[0], 0.048717, 5)
 
-
+        
 class Moran_Local_Rate_Tester(unittest.TestCase):
     def setUp(self):
         np.random.seed(10)
