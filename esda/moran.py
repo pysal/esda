@@ -1006,6 +1006,143 @@ class Moran_Local(object):
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
                                    swapname=cls.__name__.lower(), **stat_kws)
+    
+    def plot(self, gdf, attribute, p=0.05,
+             region_column=None, mask=None,
+             mask_color='#636363', quadrant=None,
+             legend=True, scheme='Quantiles',
+             cmap='YlGnBu', figsize=(15,4)):
+        """Produce three-plot visualization of Moran Scatteprlot,
+        LISA cluster and Choropleth, with Local Moran
+        region and quadrant masking
+
+        Parameters
+        ----------
+        gdf : geopandas dataframe
+            The Dataframe containing information to plot the two maps.
+        attribute : str
+            Column name of attribute which should be depicted in Choropleth map.
+        p : float, optional
+            The p-value threshold for significance. Points and polygons will
+            be colored by significance. Default = 0.05.
+        region_column: string, optional
+            Column name containing mask region of interest. Default = None
+        mask: str, optional
+            Identifier or name of the region to highlight. Default = None
+        mask_color: str, optional
+            Color of mask. Default = '#636363'
+        quadrant : int, optional
+            Quadrant 1-4 in scatterplot masking values in LISA cluster and
+            Choropleth maps. Default = None
+        figsize: tuple, optional
+            W, h of figure. Default = (15,4)
+        legend: boolean, optional
+            If True, legend for maps will be depicted. Default = True
+        scheme: str, optional
+            Name of PySAL classifier to be used. Default = 'Quantiles'
+        cmap: str, optional
+            Name of matplotlib colormap used for plotting the Choropleth.
+            Default = 'YlGnBU'
+
+        Returns
+        -------
+        fig : matplotlip Figure instance
+            Figure of LISA cluster map
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+            
+        Examples
+        --------
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method will be available as soon as splot is released in September 2018',
+                          UserWarning)
+            raise e
+
+        fig, axs = splot.esda.plot_local_autocorrelation(self, gdf=gdf,
+                                                        attribute=attribute,
+                                                        p=p,
+                                                        region_column=region_column,
+                                                        mask=mask,
+                                                        mask_color=mask_color,
+                                                        quadrant=quadrant,
+                                                        legend=legend,
+                                                        scheme=scheme,
+                                                        cmap=cmap,
+                                                        figsize=figsize)
+        return fig, axs
+    
+    def scatterplot(self, p=0.05, **kwargs):
+        """Plot Local Moran Scatterplot
+
+        Parameters
+        ----------
+        p : float, optional
+            The p-value threshold for significance. Points will
+            be colored by LISA and significance. Default=0.05
+        **kwargs : keyword arguments, optional
+            Keywords used for creating and designing the plot.
+
+        Returns
+        -------
+        fig : matplotlip Figure instance
+            Figure of LISA cluster map
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+            
+        Examples
+        --------
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method will be available as soon as splot is released in September 2018',
+                          UserWarning)
+            raise e
+
+        fig, ax = splot.esda.moran_loc_scatterplot(self, p=p, **kwargs)
+        return fig, ax
+
+
+    def LISA_map(self, gdf, p=0.05,
+                 legend=True, **kwargs):
+        """Plot LISA cluster map
+
+        Parameters
+        ----------
+        gdf : geopandas dataframe instance
+            The Dataframe containing information to plot. Note that `gdf` will be
+            modified, so calling functions should use a copy of the user
+            provided `gdf`. (either using gdf.assign() or gdf.copy())
+        p : float, optional
+            The p-value threshold for significance. Points will
+            be colored by significance. Default =0.05
+        legend : boolean, optional
+            If True, legend for maps will be depicted. Default = True
+        **kwargs : keyword arguments, optional
+            Keywords used for creating and designing the plot.
+
+        Returns
+        -------
+        fig : matplotlip Figure instance
+            Figure of LISA cluster map
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+            
+        Examples
+        --------
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method will be available as soon as splot is released in September 2018',
+                          UserWarning)
+            raise e
+
+        fig, ax = splot.esda.lisa_cluster(self, p=p, **kwargs)
+        return fig, ax
 
 
 class Moran_Local_BV(object):
