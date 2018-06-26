@@ -73,7 +73,7 @@ class Moran_Rate_Tester(unittest.TestCase):
         sidr = np.unique(mi["SID79-BIR79_moran_rate"].values)
         pval = np.unique(mi["SID79-BIR79_p_sim"].values)
         np.testing.assert_allclose(sidr, 0.16622343552567395, rtol=RTOL, atol=ATOL)
-        self.assertAlmostEqual(pval, 0.009)
+        np.testing.assert_allclose(pval, 0.009, rtol=1e-7, atol=0)
 
 
 
