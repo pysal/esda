@@ -3,7 +3,7 @@ from setuptools import setup
 from distutils.command.build_py import build_py
 
 setup(name='esda',  # name of package
-      version='1.0.1dev',
+      version='1.0.1.dev0',
       description='Package with statistics for exploratory spatial data analysis',
       url='https://github.com/pysal/esda',
       maintainer='Sergio Rey',
