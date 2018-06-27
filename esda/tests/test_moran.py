@@ -55,6 +55,7 @@ class Moran_Tester(unittest.TestCase):
 
 class Moran_Rate_Tester(unittest.TestCase):
     def setUp(self):
+        np.random.seed(15432)
         self.w = pysal.open(pysal.examples.get_path("sids2.gal")).read()
         f = pysal.open(pysal.examples.get_path("sids2.dbf"))
         self.e = np.array(f.by_col['SID79'])
@@ -73,8 +74,7 @@ class Moran_Rate_Tester(unittest.TestCase):
         sidr = np.unique(mi["SID79-BIR79_moran_rate"].values)
         pval = np.unique(mi["SID79-BIR79_p_sim"].values)
         np.testing.assert_allclose(sidr, 0.16622343552567395, rtol=RTOL, atol=ATOL)
-        np.testing.assert_allclose(pval, 0.009, rtol=1e-7, atol=0)
-
+        np.testing.assert_allclose(pval, 0.008, rtol=RTOL, atol=ATOL)
 
 
 class Moran_BV_matrix_Tester(unittest.TestCase):
