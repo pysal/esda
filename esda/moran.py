@@ -1054,6 +1054,24 @@ class Moran_Local(object):
             
         Examples
         --------
+        >>> import matplotlib.pyplot as plt
+        >>> import geopandas as gpd
+        >>> import libpysal.api as lp
+        >>> from libpysal import examples
+        >>> from esda.moran import Moran_Local
+        Load data and calculate Moran Local statistics
+        >>> link = examples.get_path('columbus.shp')
+        >>> gdf = gpd.read_file(link)
+        >>> y = gdf['HOVAL'].values
+        >>> w = lp.Queen.from_dataframe(gdf)
+        >>> w.transform = 'r'
+        >>> moran_loc = Moran_Local(y, w)
+        plot
+        >>> moran_loc.scatterplot()
+        >>> plt.show()
+        customize plot
+        >>> moran_loc.scatterplot(fitline_kwds=dict(color='#4393c3'))
+        >>> plt.show()
         """
         try:
             import splot.esda
@@ -1074,17 +1092,28 @@ class Moran_Local(object):
                                                         cmap=cmap,
                                                         figsize=figsize)
         return fig, axs
-    
-    def scatterplot(self, p=0.05, **kwargs):
-        """Plot Local Moran Scatterplot
+
+
+    def scatterplot(self, zstandard=True, p=0.05,
+                    ax=None, scatter_kwds=None, fitline_kwds=None):
+        """
+        Moran Scatterplot with option of coloring of Local Moran Statistics
 
         Parameters
         ----------
         p : float, optional
-            The p-value threshold for significance. Points will
-            be colored by LISA and significance. Default=0.05
-        **kwargs : keyword arguments, optional
-            Keywords used for creating and designing the plot.
+            If given, the p-value threshold for significance. Points will
+            be colored by significance. By default it will not be colored.
+            Default =None.
+        ax : Matplotlib Axes instance, optional
+            If given, the Moran plot will be created inside this axis.
+            Default =None.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline.
+            Default =None.
 
         Returns
         -------
@@ -1095,6 +1124,24 @@ class Moran_Local(object):
             
         Examples
         --------
+        >>> import matplotlib.pyplot as plt
+        >>> import geopandas as gpd
+        >>> import libpysal.api as lp
+        >>> from libpysal import examples
+        >>> from esda.moran import Moran_Local
+        Load data and calculate Moran Local statistics
+        >>> link = examples.get_path('columbus.shp')
+        >>> gdf = gpd.read_file(link)
+        >>> y = gdf['HOVAL'].values
+        >>> w = lp.Queen.from_dataframe(gdf)
+        >>> w.transform = 'r'
+        >>> moran_loc = Moran_Local(y, w)
+        plot
+        >>> moran_loc.lisa_map(gdf)
+        >>> plt.show()
+        customize plot
+        >>> moran_loc.lisa_map(gdf, legend=False)
+        >>> plt.show()
         """
         try:
             import splot.esda
@@ -1103,13 +1150,16 @@ class Moran_Local(object):
                           UserWarning)
             raise e
 
-        fig, ax = splot.esda.moran_loc_scatterplot(self, p=p, **kwargs)
+        fig, ax = splot.esda.moran_loc_scatterplot(self, zstandard=zstandard, p=p,
+                                                   ax=ax, scatter_kwds=scatter_kwds,
+                                                   fitline_kwds=fitline_kwds)
         return fig, ax
 
 
-    def LISA_map(self, gdf, p=0.05,
-                 legend=True, **kwargs):
-        """Plot LISA cluster map
+    def lisa_map(self, gdf, p=0.05, ax=None,
+                 legend=True, legend_kwds=None, **kwargs):
+        """
+        Plot LISA cluster map
 
         Parameters
         ----------
@@ -1119,12 +1169,19 @@ class Moran_Local(object):
             provided `gdf`. (either using gdf.assign() or gdf.copy())
         p : float, optional
             The p-value threshold for significance. Points will
-            be colored by significance. Default =0.05
+            be colored by significance.
+        ax : matplotlib Axes instance, optional
+            Axes in which to plot the figure in multiple Axes layout.
+            Default = None
         legend : boolean, optional
             If True, legend for maps will be depicted. Default = True
+        legend_kwds : dict, optional
+            Dictionary to control legend formatting options. Example:
+            ``legend_kwds={'loc': 'upper left', 'bbox_to_anchor': (0.92, 1.05)}``
+            Default = None
         **kwargs : keyword arguments, optional
-            Keywords used for creating and designing the plot.
-
+            Keywords designing and passed to geopandas.GeoDataFrame.plot().
+        
         Returns
         -------
         fig : matplotlip Figure instance
@@ -1142,7 +1199,8 @@ class Moran_Local(object):
                           UserWarning)
             raise e
 
-        fig, ax = splot.esda.lisa_cluster(self, gdf, p=p, **kwargs)
+        fig, ax = splot.esda.lisa_cluster(self, gdf, p=p, ax=ax,
+                                          legend=legend, legend_kwds=legend_kwds, **kwargs)
         return fig, ax
 
 
