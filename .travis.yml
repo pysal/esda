@@ -29,6 +29,7 @@ install:
   - conda install matplotlib --yes
   # we need descartes for `geopandas` dependency
   - conda install descartes --yes
+  - conda install mapclassify --yes
   # We need geopandas master, the legend_kwds is not in 0.3.0
   - pip install https://github.com/geopandas/geopandas/archive/master.zip
   # We need splot master, since splot is not released yet
