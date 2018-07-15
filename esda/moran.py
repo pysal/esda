@@ -171,6 +171,10 @@ class Moran(object):
             else:
                 self.p_z_sim = stats.norm.cdf(self.z_sim)
 
+        # provide .z attribute that is znormalized
+        sy = y.std()
+        self.z /= sy
+        
     def __moments(self):
         self.n = len(self.y)
         y = self.y
@@ -201,10 +205,6 @@ class Moran(object):
         VIR = (A - B) / ((n - 1) * (n - 2) * (n - 3 ) * s02) - EI*EI
         self.VI_rand = VIR 
         self.seI_rand = VIR ** (1 / 2.)
-
-
-
-
 
     def __calc(self, z):
         zl = slag(self.w, z)
@@ -366,6 +366,8 @@ class Moran_BV(object):
         y = np.asarray(y).flatten()
         zy = (y - y.mean()) / y.std(ddof=1)
         zx = (x - x.mean()) / x.std(ddof=1)
+        self.y = y
+        self.x = x
         self.zx = zx
         self.zy = zy
         n = x.shape[0]
@@ -1044,6 +1046,7 @@ class Moran_Local_BV(object):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
         self.y = y
+        self.x =x
         n = len(y)
         self.n = n
         self.n_1 = n - 1
