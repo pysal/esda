@@ -465,9 +465,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     permutations : int
                    number of permutations
     varnames     : list
-                   strings for variable names. If specified runtime summary is
-                   printed
-
+                   strings for variable names. Will add an
+                   attribute to `Moran_BV` objects in results
     Returns
     -------
     results      : dictionary
@@ -505,6 +504,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
 
     """
+    if varnames is None:
+        varnames = ['x{}'.format(i) for i in range(k)]
 
     k = len(variables)
     rk = list(range(0, k - 1))
@@ -515,6 +516,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
             y2 = variables[j]
             results[i, j] = Moran_BV(y1, y2, w, permutations=permutations)
             results[j, i] = Moran_BV(y2, y1, w, permutations=permutations)
+            results[i, j].varnames = {'x': varnames[i], 'y': varnames[j]}
+            results[j, i].varnames = {'x': varnames[j], 'y': varnames[i]}
     return results
 
 class Moran_Rate(Moran):
