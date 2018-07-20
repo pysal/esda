@@ -464,9 +464,10 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
                    a spatial weights object
     permutations : int
                    number of permutations
-    varnames     : list
+    varnames     : list, optional
                    strings for variable names. Will add an
-                   attribute to `Moran_BV` objects in results
+                   attribute to `Moran_BV` objects in results needed for plotting
+                   in `splot` or `.plot()`. Default =None.
     Returns
     -------
     results      : dictionary
@@ -519,6 +520,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
             results[i, j].varnames = {'x': varnames[i], 'y': varnames[j]}
             results[j, i].varnames = {'x': varnames[j], 'y': varnames[i]}
     return results
+
 
 class Moran_Rate(Moran):
     """
