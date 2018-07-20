@@ -32,6 +32,13 @@ class Moran_Tester(unittest.TestCase):
         mi = moran.Moran(y, w, transformation='B')
         np.testing.assert_allclose(mi.VI_rand, 0.059687500000000004, atol=ATOL, rtol=RTOL)
         np.testing.assert_allclose(mi.VI_norm, 0.053125000000000006, atol=ATOL, rtol=RTOL)
+    
+    def test_z_consistency(self):
+        m1 = moran.Moran(self.y, self.w)
+        # m2 = moran.Moran_BV(self.x, self.y, self.w) TODO testing for other.z values
+        m3 = moran.Moran_Local(self.y, self.w)
+        # m4 = moran.Moran_Local_BV(self.x, self.y, self.w)
+        np.testing.assert_allclose(m1.z, m3.z, atol=ATOL, rtol=RTOL)
  
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
