@@ -35,12 +35,12 @@ If you have any suggestion, feature request, or bug report, please open a new [i
 Support
 -------
 
-If you are having issues, please talk to us in the [gitter room](https://gitter.im/pysal/giddy).
-
+If you are having issues, please talk to us in the [gitter room](https://gitter.im/pysal/pysal).
+ 
 License
 -------
 
-The project is licensed under the [BSD license](https://github.com/pysal/giddy/blob/master/LICENSE.txt).
+The project is licensed under the [BSD license](https://github.com/pysal/pysal/blob/master/LICENSE.txt).
 
 Funding
 -------
