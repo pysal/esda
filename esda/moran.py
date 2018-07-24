@@ -452,7 +452,8 @@ class Moran_BV(object):
 
 
 def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
-    """Bivariate Moran Matrix
+    """
+    Bivariate Moran Matrix
 
     Calculates bivariate Moran between all pairs of a set of variables.
 
@@ -505,6 +506,30 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
 
     """
+    try:
+        # check if pandas is installed
+        import pandas
+        if isinstance(variables, pandas.DataFrame):
+            # if yes use variables as df and convert to numpy_array
+            varnames = pandas.Index.tolist(variables.columns)
+            variables_n = []
+            for var in varnames:
+                variables_n.append(variables[str(var)].values)
+        else:
+            raise ImportError('install pandas in order to pass /n'
+                              '`variables` as a `pandas.DataFrame`')
+        
+        results = _Moran_BV_Matrix_array(variables=variables_n, w=w,
+                                         permutations=permutations,
+                                         varnames=varnames)
+    except ImportError:
+        results = _Moran_BV_Matrix_array(variables=variables, w=w,
+                                         permutations=permutations,
+                                         varnames=varnames)
+    return results
+
+
+def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     if varnames is None:
         varnames = ['x{}'.format(i) for i in range(k)]
 
