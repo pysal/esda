@@ -1,7 +1,7 @@
 """Geary Unittest."""
 import unittest
 
-from libpysal import open as popen
+from libpysal.io import open as popen
 from libpysal import examples
 from libpysal.common import pandas
 

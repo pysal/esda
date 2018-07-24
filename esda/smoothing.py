@@ -645,8 +645,8 @@ class Excess_Risk(_Smoother):
 
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -700,8 +700,8 @@ class Empirical_Bayes(_Smoother):
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -844,8 +844,8 @@ class Spatial_Empirical_Bayes(_Spatial_Smoother):
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -854,7 +854,7 @@ class Spatial_Empirical_Bayes(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = lps.open(lps.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(liblibpysal.examples.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -924,8 +924,8 @@ class Spatial_Rate(_Spatial_Smoother):
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -934,7 +934,7 @@ class Spatial_Rate(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = lps.open(lps.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(liblibpysal.examples.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -1229,8 +1229,8 @@ class Disk_Smoother(_Spatial_Smoother):
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -1239,7 +1239,7 @@ class Disk_Smoother(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = lps.open(lps.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(liblibpysal.examples.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -1308,8 +1308,8 @@ class Spatial_Median_Rate(_Spatial_Smoother):
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -1318,7 +1318,7 @@ class Spatial_Median_Rate(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = lps.open(lps.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(liblibpysal.examples.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -1437,8 +1437,8 @@ class Spatial_Filtering(_Smoother):
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
-    >>> import libpysal.api as lps
-    >>> stl = lps.open(lps.get_path('stl_hom.csv'), 'r')
+    >>> import libpysal
+    >>> stl = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'), 'r')
 
     Reading the stl data in the WKT format so that
     we can easily extract polygon centroids
@@ -1613,12 +1613,12 @@ class Headbanging_Triples(object):
 
     importing k-nearest neighbor weights creator
 
-    >>> import libpysal.api as lps
+    >>> import libpysal
 
     Reading data in stl_hom.csv into stl_db to extract values
     for event and population-at-risk variables
 
-    >>> stl_db = lps.open(lps.get_path('stl_hom.csv'),'r')
+    >>> stl_db = libpysal.io.open(liblibpysal.examples.get_path('stl_hom.csv'),'r')
 
     Reading the stl data in the WKT format so that
     we can easily extract polygon centroids
@@ -1655,8 +1655,8 @@ class Headbanging_Triples(object):
 
     Opening sids2.shp file
 
-    >>> import libpysal.api as lps
-    >>> sids = lps.open(lps.get_path('sids2.shp'),'r')
+    >>> import libpysal
+    >>> sids = libpysal.io.open(liblibpysal.examples.get_path('sids2.shp'),'r')
 
     Extracting the centroids of polygons in the sids data
 
@@ -1796,11 +1796,11 @@ class Headbanging_Median_Rate(object):
     Examples
     --------
 
-    >>> import libpysal.api as lps
+    >>> import libpysal
 
     opening the sids2 shapefile
 
-    >>> sids = lps.open(lps.get_path('sids2.shp'), 'r')
+    >>> sids = libpysal.io.open(liblibpysal.examples.get_path('sids2.shp'), 'r')
 
     extracting the centroids of polygons in the sids2 data
 
@@ -1823,7 +1823,7 @@ class Headbanging_Median_Rate(object):
 
     reading in the sids2 data table
 
-    >>> sids_db = lps.open(lps.get_path('sids2.dbf'), 'r')
+    >>> sids_db = libpysal.io.open(liblibpysal.examples.get_path('sids2.dbf'), 'r')
 
     extracting the 10th and 9th columns in the sids2.dbf and
     using data values as event and population-at-risk variables

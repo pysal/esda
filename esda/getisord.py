@@ -67,7 +67,7 @@ class G(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> import numpy
     >>> numpy.random.seed(10)
 
@@ -278,7 +278,7 @@ class G_Local(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> import numpy
     >>> numpy.random.seed(10)
 
