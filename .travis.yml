@@ -3,13 +3,26 @@ sudo: false
 branches:
 only:
   - master
-python:
-  - "3.5"
-  - "3.6"
 
-env:
-  - PYSAL_PLUS=false
-  - PYSAL_PLUS=true
+python:
+    - 3.5
+    - 3.6
+env: 
+    - PYSAL_PYPI=true PYSAL_PLUS=true
+    - PYSAL_PYPI=true PYSAL_PLUS=false
+    - PYSAL_PYPI=false PYSAL_PLUS=true
+    - PYSAL_PYPI=false PYSAL_PLUS=false
+      
+matrix:
+  allow_failures:
+      - python: 3.5
+        env: PYSAL_PYPI=false PYSAL_PLUS=false
+      - python: 3.5
+        env: PYSAL_PYPI=false PYSAL_PLUS=true
+      - python: 3.6
+        env: PYSAL_PYPI=false PYSAL_PLUS=false
+      - python: 3.6
+        env: PYSAL_PYPI=false PYSAL_PLUS=true
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
@@ -23,9 +36,12 @@ before_install:
 install:
   - conda install --yes pip nose
   - which pip
+  - if "$PYSAL_PYPI"; then
+        echo 'testing pypi libpysal' && pip install libpysal;
+        else echo 'testing git libpysal'; git clone https://github.com/pysal/libpysal.git; cd libpysal; pip install .; cd ../;
+    fi;
   - conda install --yes --file requirements.txt;
-  - pip install libpysal
-  - if [[ PYSAL_PLUS ]]; then conda install --yes numba; fi
+  - if "$PYSAL_PLUS"; then conda install --yes numba; fi
 
 script:
   - pwd
@@ -38,8 +54,8 @@ notifications:
         recipients:
             - levi.john.wolf+travis@gmail.com
             - sjsrey+travis@gmail.com
-        on_change: always
-        on_failure: always
+        on_success: change
+        on_failure: change
 
 after_success:
   - coveralls
