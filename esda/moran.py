@@ -459,16 +459,18 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     Parameters
     ----------
-    variables    : list
-                   sequence of variables
+    variables    : array or pandas.DataFrame
+                   sequence of variables to be assessed
     w            : W
                    a spatial weights object
     permutations : int
                    number of permutations
-    varnames     : list, optional
+    varnames     : list, optional if variables is an array
                    strings for variable names. Will add an
                    attribute to `Moran_BV` objects in results needed for plotting
                    in `splot` or `.plot()`. Default =None.
+                   Note: If variables is a `pandas.DataFrame` varnames
+                   will automatically be generated
     Returns
     -------
     results      : dictionary
@@ -530,6 +532,9 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
 
 def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
+    """
+    Base calculation for MORAN_BV_Matrix
+    """
     if varnames is None:
         varnames = ['x{}'.format(i) for i in range(k)]
 
