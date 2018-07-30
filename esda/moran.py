@@ -518,16 +518,13 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
             for var in varnames:
                 variables_n.append(variables[str(var)].values)
         else:
-            raise ImportError('install pandas in order to pass /n'
-                              '`variables` as a `pandas.DataFrame`')
-        
-        results = _Moran_BV_Matrix_array(variables=variables_n, w=w,
-                                         permutations=permutations,
-                                         varnames=varnames)
+            variables_n = variables
     except ImportError:
-        results = _Moran_BV_Matrix_array(variables=variables, w=w,
-                                         permutations=permutations,
-                                         varnames=varnames)
+        variables_n = variables
+    
+    results = _Moran_BV_Matrix_array(variables=variables_n, w=w,
+                                     permutations=permutations,
+                                     varnames=varnames)
     return results
 
 
