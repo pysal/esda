@@ -466,7 +466,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     permutations : int
                    number of permutations
     varnames     : list, optional if variables is an array
-                   strings for variable names. Will add an
+                   Strings for variable names. Will add an
                    attribute to `Moran_BV` objects in results needed for plotting
                    in `splot` or `.plot()`. Default =None.
                    Note: If variables is a `pandas.DataFrame` varnames
@@ -479,7 +479,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     Examples
     --------
-
+    Example 1: Variables passed in as an array
+    
     open dbf
 
     >>> import libpysal.api as lps
@@ -507,6 +508,36 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     0.3770138
 
 
+    Example 2: variables passed in as pandas.Dataframe
+    
+    Imports
+    
+    >>> import libpysal.api as lp
+    >>> from libpysal import examples
+    >>> import geopandas as gpd
+    >>> import pandas as pd
+    >>> import matplotlib.pyplot as plt
+    >>> import matplotlib
+    >>> import numpy as np
+    >>> from splot.esda import moran_facet
+    
+    Prepare DataFrame
+    
+    >>> path = examples.get_path('columbus.shp')
+    >>> gdf = gpd.read_file(path)
+    >>> variables2 = gdf[['HOVAL', 'CRIME', 'INC', 'EW']]
+    >>> w2 = lp.queen_from_shapefile(path)
+    
+    Create Moran_BV_Matrix
+    
+    >>> matrix = Moran_BV_matrix(variables2, w2)
+    >>> matrix
+    
+    Plot Moran_facet using `splot`
+    
+    >>> moran_facet(matrix)
+    >>> plt.show()
+    
     """
     try:
         # check if pandas is installed
