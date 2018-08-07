@@ -75,7 +75,7 @@ class G(object):
     >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
 
     Creating a weights object from points
-    >>> w = lps.DistanceBand(points,threshold=15)
+    >>> w = libpysal.weights.DistanceBand(points,threshold=15)
     >>> w.transform = "B"
 
     Preparing a variable
@@ -288,7 +288,7 @@ class G_Local(object):
 
     Creating a weights object from points
 
-    >>> w = lps.DistanceBand(points,threshold=15)
+    >>> w = libpysal.weights.DistanceBand(points,threshold=15)
 
     Prepareing a variable
 

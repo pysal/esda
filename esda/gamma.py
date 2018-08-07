@@ -77,7 +77,7 @@ class Gamma(object):
 
     >>> import libpysal, numpy as np
     >>> from esda.gamma import Gamma
-    >>> w = lps.lat2W(4,4)
+    >>> w = libpysal.weights.lat2W(4,4)
     >>> y=np.ones(16)
     >>> y[0:8]=0
     >>> np.random.seed(12345)

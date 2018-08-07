@@ -1633,7 +1633,7 @@ class Headbanging_Triples(object):
 
     Using the centroids, we create a 5-nearst neighbor weights
 
-    >>> w = lps.knnW_from_array(d,k=5)
+    >>> w = libpysal.weights.KNN(d,k=5)
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the order of stl_db's IDs
@@ -1663,7 +1663,7 @@ class Headbanging_Triples(object):
     >>> sids_d = np.array([i.centroid for i in sids])
 
     Creating a 5-nearest neighbors weights from the sids centroids
-    >>> sids_w = lps.knnW_from_array(sids_d,k=5)
+    >>> sids_w = libpysal.weights.KNN(sids_d,k=5)
 
     Ensuring that the members in sids_w are ordered by
     the order of sids_d's ID
@@ -1808,7 +1808,7 @@ class Headbanging_Median_Rate(object):
 
     creating a 5-nearest neighbors weights from the centroids
 
-    >>> sids_w = lps.knnW_from_array(sids_d,k=5)
+    >>> sids_w = libpysal.weights.KNN(sids_d,k=5)
 
     ensuring that the members in sids_w are ordered
 
