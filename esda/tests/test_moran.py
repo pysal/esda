@@ -55,6 +55,7 @@ class Moran_Tester(unittest.TestCase):
 
 class Moran_Rate_Tester(unittest.TestCase):
     def setUp(self):
+        np.random.seed(15432)
         self.w = pysal.open(pysal.examples.get_path("sids2.gal")).read()
         f = pysal.open(pysal.examples.get_path("sids2.dbf"))
         self.e = np.array(f.by_col['SID79'])
@@ -73,8 +74,7 @@ class Moran_Rate_Tester(unittest.TestCase):
         sidr = np.unique(mi["SID79-BIR79_moran_rate"].values)
         pval = np.unique(mi["SID79-BIR79_p_sim"].values)
         np.testing.assert_allclose(sidr, 0.16622343552567395, rtol=RTOL, atol=ATOL)
-        self.assertAlmostEqual(pval, 0.009)
-
+        np.testing.assert_allclose(pval, 0.008, rtol=RTOL, atol=ATOL)
 
 
 class Moran_BV_matrix_Tester(unittest.TestCase):
@@ -113,6 +113,61 @@ class Moran_Local_Tester(unittest.TestCase):
         self.assertAlmostEqual(lm.z_z_sim[0], -0.68493799168603808)
         self.assertAlmostEqual(lm.z_p_z_sim[0],  0.24669152541631179)
 
+    def test_plot(self):
+        import matplotlib.pyplot as plt
+        import libpysal.api as lp
+        from libpysal import examples
+        import geopandas as gpd
+        link = examples.get_path('columbus.shp')
+        gdf = gpd.read_file(link)
+        y = gdf['HOVAL'].values
+        w = lp.Queen.from_dataframe(gdf)
+        w.transform = 'r'
+        moran_loc = moran.Moran_Local(y, w)
+        fig, _ = moran_loc.plot(gdf, 'HOVAL')
+        plt.close(fig)
+        # also test with quadrant and mask
+        fig, _ = moran_loc.plot(gdf, 'HOVAL', p=0.05,
+                           region_column='POLYID',
+                           mask=['1', '2', '3'], quadrant=1)
+        plt.close(fig)
+
+
+    def test_scatterplot(self):
+        import matplotlib.pyplot as plt
+        import libpysal.api as lp
+        from libpysal import examples
+        import geopandas as gpd
+        link = examples.get_path('columbus.shp')
+        gdf = gpd.read_file(link)
+        y = gdf['HOVAL'].values
+        w = lp.Queen.from_dataframe(gdf)
+        w.transform = 'r'
+        mloc = moran.Moran_Local(y, w)
+        fig, _ = mloc.scatterplot()
+        plt.close(fig)
+        # also test with quadrant and mask
+        fig, _ = mloc.scatterplot(fitline_kwds=dict(color='#4393c3'))
+        plt.close(fig)
+        
+
+    def test_LISA_map(self):
+        import matplotlib.pyplot as plt
+        import libpysal.api as lp
+        from libpysal import examples
+        import geopandas as gpd
+        link = examples.get_path('columbus.shp')
+        gdf = gpd.read_file(link)
+        y = gdf['HOVAL'].values
+        w = lp.Queen.from_dataframe(gdf)
+        w.transform = 'r'
+        moran_loc = moran.Moran_Local(y, w)
+        fig, _ = moran_loc.lisa_map(gdf)
+        plt.close(fig)
+        # also test with quadrant and mask
+        fig, _ = moran_loc.lisa_map(gdf, legend=False)
+        plt.close(fig)
+
 
 class Moran_Local_BV_Tester(unittest.TestCase):
     def setUp(self):
@@ -144,7 +199,7 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         self.assertAlmostEqual(bvz[0],  1.657427, 5)
         self.assertAlmostEqual(bvzp[0], 0.048717, 5)
 
-
+        
 class Moran_Local_Rate_Tester(unittest.TestCase):
     def setUp(self):
         np.random.seed(10)
