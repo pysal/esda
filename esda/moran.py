@@ -258,6 +258,127 @@ class Moran(object):
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
                                    swapname=cls.__name__.lower(), **stat_kws)
+    
+    
+    def plot(self, zstandard=True,
+             scatter_kwds=None,
+             fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution and scatterplot.
+
+        Parameters
+        ----------
+        zstandard : bool, optional
+            If True, Moran Scatterplot will show z-standardized attribute and
+            spatial lag values. Default =True.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            and vertical fitline. Default =None.
+        **kwargs : keyword arguments, optional
+            Keywords used for creating and designing the figure,
+            passed to seaborne.kdeplot.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Moran scatterplot and reference distribution figure
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.plot_moran(moran=self, zstandard=zstandard,
+                                        scatter_kwds=scatter_kwds,
+                                        fitline_kwds=fitline_kwds, **kwargs)
+        return fig, ax
+
+
+    def scatterplot(self, zstandard=True, ax=None,
+                    scatter_kwds=None, fitline_kwds=None):
+        """
+        Moran Scatterplot
+    
+        Parameters
+        ----------
+        zstandard : bool, optional
+            If True, Moran Scatterplot will show z-standardized attribute and
+            spatial lag values. Default =True.
+        ax : Matplotlib Axes instance, optional
+            If given, the Moran plot will be created inside this axis.
+            Default =None.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline.
+            Default =None.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Moran scatterplot figure
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.moran_scatterplot(moran=self, zstandard=zstandard,
+                                               ax=ax,
+                                               scatter_kwds=scatter_kwds,
+                                               fitline_kwds=fitline_kwds,)
+        return fig, ax
+        
+        
+    def plot_moran_simulation(self, ax=None,
+                              fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+        ax : Matplotlib Axes instance, optional
+            If given, the Moran plot will be created inside this axis.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the
+            vertical moran fitline. Default =None.
+        **kwargs : keyword arguments, optional
+            Keywords used for creating and designing the figure,
+            passed to seaborn.kdeplot.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Simulated reference distribution figure
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.plot_moran_simulation(moran=self, ax=ax,
+                                                   fitline_kwds=fitline_kwds,
+                                                   **kwargs)
+        return fig, ax
+
 
 class Moran_BV(object):
     """
@@ -452,6 +573,120 @@ class Moran_BV(object):
         return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
                                   pvalue = pvalue, outvals = outvals,
                                   swapname=cls.__name__.lower(), stat=cls,**stat_kws)
+    
+    
+    def plot(self,
+             scatter_kwds=None,
+             fitline_kwds=None, **kwargs):
+        """
+        BV Moran's I simulated reference distribution and scatterplot.
+
+        Parameters
+        ----------
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            and vertical fitline. Default =None.
+        **kwargs : keyword arguments, optional
+            Keywords used for creating and designing the figure,
+            passed to seaborne.kdeplot.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Moran scatterplot and reference distribution figure
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.plot_moran_bv(moran=self,
+                                        scatter_kwds=scatter_kwds,
+                                        fitline_kwds=fitline_kwds, **kwargs)
+        return fig, ax
+
+
+    def scatterplot(self, ax=None,
+                    scatter_kwds=None, fitline_kwds=None):
+        """
+        Moran Scatterplot
+    
+        Parameters
+        ----------
+        ax : Matplotlib Axes instance, optional
+            If given, the Moran plot will be created inside this axis.
+            Default =None.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline.
+            Default =None.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Moran scatterplot figure
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.moran_scatterplot(moran=self, ax=ax,
+                                               scatter_kwds=scatter_kwds,
+                                               fitline_kwds=fitline_kwds,)
+        return fig, ax
+        
+        
+    def plot_moran_simulation(self, ax=None,
+                              fitline_kwds=None, **kwargs):
+        """
+        BV Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+
+        ax : Matplotlib Axes instance, optional
+            If given, the Moran plot will be created inside this axis.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the
+            vertical moran fitline. Default =None.
+        **kwargs : keyword arguments, optional
+            Keywords used for creating and designing the figure,
+            passed to seaborn.kdeplot.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Simulated reference distribution figure
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.plot_moran_simulation_bv(moran=self, ax=ax,
+                                                      fitline_kwds=fitline_kwds,
+                                                      **kwargs)
+        return fig, ax
 
 
 def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
@@ -560,6 +795,56 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
                                      permutations=permutations,
                                      varnames=varnames)
     return results
+
+#TODO is this possible?
+    def plot(self, figsize=(16,12),
+             scatter_bv_kwds=None, fitline_bv_kwds=None,
+             scatter_glob_kwds=dict(color='#737373'), fitline_glob_kwds=None):
+        """
+        Moran Facette visualization.
+        Includes BV Morans and Global Morans on the diagonal.
+    
+        Parameters
+        ----------
+        figsize : tuple, optional
+            W, h of figure. Default =(16,12)
+        scatter_bv_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points of
+            off-diagonal Moran_BV plots.
+            Default =None.
+        fitline_bv_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline of
+            off-diagonal Moran_BV plots.
+            Default =None.
+        scatter_glob_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points of
+            diagonal Moran plots.
+            Default =None.
+        fitline_glob_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline of
+            diagonal Moran plots.
+            Default =None.
+
+        Returns
+        -------
+        fig : Matplotlib Figure instance
+            Bivariate Moran Local scatterplot figure
+        axarr : matplotlib Axes instance
+            Axes in which the figure is plotted
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method requires an `splot` installation',
+                          UserWarning)
+            raise e
+            
+        fig, ax = splot.esda.moran_facet(moran_matrix=self, figsize=figsize,
+                                         scatter_bv_kwds=scatter_bv_kwds,
+                                         fitline_bv_kwds=fitline_bv_kwds,
+                                         scatter_glob_kwds=scatter_glob_kwds,
+                                         fitline_glob_kwds=fitline_glob_kwds)
+        return fig, ax
 
 
 def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
@@ -1012,8 +1297,10 @@ class Moran_Local(object):
              region_column=None, mask=None,
              mask_color='#636363', quadrant=None,
              legend=True, scheme='Quantiles',
-             cmap='YlGnBu', figsize=(15,4)):
-        """Produce three-plot visualization of Moran Scatteprlot,
+             cmap='YlGnBu', figsize=(15,4),
+             scatter_kwds=None, fitline_kwds=None):
+        """
+        Produce three-plot visualization of Moran Scatteprlot,
         LISA cluster and Choropleth, with Local Moran
         region and quadrant masking
 
@@ -1043,7 +1330,13 @@ class Moran_Local(object):
             Name of PySAL classifier to be used. Default = 'Quantiles'
         cmap: str, optional
             Name of matplotlib colormap used for plotting the Choropleth.
-            Default = 'YlGnBU'
+            Default = 'YlGnBu'
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            in the scatterplot. Default =None.
 
         Returns
         -------
@@ -1056,21 +1349,28 @@ class Moran_Local(object):
         --------
         >>> import matplotlib.pyplot as plt
         >>> import geopandas as gpd
-        >>> import libpysal.api as lp
+        >>> from libpysal.weights.Contiguity import Queen
         >>> from libpysal import examples
         >>> from esda.moran import Moran_Local
+        
         Load data and calculate Moran Local statistics
+        
         >>> link = examples.get_path('columbus.shp')
         >>> gdf = gpd.read_file(link)
         >>> y = gdf['HOVAL'].values
-        >>> w = lp.Queen.from_dataframe(gdf)
+        >>> w = Queen.from_dataframe(gdf)
         >>> w.transform = 'r'
         >>> moran_loc = Moran_Local(y, w)
+        
         plot
-        >>> moran_loc.scatterplot()
+        
+        >>> moran_loc.plot(gdf, 'HOVAL')
         >>> plt.show()
+        
         customize plot
-        >>> moran_loc.scatterplot(fitline_kwds=dict(color='#4393c3'))
+        
+        >>> moran_loc.plot(gdf, 'HOVAL',
+        ...             fitline_kwds=dict(color='#4393c3'))
         >>> plt.show()
         """
         try:
@@ -1090,7 +1390,9 @@ class Moran_Local(object):
                                                         legend=legend,
                                                         scheme=scheme,
                                                         cmap=cmap,
-                                                        figsize=figsize)
+                                                        figsize=figsize,
+                                                        scatter_kwds=scatter_kwds,
+                                                        fitline_kwds=fitline_kwds)
         return fig, axs
 
 
@@ -1126,22 +1428,24 @@ class Moran_Local(object):
         --------
         >>> import matplotlib.pyplot as plt
         >>> import geopandas as gpd
-        >>> import libpysal.api as lp
+        >>> from libpysal.weights.Contiguity import Queen
         >>> from libpysal import examples
         >>> from esda.moran import Moran_Local
+        
         Load data and calculate Moran Local statistics
+        
         >>> link = examples.get_path('columbus.shp')
         >>> gdf = gpd.read_file(link)
         >>> y = gdf['HOVAL'].values
-        >>> w = lp.Queen.from_dataframe(gdf)
+        >>> w = Queen.from_dataframe(gdf)
         >>> w.transform = 'r'
         >>> moran_loc = Moran_Local(y, w)
+        
         plot
-        >>> moran_loc.lisa_map(gdf)
+        
+        >>> moran_loc.scatterplot()
         >>> plt.show()
-        customize plot
-        >>> moran_loc.lisa_map(gdf, legend=False)
-        >>> plt.show()
+
         """
         try:
             import splot.esda
@@ -1150,9 +1454,9 @@ class Moran_Local(object):
                           UserWarning)
             raise e
 
-        fig, ax = splot.esda.moran_loc_scatterplot(self, zstandard=zstandard, p=p,
-                                                   ax=ax, scatter_kwds=scatter_kwds,
-                                                   fitline_kwds=fitline_kwds)
+        fig, ax = splot.esda.moran_scatterplot(self, zstandard=zstandard, p=p,
+                                               ax=ax, scatter_kwds=scatter_kwds,
+                                               fitline_kwds=fitline_kwds)
         return fig, ax
 
 
@@ -1448,6 +1752,223 @@ class Moran_Local_BV(object):
         return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
                                   pvalue = pvalue, outvals = outvals,
                                   swapname=cls.__name__.lower(), stat=cls,**stat_kws)
+
+    def plot(self, gdf, attribute, p=0.05,
+             region_column=None, mask=None,
+             mask_color='#636363', quadrant=None,
+             legend=True, scheme='Quantiles',
+             cmap='YlGnBu', figsize=(15,4),
+             scatter_kwds=None, fitline_kwds=None):
+        """
+        Produce three-plot visualization of Moran Scatteprlot,
+        LISA cluster and Choropleth, with Local Moran
+        region and quadrant masking
+
+        Parameters
+        ----------
+        gdf : geopandas dataframe
+            The Dataframe containing information to plot the two maps.
+        attribute : str
+            Column name of attribute which should be depicted in Choropleth map.
+        p : float, optional
+            The p-value threshold for significance. Points and polygons will
+            be colored by significance. Default = 0.05.
+        region_column: string, optional
+            Column name containing mask region of interest. Default = None
+        mask: str, optional
+            Identifier or name of the region to highlight. Default = None
+        mask_color: str, optional
+            Color of mask. Default = '#636363'
+        quadrant : int, optional
+            Quadrant 1-4 in scatterplot masking values in LISA cluster and
+            Choropleth maps. Default = None
+        figsize: tuple, optional
+            W, h of figure. Default = (15,4)
+        legend: boolean, optional
+            If True, legend for maps will be depicted. Default = True
+        scheme: str, optional
+            Name of PySAL classifier to be used. Default = 'Quantiles'
+        cmap: str, optional
+            Name of matplotlib colormap used for plotting the Choropleth.
+            Default = 'YlGnBu'
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            in the scatterplot. Default =None.
+
+        Returns
+        -------
+        fig : matplotlip Figure instance
+            Multi-view figure.
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+            
+        Examples
+        --------
+        >>> import matplotlib.pyplot as plt
+        >>> import geopandas as gpd
+        >>> from libpysal.weights.Contiguity import Queen
+        >>> from libpysal import examples
+        >>> from esda.moran import Moran_Local_BV
+        
+        Load data and calculate Moran Local statistics
+        
+        >>> link = examples.get_path('columbus.shp')
+        >>> gdf = gpd.read_file(link)
+        >>> y = gdf['HOVAL'].values
+        >>> x = gdf['CRIME'].values
+        >>> w = Queen.from_dataframe(gdf)
+        >>> w.transform = 'r'
+        >>> moran_loc = Moran_Local_BV(y, x, w)
+        
+        plot
+        
+        >>> moran_loc.plot(gdf, 'HOVAL')
+        >>> plt.show()
+        
+        customize plot
+        
+        >>> moran_loc.plot(gdf, 'HOVAL',
+        ...             fitline_kwds=dict(color='#4393c3'))
+        >>> plt.show()
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method will be available as soon as splot is released in September 2018',
+                          UserWarning)
+            raise e
+
+        fig, axs = splot.esda.plot_local_autocorrelation(self, gdf=gdf,
+                                                        attribute=attribute,
+                                                        p=p,
+                                                        region_column=region_column,
+                                                        mask=mask,
+                                                        mask_color=mask_color,
+                                                        quadrant=quadrant,
+                                                        legend=legend,
+                                                        scheme=scheme,
+                                                        cmap=cmap,
+                                                        figsize=figsize,
+                                                        scatter_kwds=scatter_kwds,
+                                                        fitline_kwds=fitline_kwds)
+        return fig, axs
+
+
+    def scatterplot(self, zstandard=True, p=0.05,
+                    ax=None, scatter_kwds=None, fitline_kwds=None):
+        """
+        BV Moran Scatterplot with option of coloring of Local Moran Statistics
+
+        Parameters
+        ----------
+        p : float, optional
+            If given, the p-value threshold for significance. Points will
+            be colored by significance. By default it will not be colored.
+            Default =None.
+        ax : Matplotlib Axes instance, optional
+            If given, the Moran plot will be created inside this axis.
+            Default =None.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points.
+            Default =None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline.
+            Default =None.
+
+        Returns
+        -------
+        fig : matplotlip Figure instance
+            Figure of Moran Scatterplot
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+            
+        Examples
+        --------
+        >>> import matplotlib.pyplot as plt
+        >>> import geopandas as gpd
+        >>> from libpysal.weights.Contiguity import Queen
+        >>> from libpysal import examples
+        >>> from esda.moran import Moran_Local_BV
+        
+        Load data and calculate Moran Local statistics
+        
+        >>> link = examples.get_path('columbus.shp')
+        >>> gdf = gpd.read_file(link)
+        >>> y = gdf['HOVAL'].values
+        >>> x = gdf['CRIME'].values
+        >>> w = Queen.from_dataframe(gdf)
+        >>> w.transform = 'r'
+        >>> moran_loc = Moran_Local_BV(y, x, w)
+        
+        plot
+        
+        >>> moran_loc.scatterplot()
+        >>> plt.show()
+
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method will be available as soon as splot is released in September 2018',
+                          UserWarning)
+            raise e
+
+        fig, ax = splot.esda.moran_scatterplot(self, zstandard=zstandard, p=p,
+                                               ax=ax, scatter_kwds=scatter_kwds,
+                                               fitline_kwds=fitline_kwds)
+        return fig, ax
+
+
+    def lisa_map(self, gdf, p=0.05, ax=None,
+                 legend=True, legend_kwds=None, **kwargs):
+        """
+        Plot LISA cluster map
+
+        Parameters
+        ----------
+        gdf : geopandas dataframe instance
+            The Dataframe containing information to plot. Note that `gdf` will be
+            modified, so calling functions should use a copy of the user
+            provided `gdf`. (either using gdf.assign() or gdf.copy())
+        p : float, optional
+            The p-value threshold for significance. Points will
+            be colored by significance.
+        ax : matplotlib Axes instance, optional
+            Axes in which to plot the figure in multiple Axes layout.
+            Default = None
+        legend : boolean, optional
+            If True, legend for maps will be depicted. Default = True
+        legend_kwds : dict, optional
+            Dictionary to control legend formatting options. Example:
+            ``legend_kwds={'loc': 'upper left', 'bbox_to_anchor': (0.92, 1.05)}``
+            Default = None
+        **kwargs : keyword arguments, optional
+            Keywords designing and passed to geopandas.GeoDataFrame.plot().
+        
+        Returns
+        -------
+        fig : matplotlip Figure instance
+            Figure of LISA cluster map
+        ax : matplotlib Axes instance
+            Axes in which the figure is plotted
+            
+        Examples
+        --------
+        """
+        try:
+            import splot.esda
+        except ImportError as e:
+            warnings.warn('This method will be available as soon as splot is released in September 2018',
+                          UserWarning)
+            raise e
+
+        fig, ax = splot.esda.lisa_cluster(self, gdf, p=p, ax=ax,
+                                          legend=legend, legend_kwds=legend_kwds, **kwargs)
+        return fig, ax
+
 
 class Moran_Local_Rate(Moran_Local):
     """
