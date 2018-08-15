@@ -454,22 +454,25 @@ class Moran_BV(object):
 
 
 def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
-    """Bivariate Moran Matrix
+    """
+    Bivariate Moran Matrix
 
     Calculates bivariate Moran between all pairs of a set of variables.
 
     Parameters
     ----------
-    variables    : list
-                   sequence of variables
+    variables    : array or pandas.DataFrame
+                   sequence of variables to be assessed
     w            : W
                    a spatial weights object
     permutations : int
                    number of permutations
-    varnames     : list
-                   strings for variable names. If specified runtime summary is
-                   printed
-
+    varnames     : list, optional if variables is an array
+                   Strings for variable names. Will add an
+                   attribute to `Moran_BV` objects in results needed for plotting
+                   in `splot` or `.plot()`. Default =None.
+                   Note: If variables is a `pandas.DataFrame` varnames
+                   will automatically be generated
     Returns
     -------
     results      : dictionary
@@ -478,7 +481,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     Examples
     --------
-
+    Example 1: Variables passed in as an array
+    
     open dbf
 
     >>> import libpysal
@@ -506,7 +510,63 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     0.3770138
 
 
+    Example 2: variables passed in as pandas.Dataframe
+    
+    Imports
+    
+    >>> import libpysal.api as lp
+    >>> from libpysal import examples
+    >>> import geopandas as gpd
+    >>> import pandas as pd
+    >>> import matplotlib.pyplot as plt
+    >>> import matplotlib
+    >>> import numpy as np
+    >>> from splot.esda import moran_facet
+    
+    Prepare DataFrame
+    
+    >>> path = examples.get_path('columbus.shp')
+    >>> gdf = gpd.read_file(path)
+    >>> variables2 = gdf[['HOVAL', 'CRIME', 'INC', 'EW']]
+    >>> w2 = lp.queen_from_shapefile(path)
+    
+    Create Moran_BV_Matrix
+    
+    >>> matrix = Moran_BV_matrix(variables2, w2)
+    >>> matrix
+    
+    Plot Moran_facet using `splot`
+    
+    >>> moran_facet(matrix)
+    >>> plt.show()
+    
     """
+    try:
+        # check if pandas is installed
+        import pandas
+        if isinstance(variables, pandas.DataFrame):
+            # if yes use variables as df and convert to numpy_array
+            varnames = pandas.Index.tolist(variables.columns)
+            variables_n = []
+            for var in varnames:
+                variables_n.append(variables[str(var)].values)
+        else:
+            variables_n = variables
+    except ImportError:
+        variables_n = variables
+    
+    results = _Moran_BV_Matrix_array(variables=variables_n, w=w,
+                                     permutations=permutations,
+                                     varnames=varnames)
+    return results
+
+
+def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
+    """
+    Base calculation for MORAN_BV_Matrix
+    """
+    if varnames is None:
+        varnames = ['x{}'.format(i) for i in range(k)]
 
     k = len(variables)
     rk = list(range(0, k - 1))
@@ -517,7 +577,10 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
             y2 = variables[j]
             results[i, j] = Moran_BV(y1, y2, w, permutations=permutations)
             results[j, i] = Moran_BV(y2, y1, w, permutations=permutations)
+            results[i, j].varnames = {'x': varnames[i], 'y': varnames[j]}
+            results[j, i].varnames = {'x': varnames[j], 'y': varnames[i]}
     return results
+
 
 class Moran_Rate(Moran):
     """
