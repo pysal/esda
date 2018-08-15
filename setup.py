@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from distutils.command.build_py import build_py
 
@@ -26,7 +26,7 @@ setup(name='esda',  # name of package
         'Programming Language :: Python :: 3.6'
         ],
       license='3-Clause BSD',
-      packages=['esda'],
+      packages=find_packages(),
       install_requires=['libpysal'],
       zip_safe=False,
       cmdclass={'build.py': build_py})
