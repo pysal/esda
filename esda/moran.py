@@ -98,9 +98,9 @@ class Moran(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
-    >>> w = lps.open(lps.get_path("stl.gal")).read()
-    >>> f = lps.open(lps.get_path("stl_hom.txt"))
+    >>> import libpysal
+    >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
     >>> y = np.array(f.by_col['HR8893'])
     >>> from esda.moran import Moran
     >>> mi = Moran(y,  w)
@@ -112,8 +112,8 @@ class Moran(object):
     0.00027147862770937614
 
     SIDS example replicating OpenGeoda
-    >>> w = lps.open(lps.get_path("sids2.gal")).read()
-    >>> f = lps.open(lps.get_path("sids2.dbf"))
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> SIDR = np.array(f.by_col("SIDR74"))
     >>> mi = Moran(SIDR,  w)
     >>> round(mi.I, 3)
@@ -327,7 +327,7 @@ class Moran_BV(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> import numpy as np
 
     Set random number generator seed so we can replicate the example
@@ -337,13 +337,13 @@ class Moran_BV(object):
     Open the sudden infant death dbf file and read in rates for 74 and 79
     converting each to a numpy array
 
-    >>> f = lps.open(lps.get_path("sids2.dbf"))
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> SIDR74 = np.array(f.by_col['SIDR74'])
     >>> SIDR79 = np.array(f.by_col['SIDR79'])
 
     Read a GAL file and construct our spatial weights object
 
-    >>> w = lps.open(lps.get_path("sids2.gal")).read()
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
 
     Create an instance of Moran_BV
     >>> from esda.moran import Moran_BV
@@ -485,8 +485,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     
     open dbf
 
-    >>> import libpysal.api as lps
-    >>> f = lps.open(lps.get_path("sids2.dbf"))
+    >>> import libpysal
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
 
     pull of selected variables from dbf and create numpy arrays for each
 
@@ -495,7 +495,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     create a contiguity matrix from an external gal file
 
-    >>> w = lps.open(lps.get_path("sids2.gal")).read()
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
 
     create an instance of Moran_BV_matrix
 
@@ -675,9 +675,9 @@ class Moran_Rate(Moran):
 
     Examples
     --------
-    >>> import libpysal.api as lps
-    >>> w = lps.open(lps.get_path("sids2.gal")).read()
-    >>> f = lps.open(lps.get_path("sids2.dbf"))
+    >>> import libpysal
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> e = np.array(f.by_col('SID79'))
     >>> b = np.array(f.by_col('BIR79'))
     >>> from esda.moran import Moran_Rate
@@ -851,11 +851,11 @@ class Moran_Local(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> import numpy as np
     >>> np.random.seed(10)
-    >>> w = lps.open(lps.get_path("desmith.gal")).read()
-    >>> f = lps.open(lps.get_path("desmith.txt"))
+    >>> w = libpysal.io.open(libpysal.examples.get_path("desmith.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("desmith.txt"))
     >>> y = np.array(f.by_col['z'])
     >>> from esda.moran import Moran_Local
     >>> lm = Moran_Local(y, w, transformation = "r", permutations = 99)
@@ -1083,11 +1083,11 @@ class Moran_Local_BV(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> import numpy as np
     >>> np.random.seed(10)
-    >>> w = lps.open(lps.get_path("sids2.gal")).read()
-    >>> f = lps.open(lps.get_path("sids2.dbf"))
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> x = np.array(f.by_col['SIDR79'])
     >>> y = np.array(f.by_col['SIDR74'])
     >>> from esda.moran import Moran_Local_BV
@@ -1328,11 +1328,11 @@ class Moran_Local_Rate(Moran_Local):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> import numpy as np
     >>> np.random.seed(10)
-    >>> w = lps.open(lps.get_path("sids2.gal")).read()
-    >>> f = lps.open(lps.get_path("sids2.dbf"))
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> e = np.array(f.by_col('SID79'))
     >>> b = np.array(f.by_col('BIR79'))
     >>> from esda.moran import Moran_Local_Rate

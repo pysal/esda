@@ -80,10 +80,10 @@ class Geary(object):
 
     Examples
     --------
-    >>> import libpysal.api as lps
+    >>> import libpysal
     >>> from esda.geary import Geary
-    >>> w = lps.open(lps.get_path("book.gal")).read()
-    >>> f = lps.open(lps.get_path("book.txt"))
+    >>> w = libpysal.io.open(libpysal.examples.get_path("book.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("book.txt"))
     >>> y = np.array(f.by_col['y'])
     >>> c = Geary(y,w,permutations=0)
     >>> round(c.C,7)

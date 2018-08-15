@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-import libpysal as pysal
+import libpysal
 from .. import mixture_smoothing as m_s
 
 

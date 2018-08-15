@@ -79,8 +79,8 @@ class Join_Counts(object):
     Replicate example from anselin and rey
 
     >>> import numpy as np
-    >>> import libpysal.api as lps
-    >>> w = lps.lat2W(4, 4)
+    >>> import libpysal
+    >>> w = libpysal.weights.lat2W(4, 4)
     >>> y = np.ones(16)
     >>> y[0:8] = 0
     >>> np.random.seed(12345)
