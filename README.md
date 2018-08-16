@@ -5,13 +5,6 @@ Exploratory Spatial Data Analysis in PySAL
 
 Methods for  testing for global and local autocorrelation in areal unit data.
 
-Examples
---------
-
-* [Join Counts](notebooks/directional.ipynb)
-* [Global Spatial Autocorrelation](notebooks/Markov%20Based%20Methods.ipynb)
-* [Local Spatial Autocorrelation](notebooks/Rank%20based%20Methods.ipynb)
-
 Installation
 ------------
 
