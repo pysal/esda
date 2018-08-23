@@ -2,6 +2,9 @@ from setuptools import setup, find_packages
 
 from distutils.command.build_py import build_py
 
+with open('README.rst', 'r', encoding='utf8') as file:
+    long_description = file.read()
+
 # Get __version__ from giddy/__init__.py without importing the package
 # __version__ has to be defined in the first line
 with open('esda/__init__.py', 'r') as f:
@@ -11,6 +14,7 @@ with open('esda/__init__.py', 'r') as f:
 setup(name='esda',  # name of package
       version=__version__,
       description='Package with statistics for exploratory spatial data analysis',
+      long_description=long_description,
       url='https://github.com/pysal/esda',
       maintainer='Sergio Rey',
       maintainer_email='sjsrey@gmail.com',
