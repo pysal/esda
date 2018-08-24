@@ -44,16 +44,16 @@ install:
   - if "$PYSAL_PLUS"; then conda install --yes numba; fi
 
 script:
-  - pwd
-  - ls -al
   - python setup.py sdist >/dev/null
-  - nosetests -v esda;
+  - python setup.py install
+  - nosetests --verbose --with-coverage --cover-package=esda;
 
 notifications:
     email:
         recipients:
             - levi.john.wolf+travis@gmail.com
             - sjsrey+travis@gmail.com
+            - weikang9009@gmail.com
         on_success: change
         on_failure: change
 
