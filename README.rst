@@ -1,5 +1,5 @@
-Exploratory Spatial Data Analysis in PySAL
-==========================================
+Exploratory Spatial Data Analysis (esda) in PySAL
+=================================================
 
 .. image:: https://travis-ci.org/pysal/esda.svg
    :target: https://travis-ci.org/pysal/esda
@@ -53,7 +53,7 @@ License
 *******
 
 The project is licensed under the `BSD
-license <https://github.com/pysal/pysal/blob/master/LICENSE.txt>`__.
+license <https://github.com/pysal/esda/blob/master/LICENSE>`__.
 
 *******
 Funding
