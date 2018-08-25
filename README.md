@@ -1,7 +1,8 @@
 Exploratory Spatial Data Analysis in PySAL
-===================================================
+==========================================
 
 [![Build Status](https://travis-ci.org/pysal/esda.svg?branch=master)](https://travis-ci.org/pysal/esda)
+[![DOI](https://zenodo.org/badge/81873636.svg)](https://zenodo.org/badge/latestdoi/81873636)
 
 Methods for  testing for global and local autocorrelation in areal unit data.
 
