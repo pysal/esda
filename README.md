@@ -1,16 +1,10 @@
 Exploratory Spatial Data Analysis in PySAL
-===================================================
+==========================================
 
 [![Build Status](https://travis-ci.org/pysal/esda.svg?branch=master)](https://travis-ci.org/pysal/esda)
+[![DOI](https://zenodo.org/badge/81873636.svg)](https://zenodo.org/badge/latestdoi/81873636)
 
 Methods for  testing for global and local autocorrelation in areal unit data.
-
-Examples
---------
-
-* [Join Counts](notebooks/directional.ipynb)
-* [Global Spatial Autocorrelation](notebooks/Markov%20Based%20Methods.ipynb)
-* [Local Spatial Autocorrelation](notebooks/Rank%20based%20Methods.ipynb)
 
 Installation
 ------------
@@ -40,7 +34,7 @@ If you are having issues, please talk to us in the [gitter room](https://gitter.
 License
 -------
 
-The project is licensed under the [BSD license](https://github.com/pysal/pysal/blob/master/LICENSE.txt).
+The project is licensed under the [BSD license](https://github.com/pysal/esda/blob/master/LICENSE).
 
 Funding
 -------
