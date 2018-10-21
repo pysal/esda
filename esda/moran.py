@@ -481,7 +481,6 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     Examples
     --------
-    Example 1: Variables passed in as an array
     
     open dbf
 
@@ -509,37 +508,6 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     >>> round(res[(3,  0)].I,7)
     0.3770138
 
-
-    Example 2: variables passed in as pandas.Dataframe
-    
-    Imports
-    
-    >>> import libpysal.api as lp
-    >>> from libpysal import examples
-    >>> import geopandas as gpd
-    >>> import pandas as pd
-    >>> import matplotlib.pyplot as plt
-    >>> import matplotlib
-    >>> import numpy as np
-    >>> from splot.esda import moran_facet
-    
-    Prepare DataFrame
-    
-    >>> path = examples.get_path('columbus.shp')
-    >>> gdf = gpd.read_file(path)
-    >>> variables2 = gdf[['HOVAL', 'CRIME', 'INC', 'EW']]
-    >>> w2 = lp.queen_from_shapefile(path)
-    
-    Create Moran_BV_Matrix
-    
-    >>> matrix = Moran_BV_matrix(variables2, w2)
-    >>> matrix
-    
-    Plot Moran_facet using `splot`
-    
-    >>> moran_facet(matrix)
-    >>> plt.show()
-    
     """
     try:
         # check if pandas is installed
