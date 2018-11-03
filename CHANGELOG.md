@@ -2,14 +2,16 @@
 
 Version 2.0.1 (2018-11-03)
 
-We closed a total of 5 issues (enhancements and bug fixes) through 2 pull requests, since our last release on 2018-08-25.
+We closed a total of 7 issues (enhancements and bug fixes) through 3 pull requests, since our last release on 2018-08-25.
 
 ## Issues Closed
+  - REL: 2.0.1 (#38)
   - Prepping for a doc release (#37)
   - docstrings are using pysal legacy (#4)
   - add zenodo doi badge (#36)
 
 ## Pull Requests
+  - REL: 2.0.1 (#38)
   - Prepping for a doc release (#37)
   - add zenodo doi badge (#36)
 
