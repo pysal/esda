@@ -8,21 +8,15 @@ python:
     - 3.5
     - 3.6
 env: 
-    - PYSAL_PYPI=true PYSAL_PLUS=true
-    - PYSAL_PYPI=true PYSAL_PLUS=false
-    - PYSAL_PYPI=false PYSAL_PLUS=true
-    - PYSAL_PYPI=false PYSAL_PLUS=false
-      
+  - PYSAL_PYPI=true #testing on dependencies libpysal on pypi
+  - PYSAL_PYPI=false
+
 matrix:
   allow_failures:
       - python: 3.5
-        env: PYSAL_PYPI=false PYSAL_PLUS=false
-      - python: 3.5
-        env: PYSAL_PYPI=false PYSAL_PLUS=true
+        env: PYSAL_PYPI=false
       - python: 3.6
-        env: PYSAL_PYPI=false PYSAL_PLUS=false
-      - python: 3.6
-        env: PYSAL_PYPI=false PYSAL_PLUS=true
+        env: PYSAL_PYPI=false
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
@@ -34,14 +28,16 @@ before_install:
   - source activate test-env
 
 install:
-  - conda install --yes pip nose
-  - which pip
+  - conda install --yes pip
+  - pip install -r requirements.txt
+  - pip install -r requirements_tests.txt
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
-        else echo 'testing git libpysal'; git clone https://github.com/pysal/libpysal.git; cd libpysal; pip install .; cd ../;
+    else
+        echo 'testing git libpysal';
+        git clone https://github.com/pysal/libpysal.git; cd libpysal; pip install .; cd ../;
     fi;
-  - conda install --yes --file requirements.txt;
-  - if "$PYSAL_PLUS"; then conda install --yes numba; fi
+
 
 script:
   - python setup.py sdist >/dev/null
