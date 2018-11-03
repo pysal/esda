@@ -13,7 +13,7 @@ Gamma Statistic
 .. autosummary::
    :toctree: generated/
 
-    esda.gamma.Gamma
+    esda.Gamma
 
 .. _geary_api:
 
@@ -23,7 +23,7 @@ Geary Statistic
 .. autosummary::
    :toctree: generated/
 
-    esda.geary.Geary
+    esda.Geary
 
 
 .. _getis_api:
@@ -34,8 +34,8 @@ Getis-Ord Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.getisord.G
-    esda.getisord.G_Local
+    esda.G
+    esda.G_Local
 
 .. _join_api:
 
@@ -45,5 +45,19 @@ Join Count Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.join_counts.Join_count
+    esda.Join_Counts
+
+Moran Statistics
+----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.Moran
+    esda.Moran_BV
+    esda.Moran_BV_matrix
+    esda.Moran_Local
+    esda.Moran_Local_BV
+    esda.Moran_Rate
+    esda.Moran_Local_Rate
 

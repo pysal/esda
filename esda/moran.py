@@ -96,6 +96,11 @@ class Moran(object):
                    p-value based on standard normal approximation from
                    permutations
 
+    Notes
+    -----
+    Technical details and derivations can be found in :cite:`cliff81`.
+
+
     Examples
     --------
     >>> import libpysal
@@ -325,6 +330,9 @@ class Moran_BV(object):
     Inference is only based on permutations as analytical results are not too
     reliable.
 
+
+
+
     Examples
     --------
     >>> import libpysal
@@ -553,7 +561,7 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
 class Moran_Rate(Moran):
     """
     Adjusted Moran's I Global Autocorrelation Statistic for Rate
-    Variables [Assuncao1999]_
+    Variables :cite:`Assun_o_1999`
 
     Parameters
     ----------
@@ -816,6 +824,12 @@ class Moran_Local(object):
                    p-values based on standard normal approximation from
                    permutations (one-sided)
                    for two-sided tests, these values should be multiplied by 2
+
+    Notes
+    -----
+
+    For technical details see :cite:`Anselin95`.
+
 
     Examples
     --------
