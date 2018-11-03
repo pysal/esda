@@ -53,10 +53,50 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
    References <references>
 
 ************
-Citing PySAL
+Introduction
 ************
 
-If you use PySAL in a scientific publication, we would appreciate citations to the following paper:
+**esda** implements measures for the exploratory analysis spatial data and is part of the  `PySAL family <https://pysal.org>`_
+
+Details are available in the `esda api <api.html>`_.
+
+
+***********
+Development
+***********
+
+esda development is hosted on github_.
+
+.. _github : https://github.com/pysal/esda
+
+Discussions of development occurs on the
+`developer list <http://groups.google.com/group/pysal-dev>`_
+as well as gitter_.
+
+.. _gitter : https://gitter.im/pysal/pysal?
+
+****************
+Getting Involved
+****************
+
+If you are interested in contributing to PySAL please see our
+`development guidelines <http://pysal.readthedocs.org/en/latest/developers/index.html>`_.
+
+
+***********
+Bug reports
+***********
+
+To search for or report bugs, please see esda's issues_.
+
+.. _issues :  http://github.com/pysal/esda/issues
+
+
+***********
+Citing esda
+***********
+
+If you use PySAL-esda in a scientific publication, we would appreciate citations to the following paper:
 
   `PySAL: A Python Library of Spatial Analytical Methods <http://journal.srsa.org/ojs/index.php/RRS/article/view/134/85>`_, *Rey, S.J. and L. Anselin*, Review of Regional Studies 37, 5-27 2007.
 
