@@ -8,8 +8,21 @@ try:
     from sklearn.preprocessing import LabelEncoder
     import pandas as pd
     HAS_REQUIREMENTS = True
-except ImportError as initial_error:
+except ImportError as e:
     HAS_REQUIREMENTS = False
+
+def _raise_initial_error():
+    missing = []
+    try:
+        import sklearn
+    except ImportError:
+        missing.append('scikit-learn')
+    try:
+        import pandas
+    except ImportError:
+        missing.append('pandas')
+    raise ImportError("this function requires scikit-learn and "
+                      "pandas to be installed. Missing {}".format(','.join(missing)))
 
 def path_silhouette(data, labels, W, D=None, 
                     metric=skp.euclidean_distances, 
@@ -61,7 +74,7 @@ def path_silhouette(data, labels, W, D=None,
     An (N,) array of the clusters involved. 
     """
     if not HAS_REQUIREMENTS:
-        raise initial_error
+        _raise_initial_error()
 
     if D is None:
         D = metric(data)
@@ -208,7 +221,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     an (N,N) distance matrix already. 
     """
     if not HAS_REQUIREMENTS:
-        raise initial_error
+        _raise_initial_error()
 
     alist = W.to_adjlist()
     labels = np.asarray(labels)
@@ -285,7 +298,7 @@ def silhouette_alist(data, labels, alist, indices=None,
            then its index will be used. 
     """
     if not HAS_REQUIREMENTS:
-        raise initial_error
+        _raise_initial_error()
 
     n_obs = data.shape[0]
     if callable(metric):
@@ -350,7 +363,7 @@ def nearest_label(data, labels,
     whose mean center is closest to the observation in data. 
     """
     if not HAS_REQUIREMENTS:
-        raise initial_error
+        _raise_initial_error()
 
     if callable(metric):
         dissim = metric(data)
