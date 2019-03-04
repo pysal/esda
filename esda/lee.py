@@ -3,35 +3,7 @@ from scipy import sparse
 from sklearn.base import BaseEstimator
 from sklearn import preprocessing
 from sklearn import utils
-from libpysal.weights import lag_spatial, WSP
-
-def _lee_from_R(x,y,W, local, zero_policy=None, NAOK=False):
-    from rpy2.robjects.packages import importr
-    from rpy2.robjects import r as R, numpy2ri
-    from rpy2.rinterface import NULL
-
-    zero_policy = NULL if zero_policy is None else zero_policy
-
-    spdep = importr('spdep')
-    
-    numpy2ri.activate()
-    W_matrix_R = numpy2ri.py2ro(W.sparse.toarray())
-    W_listw_R = spdep.mat2listw(W_matrix_R)
-    result = spdep.lee(x.flatten(), y.flatten(), W_listw_R,
-                       len(x.flatten()), zero_policy=zero_policy, NAOK=NAOK)
-    
-    if local:
-        result = numpy2ri.ri2py(result[1])
-    else:
-        result = numpy2ri.ri2py(result[0])
-    numpy2ri.deactivate()
-    return result
-
-def RSpatial_Pearson(x,y,W, zero_policy=None, NAOK=False):
-    return _lee_from_R(x,y,W, local=False, zero_policy=zero_policy, NAOK=NAOK)
-
-def RLocal_Spatial_Pearson(x,y,W, zero_policy=None, NAOK=False):
-    return _lee_from_R(x,y,W, local=True, zero_policy=zero_policy, NAOK=NAOK)
+from libpysal.weights import WSP
 
 class Spatial_Pearson(BaseEstimator):
     def __init__(self, connectivity=None, permutations=999):
@@ -81,7 +53,7 @@ class Spatial_Pearson(BaseEstimator):
 
 
 class Local_Spatial_Pearson(BaseEstimator):
-    def __init__(self, connectivity = None, permutations=999):
+    def __init__(self, connectivity=None, permutations=999):
         self.connectivity = connectivity
         self.permutations = permutations
 
@@ -114,23 +86,16 @@ class Local_Spatial_Pearson(BaseEstimator):
         """
         x = utils.check_array(x)
         y = utils.check_array(y)
-        #x = preprocessing.StandardScaler().fit_transform(x)
-        #y = preprocessing.StandardScaler().fit_transform(y)
         Z = numpy.column_stack((preprocessing.StandardScaler().fit_transform(x),
                                 preprocessing.StandardScaler().fit_transform(y)))
         
-        #slx = self.connectivity @ x
-        #sly = self.connectivity @ y
         n, _ = x.shape
-        #self.associations_ = n * (slx - x.mean()) * (sly - y.mean())
-        #self.associations_ /= x.std() * y.std() # should always be one
 
         self.associations_ = self.__statistic(Z,self.connectivity)
 
         if self.permutations:
             W = WSP(self.connectivity).to_W()
             self.reference_distribution_ = numpy.empty((n, self.permutations))
-            k = W.max_neighbors + 1
             random_ids = numpy.array([numpy.random.permutation(n - 1)[0:W.max_neighbors + 1]
                                       for i in range(self.permutations)])
             ids = numpy.arange(n)
@@ -145,15 +110,15 @@ class Local_Spatial_Pearson(BaseEstimator):
                 random_neighbor_x = x[random_neighbors]
                 random_neighbor_y = y[random_neighbors]
 
-                self.reference_distribution_[i]  = ((random_neighbor_x * weights[i]).sum() - x.mean())
-                self.reference_distribution_[i] *= ((random_neighbor_y * weights[i]).sum() - y.mean())
-            self.reference_distribution_ *= (n / x.std() * y.std())
+                self.reference_distribution_[i]  = ((random_neighbor_x * weights[i])
+                                                    .sum() - x.mean())
+                self.reference_distribution_[i] *= ((random_neighbor_y * weights[i])
+                                                    .sum() - y.mean())
+            self.reference_distribution_ *= (n / (x.std() * y.std()))
         return self
 
     @staticmethod
     def __statistic(Z,W):
-        ctc = W.T @ W
-        ones = numpy.ones(ctc.shape[0])
         return (Z[:,1] @ W.T) * (W @ Z[:,0]) 
 
 if __name__ == '__main__':
@@ -166,7 +131,5 @@ if __name__ == '__main__':
     zy = preprocessing.StandardScaler().fit_transform(y)
     w = pysal.weights.Queen.from_dataframe(df)
     w.transform = 'r'
-    testglobal_r = RSpatial_Pearson(x,y,w)
     testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x,y)
-    testlocal_r = RLocal_Spatial_Pearson(x,y,w)
     testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x,y)
