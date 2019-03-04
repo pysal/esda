@@ -115,6 +115,11 @@ class Local_Spatial_Pearson(BaseEstimator):
                 self.reference_distribution_[i] *= ((random_neighbor_y * weights[i])
                                                     .sum() - y.mean())
             self.reference_distribution_ *= (n / (x.std() * y.std()))
+            above = self.reference_distribution_ >= self.association_
+            larger = above.sum(axis=1)
+            extreme = numpy.minimum(larger, self.permutations - larger)
+            self.significance_ = (extreme + 1.) / (self.permutations + 1.)
+
         return self
 
     @staticmethod
