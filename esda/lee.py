@@ -40,7 +40,14 @@ class Spatial_Pearson(BaseEstimator):
 
     def fit(self, x, y):
         """
-        bivariate spatial pearson's R based on Eq. 18 of Lee (2001). 
+        bivariate spatial pearson's R based on Eq. 18 of Lee (2001).
+        
+        L = \dfrac{Z^T (V^TV) Z}{1^T (V^TV) 1}
+        
+        Lee, Sang Il. (2001), "Developing a bivariate spatial 
+        association measure: An integration of Pearson's r and 
+        Moran's I." Journal of Geographical Systems, 3(4):369-385.
+        
         """
         x = utils.check_array(x)
         y = utils.check_array(y)
@@ -82,6 +89,28 @@ class Local_Spatial_Pearson(BaseEstimator):
         """
         bivariate local pearson's R based on Eq. 22 in Lee (2001), using 
         site-wise conditional randomization from Moran_Local_BV.
+        
+        L_i = \dfrac{
+                     n \cdot
+                       \Big[\big(\sum_i w_{ij}(x_j - \bar{x})\big)
+                            \big(\sum_i w_{ij}(y_j - \bar{y})\big) \Big]
+                     } 
+                    {
+                     \sqrt{\sum_i (x_i - \bar{x})^2}
+                     \sqrt{\sum_i (y_i - \bar{y})^2}}
+            = \dfrac{
+                     n \cdot
+                       (\tilde{x}_j - \bar{x})
+                       (\tilde{y}_j - \bar{y})
+                     } 
+                    {
+                     \sqrt{\sum_i (x_i - \bar{x})^2}
+                     \sqrt{\sum_i (y_i - \bar{y})^2}}
+        
+        Lee, Sang Il. (2001), "Developing a bivariate spatial 
+        association measure: An integration of Pearson's r and 
+        Moran's I." Journal of Geographical Systems, 3(4):369-385.
+        
         """
         x = utils.check_array(x)
         y = utils.check_array(y)
