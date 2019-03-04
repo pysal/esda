@@ -115,7 +115,7 @@ class Local_Spatial_Pearson(BaseEstimator):
                 self.reference_distribution_[i] *= ((random_neighbor_y * weights[i])
                                                     .sum() - y.mean())
             self.reference_distribution_ *= (n / (x.std() * y.std()))
-            above = self.reference_distribution_ >= self.association_
+            above = self.reference_distribution_ >= self.associations_.reshape(-1,1)
             larger = above.sum(axis=1)
             extreme = numpy.minimum(larger, self.permutations - larger)
             self.significance_ = (extreme + 1.) / (self.permutations + 1.)
@@ -129,12 +129,12 @@ class Local_Spatial_Pearson(BaseEstimator):
 if __name__ == '__main__':
     import geopandas
     import pysal
-    df = geopandas.read_file(pysal.examples.get_path('columbus.shp'))
+    df = geopandas.read_file(pysal.lib.examples.get_path('columbus.shp'))
     x = df[['HOVAL']].values
     y = df[['CRIME']].values
     zx = preprocessing.StandardScaler().fit_transform(x)
     zy = preprocessing.StandardScaler().fit_transform(y)
-    w = pysal.weights.Queen.from_dataframe(df)
+    w = pysal.lib.weights.Queen.from_dataframe(df)
     w.transform = 'r'
     testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x,y)
     testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x,y)
