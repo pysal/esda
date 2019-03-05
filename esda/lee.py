@@ -84,36 +84,44 @@ class Local_Spatial_Pearson(BaseEstimator):
 
         """
         x = utils.check_array(x)
+        x = preprocessing.StandardScaler().fit_transform(x)
+        
         y = utils.check_array(y)
-        Z = numpy.column_stack((preprocessing.StandardScaler().fit_transform(x),
-                                preprocessing.StandardScaler().fit_transform(y)))
+        y = preprocessing.StandardScaler().fit_transform(y)
+
+        Z = numpy.column_stack((x, y))
+
+        standard_connectivity = sparse.csc_matrix(self.connectivity /
+                                                  self.connectivity.sum(axis=1))
         
         n, _ = x.shape
 
-        self.associations_ = self._statistic(Z,self.connectivity)
+        self.associations_ = self._statistic(Z, standard_connectivity)
 
         if self.permutations:
-            W = WSP(self.connectivity).to_W()
             self.reference_distribution_ = numpy.empty((n, self.permutations))
-            random_ids = numpy.array([numpy.random.permutation(n - 1)[0:W.max_neighbors + 1]
+            max_neighbors = (standard_connectivity != 0).sum(axis=1).max()
+            random_ids = numpy.array([numpy.random.permutation(n - 1)[0:max_neighbors + 1]
                                       for i in range(self.permutations)])
             ids = numpy.arange(n)
-            weights = [W.weights[idx] for idx in W.id_order]
-            cardinalities = [W.cardinalities[idx] for idx in W.id_order]
 
             for i in range(n):
+                row = standard_connectivity[i]
+                weight = numpy.asarray(row[row.nonzero()]).reshape(-1,1)
+                cardinality = row.nonzero()[0].shape[0]
+
                 ids_not_i = ids[ids != i]
                 numpy.random.shuffle(ids_not_i)
-                randomizer = random_ids[:, 0:cardinalities[i]]
+                randomizer = random_ids[:, 0:cardinality]
                 random_neighbors = ids_not_i[randomizer]
+                
                 random_neighbor_x = x[random_neighbors]
                 random_neighbor_y = y[random_neighbors]
 
-                self.reference_distribution_[i]  = ((random_neighbor_x * weights[i])
-                                                    .sum() - x.mean())
-                self.reference_distribution_[i] *= ((random_neighbor_y * weights[i])
-                                                    .sum() - y.mean())
-            self.reference_distribution_ *= (n / (x.std() * y.std()))
+                self.reference_distribution_[i] = (weight * random_neighbor_y - y.mean())\
+                                                    .sum(axis=1).squeeze()
+                self.reference_distribution_[i] *= (weight * random_neighbor_x - x.mean())\
+                                                    .sum(axis=1).squeeze()
             above = self.reference_distribution_ >= self.associations_.reshape(-1,1)
             larger = above.sum(axis=1)
             extreme = numpy.minimum(larger, self.permutations - larger)
