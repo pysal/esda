@@ -27,15 +27,15 @@ class Spatial_Pearson(BaseEstimator):
                                 preprocessing.StandardScaler().fit_transform(y)))
         if self.connectivity is None:
             self.connectivity = sparse.eye(Z.shape[0])
-        self.association_ = self.__statistic(Z, self.connectivity) 
+        self.association_ = self._statistic(Z, self.connectivity) 
 
         if (self.permutations is None):
             return self
         elif self.permutations < 1:
             return self
-        
+
         if self.permutations:
-            simulations = [self.__statistic(numpy.random.permutation(Z), self.connectivity)
+            simulations = [self._statistic(numpy.random.permutation(Z), self.connectivity)
                            for _ in range(self.permutations)]
             self.reference_distribution_ = simulations = numpy.array(simulations)
             above = simulations >= self.association_
@@ -46,7 +46,7 @@ class Spatial_Pearson(BaseEstimator):
         return self
 
     @staticmethod
-    def __statistic(Z,W):
+    def _statistic(Z,W):
         ctc = W.T @ W
         ones = numpy.ones(ctc.shape[0])
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
@@ -91,7 +91,7 @@ class Local_Spatial_Pearson(BaseEstimator):
         
         n, _ = x.shape
 
-        self.associations_ = self.__statistic(Z,self.connectivity)
+        self.associations_ = self._statistic(Z,self.connectivity)
 
         if self.permutations:
             W = WSP(self.connectivity).to_W()
