@@ -39,10 +39,9 @@ class Spatial_Pearson(BaseEstimator):
                            for _ in range(self.permutations)]
             self.reference_distribution_ = simulations = numpy.array(simulations)
             above = simulations >= self.association_
-            larger = above.sum()
-            if (self.permutations - larger) < larger:
-                larger = self.permutations - larger
-            self.significance_ = (larger + 1.) / (self.permutations + 1.)
+            larger = above.sum(axis=0)
+            extreme = numpy.minimum(self.permutations - larger, larger)
+            self.significance_ = (extreme + 1.) / (self.permutations + 1.)
         return self
 
     @staticmethod
