@@ -123,18 +123,18 @@ class Local_Spatial_Pearson(BaseEstimator):
         return self
 
     @staticmethod
-    def __statistic(Z,W):
+    def _statistic(Z,W):
         return (Z[:,1] @ W.T) * (W @ Z[:,0]) 
 
 if __name__ == '__main__':
     import geopandas
-    import pysal
-    df = geopandas.read_file(pysal.lib.examples.get_path('columbus.shp'))
+    import libpysal
+    df = geopandas.read_file(libpysal.examples.get_path('columbus.shp'))
     x = df[['HOVAL']].values
     y = df[['CRIME']].values
     zx = preprocessing.StandardScaler().fit_transform(x)
     zy = preprocessing.StandardScaler().fit_transform(y)
-    w = pysal.lib.weights.Queen.from_dataframe(df)
+    w = libpysal.weights.Queen.from_dataframe(df)
     w.transform = 'r'
     testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x,y)
     testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x,y)
