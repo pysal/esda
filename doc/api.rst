@@ -61,10 +61,3 @@ Moran Statistics
     esda.Moran_Rate
     esda.Moran_Local_Rate
 
-Utility Functions
------------------
-
-.. autosummary::
-   :toctree: generated/
-
-   esda.fdr
