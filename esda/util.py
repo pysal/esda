@@ -6,6 +6,10 @@ def fdr(pvalues, alpha=0.05):
     Calculate the p-value cut-off to control for
     the false discovery rate (FDR) for multiple testing.
 
+    If by controlling for FDR, all of n null hypotheses
+    are rejected, the conservative Bonferroni bound (alpha/n)
+    is returned instead.
+
     Arguments
     ---------
     pvalues     : array
