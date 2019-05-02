@@ -452,9 +452,6 @@ class Moran_BV(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran_BV class in pysal.esda
         """
         return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
                                   pvalue = pvalue, outvals = outvals,
