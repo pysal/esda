@@ -486,12 +486,14 @@ class G_Local(object):
 
         Returns
         --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
+        pandas.DataFrame
+                        If inplace, None, and operation is conducted on dataframe
+                        in memory. Otherwise, returns a copy of the dataframe with
+                        the relevant columns attached.
 
         See Also
         ---------
-        For further documentation, refer to the G_Local class in pysal.esda
+        For further documentation, refer to the G_Local class in esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
