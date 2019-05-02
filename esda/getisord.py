@@ -494,6 +494,7 @@ class G_Local(object):
         See Also
         ---------
         For further documentation, refer to the G_Local class in esda
+        
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
