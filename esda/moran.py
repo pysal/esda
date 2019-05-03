@@ -255,9 +255,6 @@ class Moran(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran class in pysal.esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
@@ -452,9 +449,6 @@ class Moran_BV(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran_BV class in pysal.esda
         """
         return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
                                   pvalue = pvalue, outvals = outvals,
@@ -716,9 +710,6 @@ class Moran_Rate(Moran):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran_Rate class in pysal.esda
         """
         if not inplace:
             new = df.copy()
@@ -981,9 +972,6 @@ class Moran_Local(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran_Local class in pysal.esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
@@ -1227,9 +1215,6 @@ class Moran_Local_BV(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran_Local_BV class in pysal.esda
         """
         return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
                                   pvalue = pvalue, outvals = outvals,
@@ -1383,9 +1368,6 @@ class Moran_Local_Rate(Moran_Local):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the Moran_Local_Rate class in pysal.esda
         """
         if not inplace:
             new = df.copy()

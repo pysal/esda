@@ -174,8 +174,8 @@ class G(object):
         """
         Function to compute a G statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -202,9 +202,6 @@ class G(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the G class in pysal.esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
@@ -461,8 +458,8 @@ class G_Local(object):
         """
         Function to compute a G_Local statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -485,13 +482,12 @@ class G_Local(object):
                         documentation for the G_Local statistic.
 
         Returns
-        --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
+        -------
+        pandas.DataFrame
+                        If inplace, None, and operation is conducted on dataframe
+                        in memory. Otherwise, returns a copy of the dataframe with
+                        the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the G_Local class in pysal.esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
