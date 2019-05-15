@@ -61,7 +61,7 @@ class Smaup(object):
     >>> rho = Moran(y,  w)
     >>> n = len(y)
     >>> k = int(n/2)
-    >>> s = smaup(n,k,rho)
+    >>> s = Smaup(n,k,rho)
     >>> s.smaup 
 
     >>> s.critical_01 
@@ -80,7 +80,7 @@ class Smaup(object):
     >>> rho = Moran(SIDR,  w)
     >>> n = len(y)
     >>> k = int(n/2)
-    >>> s = smaup(n,k,rho)
+    >>> s = Smaup(n,k,rho)
     >>> s.smaup 
 
     >>> s.critical_01 
