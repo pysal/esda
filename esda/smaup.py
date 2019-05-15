@@ -1,8 +1,104 @@
-def testSmaup(N, k, rhoEst):
-    import numpy as np
-    import warnings
-    from scipy.interpolate import interp1d
+"""
+S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem
+
+"""
+__author__ = "Juan C. Duque <jduquec1@eafit.edu.co>, \
+        Henry Laniado <hlaniado@eafit.edu.co>, \
+        Adriano Polo <apolol@unal.edu.co>"
+
+import numpy as np
+from scipy.interpolate import interp1d
+
+__all__ = ["testSmaup"]
+
+
+class Smaup(object):
+    """S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem
+
+    Parameters
+    ----------
+
+    n               : int
+                      number of spatial units
+    k               : int
+                      number of regions
+    rho             : float
+                      rho value (level of spatial autocorrelation)
+                      ranges from -1 to 1
+
+    Attributes
+    ----------
+    n               : int
+                      number of spatial units
+    k               : int
+                      number of regions
+    rho             : float
+                      rho value (level of spatial autocorrelation)
+                      ranges from -1 to 1
+    smaup           : float
+                    : S-maup statistic (M)
+    critical_01     : float
+                    : critical value at 0.99 confidence level
+    critical_05     : float
+                    : critical value at 0.95 confidence level
+    critical_1      : float
+                    : critical value at 0.90 confidence level
+    summary         : string
+                    : message with interpretation of results 
+
+    Notes
+    -----
+    Technical details and derivations can be found in :cite:`duque18`.
+
+
+    Examples
+    --------
+    >>> import libpysal
+    >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
+    >>> y = np.array(f.by_col['HR8893'])
+    >>> from esda.moran import Moran
+    >>> rho = Moran(y,  w)
+    >>> n = len(y)
+    >>> k = int(n/2)
+    >>> s = smaup(n,k,rho)
+    >>> s.smaup 
+
+    >>> s.critical_01 
     
+    >>> s.critical_05 
+
+    >>> s.critical_1 
+    
+    >>> s.summary 
+
+    SIDS example replicating OpenGeoda
+    >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+    >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
+    >>> SIDR = np.array(f.by_col("SIDR74"))
+    >>> from esda.moran import Moran
+    >>> rho = Moran(SIDR,  w)
+    >>> n = len(y)
+    >>> k = int(n/2)
+    >>> s = smaup(n,k,rho)
+    >>> s.smaup 
+
+    >>> s.critical_01 
+    
+    >>> s.critical_05 
+
+    >>> s.critical_1 
+    
+    >>> s.summary 
+
+
+    """
+    def __init__(self, n, k, rho):
+        
+    self.n = n
+    self.k = k
+    self.rho = rho
+
     #Critical values of S-maup for alpha =0.01
     CV0_01 = np.array([[np.nan,25,100,225,400,625,900],
                        [-0.9,0.83702,0.09218,0.23808,0.05488,0.07218,0.02621],
@@ -39,15 +135,19 @@ def testSmaup(N, k, rhoEst):
                        [0.7,0.3472,0.28774,0.1817,0.16442,0.13395,0.12354],
                        [0.9,0.1764,0.18835,0.21695,0.23031,0.19435,0.22411]])
 
+    summary = "" 
+    if n <25:
+        n = 25
+        summary += "Warning: Please treat this result with caution because the
+        computational experiment in this paper include, so far, values of n
+        from 25 to 900.\n"
+    elif n > 900:
+        n = 900
+        summary += "Warning: Please treat this result with caution because the
+        computational experiment in this paper include, so far, values of n
+        from 25 to 900.\n"
     
-    if N <25:
-        N = 25
-        warnings.warn("Warning: Please treat this result with caution because the computational experiment in this paper include, so far, values of N from 25 to 900.")
-    elif N > 900:
-        N = 900
-        warnings.warn("Warning: Please treat this result with caution because the computational experiment in this paper include, so far, values of N from 25 to 900.")
-    
-    theta = float(k)/N
+    theta = float(k)/n
     b = -2.2
     m = 7.03
     L = 1/(1+(np.exp(b+theta*m)))
@@ -57,7 +157,8 @@ def testSmaup(N, k, rhoEst):
     b0 = 5.32
     b1 = -5.53
     tau = (theta*b1)+b0
-    Smaup = L/(1+eta*(np.exp(rhoEst*tau)))
+    smaup = L/(1+eta*(np.exp(rhoEst*tau)))
+    self.smaup = smaup
     
     if 0.8 < rhoEst < 1.0 :
         r = 0.9        
@@ -78,29 +179,20 @@ def testSmaup(N, k, rhoEst):
     else:
         r = -0.9
     
-    Crit_val0_01 = interp1d(CV0_01[0,1:], CV0_01[CV0_01[:,0] == r,1:])
-    Crit_val0_05 = interp1d(CV0_05[0,1:], CV0_05[CV0_05[:,0] == r,1:])
-    Crit_val0_10 = interp1d(CV0_10[0,1:], CV0_10[CV0_10[:,0] == r,1:])
+    crit_val0_01 = interp1d(CV0_01[0,1:], CV0_01[CV0_01[:,0] == r,1:])
+    crit_val0_05 = interp1d(CV0_05[0,1:], CV0_05[CV0_05[:,0] == r,1:])
+    crit_val0_10 = interp1d(CV0_10[0,1:], CV0_10[CV0_10[:,0] == r,1:])
+    self.critical_01 = crit_val0_01
+    self.critical_05 = crit_val0_05
+    self.critical_1 = crit_val0_10
     
-    print("====================================")
-    print("Statistic M = ",Smaup)
-    if Smaup > Crit_val0_01(N):
-        print("Pseudo p-value < 0.01 ***")
-        print("H0 is rejected")
-    elif Smaup > Crit_val0_05(N):
-        print("Pseudo p-value < 0.05 **")
-        print("H0 is rejected")
-    elif Smaup > Crit_val0_10(N):
-        print("Pseudo p-value < 0.10 *")
-        print("H0 is rejected")
+    if smaup > crit_val0_01(n):
+        summary += "Pseudo p-value < 0.01 *** (H0 is rejected)"
+    elif smaup > crit_val0_05(n):
+        summary += "Pseudo p-value < 0.05 ** (H0 is rejected)"
+    elif smaup > crit_val0_10(n):
+        summary += "Pseudo p-value < 0.10 * (H0 is rejected)"
     else:
-        print("Pseudo p-value > 0.10 ")
-        print("H0 is not rejected")
-    print("====================================")
-    return(Smaup)
+        summary += "Pseudo p-value > 0.10 (H0 is not rejected)"
+    self.summary = summary
 
-import sys
-N = int(sys.argv[1])
-k = int(sys.argv[2])
-rhoEst = float(sys.argv[3])
-Smaup = testSmaup(N, k, rhoEst)
