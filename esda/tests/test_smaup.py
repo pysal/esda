@@ -1,8 +1,8 @@
 import unittest
 import libpysal
 from libpysal.common import pandas, RTOL, ATOL
-from .. import smaup
-from ..esda import Moran
+from ..smaup import Smaup
+from ..moran import Moran
 import numpy as np
 
 
