@@ -259,7 +259,8 @@ returns a copy of the dataframe with the relevant columns attached.
 
 See Also
 ---------
-For further documentation, refer to the {n} class in pysal.esda
+{n}: The {n} class in pysal.esda
+
 """
 
 _rate_doc_template =\
@@ -302,5 +303,6 @@ returns a copy of the dataframe with the relevant columns attached.
 
 See Also
 ---------
-For further documentation, refer to the {n} class in pysal.esda
+{n}: The {n} class in pysal.esda
+
 """
