@@ -458,8 +458,8 @@ class G_Local(object):
         """
         Function to compute a G_Local statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -487,6 +487,7 @@ class G_Local(object):
                         If inplace, None, and operation is conducted on dataframe
                         in memory. Otherwise, returns a copy of the dataframe with
                         the relevant columns attached.
+
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,

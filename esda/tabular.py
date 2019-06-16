@@ -303,6 +303,6 @@ returns a copy of the dataframe with the relevant columns attached.
 
 See Also
 ---------
-{n}: The {n} class in pysal.esda
+For further documentation, refer to the {n} class in pysal.esda
 
 """
