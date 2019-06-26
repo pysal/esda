@@ -61,6 +61,15 @@ Moran Statistics
     esda.Moran_Rate
     esda.Moran_Local_Rate
 
+Modifiable Areal Unit Tests
+---------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+      smaup.Smaup
+
+
 Utility Functions
 ----------------
 
