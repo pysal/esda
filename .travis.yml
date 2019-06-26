@@ -4,26 +4,29 @@ branches:
 only:
   - master
 
-python:
-    - 3.5
-    - 3.6
-env: 
-  - PYSAL_PYPI=true #testing on dependencies libpysal on pypi
-  - PYSAL_PYPI=false
-
 matrix:
-  allow_failures:
-      - python: 3.5
-        env: PYSAL_PYPI=false
-      - python: 3.6
-        env: PYSAL_PYPI=false
+  include:
+    - python: 3.6
+      env: PYSAL_PLUS=false MPLBACKEND="pdf"
+    - python: 3.6
+      env: PYSAL_PLUS=true MPLBACKEND="pdf"
+    - python: 3.7
+      dist: xenial
+      sudo: true
+      env: PYSAL_PLUS=false MPLBACKEND="pdf"
+    - python: 3.7
+      dist: xenial
+      sudo: true
+      env: PYSAL_PLUS=true MPLBACKEND="pdf"
 
 before_install:
-  - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b -p ./miniconda
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
+  - conda config --add channels conda-forge
+  - conda config --set channel_priority strict
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
 
