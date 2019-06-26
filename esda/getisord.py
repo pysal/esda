@@ -174,8 +174,8 @@ class G(object):
         """
         Function to compute a G statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -202,9 +202,6 @@ class G(object):
         If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
         returns a copy of the dataframe with the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the G class in pysal.esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
@@ -297,7 +294,7 @@ class G_Local(object):
 
     >>> w = libpysal.weights.DistanceBand(points,threshold=15)
 
-    Prepareing a variable
+    Preparing a variable
 
     >>> y = numpy.array([2, 3, 3.2, 5, 8, 7])
 
@@ -313,6 +310,10 @@ class G_Local(object):
             1.77833941])
     >>> round(lg.p_sim[0], 3)
     0.101
+
+    p-value based on standard normal approximation from permutations
+    >>> round(lg.p_z_sim[0], 3)
+    0.154
 
     >>> numpy.random.seed(10)
 
@@ -373,8 +374,8 @@ class G_Local(object):
             larger[low_extreme] = self.permutations - larger[low_extreme]
             self.p_sim = (larger + 1.0) / (permutations + 1)
             self.sim = sim
-            self.EG_sim = sim.mean()
-            self.seG_sim = sim.std()
+            self.EG_sim = sim.mean(axis=0)
+            self.seG_sim = sim.std(axis=0)
             self.VG_sim = self.seG_sim * self.seG_sim
             self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
             self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
@@ -457,8 +458,8 @@ class G_Local(object):
         """
         Function to compute a G_Local statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -481,13 +482,12 @@ class G_Local(object):
                         documentation for the G_Local statistic.
 
         Returns
-        --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
+        -------
+        pandas.DataFrame
+                        If inplace, None, and operation is conducted on dataframe
+                        in memory. Otherwise, returns a copy of the dataframe with
+                        the relevant columns attached.
 
-        See Also
-        ---------
-        For further documentation, refer to the G_Local class in pysal.esda
         """
         return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
                                    outvals=outvals, stat=cls,
