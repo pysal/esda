@@ -6,6 +6,33 @@ from sklearn import utils
 
 class Spatial_Pearson(BaseEstimator):
     def __init__(self, connectivity=None, permutations=999):
+        """
+        Initialize a spatial pearson estimator
+
+        Arguments
+        ---------
+        connectivity:   scipy.sparse matrix object
+                        the connectivity structure describing the relationships
+                        between observed units. Will be row-standardized. 
+        permutations:   int
+                        the number of permutations to conduct for inference.
+                        if < 1, no permutational inference will be conducted. 
+
+        Attributes
+        ----------
+        association_: numpy.ndarray (2,2)
+                      array containg the estimated Lee spatial pearson correlation
+                      coefficients, where element [0,1] is the spatial correlation
+                      coefficient, and elements [0,0] and [1,1] are the "spatial
+                      smoothing factor"
+        reference_distribution_: numpy.ndarray (n_permutations, 2,2)
+                      distribution of correlation matrices for randomly-shuffled
+                      maps. 
+        significance_: numpy.ndarray (2,2)
+                       permutation-based p-values for the fraction of times the
+                       observed correlation was more extreme than the simulated 
+                       correlations.
+        """
         self.connectivity = connectivity
         self.permutations = permutations
 
@@ -19,6 +46,16 @@ class Spatial_Pearson(BaseEstimator):
         association measure: An integration of Pearson's r and 
         Moran's I." Journal of Geographical Systems, 3(4):369-385.
 
+        Arguments
+        ---------
+        x       :   numpy.ndarray
+                    array containing continuous data
+        y       :   numpy.ndarray
+                    array containing continuous data
+
+        Returns
+        -------
+        the fitted estimator.
         """
         x = utils.check_array(x)
         y = utils.check_array(y)
@@ -52,6 +89,36 @@ class Spatial_Pearson(BaseEstimator):
 
 class Local_Spatial_Pearson(BaseEstimator):
     def __init__(self, connectivity=None, permutations=999):
+        """
+        Initialize a spatial local pearson estimator
+
+        Arguments
+        ---------
+        connectivity:   scipy.sparse matrix object
+                        the connectivity structure describing the relationships
+                        between observed units. Will be row-standardized. 
+        permutations:   int
+                        the number of permutations to conduct for inference.
+                        if < 1, no permutational inference will be conducted. 
+        significance_: numpy.ndarray (2,2)
+                       permutation-based p-values for the fraction of times the
+                       observed correlation was more extreme than the simulated 
+                       correlations.
+        Attributes
+        ----------
+        associations_: numpy.ndarray (n_samples,)
+                      array containg the estimated Lee spatial pearson correlation
+                      coefficients, where element [0,1] is the spatial correlation
+                      coefficient, and elements [0,0] and [1,1] are the "spatial
+                      smoothing factor"
+        reference_distribution_: numpy.ndarray (n_permutations, n_samples)
+                      distribution of correlation matrices for randomly-shuffled
+                      maps. 
+        significance_: numpy.ndarray (n_samples,)
+                       permutation-based p-values for the fraction of times the
+                       observed correlation was more extreme than the simulated 
+                       correlations.
+        """
         self.connectivity = connectivity
         self.permutations = permutations
 
@@ -81,6 +148,16 @@ class Local_Spatial_Pearson(BaseEstimator):
         association measure: An integration of Pearson's r and 
         Moran's I." Journal of Geographical Systems, 3(4):369-385.
 
+        Arguments
+        ---------
+        x       :   numpy.ndarray
+                    array containing continuous data
+        y       :   numpy.ndarray
+                    array containing continuous data
+
+        Returns
+        -------
+        the fitted estimator.
         """
         x = utils.check_array(x)
         x = preprocessing.StandardScaler().fit_transform(x)
