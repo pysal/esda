@@ -3,7 +3,6 @@ from scipy import sparse
 from sklearn.base import BaseEstimator
 from sklearn import preprocessing
 from sklearn import utils
-from libpysal.weights import WSP
 
 class Spatial_Pearson(BaseEstimator):
     def __init__(self, connectivity=None, permutations=999):
@@ -143,5 +142,7 @@ if __name__ == '__main__':
     zy = preprocessing.StandardScaler().fit_transform(y)
     w = libpysal.weights.Queen.from_dataframe(df)
     w.transform = 'r'
+    numpy.random.seed(2478879)
     testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x,y)
+    numpy.random.seed(2478879)
     testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x,y)
