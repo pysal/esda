@@ -64,6 +64,9 @@ class Spatial_Pearson(BaseEstimator):
         if self.connectivity is None:
             self.connectivity = sparse.eye(Z.shape[0])
         self.association_ = self._statistic(Z, self.connectivity) 
+        
+        standard_connectivity = sparse.csc_matrix(self.connectivity /
+                                                  self.connectivity.sum(axis=1))
 
         if (self.permutations is None):
             return self
