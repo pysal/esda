@@ -205,7 +205,9 @@ class Local_Spatial_Pearson(BaseEstimator):
             larger = above.sum(axis=1)
             extreme = numpy.minimum(larger, self.permutations - larger)
             self.significance_ = (extreme + 1.) / (self.permutations + 1.)
-
+            self.reference_distribution_ = self.reference_distribution_.T
+        else:
+            self.reference_distribution_ = None
         return self
 
     @staticmethod
