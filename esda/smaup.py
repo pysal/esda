@@ -9,7 +9,7 @@ __author__ = "Juan C. Duque <jduquec1@eafit.edu.co>, \
 import numpy as np
 from scipy.interpolate import interp1d
 
-__all__ = ["testSmaup"]
+__all__ = ["Smaup"]
 
 
 class Smaup(object):

@@ -18,3 +18,4 @@ from .geary import Geary
 from .join_counts import Join_Counts
 from .gamma import Gamma
 from .util import fdr
+from .smaup import Smaup
