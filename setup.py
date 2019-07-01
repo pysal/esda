@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 from distutils.command.build_py import build_py
 import os
 
-with open('README.md', 'r', encoding='utf8') as file:
+with open('README.rst', 'r', encoding='utf8') as file:
     long_description = file.read()
 
 # Get __version__ from PACKAGE_NAME/__init__.py without importing the package
