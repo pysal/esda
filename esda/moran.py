@@ -796,7 +796,7 @@ class Moran_Local(object):
                    p-values based on permutations (one-sided)
                    null: spatial randomness
                    alternative: the observed Ii is further away or extreme
-                   from the median of simulated values. It is either extremelyi
+                   from the median of simulated values. It is either extremely
                    high or extremely low in the distribution of simulated Is.
     EI_sim       : array
                    (if permutations>0)
