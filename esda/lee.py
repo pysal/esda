@@ -5,6 +5,8 @@ from sklearn import preprocessing
 from sklearn import utils
 
 class Spatial_Pearson(BaseEstimator):
+    """Global Spatial Pearson Statistic"""
+
     def __init__(self, connectivity=None, permutations=999):
         """
         Initialize a spatial pearson estimator
@@ -42,10 +44,6 @@ class Spatial_Pearson(BaseEstimator):
 
         L = \dfrac{Z^T (V^TV) Z}{1^T (V^TV) 1}
 
-        Lee, Sang Il. (2001), "Developing a bivariate spatial 
-        association measure: An integration of Pearson's r and 
-        Moran's I." Journal of Geographical Systems, 3(4):369-385.
-
         Arguments
         ---------
         x       :   numpy.ndarray
@@ -56,6 +54,11 @@ class Spatial_Pearson(BaseEstimator):
         Returns
         -------
         the fitted estimator.
+
+        Notes
+        -----
+        Technical details and derivations can be found in :cite:`Lee2001`.
+
         """
         x = utils.check_array(x)
         y = utils.check_array(y)
@@ -91,6 +94,8 @@ class Spatial_Pearson(BaseEstimator):
 
 
 class Local_Spatial_Pearson(BaseEstimator):
+    """Local Spatial Pearson Statistic"""
+
     def __init__(self, connectivity=None, permutations=999):
         """
         Initialize a spatial local pearson estimator
@@ -121,6 +126,11 @@ class Local_Spatial_Pearson(BaseEstimator):
                        permutation-based p-values for the fraction of times the
                        observed correlation was more extreme than the simulated 
                        correlations.
+
+
+        Notes
+        -----
+        Technical details and derivations can be found in :cite:`Lee2001`.
         """
         self.connectivity = connectivity
         self.permutations = permutations

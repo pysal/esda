@@ -1,4 +1,4 @@
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 """
 :mod:`esda` --- Exploratory Spatial Data Analysis
 =================================================
@@ -19,3 +19,4 @@ from .join_counts import Join_Counts
 from .gamma import Gamma
 from .util import fdr
 from .smaup import Smaup
+from .lee import Spatial_Pearson, Local_Spatial_Pearson
