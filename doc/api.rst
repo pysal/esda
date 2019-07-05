@@ -61,6 +61,16 @@ Moran Statistics
     esda.Moran_Rate
     esda.Moran_Local_Rate
 
+Spatial Pearson Statistics
+--------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.lee.Spatial_Pearson
+    esda.lee.Local_Spatial_Pearson
+
+
 Modifiable Areal Unit Tests
 ---------------------------
 

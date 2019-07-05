@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 from distutils.command.build_py import build_py
 import os
 
-with open('README.md', 'r', encoding='utf8') as file:
+with open('README.rst', 'r', encoding='utf8') as file:
     long_description = file.read()
 
 # Get __version__ from PACKAGE_NAME/__init__.py without importing the package
@@ -50,6 +50,7 @@ def setup_package():
         version=__version__,
         description="Exploratory spatial data analysis functions.",
         long_description=long_description,
+        long_description_content_type='text/x-rst',
         maintainer="PySAL Developers",
         maintainer_email='pysal-dev@googlegroups.com',
         url='http://pysal.org',
