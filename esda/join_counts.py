@@ -153,7 +153,7 @@ class Join_Counts(object):
         self.chi2 = results[3]
         self.chi2_p = results[4]
         self.chi2_dof = results[5]
-        crosstab = results[-1]
+        crosstab = pd.DataFrame(data=results[-1])
         id_names = ['W', 'B']
         idx = pd.Index(id_names, name='Focal')
         crosstab.set_index(idx, inplace=True)
@@ -163,7 +163,7 @@ class Join_Counts(object):
         expected.set_index(idx, inplace=True)
         expected.columns = pd.Index(id_names, name='Neighbor')
         self.expected = expected
-
+        self.calc = self.__calc
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y))
@@ -187,17 +187,19 @@ class Join_Counts(object):
 
     def __calc(self, z):
         adj_list = self.adj_list
-        names = ['b', 'w']
-        cross_tab = pd.crosstab(z[adj_list.focal], z[adj_list.neighbor],
-                                rownames=['focal'], colnames=['neighbor'])
-        cross_tab = cross_tab.astype(float)
-        bb = cross_tab.iloc[1,1]
-        ww = cross_tab.iloc[0,0]
-        bw = cross_tab.iloc[1,0] + cross_tab.iloc[0,1]
-        chi2 = chi2_contingency(cross_tab)
-        stat, pvalue, dof, table = chi2
-
-        return (bb, ww, bw, stat, pvalue, dof, table, cross_tab)
+        focal = z[adj_list.focal]
+        neighbor = z[adj_list.neighbor]
+        sim = focal == neighbor
+        dif = 1 - sim
+        bb = (focal * sim).sum()
+        ww = ((1-focal) * sim).sum()
+        bw = (focal * dif).sum()
+        wb = ((1-focal) * dif).sum()
+        table = [[ww, wb],
+                [bw, bb]]
+        chi2 = chi2_contingency(table)
+        stat, pvalue, dof, expected = chi2
+        return (bb, ww, bw+wb, stat, pvalue, dof, expected, np.array(table))
 
     def __pseudop(self, sim, jc):
         above = sim >=jc
