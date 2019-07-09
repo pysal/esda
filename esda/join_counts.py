@@ -6,7 +6,9 @@ __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
 from libpysal.weights.spatial_lag import lag_spatial
 from .tabular import _univariate_handler
+from scipy.stats import chi2_contingency
 import numpy as np
+import pandas as pd
 
 __all__ = ['Join_Counts']
 
@@ -71,12 +73,23 @@ class Join_Counts(object):
                    minimum of permuted bw values
     max_bw       : float
                    maximum of permuted bw values
+    chi2         : float
+                   Chi-square statistic on contingency table for join counts
+    chi2_p       : float
+                   Analytical p-value for chi2
+    chi2_dof     : int
+                   Degrees of freedom for analytical chi2
+    crosstab     : DataFrame
+                   Contingency table for observed join counts
+    expected     : DataFrame
+                   Expected contingency table for the null 
+    p_sim_chi2   : float
+                   p-value for chi2 under random spatial permutations
+
 
 
     Examples
     --------
-
-    Replicate example from anselin and rey
 
     >>> import numpy as np
     >>> import libpysal
@@ -114,7 +127,10 @@ class Join_Counts(object):
     24.0
     >>> np.min(jc.sim_bw)
     7.0
-    >>>
+    >>> round(jc.chi2_p, 3)
+    0.004
+    >>> jc.p_sim_chi2
+    0.002
 
 
     Notes
@@ -126,10 +142,28 @@ class Join_Counts(object):
         y = np.asarray(y).flatten()
         w.transformation = 'b'  # ensure we have binary weights
         self.w = w
+        self.adj_list = self.w.to_adjlist(remove_symmetric=True)
         self.y = y
         self.permutations = permutations
         self.J = w.s0 / 2.
-        self.bb, self.ww, self.bw = self.__calc(self.y)
+        results = self.__calc(self.y)
+        self.bb = results[0]
+        self.ww = results[1]
+        self.bw = results[2]
+        self.chi2 = results[3]
+        self.chi2_p = results[4]
+        self.chi2_dof = results[5]
+        crosstab = results[-1]
+        id_names = ['W', 'B']
+        idx = pd.Index(id_names, name='Focal')
+        crosstab.set_index(idx, inplace=True)
+        crosstab.columns = pd.Index(id_names, name='Neighbor')
+        self.crosstab = crosstab
+        expected = pd.DataFrame(data=results[6])
+        expected.set_index(idx, inplace=True)
+        expected.columns = pd.Index(id_names, name='Neighbor')
+        self.expected = expected
+
 
         if permutations:
             sim = [self.__calc(np.random.permutation(self.y))
@@ -143,22 +177,30 @@ class Join_Counts(object):
             self.min_bw = np.min(self.sim_bw)
             self.mean_bw = np.mean(self.sim_bw)
             self.max_bw = np.max(self.sim_bw)
+            self.sim_chi2 = sim_jc[:, 3]
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
             p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
+            p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
             self.p_sim_bb = p_sim_bb
             self.p_sim_bw = p_sim_bw
+            self.p_sim_chi2 = p_sim_chi2
 
     def __calc(self, z):
-        zl = lag_spatial(self.w, z)
-        bb = sum(z * zl) / 2.0
-        zw = 1 - z
-        zl = lag_spatial(self.w, zw)
-        ww = sum(zw * zl) / 2.0
-        bw = self.J - (bb + ww)
-        return (bb, ww, bw)
+        adj_list = self.adj_list
+        names = ['b', 'w']
+        cross_tab = pd.crosstab(z[adj_list.focal], z[adj_list.neighbor],
+                                rownames=['focal'], colnames=['neighbor'])
+        cross_tab = cross_tab.astype(float)
+        bb = cross_tab.iloc[1,1]
+        ww = cross_tab.iloc[0,0]
+        bw = cross_tab.iloc[1,0] + cross_tab.iloc[0,1]
+        chi2 = chi2_contingency(cross_tab)
+        stat, pvalue, dof, table = chi2
+
+        return (bb, ww, bw, stat, pvalue, dof, table, cross_tab)
 
     def __pseudop(self, sim, jc):
-        above = sim >= jc
+        above = sim >=jc
         larger = sum(above)
         psim = (larger + 1.) / (self.permutations + 1.)
         return psim
