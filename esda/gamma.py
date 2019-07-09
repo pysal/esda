@@ -8,6 +8,7 @@ __author__ = "Luc Anselin <luc.anselin@asu.edu> Serge Rey <sjsrey@gmail.com>"
 import numpy as np
 from libpysal.weights.spatial_lag import lag_spatial
 from .tabular import _univariate_handler
+import warnings
 
 __all__ = ['Gamma']
 
@@ -31,10 +32,10 @@ class Gamma(object):
                       'c' cross product
                       's' squared difference
                       'a' absolute difference
-    standardize     : {'no', 'yes'}
+    standardize     : {False, True}
                       standardize variables first
-                      'no' keep as is
-                      'yes' or 'y' standardize to mean zero and variance one
+                      False, keep as is
+                      True, standardize to mean zero and variance one
     permutations    : int
                       number of random permutations for calculation of pseudo-p_values
 
@@ -47,7 +48,7 @@ class Gamma(object):
     op           : {'c', 's', 'a'}
                    attribute similarity function, as per parameters
                    attribute similarity function
-    stand        : {'no', 'yes'}
+    stand        : {False, True}
                    standardization
     permutations : int
                    number of permutations
@@ -123,7 +124,7 @@ class Gamma(object):
     >>> g2.mean_g
     25.623623623623622
     >>> np.random.seed(12345)
-    >>> g3 = Gamma(y,w,standardize='y')
+    >>> g3 = Gamma(y,w,standardize=True)
     >>> g3.g
     32.0
     >>> round(g3.g_z, 3)
@@ -157,14 +158,18 @@ class Gamma(object):
 
 
     """
-    def __init__(self, y, w, operation='c', standardize='no', permutations=PERMUTATIONS):
+    def __init__(self, y, w, operation='c', standardize=False, permutations=PERMUTATIONS):
+        if isinstance(standardize, str):
+            standardize = standardize.lower() == 'yes'
+            warnings.warn('Use True/False for standardize. The option to'
+                          ' provide "yes"/"no" will be deprecated in PySAL 2.2.' )
         y = np.asarray(y).flatten()
         self.w = w
         self.y = y
         self.op = operation
-        self.stand = standardize.lower()
+        self.stand = standardize
         self.permutations = permutations
-        if self.stand == 'yes' or self.stand == 'y':
+        if self.stand:
             ym = np.mean(self.y)
             ysd = np.std(self.y)
             ys = (self.y - ym) / ysd
