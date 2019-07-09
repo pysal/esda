@@ -40,7 +40,7 @@ class Gamma_Tester(unittest.TestCase):
         self.assertAlmostEqual(g2.max_g, 48.0)
         self.assertAlmostEqual(g2.mean_g, 25.623623623623622)
         np.random.seed(12345)
-        g3 = Gamma(self.y, self.w, standardize='y')
+        g3 = Gamma(self.y, self.w, standardize=True)
         self.assertAlmostEqual(g3.g, 32.0)
         self.assertAlmostEqual(g3.g_z, 3.7057554345954791)
         self.assertAlmostEqual(g3.p_sim_g, 0.001)
