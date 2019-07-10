@@ -73,7 +73,7 @@ def path_silhouette(data, labels, W, D=None,
 
     Returns
     --------
-    An (N,) array of the clusters involved. 
+    An (N_obs,) array of the path silhouette values for each observation.
     """
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
@@ -216,7 +216,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
 
     Returns
     -------
-    (N_obs,) array of boundary silhouette values. 
+    (N_obs,) array of boundary silhouette values for each observation
     
     Notes
     -----
@@ -431,7 +431,7 @@ def nearest_label(data, labels,
 
     Returns
     -------
-    (N,) array of assignments reflect each observation's nearest label. 
+    (N_obs,) array of assignments reflect each observation's nearest label. 
 
     If return_distance is True, a tuple of ((N,) and (N,)) where the first 
         array is the assignment, and the second is the distance to the centroid
