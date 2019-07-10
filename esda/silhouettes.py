@@ -33,7 +33,7 @@ def path_silhouette(data, labels, W, D=None,
                     return_paths=False,
                     directed=False):
     """
-    Compute a path silhouette for all observations. 
+    Compute a path silhouette for all observations. :cite:`Rosseeuw_1987` 
 
     Parameters
     -----------
@@ -222,7 +222,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     -----
     The boundary silhouette is the silhouette score using only spatially-proximate
     clusters as candidates for the next-best-fit distance function (the 
-    b(i) function in Rosseeuw (1987)). 
+    b(i) function in :cite:`Rosseeuw_1987`. 
     This restricts the next-best-fit cluster to be the set of clusters on which 
     an observation neighbors. 
     So, instead of considering *all* clusters when finding the next-best-fit cluster, 
