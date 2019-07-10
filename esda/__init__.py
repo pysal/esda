@@ -20,3 +20,4 @@ from .gamma import Gamma
 from .util import fdr
 from .smaup import Smaup
 from .lee import Spatial_Pearson, Local_Spatial_Pearson
+from . import silhouettes
