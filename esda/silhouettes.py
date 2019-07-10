@@ -266,39 +266,42 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     bmask = focals.boundary.any()
     result = []
     np.seterr(all='raise')
-    try:
-        for i, (ix,bnd) in enumerate(bmask.iteritems()):
-            if not bnd:
-                result.append(np.array([0]))
-                continue
-            sil_score = np.array([np.inf])
-            label = labels[i]
-            focal_mask = np.nonzero(labels == label)[0]
-            if len(focal_mask) == 1: #the candidate is singleton
-                result.append(np.array([0]))
-                continue
-            neighbors = alist.query("focal == {}".format(ix)).label_neighbor
-            mean_dissim = full_distances[i,focal_mask].sum() / (len(focal_mask)-1)
-            if not np.isfinite(mean_dissim).all():
-                break_reason = 'a non-finite mean dissimilarity'
-                raise
-            neighbor_score = np.array([np.inf])
-            for neighbor in set(neighbors).difference([label]):
-                other_mask = np.nonzero(labels == neighbor)[0]
-                other_score = full_distances[i,other_mask].mean()
-                neighbor_score = np.minimum(neighbor_score, other_score, neighbor_score)
-                if neighbor_score < 0:
-                    break_reason = 'negative neighbors'
-                    raise
-            sil_score = (neighbor_score - mean_dissim) / np.maximum(neighbor_score, 
-                                                                    mean_dissim)
-            result.append(sil_score)
-        if len(result) != len(labels):
-            break_reason = 'mismatch in iteration sizes'
-            raise
-    except:
-        return locals()
-    return np.asarray(result)
+    for i, (ix,bnd) in enumerate(bmask.iteritems()):
+        if not bnd:
+            result.append(np.array([0]))
+            continue
+        sil_score = np.array([np.inf])
+        label = labels[i]
+        focal_mask = np.nonzero(labels == label)[0]
+        if len(focal_mask) == 1: #the candidate is singleton
+            result.append(np.array([0]))
+            continue
+        neighbors = alist.query("focal == {}".format(ix)).label_neighbor
+        mean_dissim = full_distances[i,focal_mask].sum() / (len(focal_mask)-1)
+        if not np.isfinite(mean_dissim).all():
+            break_reason = 'a non-finite mean dissimilarity'
+            raise ValueError('A non-finite mean dissimilarity between groups'
+                             ' and the boundary observation occurred. Please ensure'
+                             ' the data & labels are formatted and shaped correctly.')
+        neighbor_score = np.array([np.inf])
+        for neighbor in set(neighbors).difference([label]):
+            other_mask = np.nonzero(labels == neighbor)[0]
+            other_score = full_distances[i,other_mask].mean()
+            neighbor_score = np.minimum(neighbor_score, other_score, neighbor_score)
+            if neighbor_score < 0:
+                break_reason = 'negative neighbors'
+                raise ValueError('A negative neighborhood similarity value occurred. '
+                                 'This should not happen. Please create a bug report on'
+                                 'https://github.com/pysal/esda/issues')
+        sil_score = (neighbor_score - mean_dissim) / np.maximum(neighbor_score, 
+                                                                mean_dissim)
+        result.append(sil_score)
+    if len(result) != len(labels):
+        raise ValueError('The number of boundary silhouettes does not match the number of'
+                         ' observations.' 
+                         'This should not happen. Please create a bug report on'
+                         'https://github.com/pysal/esda/issues')
+    return np.asarray(result).squeeze()
 
 def silhouette_alist(data, labels, alist, indices=None,
                      metric=skp.euclidean_distances):
