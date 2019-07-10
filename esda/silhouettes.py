@@ -250,6 +250,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     if callable(metric):
         full_distances = metric(data)
     elif isinstance(metric, np.ndarray):
+        n_obs = W.n
         if metric.shape == (n_obs, n_obs):
             full_distances = metric
         else:
@@ -259,6 +260,8 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     else:
         raise ValueError('The provided metric is neither a dissmilarity function'
                          ' nor a dissimilarity matrix.')
+    assert 0 == (full_distances < 0).sum(), ("Distance metric has negative values, "
+                                             "which is not supported")
     label_frame = pd.DataFrame(labels, index=W.id_order, columns=['label'])
     alist = alist.merge(label_frame, left_on='focal', right_index=True, how='left')\
                  .merge(label_frame, left_on='neighbor', right_index=True, how='left',
@@ -281,7 +284,6 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
         neighbors = alist.query("focal == {}".format(ix)).label_neighbor
         mean_dissim = full_distances[i,focal_mask].sum() / (len(focal_mask)-1)
         if not np.isfinite(mean_dissim).all():
-            break_reason = 'a non-finite mean dissimilarity'
             raise ValueError('A non-finite mean dissimilarity between groups'
                              ' and the boundary observation occurred. Please ensure'
                              ' the data & labels are formatted and shaped correctly.')
@@ -291,7 +293,6 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
             other_score = full_distances[i,other_mask].mean()
             neighbor_score = np.minimum(neighbor_score, other_score, neighbor_score)
             if neighbor_score < 0:
-                break_reason = 'negative neighbors'
                 raise ValueError('A negative neighborhood similarity value occurred. '
                                  'This should not happen. Please create a bug report on'
                                  'https://github.com/pysal/esda/issues')
