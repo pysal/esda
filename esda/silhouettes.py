@@ -24,6 +24,8 @@ def _raise_initial_error():
     raise ImportError("this function requires scikit-learn and "
                       "pandas to be installed. Missing {}".format(','.join(missing)))
 
+__all__ = ['path_silhouette', 'boundary_silhouette', 'silhouette_alist', 'nearest_label']
+
 def path_silhouette(data, labels, W, D=None, 
                     metric=skp.euclidean_distances, 
                     closest=False, return_nbfc=False, 
