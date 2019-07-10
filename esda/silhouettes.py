@@ -198,6 +198,22 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     """
     Compute the observation-level boundary silhouette score. 
 
+    Arguments
+    ---------
+    data    :   (N,P) numpy array
+                an array of covariates to analyze. Each row should be one
+                observation, and each clumn should be one feature.
+    labels  :   (N,) array of labels
+                the labels corresponding to the group each observation is assigned.
+    W       :   pysal.weights.W object
+                a spatial weights object containing the connectivity structure
+                for the data
+    metric  :   callable, array, 
+                a function that takes an argument (data) and returns the all-pairs
+                distances between observations.
+
+    Returns
+    -------
     The boundary silhouette is the silhouette score using only spatially-proximate
     clusters as candidates for the next-best-fit distance function (the 
     b(i) function in Rosseeuw (1987)). 
@@ -230,6 +246,13 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     elif isinstance(metric, np.ndarray):
         if metric.shape == (n_obs, n_obs):
             full_distances = metric
+        else:
+            raise ValueError('Precomputed metric is supplied, but is not the right shape.'
+                             ' The dissimilarity matrix should be of shape ({},{}), but was'
+                             ' of shape ({},{})'.format(W.n, W.n, *metric.shape))
+    else:
+        raise ValueError('The provided metric is neither a dissmilarity function'
+                         ' nor a dissimilarity matrix.')
     label_frame = pd.DataFrame(labels, index=W.id_order, columns=['label'])
     alist = alist.merge(label_frame, left_on='focal', right_index=True, how='left')\
                  .merge(label_frame, left_on='neighbor', right_index=True, how='left',
