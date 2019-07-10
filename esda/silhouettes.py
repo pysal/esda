@@ -79,7 +79,7 @@ def path_silhouette(data, labels, W, D=None,
     if D is None:
         D = metric(data)
     #polymorphic for sparse & dense input
-    assert 0 == (D < 0).sum(), "distance metric returns negative values"
+    assert 0 == (D < 0).sum(), "Distance metric has negative values, which is not supported"
     off_diag_zeros = (D + np.eye(D.shape[0])) == 0
     D[off_diag_zeros] = -1
     Wm = sp.csr_matrix(W.sparse)
@@ -200,20 +200,24 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
 
     Arguments
     ---------
-    data    :   (N,P) numpy array
+    data    :   (N_obs,P) numpy array
                 an array of covariates to analyze. Each row should be one
                 observation, and each clumn should be one feature.
-    labels  :   (N,) array of labels
+    labels  :   (N_obs,) array of labels
                 the labels corresponding to the group each observation is assigned.
     W       :   pysal.weights.W object
                 a spatial weights object containing the connectivity structure
                 for the data
     metric  :   callable, array, 
                 a function that takes an argument (data) and returns the all-pairs
-                distances between observations.
+                distances/dissimilarity between observations.
 
     Returns
     -------
+    (N_obs,) array of boundary silhouette values. 
+    
+    Notes
+    -----
     The boundary silhouette is the silhouette score using only spatially-proximate
     clusters as candidates for the next-best-fit distance function (the 
     b(i) function in Rosseeuw (1987)). 
@@ -304,10 +308,12 @@ def silhouette_alist(data, labels, alist, indices=None,
     this computes:
 
     `d(i,label_neighbor) - d(i,label_focal) / (max(d(i,label_neighbor), d(i,label_focal)))`
-
-    data : (N,P) matrix to cluster on or DataFrame indexed on the same values as
+    
+    Arguments
+    ---------
+    data : (N,P) array to cluster on or DataFrame indexed on the same values as
            that in alist.focal/alist.neighbor
-    labels: (N,) Series containing classifications, indexed on the same values 
+    labels: (N,) array containing classifications, indexed on the same values 
                  as that in alist.focal/alist.neighbor
     alist: adjacency list containing columns focal & neighbor, 
            describing one edge of the graph. 
@@ -319,6 +325,15 @@ def silhouette_alist(data, labels, alist, indices=None,
            a list/array of strings aligned with the rows of data. 
            if not provided and labels is a series/dataframe, 
            then its index will be used. 
+    metric  :   callable, array, 
+                a function that takes an argument (data) and returns the all-pairs
+                distances/dissimilarity between observations.
+
+    Results
+    -------
+    pandas.DataFrame, copy of the adjacency list `alist`, with an additional 
+    column called `silhouette` that contains the pseudo-silhouette values 
+    expressing the relative dissimilarity between neighboring observations.
     """
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
@@ -369,8 +384,11 @@ def silhouette_alist(data, labels, alist, indices=None,
         neighbor_mask = labels == neighbor_label
         neighbor_mask = np.nonzero(neighbor_mask.values)[0]
         if len(neighbor_mask) == 0:
-            print(neighbor_label)
-            raise
+            sils.append(0)
+            warn('A link ({},{}) has been found to have an empty set of neighbors. '
+                 ' This may happen when a label assignment is missing for the neighbor unit.'
+                 ' Check that no labels are missing.'.format(row.focal, row.neighbor))
+            continue
         outer_distance = full_distances[i_Xc,neighbor_mask].mean()
         sils.append((outer_distance - within_cluster) / np.maximum(outer_distance, within_cluster))
     result['silhouette'] = sils
@@ -384,6 +402,34 @@ def nearest_label(data, labels,
 
     Given the data and a set of labels in labels, this finds the label 
     whose mean center is closest to the observation in data. 
+
+    Arguments
+    ---------
+    data : (N,P) array to cluster on or DataFrame indexed on the same values as
+           that in alist.focal/alist.neighbor
+    labels: (N,) array containing classifications, indexed on the same values 
+                 as that in alist.focal/alist.neighbor
+    metric  :   callable, array, 
+                a function that takes an argument (data) and returns the all-pairs
+                distances/dissimilarity between observations.
+    return_distance: bool
+                     Whether to return the distance from the observation to its nearest
+                     cluster in feature space. If True, the tuple of (nearest_label, dissim)
+                     is returned. If False, only the nearest_label array is returned. 
+    keep_self:  bool
+                whether to allow observations to use their current cluster as their 
+                nearest label. If True, an observation's existing cluster assignment can 
+                also be the cluster it is closest to. If False, an observation's existing
+                cluster assignment cannot be the cluster it is closest to. This would mean
+                the function computes the nearest *alternative* cluster. 
+
+    Returns
+    -------
+    (N,) array of assignments reflect each observation's nearest label. 
+
+    If return_distance is True, a tuple of ((N,) and (N,)) where the first 
+        array is the assignment, and the second is the distance to the centroid
+        of that assignment.
     """
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
