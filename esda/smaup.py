@@ -73,7 +73,7 @@ class Smaup(object):
     >>> s.critical_1
     0.3157950666666666
     >>> s.summary
-    Pseudo p-value > 0.10 (H0 is not rejected)
+    'Pseudo p-value > 0.10 (H0 is not rejected)'
 
     SIDS example replicating OpenGeoda
 
@@ -94,7 +94,7 @@ class Smaup(object):
     >>> s.critical_1
     0.3157950666666666
     >>> s.summary
-    Pseudo p-value > 0.10 (H0 is not rejected)
+    'Pseudo p-value > 0.10 (H0 is not rejected)'
 
     """
 
