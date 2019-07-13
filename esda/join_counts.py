@@ -195,7 +195,7 @@ class Join_Counts(object):
 
             stat = ((self.autocorr_pos - np.mean(self.sim_autocurr_pos))**2 +
                                               (self.autocorr_neg - np.mean(self.sim_autocurr_neg))**2)
-            self.sim_autocorr_chi2 = chi2.cdf(1 - stat, 1)
+            self.sim_autocorr_chi2 = 1 - chi2.cdf(stat, 1)
 
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
             p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
