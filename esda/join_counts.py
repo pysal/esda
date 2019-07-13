@@ -153,6 +153,9 @@ class Join_Counts(object):
         self.chi2 = results[3]
         self.chi2_p = results[4]
         self.chi2_dof = results[5]
+        self.autocorr_pos = self.bb + self.ww
+        self.autocorr_neg = self.bw
+
         crosstab = pd.DataFrame(data=results[-1])
         id_names = ['W', 'B']
         idx = pd.Index(id_names, name='Focal')
