@@ -188,13 +188,19 @@ class Join_Counts(object):
             self.min_bw = np.min(self.sim_bw)
             self.mean_bw = np.mean(self.sim_bw)
             self.max_bw = np.max(self.sim_bw)
+            self.sim_autocurr_pos = sim_jc[:, 0]+sim_jc[:, 1]
+            self.sim_autocurr_neg = sim_jc[:, 2]
             self.sim_chi2 = sim_jc[:, 3]
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
             p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
             p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
+            p_sim_autocorr_pos = self.__pseudop(self.sim_autocurr_pos, self.autocorr_pos)
+            p_sim_autocorr_neg = self.__pseudop(self.sim_autocurr_neg, self.autocorr_neg)
             self.p_sim_bb = p_sim_bb
             self.p_sim_bw = p_sim_bw
             self.p_sim_chi2 = p_sim_chi2
+            self.p_sim_autocorr_pos = p_sim_autocorr_pos
+            self.p_sim_autocorr_neg = p_sim_autocorr_neg
 
     def __calc(self, z):
         adj_list = self.adj_list
