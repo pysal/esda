@@ -7,6 +7,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 from libpysal.weights.spatial_lag import lag_spatial
 from .tabular import _univariate_handler
 from scipy.stats import chi2_contingency
+from scipy.stats import chi2
 import numpy as np
 import pandas as pd
 
@@ -191,6 +192,11 @@ class Join_Counts(object):
             self.sim_autocurr_pos = sim_jc[:, 0]+sim_jc[:, 1]
             self.sim_autocurr_neg = sim_jc[:, 2]
             self.sim_chi2 = sim_jc[:, 3]
+
+            stat = ((self.autocorr_pos - np.mean(self.sim_autocurr_pos))**2 +
+                                              (self.autocorr_neg - np.mean(self.sim_autocurr_neg))**2)
+            self.sim_autocorr_chi2 = chi2.cdf(1 - stat, 1)
+
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
             p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
             p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
