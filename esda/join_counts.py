@@ -133,7 +133,6 @@ class Join_Counts(object):
     >>> jc.p_sim_chi2
     0.002
 
-
     Notes
     -----
     Technical details and derivations can be found in :cite:`cliff81`.
@@ -193,8 +192,8 @@ class Join_Counts(object):
             self.sim_autocurr_neg = sim_jc[:, 2]
             self.sim_chi2 = sim_jc[:, 3]
 
-            stat = ((self.autocorr_pos - np.mean(self.sim_autocurr_pos))**2 +
-                                              (self.autocorr_neg - np.mean(self.sim_autocurr_neg))**2)
+            stat = ((self.autocorr_pos - np.mean(self.sim_autocurr_pos))**2 / np.mean(self.sim_autocurr_pos)**2 +
+                                              (self.autocorr_neg - np.mean(self.sim_autocurr_neg))**2 / np.mean(self.sim_autocurr_pos)**2)
             self.sim_autocorr_chi2 = 1 - chi2.cdf(stat, 1)
 
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)

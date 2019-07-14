@@ -39,7 +39,7 @@ class Join_Counts_Tester(unittest.TestCase):
         self.assertAlmostEqual(0.002, jc.p_sim_chi2)
         self.assertAlmostEqual(1.0, jc.p_sim_autocorr_neg)
         self.assertAlmostEqual(0.001, jc.p_sim_autocorr_pos)
-        self.assertAlmostEqual(0.000, jc.sim_autocorr_chi2)
+        self.assertAlmostEqual(0.2653504320039377, jc.sim_autocorr_chi2)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
