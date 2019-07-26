@@ -40,7 +40,7 @@ class Spatial_Pearson(BaseEstimator):
 
     def fit(self, x, y):
         """
-        bivariate spatial pearson's R based on Eq. 18 of Lee (2001).
+        bivariate spatial pearson's R based on Eq. 18 of :cite:`Lee2001`.
 
         L = \dfrac{Z^T (V^TV) Z}{1^T (V^TV) 1}
 
