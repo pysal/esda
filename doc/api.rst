@@ -67,8 +67,8 @@ Spatial Pearson Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.lee.Spatial_Pearson
-    esda.lee.Local_Spatial_Pearson
+    esda.Spatial_Pearson
+    esda.Local_Spatial_Pearson
 
 
 Modifiable Areal Unit Tests
@@ -77,11 +77,11 @@ Modifiable Areal Unit Tests
 .. autosummary::
    :toctree: generated/
 
-      smaup.Smaup
+    esda.Smaup
 
 
 Utility Functions
-----------------
+-----------------
 
 .. autosummary::
    :toctree: generated/
