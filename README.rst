@@ -10,6 +10,9 @@ Exploratory Spatial Data Analysis (esda) in PySAL
 .. image:: https://zenodo.org/badge/81873636.svg
    :target: https://zenodo.org/badge/latestdoi/81873636
 
+.. image:: https://readthedocs.org/projects/esda/badge/?version=latest
+   :target: https://esda.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
 
 Methods for testing for global and local autocorrelation in areal unit
 data.
