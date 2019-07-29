@@ -36,8 +36,8 @@ your fork. By making changes
 to your local clone and submitting a pull request to `pysal/esda`_, you can
 contribute to esda development.
 
-.. _3.5: https://docs.python.org/3.6/
-.. _3.6: https://docs.python.org/3.7/
+.. _3.6: https://docs.python.org/3.6/
+.. _3.7: https://docs.python.org/3.7/
 .. _Python Package Index: https://pypi.org/project/esda/
 .. _pysal/esda: https://github.com/pysal/esda
 .. _fork: https://help.github.com/articles/fork-a-repo/
