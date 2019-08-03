@@ -21,6 +21,8 @@ class Join_Counts_Tester(unittest.TestCase):
         self.assertAlmostEqual(jc.bb, 10.0)
         self.assertAlmostEqual(jc.bw, 4.0)
         self.assertAlmostEqual(jc.ww, 10.0)
+        self.assertAlmostEqual(jc.autocorr_neg, 4.0)  # jc.bw
+        self.assertAlmostEqual(jc.autocorr_pos, 20.0)
         self.assertAlmostEqual(jc.J, 24.0)
         self.assertAlmostEqual(len(jc.sim_bb), 999)
         self.assertAlmostEqual(jc.p_sim_bb, 0.0030000000000000001)
@@ -35,13 +37,16 @@ class Join_Counts_Tester(unittest.TestCase):
         self.assertAlmostEqual(8.479632255856034, jc.chi2)
         self.assertAlmostEqual(0.003591446953916693, jc.chi2_p)
         self.assertAlmostEqual(0.002, jc.p_sim_chi2)
+        self.assertAlmostEqual(1.0, jc.p_sim_autocorr_neg)
+        self.assertAlmostEqual(0.001, jc.p_sim_autocorr_pos)
+        self.assertAlmostEqual(0.2653504320039377, jc.sim_autocorr_chi2)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
         import pandas as pd
         df = pd.DataFrame(self.y, columns=['y'])
         np.random.seed(12345)
-        r1 = Join_Counts.by_col(df, ['y'], w=self.w, permutations=999)
+        r1 = Join_Counts.by_col(df, ['y'], w=self.w, permutations=999)  # outvals = ['bb', 'bw', 'ww', 'p_sim_bw', 'p_sim_bb']
 
         bb = np.unique(r1.y_bb.values)
         bw = np.unique(r1.y_bw.values)
