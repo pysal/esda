@@ -21,8 +21,6 @@ class Join_Counts_Tester(unittest.TestCase):
         self.assertAlmostEqual(jc.bb, 10.0)
         self.assertAlmostEqual(jc.bw, 4.0)
         self.assertAlmostEqual(jc.ww, 10.0)
-        self.assertAlmostEqual(jc.autocorr_neg, 4.0)  # jc.bw
-        self.assertAlmostEqual(jc.autocorr_pos, 20.0)
         self.assertAlmostEqual(jc.J, 24.0)
         self.assertAlmostEqual(len(jc.sim_bb), 999)
         self.assertAlmostEqual(jc.p_sim_bb, 0.0030000000000000001)

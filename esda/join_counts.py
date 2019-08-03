@@ -149,67 +149,6 @@ class Join_Counts(object):
         self.permutations = permutations
         self.J = w.s0 / 2.0
         results = self.__calc(self.y)
-<<<<<<< HEAD
-        self.bb = results[0]
-        self.ww = results[1]
-        self.bw = results[2]
-        self.chi2 = results[3]
-        self.chi2_p = results[4]
-        self.chi2_dof = results[5]
-        self.autocorr_pos = self.bb + self.ww
-        self.autocorr_neg = self.bw
-
-        crosstab = pd.DataFrame(data=results[-1])
-        id_names = ['W', 'B']
-        idx = pd.Index(id_names, name='Focal')
-        crosstab.set_index(idx, inplace=True)
-        crosstab.columns = pd.Index(id_names, name='Neighbor')
-        self.crosstab = crosstab
-        expected = pd.DataFrame(data=results[6])
-        expected.set_index(idx, inplace=True)
-        expected.columns = pd.Index(id_names, name='Neighbor')
-        self.expected = expected
-        self.calc = self.__calc
-
-        if permutations:
-            sim = []
-            i = 0
-            while i < permutations:
-                try:
-                    res = self.__calc(np.random.permutation(self.y))
-                    sim.append(res)
-                    i += 1
-                except ValueError:
-                    # expected count of 0 -> inadmissible
-                    pass
-            sim_jc = np.array(sim)
-            self.sim_bb = sim_jc[:, 0]
-            self.min_bb = np.min(self.sim_bb)
-            self.mean_bb = np.mean(self.sim_bb)
-            self.max_bb = np.max(self.sim_bb)
-            self.sim_bw = sim_jc[:, 2]
-            self.min_bw = np.min(self.sim_bw)
-            self.mean_bw = np.mean(self.sim_bw)
-            self.max_bw = np.max(self.sim_bw)
-            self.sim_autocurr_pos = sim_jc[:, 0]+sim_jc[:, 1]
-            self.sim_autocurr_neg = sim_jc[:, 2]
-            self.sim_chi2 = sim_jc[:, 3]
-
-            stat = ((self.autocorr_pos - np.mean(self.sim_autocurr_pos))**2 / np.mean(self.sim_autocurr_pos)**2 +
-                                              (self.autocorr_neg - np.mean(self.sim_autocurr_neg))**2 / np.mean(self.sim_autocurr_pos)**2)
-            self.sim_autocorr_chi2 = 1 - chi2.cdf(stat, 1)
-
-            p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
-            p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
-            p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
-            p_sim_autocorr_pos = self.__pseudop(self.sim_autocurr_pos, self.autocorr_pos)
-            p_sim_autocorr_neg = self.__pseudop(self.sim_autocurr_neg, self.autocorr_neg)
-            self.p_sim_bb = p_sim_bb
-            self.p_sim_bw = p_sim_bw
-            self.p_sim_chi2 = p_sim_chi2
-            self.p_sim_autocorr_pos = p_sim_autocorr_pos
-            self.p_sim_autocorr_neg = p_sim_autocorr_neg
-=======
         if results:
             self.bb = results[0]
             self.ww = results[1]
@@ -254,7 +193,6 @@ class Join_Counts(object):
                 self.p_sim_bb = p_sim_bb
                 self.p_sim_bw = p_sim_bw
                 self.p_sim_chi2 = p_sim_chi2
->>>>>>> ENH: empirical distribution for chi2 based on random permutations
 
     def __calc(self, z):
         adj_list = self.adj_list
