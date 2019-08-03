@@ -75,17 +75,20 @@ class Join_Counts(object):
                    minimum of permuted bw values
     max_bw       : float
                    maximum of permuted bw values
+    pos          : float
+                   bb+ww
+    p_sim_pos    : float
+                   p-value based on permutations (one-sided) for pos
     crosstab     : DataFrame
                    Contingency table for observed join counts
     expected     : DataFrame
-                   Expected contingency table for the null 
+                   Expected contingency table under the null
     chi2         : float
                    Observed value of chi2 for join count contingency table (see Notes).
     p_sim_chi2   : float
                    p-value for chi2 under random spatial permutations
 
 
-    
     Examples
     --------
 
@@ -102,7 +105,7 @@ class Join_Counts(object):
     >>> jc.bw
     4.0
     >>> jc.ww
-    10. 0
+    10.0
     >>> jc.J
     24.0
     >>> len(jc.sim_bb)
@@ -127,15 +130,30 @@ class Join_Counts(object):
     7.0
     >>> jc.p_sim_chi2
     0.008
+    >>> jc.pos
+    20.0
+    >>> jc.p_sim_pos
+    0.001
 
     Notes
     -----
 
-    Analytical inference using the chi2 is approximate and is thus not used in esda. The independence assumption is clearly violated for join counts even if the data is free from spatial autocorrelation as neighboring join counts will be correlated by construction. Thus only, the chi2 attribute is reported, no analytical p-values are reported. 
+    Analytical inference using the chi2 is approximate and is thus not used.
+    The independence assumption is clearly violated for join counts even
+    if the data is free from spatial autocorrelation as neighboring join counts
+    will be correlated by construction. Thus only, the chi2 attribute is
+    reported, no analytical p-values are reported.
 
-    Instead, `p_sim_chi2` is reported which  uses  the sampling distribution of the chi2 statistic under the null based on random spatial permutations of the data.
+    Instead, `p_sim_chi2` is reported which uses the sampling distribution of
+    the chi2 statistic under the null based on random spatial permutations of
+    the data.
 
-    Warnings will be issued when zero values for specific expected values of join counts are encountered in the sample or when carrying out the permutations. In the former case, no inference related attributes are set on the object, while in the latter, realizations with zero expected counts are not used in constructing the sampling distribution for the chi2 statistic.
+    Warnings will be issued when zero values for specific expected values of
+    join counts are encountered in the sample or when carrying out the
+    permutations. In the former case, no inference related attributes are set
+    on the object, while in the latter, realizations with zero expected counts
+    are not used in constructing the sampling distribution for the chi2
+    statistic.
 
     Technical details and derivations can be found in :cite:`cliff81`.
     """
@@ -153,6 +171,8 @@ class Join_Counts(object):
             self.bb = results[0]
             self.ww = results[1]
             self.bw = results[2]
+            self.pos = self.bb + self.ww
+            self.neg = self.bw # bw==wb
             self.chi2 = results[3]
             crosstab = pd.DataFrame(data=results[-2])
             id_names = ["W", "B"]
@@ -179,20 +199,23 @@ class Join_Counts(object):
                         pass
                 sim_jc = np.array(sim)
                 self.sim_bb = sim_jc[:, 0]
+                self.sim_ww = sim_jc[:, 1]
+                self.sim_pos = self.sim_bb + self.sim_ww
                 self.min_bb = np.min(self.sim_bb)
                 self.mean_bb = np.mean(self.sim_bb)
                 self.max_bb = np.max(self.sim_bb)
                 self.sim_bw = sim_jc[:, 2]
+                self.sim_neg = self.sim_bw
                 self.min_bw = np.min(self.sim_bw)
                 self.mean_bw = np.mean(self.sim_bw)
                 self.max_bw = np.max(self.sim_bw)
                 self.sim_chi2 = sim_jc[:, 3]
-                p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
-                p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
-                p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
-                self.p_sim_bb = p_sim_bb
-                self.p_sim_bw = p_sim_bw
-                self.p_sim_chi2 = p_sim_chi2
+                self.p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
+                self.p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
+                self.p_sim_ww = self.__pseudop(self.sim_ww, self.ww)
+                self.p_sim_pos = self.__pseudop(self.sim_pos, self.pos)
+                self.p_sim_neg = self.__pseudop(self.sim_neg, self.neg)
+                self.p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
 
     def __calc(self, z):
         adj_list = self.adj_list
