@@ -42,7 +42,7 @@ PySAL-esda is under active development and contributors are welcome.
 If you have any suggestion, feature request, or bug report, please open
 a new `issue <https://github.com/pysal/esda/issues>`__ on GitHub. To
 submit patches, please follow the PySAL development
-`guidelines <http://pysal.readthedocs.io/en/latest/developers/index.html>`__
+`guidelines <https://github.com/pysal/pysal/wiki>`__
 and open a `pull request <https://github.com/pysal/esda>`__. Once your
 changes get merged, you’ll automatically be added to the `Contributors
 List <https://github.com/pysal/esda/graphs/contributors>`__.
