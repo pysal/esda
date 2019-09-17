@@ -4,6 +4,22 @@ from sklearn.base import BaseEstimator
 from sklearn import preprocessing
 from sklearn import utils
 
+class Local_Pearson(BaseEstimator):
+    """This splits the pearson's R into its individual site components"""
+
+    def __init__(self, connectivity = None, permutations=999):
+        self.connectivity = connectivity
+        self.permutations = permutations
+
+    def fit(self, x, y):
+        raise NotImplementedError()
+        check_arrays_for_conformality_and_univariateness(x,y)
+        check_that_x_matches_connectivity_in_length(x,self.connectivity)
+
+        compute_local_pearson(x,y)
+        do_permutational_inference_on_local_ri(self.permutations)
+        # r_i = (x[i] * y[i]) / numpy.sqrt((x**2).sum()*(y**2).sum()) 
+
 class Spatial_Pearson(BaseEstimator):
     """Global Spatial Pearson Statistic"""
 
