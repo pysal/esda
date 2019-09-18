@@ -19,7 +19,7 @@ from .join_counts import Join_Counts
 from .gamma import Gamma
 from .util import fdr
 from .smaup import Smaup
-from .lee import Spatial_Pearson, Local_Spatial_Pearson
+from .lee import Spatial_Pearson, Spatial_Pearson_Local
 from .silhouettes import (path_silhouette, boundary_silhouette,
                           silhouette_alist, nearest_label)
 from . import adbscan
