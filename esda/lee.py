@@ -125,7 +125,7 @@ class Spatial_Pearson(BaseEstimator):
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
 
 
-class Local_Spatial_Pearson(BaseEstimator):
+class Spatial_Pearson_Local(BaseEstimator):
     """Local Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):
