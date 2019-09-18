@@ -4,21 +4,37 @@ from sklearn.base import BaseEstimator
 from sklearn import preprocessing
 from sklearn import utils
 
-class Local_Pearson(BaseEstimator):
+class Pearson_Local(BaseEstimator):
     """This splits the pearson's R into its individual site components"""
 
-    def __init__(self, connectivity = None, permutations=999):
-        self.connectivity = connectivity
+    def __init__(self, permutations=999):
         self.permutations = permutations
 
-    def fit(self, x, y):
-        raise NotImplementedError()
-        check_arrays_for_conformality_and_univariateness(x,y)
-        check_that_x_matches_connectivity_in_length(x,self.connectivity)
+    def fit(self, x, y=None):
+        if y is not None:
+            x,y = utils.check_X_y(x, y, ensure_2d=False, estimator=self)
+            X = numpy.column_stack((x, y))
+        else:
+            X = utils.check_array(x, ensure_2d=True, ensure_min_features=2, estimator=self)
+        n,p = X.shape
+        Z = preprocessing.StandardScaler().fit_transform(X)
+        self.associations_ = self._statistic(Z)
 
-        compute_local_pearson(x,y)
-        do_permutational_inference_on_local_ri(self.permutations)
-        # r_i = (x[i] * y[i]) / numpy.sqrt((x**2).sum()*(y**2).sum()) 
+        if y is not None:
+            self.associations_ = self.associations[0,1]
+        
+        if self.permutations:
+        
+            raise NotImplementedError()
+            do_permutational_inference_on_local_ri(self.permutations)
+            # r_i = (x[i] * y[i]) / numpy.sqrt((x**2).sum()*(y**2).sum()) 
+        
+    @staticmethod
+    def _statistic(Z):
+        N,P = X.shape
+        # is in shape n, p, p
+        return (Z.T * Z.T[:,None]) / N
+        
 
 class Spatial_Pearson(BaseEstimator):
     """Global Spatial Pearson Statistic"""
