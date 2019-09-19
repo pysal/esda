@@ -1,12 +1,7 @@
 import numpy
-from scipy import spatial
 from scipy.spatial import distance
-from sklearn.metrics import pairwise_distances_argmin
-from sklearn.metrics import pairwise_distances
 from sklearn.utils import check_array
-from scipy.sparse import csgraph
 from scipy.stats import mode as most_common_value
-from collections import defaultdict
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
@@ -28,8 +23,9 @@ def _resolve_metric(metric):
         distance_func = harcdist
     elif metric.lower() == 'precomputed':
         distances = check_array(coordinates, accept_sparse=True)
-        assert distances.shape == (n,n), ('With metric="precomputed", distances'
-                                          ' must be an (n,n) matrix.')
+        n,k = distances.shape
+        assert k == n, ('With metric="precomputed", distances'
+                        ' must be an (n,n) matrix.')
         raise NotImplementedError()
         # would need to:
         # get index of point pairs
@@ -38,15 +34,15 @@ def _resolve_metric(metric):
         try:
             distance_func = getattr(distance, metric)
         except AttributeError:
-            raise KeyError('Metric {} not understood. Choose something available in scipy.spatial.distance'.format(metric))
+            raise KeyError('Metric {} not understood. Choose '
+                           'something available in scipy.spatial.distance'.format(metric))
     return distance_func
 
 
-def isolation(X, coordinates, metric='euclidean', return_all=False):
-    X = check_array(X)
-    n, p = X.shape
-    assert p == 1, 'isolation is a univariate statistic'
-    X = X.flatten()
+def isolation(X, coordinates, metric='euclidean', 
+              middle='median', return_all=False):
+    X = check_array(X, ensure_2d=False)
+    X = to_elevation(X, metric=metric, middle=middle).squeeze()
     try:
         from rtree.index import Index as SpatialIndex
     except ImportError:
@@ -87,17 +83,15 @@ def isolation(X, coordinates, metric='euclidean', return_all=False):
 
 def prominence(X, connectivity, return_saddles=False, 
                return_peaks=False, return_dominating_peak=False, gdf=None,
-               verbose=False):
+               verbose=False, middle='median', metric='eucliean'):
         raise Exception('need to preprocess the peaks so that you only call something a keycol if it joins *new* unjoined peaks!')
-        X = check_array(X.squeeze(), ensure_2d=False)
-        
-        assert len(X.shape) == 1, 'prominence is a univariate statistic'
-        n, = X.shape
+        X = check_array(X, ensure_2d=False).squeeze()
+        X = to_elevation(X, middle=middle, metric=metric).squeeze()
+        n,p = X.shape
 
         # sort the variable in ascending order
         sort_order = numpy.argsort(-X)
 
-        last_n = 0
         peaks = [sort_order[0]]
         assessed_peaks = set()
         prominence = numpy.empty_like(X)*numpy.nan
@@ -113,21 +107,15 @@ def prominence(X, connectivity, return_saddles=False,
             full_indices, = mask.nonzero()
             this_full_ix = sort_order[rank]
             msg = 'assessing {} (rank: {}, value: {})'.format(this_full_ix, rank, value)
-            # This is again needed to break ties in the same way that argsort does.
-            # Basically, you can never rely on using the `value` and ought always use the
-            # `rank` or argsort item. It maps from the evaluated set to the full set of values
-            this_reduced_ix = full_indices.tolist().index(this_full_ix)
-            # This is the subgraph of all places that have been classified as peak/kc/slope
             
-            ## to make this faster:
             # use the dominating_peak vector. A new obs either has:
             # 1. neighbors whose dominating_peak are all -1 (new peak)
             # 2. neighbors whose dominating_peak are all -1 or an integer (slope of current peak)
             # 3. neighbors whose dominating_peak include at least two integers and any -1 (key col)
-            print(this_full_ix)
             _,neighbs = connectivity[this_full_ix,].toarray().nonzero()
             this_preds = predecessors[neighbs]
-            # want to keep ordering in this sublist to preserve hierarchy
+            
+            # need to keep ordering in this sublist to preserve hierarchy
             this_unique_preds = [p for p in peaks 
                                 if ((p in this_preds)
                                     & (p >= 0))]
@@ -140,22 +128,9 @@ def prominence(X, connectivity, return_saddles=False,
             else:
                 classification = 'slope'
                 
-            #subgraph = connectivity[full_indices, full_indices.reshape(-1,1)]
-            #this_n, reduced_labels = csgraph.connected_components(subgraph)
-            # since the subgraph is over `rank` observations, we need to get both the label
-            #this_label = reduced_labels[this_reduced_ix]
-            # and the "original label" in the full `n` observation set. 
-            #full_labels = numpy.ones_like(mask) * -1
-            #full_labels[mask] = reduced_labels
-            # This gives us the indices (in the full `n` set) of elements in 
-            # the subgraph's own graph component. 
-            #full_in_this_label_ix = set(numpy.where(full_labels == this_label)[0])
             if classification == 'keycol': # this_ix merges two or more subgraphs, so is a key_col
                 # find the peaks it joins
-                #now_joined_peaks = [p for p in peaks if p in full_in_this_label_ix]
                 now_joined_peaks = this_unique_preds
-                #print(now_joined_peaks, this_unique_preds)
-                #numpy.testing.assert_equal(now_joined_peaks, this_unique_preds)
                 # add them as keys for the key_col lut
                 key_cols.update({tuple(now_joined_peaks):this_full_ix})
                 msg += '\n{} is a key col between {}!'.format(this_full_ix, now_joined_peaks)
@@ -213,6 +188,8 @@ def prominence(X, connectivity, return_saddles=False,
                 ax = peakframe.plot(edgecolor='k', linewidth=.1, facecolor='yellow', ax=ax)
                 plt.show()
                 command = input()
+                if command.strip().lower() == 'stop':
+                    break
         if not any((return_saddles, return_peaks, return_dominating_peak)):
             return prominence
         retval = [prominence]
@@ -221,10 +198,26 @@ def prominence(X, connectivity, return_saddles=False,
         if return_dominating_peak:
             retval.append(dominating_peak)
         return retval
-        
+
+def to_elevation(X, middle='median', metric='euclidean'):
+    if X.ndim == 1:
+        return X - X.min()
+    else:
+        if callable(middle):
+            middle_point = middle(X, axis=0)
+        else:
+            try:
+                middle = getattr(numpy, middle)
+                return to_elevation(X, middle=middle)
+            except AttributeError:
+                raise KeyError('numpy has no "{}" function to compute the middle'
+                               ' of a point cloud.'.format(middle))
+        distance_from_center = distance.cdist(X, middle_point.reshape(1,-1))
+        return distance_from_center
+
 
 if __name__ == '__main__':
-    import geopandas, pandas, numpy
+    import geopandas, pandas 
     from libpysal import weights
     data = geopandas.read_file('../cb_2015_us_county_500k_2.geojson')
     contig = data.query('statefp not in ("02", "15", "43", "72")').reset_index()
