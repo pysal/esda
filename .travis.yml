@@ -1,23 +1,24 @@
+dist: xenial
 language: python
-sudo: false
+sudo: true
 branches:
-only:
-  - master
+  only:
+    - master
+
+python:
+  - 3.6
+  - 3.7
+
+env:
+  - PYSAL_PYPI=true  MPLBACKEND="pdf"
+  - PYSAL_PYPI=false MPLBACKEND="pdf"
 
 matrix:
-  include:
+  allow_failures:
     - python: 3.6
-      env: PYSAL_PLUS=false MPLBACKEND="pdf"
-    - python: 3.6
-      env: PYSAL_PLUS=true MPLBACKEND="pdf"
+      env: PYSAL_PYPI=false MPLBACKEND="pdf"
     - python: 3.7
-      dist: xenial
-      sudo: true
-      env: PYSAL_PLUS=false MPLBACKEND="pdf"
-    - python: 3.7
-      dist: xenial
-      sudo: true
-      env: PYSAL_PLUS=true MPLBACKEND="pdf"
+      env: PYSAL_PYPI=false MPLBACKEND="pdf"
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -38,9 +39,9 @@ install:
         echo 'testing pypi libpysal' && pip install libpysal;
     else
         echo 'testing git libpysal';
-        git clone https://github.com/pysal/libpysal.git; cd libpysal; pip install .; cd ../;
+        git clone https://github.com/pysal/libpysal.git;
+        cd libpysal; pip install .; cd ../;
     fi;
-
 
 script:
   - python setup.py sdist >/dev/null
