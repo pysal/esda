@@ -1,5 +1,74 @@
 # Changes
 
+Version 2.2.0 (2019-12-18)
+
+We closed a total of 50 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2019-07-01.
+
+## Issues Closed
+  - ENH: bumping version and handle array creation error in join counts (#95)
+  - development guidelines link in README.md and README.rst (#87)
+  - `PYSAL_PYPI` is not defined in `.travis.yml` (#92)
+  - addressing #92 -- .travis.yml issue (#93)
+  - resolving dev guidelines link (#88)
+  - Update officially supported Python versions (#80)
+  - ENH - Join count tails (#74)
+  - DOC: Have notebooks show output in the src (#83)
+  - no output in documentation notebooks (#82)
+  - officially supported Python versions (#81)
+  - add docs badge (#79)
+  - docs are failing (#77)
+  - (bug, docs) fix docs building (#78)
+  - PySAL development guidelines link broken in pysal/esda (#73)
+  - fixed broken development guidelines link, issue #73 (#76)
+  - Data missing from example notebooks (#49)
+  - added smaup notebook missing data, in addition to sjoin, and groupby code for issue #49  (#75)
+  - BUG: setup.py in 2.0.1 is broken (#46)
+  - join_counts should provide a pandas-style cross-tab of bb,bw,ww.  (#47)
+  - [ENH]: Geosilhouettes (#72)
+  - ENH: Contingency tables for Join Counts and related statistics (#71)
+  - [WIP] add geosilhouette code (#50)
+  - standardize option in Gamma statistic should be a bool. (#59)
+  - deprecate standardize option (#70)
+  - esda 2.0.1 is release on github, but not on pypi (#56)
+  - REL: 2.1.1 (#69)
+  - REL: update setup and add Lee statistics (#68)
+  - correcting typo from (#60) (#67)
+  - typo caused by vim insert issue (#60)
+  - add Lee (2001) local spatial Pearson (#51)
+  - Use README.rst instead of README.md in setup.py b/c the former is in the sdist (#66)
+  - (BUG) esda 2.1.0 on pypi cannot be installed (#65)
+
+## Pull Requests
+  - ENH: bumping version and handle array creation error in join counts (#95)
+  - addressing #92 -- .travis.yml issue (#93)
+  - resolving dev guidelines link (#88)
+  - ENH - Join count tails (#74)
+  - DOC: Have notebooks show output in the src (#83)
+  - officially supported Python versions (#81)
+  - add docs badge (#79)
+  - (bug, docs) fix docs building (#78)
+  - fixed broken development guidelines link, issue #73 (#76)
+  - added smaup notebook missing data, in addition to sjoin, and groupby code for issue #49  (#75)
+  - [ENH]: Geosilhouettes (#72)
+  - ENH: Contingency tables for Join Counts and related statistics (#71)
+  - deprecate standardize option (#70)
+  - REL: 2.1.1 (#69)
+  - REL: update setup and add Lee statistics (#68)
+  - correcting typo from (#60) (#67)
+  - add Lee (2001) local spatial Pearson (#51)
+  - Use README.rst instead of README.md in setup.py b/c the former is in the sdist (#66)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Levi John Wolf
+  - James Gaboardi
+  - Wei Kang
+  - Rose.Pearson
+  - Matthew.Borish@Gmail.Com
+
+# Changes
+
 Version 2.1.1 (2019-07-01)
 
 We closed a total of 41 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2018-11-03.
