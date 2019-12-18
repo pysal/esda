@@ -125,41 +125,41 @@
 <h1>esda.path_silhouette<a class="headerlink" href="#esda-path-silhouette" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="esda.path_silhouette">
-<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">path_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">D=None</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x12cde6598&gt;</em>, <em class="sig-param">closest=False</em>, <em class="sig-param">return_nbfc=False</em>, <em class="sig-param">return_nbfc_score=False</em>, <em class="sig-param">return_paths=False</em>, <em class="sig-param">directed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#path_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.path_silhouette" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">path_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">D=None</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x124a32598&gt;</em>, <em class="sig-param">closest=False</em>, <em class="sig-param">return_nbfc=False</em>, <em class="sig-param">return_nbfc_score=False</em>, <em class="sig-param">return_paths=False</em>, <em class="sig-param">directed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#path_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.path_silhouette" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute a path silhouette for all observations. <span class="bibtex" id="id1">[Rosseeuw_1987]</span></p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong><span class="classifier">np.ndarray (N,P)</span></dt><dd><p>matrix of data with N observations and P covariates.</p>
+<dd class="field-odd"><dl>
+<dt><strong>data</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a> (N,P)</span></dt><dd><p>matrix of data with N observations and P covariates.</p>
 </dd>
-<dt><strong>labels</strong><span class="classifier">np.ndarray (N,)</span></dt><dd><p>flat vector of the L labels assigned over N observations.</p>
+<dt><strong>labels</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a> (N,)</span></dt><dd><p>flat vector of the L labels assigned over N observations.</p>
 </dd>
-<dt><strong>W</strong><span class="classifier">pysal.W object</span></dt><dd><p>spatial weights object reflecting the spatial connectivity 
+<dt><strong>W</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pysal.W</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>spatial weights object reflecting the spatial connectivity 
 in the problem under analysis</p>
 </dd>
-<dt><strong>D</strong><span class="classifier">np.ndarray (N,N)</span></dt><dd><p>a precomputed distance matrix to apply over W. If passed, 
+<dt><strong>D</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a> (N,N)</span></dt><dd><p>a precomputed distance matrix to apply over W. If passed, 
 takes precedence over data, and data is ignored.</p>
 </dd>
-<dt><strong>metric</strong><span class="classifier">callable</span></dt><dd><p>function mapping the (N,P) data into an (N,N) dissimilarity matrix, 
+<dt><strong>metric</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">callable()</span></code></a></span></dt><dd><p>function mapping the (N,P) data into an (N,N) dissimilarity matrix, 
 like that found in scikit.metrics.pairwise or scipy.spatial.distance</p>
 </dd>
-<dt><strong>closest</strong><span class="classifier">bool</span></dt><dd><p>whether or not to consider the observation “connected” when it 
+<dt><strong>closest</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether or not to consider the observation “connected” when it 
 is first connected to the cluster, or considering the path cost
 to transit through the cluster. If True, the path cost is assessed
 between i and the path-closest j in each cluster. If False, the path
 cost is assessed as the average of path costs between i and all j
 in each cluster</p>
 </dd>
-<dt><strong>return_nbfc</strong><span class="classifier">bool</span></dt><dd><p>Whether or not to return the label of the next best fit 
+<dt><strong>return_nbfc</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Whether or not to return the label of the next best fit 
 cluster</p>
 </dd>
 <dt><strong>return_nbfc_score:  bool</strong></dt><dd><p>Whether or not to return the score of the next best fit 
 cluster.</p>
 </dd>
-<dt><strong>return_paths</strong><span class="classifier">bool</span></dt><dd><p>Whether or not to return the matrix of shortest path 
+<dt><strong>return_paths</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Whether or not to return the matrix of shortest path 
 lengths after having computed them.</p>
 </dd>
-<dt><strong>directed</strong><span class="classifier">bool</span></dt><dd><p>whether to consider the weights matrix as directed or undirected.
+<dt><strong>directed</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether to consider the weights matrix as directed or undirected.
 If directed, asymmetry in the input W is heeded. If not,
 asymmetry is ignored.</p>
 </dd>
@@ -167,7 +167,7 @@ asymmetry is ignored.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>An (N_obs,) array of the path silhouette values for each observation.</dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">An</span></code> (N_obs,) <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">silhouette</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">each</span></code> observation.</dt><dd></dd>
 </dl>
 </dd>
 </dl>

@@ -127,14 +127,14 @@
 <dt id="esda.Moran_BV">
 <em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Moran_BV</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_BV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_BV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bivariate Moran’s I</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>x</strong><span class="classifier">array</span></dt><dd><p>x-axis variable</p>
+<dd class="field-odd"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>x-axis variable</p>
 </dd>
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>wy will be on y axis</p>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>wy will be on y axis</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>weight instance assumed to be aligned with y</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>weight instance assumed to be aligned with y</p>
 </dd>
 <dt><strong>transformation</strong><span class="classifier">{‘R’, ‘B’, ‘D’, ‘U’, ‘V’}</span></dt><dd><p>weights transformation, default is row-standardized “r”.
 Other options include
@@ -143,7 +143,7 @@ Other options include
 “U”: untransformed (general weights),
 “V”: variance-stabilizing.</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of pseudo
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo
 p_values</p>
 </dd>
 </dl>
@@ -185,59 +185,47 @@ converting each to a numpy array</p>
 <span class="go">0.001</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>zx</strong><span class="classifier">array</span></dt><dd><p>original x variable standardized by mean and std</p>
+<dd class="field-odd"><dl>
+<dt><strong>zx</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original x variable standardized by mean and std</p>
 </dd>
-<dt><strong>zy</strong><span class="classifier">array</span></dt><dd><p>original y variable standardized by mean and std</p>
+<dt><strong>zy</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original y variable standardized by mean and std</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>original w object</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
 </dd>
-<dt><strong>permutation</strong><span class="classifier">int</span></dt><dd><p>number of permutations</p>
+<dt><strong>permutation</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>I</strong><span class="classifier">float</span></dt><dd><p>value of bivariate Moran’s I</p>
+<dt><strong>I</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>value of bivariate Moran’s I</p>
 </dd>
-<dt><strong>sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of I values for permuted samples</p>
 </dd>
-<dt><strong>p_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed I is extreme
 it is either extremely high or extremely low</p>
 </dd>
-<dt><strong>EI_sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>EI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 average value of I from permutations</p>
 </dd>
-<dt><strong>VI_sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>VI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 variance of I from permutations</p>
 </dd>
-<dt><strong>seI_sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>seI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 standard deviation of I under permutations.</p>
 </dd>
-<dt><strong>z_sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 standardized I based on permutations</p>
 </dd>
-<dt><strong>p_z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on standard normal approximation from
 permutations</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, x[, y, w, inplace, pvalue, outvals])</p></td>
-<td><p>Function to compute a Moran_BV statistic on a dataframe</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="esda.Moran_BV.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_BV.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_BV.__init__" title="Permalink to this definition">¶</a></dt>

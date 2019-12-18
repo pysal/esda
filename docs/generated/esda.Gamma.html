@@ -127,12 +127,12 @@
 <dt id="esda.Gamma">
 <em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Gamma</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">operation='c'</em>, <em class="sig-param">standardize=False</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/gamma.html#Gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gamma index for spatial autocorrelation</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>variable measured across n spatial units</p>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>variable measured across n spatial units</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>spatial weights instance
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>spatial weights instance
 can be binary or row-standardized</p>
 </dd>
 <dt><strong>operation</strong><span class="classifier">{‘c’, ‘s’, ‘a’}</span></dt><dd><p>attribute similarity function where,
@@ -140,11 +140,11 @@ can be binary or row-standardized</p>
 ‘s’ squared difference
 ‘a’ absolute difference</p>
 </dd>
-<dt><strong>standardize</strong><span class="classifier">{False, True}</span></dt><dd><p>standardize variables first
+<dt><strong>standardize</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>}</span></dt><dd><p>standardize variables first
 False, keep as is
 True, standardize to mean zero and variance one</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
 </dd>
 </dl>
 </dd>
@@ -228,52 +228,40 @@ True, standardize to mean zero and variance one</p>
 <span class="go">0.003</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>original variable</p>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>original w object</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
 </dd>
 <dt><strong>op</strong><span class="classifier">{‘c’, ‘s’, ‘a’}</span></dt><dd><p>attribute similarity function, as per parameters
 attribute similarity function</p>
 </dd>
-<dt><strong>stand</strong><span class="classifier">{False, True}</span></dt><dd><p>standardization</p>
+<dt><strong>stand</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>}</span></dt><dd><p>standardization</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>gamma</strong><span class="classifier">float</span></dt><dd><p>value of Gamma index</p>
+<dt><strong>gamma</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>value of Gamma index</p>
 </dd>
-<dt><strong>sim_g</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>sim_g</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of Gamma index values for permuted samples</p>
 </dd>
-<dt><strong>p_sim_g</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_sim_g</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed Gamma is more extreme than under randomness
 implemented as a two-sided test</p>
 </dd>
-<dt><strong>mean_g</strong><span class="classifier">float</span></dt><dd><p>average of permuted Gamma values</p>
+<dt><strong>mean_g</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted Gamma values</p>
 </dd>
-<dt><strong>min_g</strong><span class="classifier">float</span></dt><dd><p>minimum of permuted Gamma values</p>
+<dt><strong>min_g</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted Gamma values</p>
 </dd>
-<dt><strong>max_g</strong><span class="classifier">float</span></dt><dd><p>maximum of permuted Gamma values</p>
-</dd>
-</dl>
+<dt><strong>max_g</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted Gamma values</p>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>by_col</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="esda.Gamma.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">operation='c'</em>, <em class="sig-param">standardize=False</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/gamma.html#Gamma.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Gamma.__init__" title="Permalink to this definition">¶</a></dt>

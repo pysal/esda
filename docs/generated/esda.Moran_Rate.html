@@ -128,17 +128,17 @@
 <em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Moran_Rate</code><span class="sig-paren">(</span><em class="sig-param">e</em>, <em class="sig-param">b</em>, <em class="sig-param">w</em>, <em class="sig-param">adjusted=True</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em>, <em class="sig-param">two_tailed=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_Rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_Rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjusted Moran’s I Global Autocorrelation Statistic for Rate
 Variables <a class="bibtex reference internal" href="../references.html#assun-o-1999" id="id1">[AR99]</a></p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>e</strong><span class="classifier">array</span></dt><dd><p>an event variable measured across n spatial units</p>
+<dd class="field-odd"><dl>
+<dt><strong>e</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>an event variable measured across n spatial units</p>
 </dd>
-<dt><strong>b</strong><span class="classifier">array</span></dt><dd><p>a population-at-risk variable measured across n spatial
+<dt><strong>b</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>a population-at-risk variable measured across n spatial
 units</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>spatial weights instance</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>spatial weights instance</p>
 </dd>
-<dt><strong>adjusted</strong><span class="classifier">boolean</span></dt><dd><p>whether or not Moran’s I needs to be adjusted for rate
+<dt><strong>adjusted</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether or not Moran’s I needs to be adjusted for rate
 variable</p>
 </dd>
 <dt><strong>transformation</strong><span class="classifier">{‘R’, ‘B’, ‘D’, ‘U’, ‘V’}</span></dt><dd><p>weights transformation, default is row-standardized “r”.
@@ -148,10 +148,10 @@ Other options include
 “U”: untransformed (general weights),
 “V”: variance-stabilizing.</p>
 </dd>
-<dt><strong>two_tailed</strong><span class="classifier">boolean</span></dt><dd><p>If True (default), analytical p-values for Moran’s I are
+<dt><strong>two_tailed</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>If True (default), analytical p-values for Moran’s I are
 two-tailed, otherwise they are one tailed.</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of pseudo
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo
 p_values</p>
 </dd>
 </dl>
@@ -171,80 +171,68 @@ p_values</p>
 <span class="go">&#39;0.0042&#39;</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>rate variable computed from parameters e and b
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>rate variable computed from parameters e and b
 if adjusted is True, y is standardized rates
 otherwise, y is raw rates</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>original w object</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>I</strong><span class="classifier">float</span></dt><dd><p>value of Moran’s I</p>
+<dt><strong>I</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>value of Moran’s I</p>
 </dd>
-<dt><strong>EI</strong><span class="classifier">float</span></dt><dd><p>expected value under normality assumption</p>
+<dt><strong>EI</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>expected value under normality assumption</p>
 </dd>
-<dt><strong>VI_norm</strong><span class="classifier">float</span></dt><dd><p>variance of I under normality assumption</p>
+<dt><strong>VI_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>variance of I under normality assumption</p>
 </dd>
-<dt><strong>seI_norm</strong><span class="classifier">float</span></dt><dd><p>standard deviation of I under normality assumption</p>
+<dt><strong>seI_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard deviation of I under normality assumption</p>
 </dd>
-<dt><strong>z_norm</strong><span class="classifier">float</span></dt><dd><p>z-value of I under normality assumption</p>
+<dt><strong>z_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>z-value of I under normality assumption</p>
 </dd>
-<dt><strong>p_norm</strong><span class="classifier">float</span></dt><dd><p>p-value of I under normality assumption</p>
+<dt><strong>p_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value of I under normality assumption</p>
 </dd>
-<dt><strong>VI_rand</strong><span class="classifier">float</span></dt><dd><p>variance of I under randomization assumption</p>
+<dt><strong>VI_rand</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>variance of I under randomization assumption</p>
 </dd>
-<dt><strong>seI_rand</strong><span class="classifier">float</span></dt><dd><p>standard deviation of I under randomization assumption</p>
+<dt><strong>seI_rand</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard deviation of I under randomization assumption</p>
 </dd>
-<dt><strong>z_rand</strong><span class="classifier">float</span></dt><dd><p>z-value of I under randomization assumption</p>
+<dt><strong>z_rand</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>z-value of I under randomization assumption</p>
 </dd>
-<dt><strong>p_rand</strong><span class="classifier">float</span></dt><dd><p>p-value of I under randomization assumption</p>
+<dt><strong>p_rand</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value of I under randomization assumption</p>
 </dd>
-<dt><strong>two_tailed</strong><span class="classifier">boolean</span></dt><dd><p>If True, p_norm and p_rand are two-tailed p-values,
+<dt><strong>two_tailed</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>If True, p_norm and p_rand are two-tailed p-values,
 otherwise they are one-tailed.</p>
 </dd>
-<dt><strong>sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of I values for permuted samples</p>
 </dd>
-<dt><strong>p_sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed I is extreme if it is
 either extremely greater or extremely lower than the values
 obtained from permutaitons</p>
 </dd>
-<dt><strong>EI_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>EI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 average value of I from permutations</p>
 </dd>
-<dt><strong>VI_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>VI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 variance of I from permutations</p>
 </dd>
-<dt><strong>seI_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>seI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 standard deviation of I under permutations.</p>
 </dd>
-<dt><strong>z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 standardized I based on permutations</p>
 </dd>
-<dt><strong>p_z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on standard normal approximation from</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, events, populations[, w, …])</p></td>
-<td><p>Function to compute a Moran_Rate statistic on a dataframe</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="esda.Moran_Rate.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">e</em>, <em class="sig-param">b</em>, <em class="sig-param">w</em>, <em class="sig-param">adjusted=True</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em>, <em class="sig-param">two_tailed=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_Rate.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_Rate.__init__" title="Permalink to this definition">¶</a></dt>

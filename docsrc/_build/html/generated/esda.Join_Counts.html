@@ -127,14 +127,14 @@
 <dt id="esda.Join_Counts">
 <em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Join_Counts</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Join_Counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Binary Join Counts</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>binary variable measured across n spatial units</p>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>binary variable measured across n spatial units</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>spatial weights instance</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>spatial weights instance</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
 </dd>
 </dl>
 </dd>
@@ -184,80 +184,68 @@
 <span class="go">0.002</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>original variable</p>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>original w object</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>bb</strong><span class="classifier">float</span></dt><dd><p>number of black-black joins</p>
+<dt><strong>bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-black joins</p>
 </dd>
-<dt><strong>ww</strong><span class="classifier">float</span></dt><dd><p>number of white-white joins</p>
+<dt><strong>ww</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of white-white joins</p>
 </dd>
-<dt><strong>bw</strong><span class="classifier">float</span></dt><dd><p>number of black-white joins</p>
+<dt><strong>bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-white joins</p>
 </dd>
-<dt><strong>J</strong><span class="classifier">float</span></dt><dd><p>number of joins</p>
+<dt><strong>J</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of joins</p>
 </dd>
-<dt><strong>sim_bb</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>sim_bb</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of bb values for permuted samples</p>
 </dd>
-<dt><strong>p_sim_bb</strong><span class="classifier">array</span></dt><dd><dl class="simple">
+<dt><strong>p_sim_bb</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><dl class="simple">
 <dt>(if permutations&gt;0)</dt><dd><p>p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed bb is greater than under randomness</p>
 </dd>
 </dl>
 </dd>
-<dt><strong>mean_bb</strong><span class="classifier">float</span></dt><dd><p>average of permuted bb values</p>
+<dt><strong>mean_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bb values</p>
 </dd>
-<dt><strong>min_bb</strong><span class="classifier">float</span></dt><dd><p>minimum of permuted bb values</p>
+<dt><strong>min_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bb values</p>
 </dd>
-<dt><strong>max_bb</strong><span class="classifier">float</span></dt><dd><p>maximum of permuted bb values</p>
+<dt><strong>max_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bb values</p>
 </dd>
-<dt><strong>sim_bw</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>sim_bw</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of bw values for permuted samples</p>
 </dd>
-<dt><strong>p_sim_bw</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_sim_bw</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed bw is greater than under randomness</p>
 </dd>
-<dt><strong>mean_bw</strong><span class="classifier">float</span></dt><dd><p>average of permuted bw values</p>
+<dt><strong>mean_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bw values</p>
 </dd>
-<dt><strong>min_bw</strong><span class="classifier">float</span></dt><dd><p>minimum of permuted bw values</p>
+<dt><strong>min_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bw values</p>
 </dd>
-<dt><strong>max_bw</strong><span class="classifier">float</span></dt><dd><p>maximum of permuted bw values</p>
+<dt><strong>max_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bw values</p>
 </dd>
-<dt><strong>chi2</strong><span class="classifier">float</span></dt><dd><p>Chi-square statistic on contingency table for join counts</p>
+<dt><strong>chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Chi-square statistic on contingency table for join counts</p>
 </dd>
-<dt><strong>chi2_p</strong><span class="classifier">float</span></dt><dd><p>Analytical p-value for chi2</p>
+<dt><strong>chi2_p</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Analytical p-value for chi2</p>
 </dd>
-<dt><strong>chi2_dof</strong><span class="classifier">int</span></dt><dd><p>Degrees of freedom for analytical chi2</p>
+<dt><strong>chi2_dof</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Degrees of freedom for analytical chi2</p>
 </dd>
-<dt><strong>crosstab</strong><span class="classifier">DataFrame</span></dt><dd><p>Contingency table for observed join counts</p>
+<dt><strong>crosstab</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataFrame</span></code></span></dt><dd><p>Contingency table for observed join counts</p>
 </dd>
-<dt><strong>expected</strong><span class="classifier">DataFrame</span></dt><dd><p>Expected contingency table for the null</p>
+<dt><strong>expected</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataFrame</span></code></span></dt><dd><p>Expected contingency table for the null</p>
 </dd>
-<dt><strong>p_sim_chi2</strong><span class="classifier">float</span></dt><dd><p>p-value for chi2 under random spatial permutations</p>
-</dd>
-</dl>
+<dt><strong>p_sim_chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value for chi2 under random spatial permutations</p>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, cols[, w, inplace, pvalue, outvals])</p></td>
-<td><p>Function to compute a Join_Count statistic on a dataframe</p></td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="esda.Join_Counts.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Join_Counts.__init__" title="Permalink to this definition">¶</a></dt>

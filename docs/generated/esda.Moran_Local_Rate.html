@@ -127,16 +127,16 @@
 <dt id="esda.Moran_Local_Rate">
 <em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Moran_Local_Rate</code><span class="sig-paren">(</span><em class="sig-param">e</em>, <em class="sig-param">b</em>, <em class="sig-param">w</em>, <em class="sig-param">adjusted=True</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em>, <em class="sig-param">geoda_quads=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_Local_Rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_Local_Rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjusted Local Moran Statistics for Rate Variables <span id="id1">[Assuncao1999]</span></p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>e</strong><span class="classifier">array</span></dt><dd><p>(n,1), an event variable across n spatial units</p>
+<dd class="field-odd"><dl>
+<dt><strong>e</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(n,1), an event variable across n spatial units</p>
 </dd>
-<dt><strong>b</strong><span class="classifier">array</span></dt><dd><p>(n,1), a population-at-risk variable across n spatial units</p>
+<dt><strong>b</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(n,1), a population-at-risk variable across n spatial units</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>weight instance assumed to be aligned with y</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>weight instance assumed to be aligned with y</p>
 </dd>
-<dt><strong>adjusted</strong><span class="classifier">boolean</span></dt><dd><p>whether or not local Moran statistics need to be adjusted for
+<dt><strong>adjusted</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether or not local Moran statistics need to be adjusted for
 rate variable</p>
 </dd>
 <dt><strong>transformation</strong><span class="classifier">{‘R’, ‘B’, ‘D’, ‘U’, ‘V’}</span></dt><dd><p>weights transformation,  default is row-standardized “r”.
@@ -146,52 +146,52 @@ Other options include
 “U”: untransformed (general weights),
 “V”: variance-stabilizing.</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of pseudo
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo
 p_values</p>
 </dd>
-<dt><strong>geoda_quads</strong><span class="classifier">boolean</span></dt><dd><p>(default=False)
+<dt><strong>geoda_quads</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>(default=False)
 If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
 If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4</p>
 </dd>
 <dt><strong>Attributes</strong></dt><dd></dd>
 <dt><strong>———-</strong></dt><dd></dd>
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>rate variables computed from parameters e and b
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>rate variables computed from parameters e and b
 if adjusted is True, y is standardized rates
 otherwise, y is raw rates</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>original w object</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of pseudo
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo
 p_values</p>
 </dd>
-<dt><strong>I</strong><span class="classifier">float</span></dt><dd><p>value of Moran’s I</p>
+<dt><strong>I</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>value of Moran’s I</p>
 </dd>
-<dt><strong>q</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>q</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL</p>
 </dd>
-<dt><strong>sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of I values for permuted samples</p>
 </dd>
-<dt><strong>p_sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed Ii is further away or extreme
 from the median of simulated Iis. It is either extremely
 high or extremely low in the distribution of simulated Is</p>
 </dd>
-<dt><strong>EI_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>EI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 average value of I from permutations</p>
 </dd>
-<dt><strong>VI_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>VI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 variance of I from permutations</p>
 </dd>
-<dt><strong>seI_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>seI_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 standard deviation of I under permutations.</p>
 </dd>
-<dt><strong>z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 standardized I based on permutations</p>
 </dd>
-<dt><strong>p_z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations&gt;0)
+<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 p-value based on standard normal approximation from
 permutations (one-sided)
 for two-sided tests, these values should be multiplied by 2</p>
@@ -219,29 +219,6 @@ for two-sided tests, these values should be multiplied by 2</p>
 <p>Note random components result is slightly different values across
 architectures so the results have been removed from doctests and will be
 moved into unittests that are conditional on architectures</p>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, events, populations[, w, …])</p></td>
-<td><p>Function to compute a Moran_Local_Rate statistic on a dataframe</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 44%" />
-<col style="width: 56%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>calc</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="esda.Moran_Local_Rate.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">e</em>, <em class="sig-param">b</em>, <em class="sig-param">w</em>, <em class="sig-param">adjusted=True</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em>, <em class="sig-param">geoda_quads=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_Local_Rate.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_Local_Rate.__init__" title="Permalink to this definition">¶</a></dt>

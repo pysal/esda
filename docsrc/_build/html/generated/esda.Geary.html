@@ -127,19 +127,19 @@
 <dt id="esda.Geary">
 <em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Geary</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/geary.html#Geary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Geary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global Geary C Autocorrelation statistic</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>(n, 1) attribute vector</p>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(n, 1) attribute vector</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>spatial weights</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>spatial weights</p>
 </dd>
 <dt><strong>transformation</strong><span class="classifier">{‘R’, ‘B’, ‘D’, ‘U’, ‘V’}</span></dt><dd><p>weights transformation, default is row-standardized.
 Other options include “B”: binary, “D”:
 doubly-standardized, “U”: untransformed (general
 weights), “V”: variance-stabilizing.</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of random permutations for calculation of
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of
 pseudo-p_values</p>
 </dd>
 </dl>
@@ -161,69 +161,57 @@ pseudo-p_values</p>
 <span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>original variable</p>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>spatial weights</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>spatial weights</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>C</strong><span class="classifier">float</span></dt><dd><p>value of statistic</p>
+<dt><strong>C</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>value of statistic</p>
 </dd>
-<dt><strong>EC</strong><span class="classifier">float</span></dt><dd><p>expected value</p>
+<dt><strong>EC</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>expected value</p>
 </dd>
-<dt><strong>VC</strong><span class="classifier">float</span></dt><dd><p>variance of G under normality assumption</p>
+<dt><strong>VC</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>variance of G under normality assumption</p>
 </dd>
-<dt><strong>z_norm</strong><span class="classifier">float</span></dt><dd><p>z-statistic for C under normality assumption</p>
+<dt><strong>z_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>z-statistic for C under normality assumption</p>
 </dd>
-<dt><strong>z_rand</strong><span class="classifier">float</span></dt><dd><p>z-statistic for C under randomization assumption</p>
+<dt><strong>z_rand</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>z-statistic for C under randomization assumption</p>
 </dd>
-<dt><strong>p_norm</strong><span class="classifier">float</span></dt><dd><p>p-value under normality assumption (one-tailed)</p>
+<dt><strong>p_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value under normality assumption (one-tailed)</p>
 </dd>
-<dt><strong>p_rand</strong><span class="classifier">float</span></dt><dd><p>p-value under randomization assumption (one-tailed)</p>
+<dt><strong>p_rand</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value under randomization assumption (one-tailed)</p>
 </dd>
-<dt><strong>sim</strong><span class="classifier">array</span></dt><dd><p>(if permutations!=0)
+<dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations!=0)
 vector of I values for permutated samples</p>
 </dd>
-<dt><strong>p_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations!=0)
+<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations!=0)
 p-value based on permutations (one-tailed)
 null: sptial randomness
 alternative: the observed C is extreme
 it is either extremely high or extremely low</p>
 </dd>
-<dt><strong>EC_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations!=0)
+<dt><strong>EC_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations!=0)
 average value of C from permutations</p>
 </dd>
-<dt><strong>VC_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations!=0)
+<dt><strong>VC_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations!=0)
 variance of C from permutations</p>
 </dd>
-<dt><strong>seC_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations!=0)
+<dt><strong>seC_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations!=0)
 standard deviation of C under permutations.</p>
 </dd>
-<dt><strong>z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations!=0)
+<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations!=0)
 standardized C based on permutations</p>
 </dd>
-<dt><strong>p_z_sim</strong><span class="classifier">float</span></dt><dd><p>(if permutations!=0)
+<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>(if permutations!=0)
 p-value based on standard normal approximation from
 permutations (one-tailed)</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, cols[, w, inplace, pvalue, outvals])</p></td>
-<td><p>Function to compute a Geary statistic on a dataframe</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="esda.Geary.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">transformation='r'</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/geary.html#Geary.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Geary.__init__" title="Permalink to this definition">¶</a></dt>

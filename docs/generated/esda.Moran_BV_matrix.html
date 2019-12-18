@@ -128,16 +128,16 @@
 <code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Moran_BV_matrix</code><span class="sig-paren">(</span><em class="sig-param">variables</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=0</em>, <em class="sig-param">varnames=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran.html#Moran_BV_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Moran_BV_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bivariate Moran Matrix</p>
 <p>Calculates bivariate Moran between all pairs of a set of variables.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>variables</strong><span class="classifier">array or pandas.DataFrame</span></dt><dd><p>sequence of variables to be assessed</p>
+<dd class="field-odd"><dl>
+<dt><strong>variables</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a> or <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.25.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a></span></dt><dd><p>sequence of variables to be assessed</p>
 </dd>
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>a spatial weights object</p>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>a spatial weights object</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier">int</span></dt><dd><p>number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>varnames</strong><span class="classifier">list, optional if variables is an array</span></dt><dd><p>Strings for variable names. Will add an
+<dt><strong>varnames</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>, optional if <code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">is</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">an</span></code> <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>Strings for variable names. Will add an
 attribute to <cite>Moran_BV</cite> objects in results needed for plotting
 in <cite>splot</cite> or <cite>.plot()</cite>. Default =None.
 Note: If variables is a <cite>pandas.DataFrame</cite> varnames
@@ -145,7 +145,7 @@ will automatically be generated</p>
 </dd>
 <dt><strong>Returns</strong></dt><dd></dd>
 <dt><strong>——-</strong></dt><dd></dd>
-<dt><strong>results</strong><span class="classifier">dictionary</span></dt><dd><p>(i,  j) is the key for the pair of variables, values are
+<dt><strong>results</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dictionary</span></code></span></dt><dd><p>(i,  j) is the key for the pair of variables, values are
 the Moran_BV objects.</p>
 </dd>
 </dl>
