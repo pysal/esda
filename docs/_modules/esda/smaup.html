@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>esda.smaup &#8212; esda v2.2.0 Manual</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for esda.smaup</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Juan C. Duque &lt;jduquec1@eafit.edu.co&gt;, </span><span class="se">\</span>
+<span class="s2">        Henry Laniado &lt;hlaniado@eafit.edu.co&gt;, </span><span class="se">\</span>
+<span class="s2">        Adriano Polo &lt;apolol@unal.edu.co&gt;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Smaup&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Smaup"><a class="viewcode-back" href="../../generated/esda.Smaup.html#esda.Smaup">[docs]</a><span class="k">class</span> <span class="nc">Smaup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    n               : int</span>
+<span class="sd">                      number of spatial units</span>
+<span class="sd">    k               : int</span>
+<span class="sd">                      number of regions</span>
+<span class="sd">    rho             : float</span>
+<span class="sd">                      rho value (level of spatial autocorrelation)</span>
+<span class="sd">                      ranges from -1 to 1</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n               : int</span>
+<span class="sd">                      number of spatial units</span>
+<span class="sd">    k               : int</span>
+<span class="sd">                      number of regions</span>
+<span class="sd">    rho             : float</span>
+<span class="sd">                      rho value (level of spatial autocorrelation)</span>
+<span class="sd">                      ranges from -1 to 1</span>
+<span class="sd">    smaup           : float</span>
+<span class="sd">                    : S-maup statistic (M)</span>
+<span class="sd">    critical_01     : float</span>
+<span class="sd">                    : critical value at 0.99 confidence level</span>
+<span class="sd">    critical_05     : float</span>
+<span class="sd">                    : critical value at 0.95 confidence level</span>
+<span class="sd">    critical_1      : float</span>
+<span class="sd">                    : critical value at 0.90 confidence level</span>
+<span class="sd">    summary         : string</span>
+<span class="sd">                    : message with interpretation of results</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Technical details and derivations can be found in :cite:`duque18`.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import libpysal</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from esda.moran import Moran</span>
+<span class="sd">    &gt;&gt;&gt; from esda.smaup import Smaup</span>
+<span class="sd">    &gt;&gt;&gt; w = libpysal.io.open(libpysal.examples.get_path(&quot;stl.gal&quot;)).read()</span>
+<span class="sd">    &gt;&gt;&gt; f = libpysal.io.open(libpysal.examples.get_path(&quot;stl_hom.txt&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array(f.by_col[&#39;HR8893&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; rho = Moran(y,  w).I</span>
+<span class="sd">    &gt;&gt;&gt; n = len(y)</span>
+<span class="sd">    &gt;&gt;&gt; k = int(n/2)</span>
+<span class="sd">    &gt;&gt;&gt; s = Smaup(n,k,rho)</span>
+<span class="sd">    &gt;&gt;&gt; s.smaup</span>
+<span class="sd">    0.15221341690376405</span>
+<span class="sd">    &gt;&gt;&gt; s.critical_01</span>
+<span class="sd">    0.38970613333333337</span>
+<span class="sd">    &gt;&gt;&gt; s.critical_05</span>
+<span class="sd">    0.3557221333333333</span>
+<span class="sd">    &gt;&gt;&gt; s.critical_1</span>
+<span class="sd">    0.3157950666666666</span>
+<span class="sd">    &gt;&gt;&gt; s.summary</span>
+<span class="sd">    &#39;Pseudo p-value &gt; 0.10 (H0 is not rejected)&#39;</span>
+
+<span class="sd">    SIDS example replicating OpenGeoda</span>
+
+<span class="sd">    &gt;&gt;&gt; w = libpysal.io.open(libpysal.examples.get_path(&quot;sids2.gal&quot;)).read()</span>
+<span class="sd">    &gt;&gt;&gt; f = libpysal.io.open(libpysal.examples.get_path(&quot;sids2.dbf&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; SIDR = np.array(f.by_col(&quot;SIDR74&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; from esda.moran import Moran</span>
+<span class="sd">    &gt;&gt;&gt; rho = Moran(SIDR,  w).I</span>
+<span class="sd">    &gt;&gt;&gt; n = len(y)</span>
+<span class="sd">    &gt;&gt;&gt; k = int(n/2)</span>
+<span class="sd">    &gt;&gt;&gt; s = Smaup(n,k,rho)</span>
+<span class="sd">    &gt;&gt;&gt; s.smaup</span>
+<span class="sd">    0.15176796553181948</span>
+<span class="sd">    &gt;&gt;&gt; s.critical_01</span>
+<span class="sd">    0.38970613333333337</span>
+<span class="sd">    &gt;&gt;&gt; s.critical_05</span>
+<span class="sd">    0.3557221333333333</span>
+<span class="sd">    &gt;&gt;&gt; s.critical_1</span>
+<span class="sd">    0.3157950666666666</span>
+<span class="sd">    &gt;&gt;&gt; s.summary</span>
+<span class="sd">    &#39;Pseudo p-value &gt; 0.10 (H0 is not rejected)&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Smaup.__init__"><a class="viewcode-back" href="../../generated/esda.Smaup.html#esda.Smaup.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">rho</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span>
+
+        <span class="c1"># Critical values of S-maup for alpha =0.01</span>
+        <span class="n">CV0_01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">900</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.83702</span><span class="p">,</span> <span class="mf">0.09218</span><span class="p">,</span> <span class="mf">0.23808</span><span class="p">,</span> <span class="mf">0.05488</span><span class="p">,</span> <span class="mf">0.07218</span><span class="p">,</span> <span class="mf">0.02621</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.83676</span><span class="p">,</span> <span class="mf">0.16134</span><span class="p">,</span> <span class="mf">0.13402</span><span class="p">,</span> <span class="mf">0.06737</span><span class="p">,</span> <span class="mf">0.05486</span><span class="p">,</span> <span class="mf">0.02858</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.83597</span><span class="p">,</span> <span class="mf">0.16524</span><span class="p">,</span> <span class="mf">0.13446</span><span class="p">,</span> <span class="mf">0.06616</span><span class="p">,</span> <span class="mf">0.06247</span><span class="p">,</span> <span class="mf">0.02851</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.83316</span><span class="p">,</span> <span class="mf">0.19276</span><span class="p">,</span> <span class="mf">0.13396</span><span class="p">,</span> <span class="mf">0.0633</span><span class="p">,</span> <span class="mf">0.0609</span><span class="p">,</span> <span class="mf">0.03696</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.8237</span><span class="p">,</span> <span class="mf">0.17925</span><span class="p">,</span> <span class="mf">0.15514</span><span class="p">,</span> <span class="mf">0.07732</span><span class="p">,</span> <span class="mf">0.07988</span><span class="p">,</span> <span class="mf">0.09301</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.76472</span><span class="p">,</span> <span class="mf">0.23404</span><span class="p">,</span> <span class="mf">0.2464</span><span class="p">,</span> <span class="mf">0.11588</span><span class="p">,</span> <span class="mf">0.10715</span><span class="p">,</span> <span class="mf">0.0707</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.67337</span><span class="p">,</span> <span class="mf">0.28921</span><span class="p">,</span> <span class="mf">0.25535</span><span class="p">,</span> <span class="mf">0.13992</span><span class="p">,</span> <span class="mf">0.12975</span><span class="p">,</span> <span class="mf">0.09856</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.52155</span><span class="p">,</span> <span class="mf">0.47399</span><span class="p">,</span> <span class="mf">0.29351</span><span class="p">,</span> <span class="mf">0.23923</span><span class="p">,</span> <span class="mf">0.20321</span><span class="p">,</span> <span class="mf">0.1625</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.28599</span><span class="p">,</span> <span class="mf">0.28938</span><span class="p">,</span> <span class="mf">0.4352</span><span class="p">,</span> <span class="mf">0.4406</span><span class="p">,</span> <span class="mf">0.34437</span><span class="p">,</span> <span class="mf">0.55967</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Critical values of S-maup for alpha =0.05</span>
+        <span class="n">CV0_05</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">900</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.83699</span><span class="p">,</span> <span class="mf">0.08023</span><span class="p">,</span> <span class="mf">0.10962</span><span class="p">,</span> <span class="mf">0.04894</span><span class="p">,</span> <span class="mf">0.04641</span><span class="p">,</span> <span class="mf">0.02423</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.83662</span><span class="p">,</span> <span class="mf">0.12492</span><span class="p">,</span> <span class="mf">0.08643</span><span class="p">,</span> <span class="mf">0.059</span><span class="p">,</span> <span class="mf">0.0428</span><span class="p">,</span> <span class="mf">0.02459</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.83578</span><span class="p">,</span> <span class="mf">0.13796</span><span class="p">,</span> <span class="mf">0.08679</span><span class="p">,</span> <span class="mf">0.05927</span><span class="p">,</span> <span class="mf">0.0426</span><span class="p">,</span> <span class="mf">0.02658</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.78849</span><span class="p">,</span> <span class="mf">0.16932</span><span class="p">,</span> <span class="mf">0.08775</span><span class="p">,</span> <span class="mf">0.05464</span><span class="p">,</span> <span class="mf">0.04787</span><span class="p">,</span> <span class="mf">0.03042</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.81952</span><span class="p">,</span> <span class="mf">0.15746</span><span class="p">,</span> <span class="mf">0.11126</span><span class="p">,</span> <span class="mf">0.06961</span><span class="p">,</span> <span class="mf">0.06066</span><span class="p">,</span> <span class="mf">0.05234</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.70466</span><span class="p">,</span> <span class="mf">0.21088</span><span class="p">,</span> <span class="mf">0.1536</span><span class="p">,</span> <span class="mf">0.09766</span><span class="p">,</span> <span class="mf">0.07938</span><span class="p">,</span> <span class="mf">0.06461</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.59461</span><span class="p">,</span> <span class="mf">0.23497</span><span class="p">,</span> <span class="mf">0.18244</span><span class="p">,</span> <span class="mf">0.11682</span><span class="p">,</span> <span class="mf">0.10129</span><span class="p">,</span> <span class="mf">0.0886</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.48958</span><span class="p">,</span> <span class="mf">0.37226</span><span class="p">,</span> <span class="mf">0.2228</span><span class="p">,</span> <span class="mf">0.2054</span><span class="p">,</span> <span class="mf">0.16144</span><span class="p">,</span> <span class="mf">0.14123</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.2158</span><span class="p">,</span> <span class="mf">0.22532</span><span class="p">,</span> <span class="mf">0.27122</span><span class="p">,</span> <span class="mf">0.29043</span><span class="p">,</span> <span class="mf">0.23648</span><span class="p">,</span> <span class="mf">0.31424</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Critical values of S-maup for alpha =0.10</span>
+        <span class="n">CV0_10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">625</span><span class="p">,</span> <span class="mi">900</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.69331</span><span class="p">,</span> <span class="mf">0.06545</span><span class="p">,</span> <span class="mf">0.07858</span><span class="p">,</span> <span class="mf">0.04015</span><span class="p">,</span> <span class="mf">0.03374</span><span class="p">,</span> <span class="mf">0.02187</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.79421</span><span class="p">,</span> <span class="mf">0.09566</span><span class="p">,</span> <span class="mf">0.06777</span><span class="p">,</span> <span class="mf">0.05058</span><span class="p">,</span> <span class="mf">0.03392</span><span class="p">,</span> <span class="mf">0.02272</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.689</span><span class="p">,</span> <span class="mf">0.10707</span><span class="p">,</span> <span class="mf">0.07039</span><span class="p">,</span> <span class="mf">0.05151</span><span class="p">,</span> <span class="mf">0.03609</span><span class="p">,</span> <span class="mf">0.02411</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.73592</span><span class="p">,</span> <span class="mf">0.14282</span><span class="p">,</span> <span class="mf">0.07076</span><span class="p">,</span> <span class="mf">0.04649</span><span class="p">,</span> <span class="mf">0.04001</span><span class="p">,</span> <span class="mf">0.02614</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.71632</span><span class="p">,</span> <span class="mf">0.13621</span><span class="p">,</span> <span class="mf">0.08801</span><span class="p">,</span> <span class="mf">0.06112</span><span class="p">,</span> <span class="mf">0.04937</span><span class="p">,</span> <span class="mf">0.03759</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.63718</span><span class="p">,</span> <span class="mf">0.18239</span><span class="p">,</span> <span class="mf">0.12101</span><span class="p">,</span> <span class="mf">0.08324</span><span class="p">,</span> <span class="mf">0.06347</span><span class="p">,</span> <span class="mf">0.05549</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.46548</span><span class="p">,</span> <span class="mf">0.17541</span><span class="p">,</span> <span class="mf">0.14248</span><span class="p">,</span> <span class="mf">0.10008</span><span class="p">,</span> <span class="mf">0.08137</span><span class="p">,</span> <span class="mf">0.07701</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3472</span><span class="p">,</span> <span class="mf">0.28774</span><span class="p">,</span> <span class="mf">0.1817</span><span class="p">,</span> <span class="mf">0.16442</span><span class="p">,</span> <span class="mf">0.13395</span><span class="p">,</span> <span class="mf">0.12354</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1764</span><span class="p">,</span> <span class="mf">0.18835</span><span class="p">,</span> <span class="mf">0.21695</span><span class="p">,</span> <span class="mf">0.23031</span><span class="p">,</span> <span class="mf">0.19435</span><span class="p">,</span> <span class="mf">0.22411</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">summary</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">25</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
+            <span class="n">summary</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;Warning: Please treat this result with caution because the&quot;</span>
+                <span class="s2">&quot;computational experiment in this paper include, so far, values of n&quot;</span>
+                <span class="s2">&quot;from 25 to 900.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">900</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">900</span>
+            <span class="n">summary</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;Warning: Please treat this result with caution because the&quot;</span>
+                <span class="s2">&quot;computational experiment in this paper include, so far, values of n&quot;</span>
+                <span class="s2">&quot;from 25 to 900.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.2</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mf">7.03</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">m</span><span class="p">)))</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.6618</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mf">1.3</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span> <span class="o">**</span> <span class="p">(</span><span class="n">a</span><span class="p">))</span>
+        <span class="n">b0</span> <span class="o">=</span> <span class="mf">5.32</span>
+        <span class="n">b1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">5.53</span>
+        <span class="n">tau</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span> <span class="o">*</span> <span class="n">b1</span><span class="p">)</span> <span class="o">+</span> <span class="n">b0</span>
+        <span class="n">smaup</span> <span class="o">=</span> <span class="n">L</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">eta</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">tau</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smaup</span> <span class="o">=</span> <span class="n">smaup</span>
+
+        <span class="k">if</span> <span class="mf">0.8</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mf">0.9</span>
+        <span class="k">elif</span> <span class="mf">0.6</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="mf">0.8</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mf">0.7</span>
+        <span class="k">elif</span> <span class="mf">0.4</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="mf">0.6</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="k">elif</span> <span class="mf">0.15</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="mf">0.4</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="k">elif</span> <span class="o">-</span><span class="mf">0.15</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="mf">0.15</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="o">-</span><span class="mf">0.4</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.15</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.3</span>
+        <span class="k">elif</span> <span class="o">-</span><span class="mf">0.6</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
+        <span class="k">elif</span> <span class="o">-</span><span class="mf">0.8</span> <span class="o">&lt;</span> <span class="n">rho</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.6</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.7</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.9</span>
+
+        <span class="n">crit_val0_01</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">CV0_01</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">CV0_01</span><span class="p">[</span><span class="n">CV0_01</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">:])(</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">crit_val0_05</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">CV0_05</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">CV0_05</span><span class="p">[</span><span class="n">CV0_05</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">:])(</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">crit_val0_10</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">CV0_10</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">CV0_10</span><span class="p">[</span><span class="n">CV0_10</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">:])(</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">critical_01</span> <span class="o">=</span> <span class="n">crit_val0_01</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">critical_05</span> <span class="o">=</span> <span class="n">crit_val0_05</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">critical_1</span> <span class="o">=</span> <span class="n">crit_val0_10</span>
+
+        <span class="k">if</span> <span class="n">smaup</span> <span class="o">&gt;</span> <span class="n">crit_val0_01</span><span class="p">:</span>
+            <span class="n">summary</span> <span class="o">+=</span> <span class="s2">&quot;Pseudo p-value &lt; 0.01 *** (H0 is rejected)&quot;</span>
+        <span class="k">elif</span> <span class="n">smaup</span> <span class="o">&gt;</span> <span class="n">crit_val0_05</span><span class="p">:</span>
+            <span class="n">summary</span> <span class="o">+=</span> <span class="s2">&quot;Pseudo p-value &lt; 0.05 ** (H0 is rejected)&quot;</span>
+        <span class="k">elif</span> <span class="n">smaup</span> <span class="o">&gt;</span> <span class="n">crit_val0_10</span><span class="p">:</span>
+            <span class="n">summary</span> <span class="o">+=</span> <span class="s2">&quot;Pseudo p-value &lt; 0.10 * (H0 is rejected)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">summary</span> <span class="o">+=</span> <span class="s2">&quot;Pseudo p-value &gt; 0.10 (H0 is not rejected)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">summary</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
