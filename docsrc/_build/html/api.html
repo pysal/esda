@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>API reference &#8212; esda v2.2.0 Manual</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="esda.Gamma" href="generated/esda.Gamma.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.2.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="#">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geary-statistic">Geary Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">API reference</a><ul>
+<li><a class="reference internal" href="#gamma-statistic">Gamma Statistic</a></li>
+<li><a class="reference internal" href="#geary-statistic">Geary Statistic</a></li>
+<li><a class="reference internal" href="#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li><a class="reference internal" href="#join-count-statistics">Join Count Statistics</a></li>
+<li><a class="reference internal" href="#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li><a class="reference internal" href="#moran-statistics">Moran Statistics</a></li>
+<li><a class="reference internal" href="#silhouette-statistics">Silhouette Statistics</a></li>
+<li><a class="reference internal" href="#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="api-reference">
+<span id="api-ref"></span><h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="gamma-statistic">
+<span id="gamma-api"></span><h2>Gamma Statistic<a class="headerlink" href="#gamma-statistic" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Gamma.html#esda.Gamma" title="esda.Gamma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Gamma</span></code></a>(y, w[, operation, standardize, …])</p></td>
+<td><p>Gamma index for spatial autocorrelation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="geary-statistic">
+<span id="geary-api"></span><h2>Geary Statistic<a class="headerlink" href="#geary-statistic" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Geary.html#esda.Geary" title="esda.Geary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Geary</span></code></a>(y, w[, transformation, permutations])</p></td>
+<td><p>Global Geary C Autocorrelation statistic</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="getis-ord-statistics">
+<span id="getis-api"></span><h2>Getis-Ord Statistics<a class="headerlink" href="#getis-ord-statistics" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.G.html#esda.G" title="esda.G"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.G</span></code></a>(y, w[, permutations])</p></td>
+<td><p>Global G Autocorrelation Statistic</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.G_Local.html#esda.G_Local" title="esda.G_Local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.G_Local</span></code></a>(y, w[, transform, …])</p></td>
+<td><p>Generalized Local G Autocorrelation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="join-count-statistics">
+<span id="join-api"></span><h2>Join Count Statistics<a class="headerlink" href="#join-count-statistics" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Join_Counts.html#esda.Join_Counts" title="esda.Join_Counts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Join_Counts</span></code></a>(y, w[, permutations])</p></td>
+<td><p>Binary Join Counts</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="modifiable-areal-unit-tests">
+<h2>Modifiable Areal Unit Tests<a class="headerlink" href="#modifiable-areal-unit-tests" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Smaup.html#esda.Smaup" title="esda.Smaup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Smaup</span></code></a>(n, k, rho)</p></td>
+<td><p>S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="moran-statistics">
+<h2>Moran Statistics<a class="headerlink" href="#moran-statistics" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Moran.html#esda.Moran" title="esda.Moran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran</span></code></a>(y, w[, transformation, …])</p></td>
+<td><p>Moran’s I Global Autocorrelation Statistic</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.Moran_BV.html#esda.Moran_BV" title="esda.Moran_BV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran_BV</span></code></a>(x, y, w[, transformation, …])</p></td>
+<td><p>Bivariate Moran’s I</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Moran_BV_matrix.html#esda.Moran_BV_matrix" title="esda.Moran_BV_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran_BV_matrix</span></code></a>(variables, w[, …])</p></td>
+<td><p>Bivariate Moran Matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.Moran_Local.html#esda.Moran_Local" title="esda.Moran_Local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran_Local</span></code></a>(y, w[, transformation, …])</p></td>
+<td><p>Local Moran Statistics</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV" title="esda.Moran_Local_BV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran_Local_BV</span></code></a>(x, y, w[, …])</p></td>
+<td><p>Bivariate Local Moran Statistics</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.Moran_Rate.html#esda.Moran_Rate" title="esda.Moran_Rate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran_Rate</span></code></a>(e, b, w[, adjusted, …])</p></td>
+<td><p>Adjusted Moran’s I Global Autocorrelation Statistic for Rate Variables <a class="bibtex reference internal" href="references.html#assun-o-1999" id="id1">[AR99]</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate" title="esda.Moran_Local_Rate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Moran_Local_Rate</span></code></a>(e, b, w[, adjusted, …])</p></td>
+<td><p>Adjusted Local Moran Statistics for Rate Variables <span id="id2">[Assuncao1999]</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="silhouette-statistics">
+<h2>Silhouette Statistics<a class="headerlink" href="#silhouette-statistics" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.boundary_silhouette.html#esda.boundary_silhouette" title="esda.boundary_silhouette"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.boundary_silhouette</span></code></a>(data, labels, W[, …])</p></td>
+<td><p>Compute the observation-level boundary silhouette score.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.nearest_label.html#esda.nearest_label" title="esda.nearest_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.nearest_label</span></code></a>(data, labels[, metric, …])</p></td>
+<td><p>Find the nearest label in attribute space.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.path_silhouette.html#esda.path_silhouette" title="esda.path_silhouette"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.path_silhouette</span></code></a>(data, labels, W[, D, …])</p></td>
+<td><p>Compute a path silhouette for all observations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.silhouette_alist.html#esda.silhouette_alist" title="esda.silhouette_alist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.silhouette_alist</span></code></a>(data, labels, alist[, …])</p></td>
+<td><p>Compute the silhouette for each edge in an adjacency graph.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="spatial-pearson-statistics">
+<h2>Spatial Pearson Statistics<a class="headerlink" href="#spatial-pearson-statistics" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson" title="esda.Spatial_Pearson"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Spatial_Pearson</span></code></a>([connectivity, …])</p></td>
+<td><p>Global Spatial Pearson Statistic</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.Local_Spatial_Pearson.html#esda.Local_Spatial_Pearson" title="esda.Local_Spatial_Pearson"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.Local_Spatial_Pearson</span></code></a>([connectivity, …])</p></td>
+<td><p>Local Spatial Pearson Statistic</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.fdr.html#esda.fdr" title="esda.fdr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.fdr</span></code></a>(pvalues[, alpha])</p></td>
+<td><p>Calculate the p-value cut-off to control for the false discovery rate (FDR) for multiple testing.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
