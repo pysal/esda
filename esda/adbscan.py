@@ -62,15 +62,16 @@ class ADBSCAN:
     Attributes
     ----------
     labels_     : array
-                  Cluster labels for each point in the dataset given to fit().
-                  Noisy (if the proportion of the most common label is < pct_thr) samples are given
-                  the label -1.
+                  [Only available after `fit`] Cluster labels for each point in the 
+                  dataset given to fit().
+                  Noisy (if the proportion of the most common label is < pct_thr) 
+                  samples are given the label -1.
     votes       : DataFrame
-                  Table indexed on `X.index` with `labels_` under the `lbls`
-                  column, and the frequency across draws of that label under
-                  `pct`
+                  [Only available after `fit`] Table indexed on `X.index` with 
+                  `labels_` under the `lbls` column, and the frequency across draws of 
+                  that label under `pct`
     solus       : DataFrame, shape = [n, reps]
-                  Each solution of labels for every draw
+                  [Only available after `fit`] Each solution of labels for every draw
 
     Examples
     --------
@@ -177,12 +178,14 @@ class ADBSCAN:
             columns=["rep-%s" % str(i).zfill(zfiller) for i in range(self.reps)],
         )
         # Multi-core implementation of parallel draws
-        if (self.n_jobs is -1) or (self.n_jobs >1):
+        if (self.n_jobs is -1) or (self.n_jobs > 1):
             pool = _setup_pool(self.n_jobs)
             # Set different parallel seeds!!!
-            warn_msg = ("Multi-core implementation only works on "\
-                        "relabelling solutions. Execution of draws "\
-                        "is still sequential.")
+            warn_msg = (
+                "Multi-core implementation only works on "
+                "relabelling solutions. Execution of draws "
+                "is still sequential."
+            )
             warnings.warn(warn_msg)
             for i in range(self.reps):
                 pars = (
@@ -297,11 +300,11 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
     3       7      7       7
     4      -1      7       7
     """
-    lbl_type = type(solus.iloc[0, 0])
     # N. of clusters by solution
     ns_clusters = solus.apply(lambda x: x.unique().shape[0])
-    # Pic reference solution as one w/ max N. of clusters
+    # Pick reference solution as one w/ max N. of clusters
     ref = ns_clusters[ns_clusters == ns_clusters.max()].iloc[[0]].index[0]
+    lbl_type = type(solus[ref].iloc[0])
     # Obtain centroids of reference solution
     ref_centroids = (
         xys.groupby(solus[ref])[xy]
@@ -313,9 +316,9 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
         # Build KDTree and setup results holder
         ref_kdt = cKDTree(ref_centroids)
         remapped_solus = pandas.DataFrame(
-            np.zeros(solus.shape, dtype=str), index=solus.index, columns=solus.columns
+            np.zeros(solus.shape, dtype=lbl_type), index=solus.index, columns=solus.columns
         )
-        if (n_jobs is -1) or (n_jobs >1):
+        if (n_jobs is -1) or (n_jobs > 1):
             pool = _setup_pool(n_jobs)
             s_ids = solus.drop(ref, axis=1).columns.tolist()
             to_loop_over = [(solus[s], ref_centroids, ref_kdt, xys, xy) for s in s_ids]
@@ -330,7 +333,7 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
                 # -
                 remapped_solus.loc[:, s] = solus[s].map(remap_ids)
         remapped_solus.loc[:, ref] = solus.loc[:, ref]
-        return remapped_solus.fillna("-1")
+        return remapped_solus.fillna(lbl_type(-1)).astype(lbl_type)
     else:
         print("WARNING: No clusters identified")
         return solus
@@ -345,7 +348,7 @@ def _remap_n_expand(pars):
 
 def _remap_lbls_single(pars):
     new_lbls, ref_centroids, ref_kdt, xys, xy = pars
-    lbl_type = type(new_lbls.iloc[0])
+    lbl_type = type(ref_centroids.index[0])
     # Cross-walk to cluster IDs
     ref_centroids_ids = pandas.Series(ref_centroids.index.values)
     # Centroids for new solution
@@ -421,6 +424,7 @@ def ensemble(solus, xys, xy=["X", "Y"], n_jobs=1):
     pred = pandas.DataFrame({"lbls": winner, "pct": votes})
     return pred
 
+
 def _setup_pool(n_jobs):
     """
     Set pool for multiprocessing
@@ -433,9 +437,9 @@ def _setup_pool(n_jobs):
                   of jobs is set to the number of CPU cores.
     """
     import multiprocessing as mp
+
     if n_jobs == -1:
         pool = mp.Pool(mp.cpu_count())
     else:
         pool = mp.Pool(n_jobs)
     return pool
-
