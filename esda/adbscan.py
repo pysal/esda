@@ -374,11 +374,6 @@ def ensemble(solus, xys, xy=["X", "Y"], n_jobs=1):
     ---------
     solus       : DataFrame
                   Table with labels for each point (row) and solution (column)
-    Returns
-    -------
-    pred        : DataFrame
-                  Table with predictions (`pred`) and proportion of votes 
-                  that elected it (`pct`)
     xys         : DataFrame
                   Table including coordinates
     xy          : list
@@ -421,7 +416,7 @@ def ensemble(solus, xys, xy=["X", "Y"], n_jobs=1):
     counts = np.array(list(map(f, remapped_solus.values)))
     winner = counts[:, 0]
     votes = counts[:, 1].astype(int) / solus.shape[1]
-    pred = pandas.DataFrame({"lbls": winner, "pct": votes})
+    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=solus.index)
     return pred
 
 
