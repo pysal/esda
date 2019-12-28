@@ -127,13 +127,15 @@ class ADBSCAN_Tester(unittest.TestCase):
 
 class Remap_lbls_Tester(unittest.TestCase):
     def setUp(self):
-        self.db = pandas.DataFrame({"X": [0, 0.1, 4, 6, 5], \
-                               "Y": [0, 0.2, 5, 7, 5] \
-                              })
-        self.solus = pandas.DataFrame({"rep-00": [0, 0, 7, 7, -1], \
-                                  "rep-01": [4, 4, -1, 6, 6], \
-                                  "rep-02": [5, 5, 8, 8, 8] \
-                                 })
+        self.db = pandas.DataFrame({"X": [0, 0.1, 4, 6, 5], "Y": [0, 0.2, 5, 7, 5]})
+        self.solus = pandas.DataFrame(
+            {
+                "rep-00": [0, 0, 7, 7, -1],
+                "rep-01": [4, 4, -1, 6, 6],
+                "rep-02": [5, 5, 8, 8, 8],
+            }
+        )
+
     def test_remap_lbls(self):
         vals = np.array([[0, 0, 0], [0, 0, 0], [7, -1, 7], [7, 7, 7], [-1, 7, 7]])
         # ------------------------#
@@ -152,27 +154,37 @@ class Remap_lbls_Tester(unittest.TestCase):
         np.testing.assert_equal(self.solus.columns.values, lbls.columns.values)
         # Values
         np.testing.assert_equal(lbls.values, vals)
- 
+
 
 class Ensemble_Tester(unittest.TestCase):
     def setUp(self):
-        self.db = pandas.DataFrame({"X": [0, 0.1, 4, 6, 5], \
-                               "Y": [0, 0.2, 5, 7, 5] \
-                              })\
-                              .rename(lambda i: 'i_'+str(i))
-        self.solus = pandas.DataFrame({"rep-00": [0, 0, 7, 7, -1], \
-                                  "rep-01": [4, 4, -1, 6, 6], \
-                                  "rep-02": [5, 5, 8, 8, 8] \
-                                 })\
-                              .rename(lambda i: 'i_'+str(i))
+        self.db = pandas.DataFrame(
+            {"X": [0, 0.1, 4, 6, 5], "Y": [0, 0.2, 5, 7, 5]}
+        ).rename(lambda i: "i_" + str(i))
+        self.solus = pandas.DataFrame(
+            {
+                "rep-00": [0, 0, 7, 7, -1],
+                "rep-01": [4, 4, -1, 6, 6],
+                "rep-02": [5, 5, 8, 8, 8],
+            }
+        ).rename(lambda i: "i_" + str(i))
+
     def test_ensemble(self):
-        vals = np.array([[0.0, 1.0], [0.0, 1.0], [7.0, 0.6666666666666666], [7.0, 1.0], [7.0, 0.6666666666666666]])
+        vals = np.array(
+            [
+                [0.0, 1.0],
+                [0.0, 1.0],
+                [7.0, 0.6666666666666666],
+                [7.0, 1.0],
+                [7.0, 0.6666666666666666],
+            ]
+        )
         # ------------------------#
         #           # Single Core #
         # ------------------------#
         ensemble_solu = adbscan.ensemble(self.solus, self.db)
         # Column names
-        np.testing.assert_equal(ensemble_solu.columns.values.tolist(), ['lbls', 'pct'])
+        np.testing.assert_equal(ensemble_solu.columns.values.tolist(), ["lbls", "pct"])
         # Index
         # Values
         np.testing.assert_almost_equal(ensemble_solu.values, vals)
@@ -181,10 +193,10 @@ class Ensemble_Tester(unittest.TestCase):
         # ------------------------#
         ensemble_solu = adbscan.ensemble(self.solus, self.db, n_jobs=-1)
         # Column names
-        np.testing.assert_equal(ensemble_solu.columns.values.tolist(), ['lbls', 'pct'])
+        np.testing.assert_equal(ensemble_solu.columns.values.tolist(), ["lbls", "pct"])
         # Values
         np.testing.assert_almost_equal(ensemble_solu.values, vals)
-  
+
 
 suite = unittest.TestSuite()
 test_classes = [ADBSCAN_Tester, Remap_lbls_Tester, Ensemble_Tester]

@@ -316,7 +316,9 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
         # Build KDTree and setup results holder
         ref_kdt = cKDTree(ref_centroids)
         remapped_solus = pandas.DataFrame(
-            np.zeros(solus.shape, dtype=lbl_type), index=solus.index, columns=solus.columns
+            np.zeros(solus.shape, dtype=lbl_type),
+            index=solus.index,
+            columns=solus.columns,
         )
         if (n_jobs is -1) or (n_jobs > 1):
             pool = _setup_pool(n_jobs)
