@@ -7,12 +7,14 @@ __author__ = "Dani Arribas-Bel <daniel.arribas.bel@gmail.com>"
 import warnings
 import pandas
 import numpy as np
+from geopandas import GeoSeries
+from libpysal.cg.alpha_shapes import alpha_shape_auto
 from scipy.spatial import cKDTree
 from collections import Counter
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import KNeighborsClassifier
 
-__all__ = ["ADBSCAN", "remap_lbls", "ensemble"]
+__all__ = ["ADBSCAN", "remap_lbls", "ensemble", "get_cluster_boundary"]
 
 
 class ADBSCAN:
@@ -440,3 +442,83 @@ def _setup_pool(n_jobs):
     else:
         pool = mp.Pool(n_jobs)
     return pool
+
+
+def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1):
+    """
+    Turn a set of labels associated with 2-D points into polygon boundaries
+    for each cluster using the auto alpha shape algorithm
+    (`libpysal.cg.alpha_shapes.alpha_shape_auto`)
+    ...
+
+    Arguments
+    ---------
+    labels      : Series
+                  Cluster labels for each point in the dataset (noise 
+                  samples expressed as -1), indexed as `xys`
+    xys         : DataFrame
+                  Table including coordinates
+    xy          : list
+                  [Default=`['X', 'Y']`] Ordered pair of names for XY
+                  coordinates in `xys`
+    n_jobs      : int
+                  [Optional. Default=1] The number of parallel jobs to run
+                  for remapping. If -1, then the number of jobs is set to
+                  the number of CPU cores.
+    crs         : str
+                  [Optional] Coordinate system
+    step        : int
+                  [Optional. Default=1]
+                  Number of points in `xys` to jump ahead in the alpha
+                  shape stage after checking whether the largest possible
+                  alpha that includes the point and all the other ones
+                  with smaller radii
+
+    Returns
+    -------
+    polys       : GeoSeries
+                  GeoSeries with polygons for each cluster boundary, indexed
+                  on the cluster label
+
+    Examples
+    --------
+    >>> import pandas
+    >>> from esda.adbscan import ADBSCAN, get_cluster_boundary
+    >>> import numpy as np
+    >>> np.random.seed(10)
+    >>> db = pandas.DataFrame({'X': np.random.random(25), \
+                               'Y': np.random.random(25) \
+                              })
+
+    ADBSCAN can be run following scikit-learn like API as:
+
+    >>> np.random.seed(10)
+    >>> clusterer = ADBSCAN(0.03, 3, reps=10, keep_solus=True)
+    >>> _ = clusterer.fit(db)
+    >>> labels = pandas.Series(clusterer.labels_, index=db.index)
+    >>> polys = get_cluster_boundary(labels, db)
+    >>> polys
+    0    POLYGON ((0.7217553174317995 0.819286995670068...
+    dtype: object
+    """
+
+    def _asa(pts_s):
+        return alpha_shape_auto(pts_s[0], step=pts_s[1])
+
+    lbl_type = type(labels.iloc[0])
+    noise = lbl_type(-1)
+    ids_in_cluster = labels[labels != noise].index
+    g = xys.loc[ids_in_cluster, xy].groupby(labels[ids_in_cluster])
+    chunked_pts_step = []
+    cluster_lbls = []
+    for sub in g.groups:
+        chunked_pts_step.append((xys.loc[g.groups[sub], xy].values, step))
+        cluster_lbls.append(sub)
+    if n_jobs == 1:
+        polys = map(_asa, chunked_pts_step)
+    else:
+        pool = _setup_pool(n_jobs)
+        polys = pool.map(_asa, chunked_pts_step)
+        pool.close()
+    polys = GeoSeries(polys, index=cluster_lbls, crs=crs)
+    return polys
