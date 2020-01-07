@@ -502,9 +502,6 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     dtype: object
     """
 
-    def _asa(pts_s):
-        return alpha_shape_auto(pts_s[0], step=pts_s[1])
-
     lbl_type = type(labels.iloc[0])
     noise = lbl_type(-1)
     ids_in_cluster = labels[labels != noise].index
@@ -522,3 +519,7 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
         pool.close()
     polys = GeoSeries(polys, index=cluster_lbls, crs=crs)
     return polys
+
+
+def _asa(pts_s):
+    return alpha_shape_auto(pts_s[0], step=pts_s[1])
