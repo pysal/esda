@@ -76,7 +76,6 @@ class ADBSCAN_Tester(unittest.TestCase):
         # ------------------------#
         np.random.seed(10)
         ads = adbscan.ADBSCAN(0.03, 3, reps=10, keep_solus=True)
-        # test there's no labels_, votes, or solus
         _ = ads.fit(self.db, xy=["x", "y"])
         # Params
         self.assertAlmostEqual(ads.eps, 0.03)
@@ -196,6 +195,94 @@ class Ensemble_Tester(unittest.TestCase):
         np.testing.assert_equal(ensemble_solu.columns.values.tolist(), ["lbls", "pct"])
         # Values
         np.testing.assert_almost_equal(ensemble_solu.values, vals)
+
+
+class Get_Cluster_Boundary_Tester(unittest.TestCase):
+    def setUp(self):
+        np.random.seed(10)
+        self.db = pandas.DataFrame(
+            {"x": np.random.random(25), "y": np.random.random(25)}
+        )
+        self.lbls = np.array(
+            [
+                "-1",
+                "-1",
+                "-1",
+                "0",
+                "-1",
+                "-1",
+                "-1",
+                "0",
+                "-1",
+                "-1",
+                "-1",
+                "-1",
+                "-1",
+                "-1",
+                "0",
+                "0",
+                "0",
+                "-1",
+                "0",
+                "-1",
+                "0",
+                "-1",
+                "-1",
+                "-1",
+                "-1",
+            ],
+            dtype=object,
+        )
+        self.pcts = np.array(
+            [
+                0.7,
+                0.5,
+                0.7,
+                1.0,
+                0.7,
+                0.7,
+                0.5,
+                1.0,
+                0.7,
+                0.7,
+                0.6,
+                0.6,
+                0.6,
+                0.7,
+                1.0,
+                0.9,
+                1.0,
+                0.7,
+                1.0,
+                0.7,
+                0.9,
+                0.7,
+                0.8,
+                0.6,
+                0.7,
+            ]
+        )
+        np.random.seed(10)
+        ads = adbscan.ADBSCAN(0.03, 3, reps=10, keep_solus=True)
+        _ = ads.fit(self.db, xy=["x", "y"])
+        self.labels = pandas.Series(ads.labels_, index=self.db.index)
+
+    def test_get_cluster_boundary(self):
+        # ------------------------#
+        #           # Single Core #
+        # ------------------------#
+        polys = adbscan.get_cluster_boundary(self.labels, self.db, xy=["x", "y"])
+        wkt = "POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))"
+        self.assertEqual(polys[0].wkt, wkt)
+
+        # ------------------------#
+        #           # Multi Core #
+        # ------------------------#
+        polys = adbscan.get_cluster_boundary(
+            self.labels, self.db, xy=["x", "y"], n_jobs=-1
+        )
+        wkt = "POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))"
+        self.assertEqual(polys[0].wkt, wkt)
 
 
 suite = unittest.TestSuite()
