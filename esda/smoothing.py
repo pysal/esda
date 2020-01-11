@@ -702,7 +702,8 @@ class Empirical_Bayes(_Smoother):
     for event and population-at-risk variables
 
     >>> import libpysal
-    >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
+    >>> stl_ex = libpysal.examples.load_example('stl')
+    >>> stl = libpysal.io.open(stl_ex.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -846,7 +847,8 @@ class Spatial_Empirical_Bayes(_Spatial_Smoother):
     for event and population-at-risk variables
 
     >>> import libpysal
-    >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
+    >>> stl_ex = libpysal.examples.load_example('stl')
+    >>> stl = libpysal.io.open(stl_ex.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -855,7 +857,7 @@ class Spatial_Empirical_Bayes(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = libpysal.io.open(libpysal.examples.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(stl_ex.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -926,7 +928,8 @@ class Spatial_Rate(_Spatial_Smoother):
     for event and population-at-risk variables
 
     >>> import libpysal
-    >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
+    >>> stl_ex = libpysal.examples.load_example('stl')
+    >>> stl = libpysal.io.open(stl_ex.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -935,7 +938,7 @@ class Spatial_Rate(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = libpysal.io.open(libpysal.examples.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(stl_ex.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -1231,7 +1234,9 @@ class Disk_Smoother(_Spatial_Smoother):
     for event and population-at-risk variables
 
     >>> import libpysal
-    >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
+
+    >>> stl_ex = libpysal.examples.load_example('stl')
+    >>> stl = libpysal.io.open(stl_ex.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -1240,7 +1245,7 @@ class Disk_Smoother(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = libpysal.io.open(libpysal.examples.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(stl_ex.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -1310,7 +1315,8 @@ class Spatial_Median_Rate(_Spatial_Smoother):
     for event and population-at-risk variables
 
     >>> import libpysal
-    >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
+    >>> stl_ex = libpysal.examples.load_example('stl')
+    >>> stl = libpysal.io.open(stl_ex.get_path('stl_hom.csv'), 'r')
 
     The 11th and 14th columns in stl_hom.csv includes the number of homocides and population.
     Creating two arrays from these columns.
@@ -1319,7 +1325,7 @@ class Spatial_Median_Rate(_Spatial_Smoother):
 
     Creating a spatial weights instance by reading in stl.gal file.
 
-    >>> stl_w = libpysal.io.open(libpysal.examples.get_path('stl.gal'), 'r').read()
+    >>> stl_w = libpysal.io.open(stl_ex.get_path('stl.gal'), 'r').read()
 
     Ensuring that the elements in the spatial weights instance are ordered
     by the given sequential numbers from 1 to the number of observations in stl_hom.csv
@@ -1439,7 +1445,8 @@ class Spatial_Filtering(_Smoother):
     for event and population-at-risk variables
 
     >>> import libpysal
-    >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
+    >>> stl_ex = libpysal.examples.load_example('stl')
+    >>> stl = libpysal.io.open(stl_ex.get_path('stl_hom.csv'), 'r')
 
     Reading the stl data in the WKT format so that
     we can easily extract polygon centroids
