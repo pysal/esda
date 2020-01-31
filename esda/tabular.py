@@ -74,7 +74,7 @@ def _univariate_handler(df, cols, stat=None, w=None, inplace=True,
     # objects, determine which pvalue types are available, and then grab them
     # all if needed.
 
-    if pvalue is not '':
+    if pvalue != '':
         outvals.append('p_'+pvalue.lower())
     if isinstance(cols, str):
         cols = [cols]
@@ -93,7 +93,7 @@ def _univariate_handler(df, cols, stat=None, w=None, inplace=True,
         outcols = ['_'.join((col, val)) for val in outvals]
         for colname, attname in zip(outcols, outvals):
             df[colname] = stat_obj.__getattribute__(attname)
-    if swapname is not '':
+    if swapname != '':
         df.columns = [_swap_ending(col, swapname) if col.endswith('_statistic') else col
                       for col in df.columns]
 
@@ -148,7 +148,7 @@ def _bivariate_handler(df, x, y=None, w=None, inplace=True, pvalue='sim',
             continue
         _univariate_handler(df, cols=xi, w=w, y=df[yi], inplace=True,
                             pvalue=pvalue, outvals=outvals, swapname='', **kwargs)
-    if real_swapname is not '':
+    if real_swapname != '':
         df.columns = [_swap_ending(col, real_swapname)
                       if col.endswith('_statistic')
                       else col for col in df.columns]
