@@ -1,5 +1,33 @@
 # Changes
 
+Version 2.2.1 (2020-02-01)
+
+This is a bug fix release for Pandas 1.0.
+
+We closed a total of 10 issues (enhancements and bug fixes) through 5 pull requests, since our last release on 2019-12-18.
+
+## Issues Closed
+  - Fixes for pandas deprecation and 3.8 verbosity (#101)
+  - ENH: adjust tests for new libpysal.examples (#98)
+  - update docs (#97)
+  - DOC: changelog update (#96)
+  - ENH: bumping version and handle array creation error in join counts (#95)
+
+## Pull Requests
+  - Fixes for pandas deprecation and 3.8 verbosity (#101)
+  - ENH: adjust tests for new libpysal.examples (#98)
+  - update docs (#97)
+  - DOC: changelog update (#96)
+  - ENH: bumping version and handle array creation error in join counts (#95)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Eli Knaap
+
+# Changes
+
+
 Version 2.2.0 (2019-12-18)
 
 We closed a total of 50 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2019-07-01.
