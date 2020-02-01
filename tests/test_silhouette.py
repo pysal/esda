@@ -1,5 +1,4 @@
-from .. import silhouettes
-
+from esda import silhouettes
 import geopandas
 import libpysal
 import numpy
@@ -57,7 +56,7 @@ class Silhouette_Tester(unittest.TestCase):
                                                metric=self.precomputed)
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
         with self.assertRaises(AssertionError):
-            silhouettes.boundary_silhouette(self.X, self.groups, self.w, 
+            silhouettes.boundary_silhouette(self.X, self.groups, self.w,
                                             metric=self.precomputed - self.precomputed.mean())
 
     def test_path(self):
@@ -81,11 +80,11 @@ class Silhouette_Tester(unittest.TestCase):
                              -0.03874118,
                               0.28623703,
                               0.40062121])
-        test = silhouettes.path_silhouette(self.X, self.groups, self.w, 
+        test = silhouettes.path_silhouette(self.X, self.groups, self.w,
                                             metric=self.altmetric)
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
         with self.assertRaises(TypeError):
-            silhouettes.path_silhouette(self.X, self.groups, self.w, 
+            silhouettes.path_silhouette(self.X, self.groups, self.w,
                                          metric=self.precomputed)
         with self.assertRaises(AssertionError):
             silhouettes.path_silhouette(self.X, self.groups, self.w,

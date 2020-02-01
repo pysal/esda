@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from .. import getisord
+from esda import getisord
 from libpysal.weights.distance import DistanceBand
 from libpysal.common import pandas
 

@@ -739,7 +739,7 @@ class Moran_Rate(Moran):
                  for e,pop,adj in zip(events, populations, adjusted)]
         names = ['-'.join((e,p)) for e,p in zip(events, populations)]
         out_df = df.copy()
-        rate_df = out_df.from_items(list(zip(names, rates))) #trick to avoid importing pandas
+        rate_df = out_df.from_dict(dict(zip(names, rates))) #trick to avoid importing pandas
         stat_df = _univariate_handler(rate_df, names, w=w, inplace=False,
                                       pvalue = pvalue, outvals = outvals,
                                       swapname=swapname,
@@ -1397,7 +1397,7 @@ class Moran_Local_Rate(Moran_Local):
                  for e,pop,adj in zip(events, populations, adjusted)]
         names = ['-'.join((e,p)) for e,p in zip(events, populations)]
         out_df = df.copy()
-        rate_df = out_df.from_items(list(zip(names, rates))) #trick to avoid importing pandas
+        rate_df = out_df.from_dict(dict(zip(names, rates))) #trick to avoid importing pandas
         _univariate_handler(rate_df, names, w=w, inplace=True,
                                       pvalue = pvalue, outvals = outvals,
                                       swapname=swapname,

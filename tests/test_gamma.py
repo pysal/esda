@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from libpysal.weights.util import lat2W
-from ..gamma import Gamma
+from esda.gamma import Gamma
 from libpysal.common import pandas
 
 PANDAS_EXTINCT = pandas is None

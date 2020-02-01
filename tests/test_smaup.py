@@ -1,8 +1,8 @@
 import unittest
 import libpysal
 from libpysal.common import pandas, RTOL, ATOL
-from ..smaup import Smaup
-from ..moran import Moran
+from esda.smaup import Smaup
+from esda.moran import Moran
 import numpy as np
 
 
@@ -17,7 +17,7 @@ class Smaup_Tester(unittest.TestCase):
         self.rho = Moran(self.y, self.w).I
         self.n = len(self.y)
         self.k = int(self.n/2)
-    
+
     def test_smaup(self):
         self.setup()
         sm = Smaup(self.n, self.k, self.rho)
@@ -29,7 +29,7 @@ class Smaup_Tester(unittest.TestCase):
         self.assertAlmostEqual(sm.critical_05, 0.3557221333333333)
         self.assertAlmostEqual(sm.critical_1, 0.3157950666666666)
         self.assertEqual(sm.summary, 'Pseudo p-value > 0.10 (H0 is not rejected)')
-        
+
     def test_sids(self):
         from esda import moran
         w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
@@ -37,14 +37,14 @@ class Smaup_Tester(unittest.TestCase):
         SIDR = np.array(f.by_col("SIDR74"))
         rho = moran.Moran(SIDR, w, two_tailed=False).I
         n = len(SIDR)
-        k = int(n/2)       
+        k = int(n/2)
         sm = Smaup(n, k, rho)
         np.testing.assert_allclose(sm.smaup,  0.15176796553181948, rtol=RTOL, atol=ATOL)
         self.assertAlmostEqual(sm.critical_01, 0.23404000000000003)
         self.assertAlmostEqual(sm.critical_05, 0.21088)
         self.assertAlmostEqual(sm.critical_1, 0.18239)
         self.assertEqual(sm.summary, 'Pseudo p-value > 0.10 (H0 is not rejected)')
-        
+
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):
         from libpysal.io import geotable as pdio

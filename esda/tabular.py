@@ -149,6 +149,7 @@ def _bivariate_handler(df, x, y=None, w=None, inplace=True, pvalue='sim',
         _univariate_handler(df, cols=xi, w=w, y=df[yi], inplace=True,
                             pvalue=pvalue, outvals=outvals, swapname='', **kwargs)
     if real_swapname != '':
+
         df.columns = [_swap_ending(col, real_swapname)
                       if col.endswith('_statistic')
                       else col for col in df.columns]
