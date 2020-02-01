@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.boundary_silhouette &#8212; esda v2.2.0 Manual</title>
+    <title>esda.boundary_silhouette &#8212; esda v2.2.1 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -125,8 +125,8 @@
 <h1>esda.boundary_silhouette<a class="headerlink" href="#esda-boundary-silhouette" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="esda.boundary_silhouette">
-<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">boundary_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x124a32598&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#boundary_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.boundary_silhouette" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the observation-level boundary silhouette score.</p>
+<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">boundary_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x7f1626490430&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#boundary_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.boundary_silhouette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the observation-level boundary silhouette score <a class="bibtex reference internal" href="../references.html#wolf2019geosilhouettes" id="id1">[WKR19]</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
@@ -137,7 +137,7 @@
 <p class="rubric">Notes</p>
 <p>The boundary silhouette is the silhouette score using only spatially-proximate
 clusters as candidates for the next-best-fit distance function (the 
-b(i) function in <span class="bibtex" id="id1">[Rosseeuw_1987]</span>. 
+b(i) function in <a class="bibtex reference internal" href="../references.html#rousseeuw1987" id="id2">[Rou87]</a>. 
 This restricts the next-best-fit cluster to be the set of clusters on which 
 an observation neighbors. 
 So, instead of considering <em>all</em> clusters when finding the next-best-fit cluster, 
@@ -178,7 +178,7 @@ an (N,N) distance matrix already.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

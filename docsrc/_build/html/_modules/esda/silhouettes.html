@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.silhouettes &#8212; esda v2.2.0 Manual</title>
+    <title>esda.silhouettes &#8212; esda v2.2.1 Manual</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -152,7 +152,8 @@
                     <span class="n">return_paths</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute a path silhouette for all observations. :cite:`Rosseeuw_1987` </span>
+<span class="sd">    Compute a path silhouette for all observations  :cite:`wolf2019geosilhouettes,Rousseeuw1987`.</span>
+
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -317,7 +318,7 @@
 
 <div class="viewcode-block" id="boundary_silhouette"><a class="viewcode-back" href="../../generated/esda.boundary_silhouette.html#esda.boundary_silhouette">[docs]</a><span class="k">def</span> <span class="nf">boundary_silhouette</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">skp</span><span class="o">.</span><span class="n">euclidean_distances</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the observation-level boundary silhouette score. </span>
+<span class="sd">    Compute the observation-level boundary silhouette score :cite:`wolf2019geosilhouettes`. </span>
 
 <span class="sd">    Arguments</span>
 <span class="sd">    ---------</span>
@@ -341,7 +342,7 @@
 <span class="sd">    -----</span>
 <span class="sd">    The boundary silhouette is the silhouette score using only spatially-proximate</span>
 <span class="sd">    clusters as candidates for the next-best-fit distance function (the </span>
-<span class="sd">    b(i) function in :cite:`Rosseeuw_1987`. </span>
+<span class="sd">    b(i) function in :cite:`Rousseeuw1987`. </span>
 <span class="sd">    This restricts the next-best-fit cluster to be the set of clusters on which </span>
 <span class="sd">    an observation neighbors. </span>
 <span class="sd">    So, instead of considering *all* clusters when finding the next-best-fit cluster, </span>
@@ -615,7 +616,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

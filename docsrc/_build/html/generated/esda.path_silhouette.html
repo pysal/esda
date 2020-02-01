@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.path_silhouette &#8212; esda v2.2.0 Manual</title>
+    <title>esda.path_silhouette &#8212; esda v2.2.1 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -125,8 +125,8 @@
 <h1>esda.path_silhouette<a class="headerlink" href="#esda-path-silhouette" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="esda.path_silhouette">
-<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">path_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">D=None</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x124a32598&gt;</em>, <em class="sig-param">closest=False</em>, <em class="sig-param">return_nbfc=False</em>, <em class="sig-param">return_nbfc_score=False</em>, <em class="sig-param">return_paths=False</em>, <em class="sig-param">directed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#path_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.path_silhouette" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a path silhouette for all observations. <span class="bibtex" id="id1">[Rosseeuw_1987]</span></p>
+<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">path_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">D=None</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x7f1626490430&gt;</em>, <em class="sig-param">closest=False</em>, <em class="sig-param">return_nbfc=False</em>, <em class="sig-param">return_nbfc_score=False</em>, <em class="sig-param">return_paths=False</em>, <em class="sig-param">directed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#path_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.path_silhouette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a path silhouette for all observations  <a class="bibtex reference internal" href="../references.html#wolf2019geosilhouettes" id="id1">[WKR19]</a><a class="bibtex reference internal" href="../references.html#rousseeuw1987" id="id2">[Rou87]</a>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
@@ -134,7 +134,7 @@
 </dd>
 <dt><strong>labels</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a> (N,)</span></dt><dd><p>flat vector of the L labels assigned over N observations.</p>
 </dd>
-<dt><strong>W</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pysal.W</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>spatial weights object reflecting the spatial connectivity 
+<dt><strong>W</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pysal.W</span></code> <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>spatial weights object reflecting the spatial connectivity 
 in the problem under analysis</p>
 </dd>
 <dt><strong>D</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a> (N,N)</span></dt><dd><p>a precomputed distance matrix to apply over W. If passed, 
@@ -195,7 +195,7 @@ asymmetry is ignored.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>
