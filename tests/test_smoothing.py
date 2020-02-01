@@ -1,7 +1,7 @@
 import unittest
 import libpysal
 from libpysal.weights.distance import KNN, Kernel
-from .. import smoothing as sm
+from esda import smoothing as sm
 import numpy as np
 from libpysal.common import RTOL, ATOL, pandas
 
@@ -293,7 +293,7 @@ class TestHB(unittest.TestCase):
         self.assertEqual(len(htr.r), len(self.e))
         for i in htr.r:
             self.assertTrue(i is not None)
-    
+
     @unittest.skip('Deprecated')
     def test_Headbanging_Median_Rate(self):
         s_ht = sm.Headbanging_Triples(self.d, self.w, k=5)

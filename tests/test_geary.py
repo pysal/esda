@@ -5,7 +5,7 @@ from libpysal.io import open as popen
 from libpysal import examples
 from libpysal.common import pandas
 
-from .. import geary
+from esda import geary
 import numpy as np
 
 PANDAS_EXTINCT = pandas is None

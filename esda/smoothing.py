@@ -1206,8 +1206,8 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
             max_len = 0 if len(this_r) > max_len else max_len
             rdf.append((outcol, this_r.tolist()))
         padded = (r[1] + [None] * max_len for r in rdf)
-        rdf = list(zip((r[0] for r in rdf), padded))
-        rdf = pd.DataFrame.from_items(rdf)
+        rdf = dict(zip((r[0] for r in rdf), padded))
+        rdf = pd.DataFrame.from_dict(rdf)
         return rdf
 
 
@@ -1586,7 +1586,7 @@ class Spatial_Filtering(_Smoother):
             items = [(name, col) for name,col in zip(colnames, [grid[:,0],
                                                                 grid[:,1],
                                                                 r.r])]
-            res.append(pd.DataFrame.from_items(items))
+            res.append(pd.DataFrame.from_dict(dict(items)))
         outdf = pd.concat(res)
         return outdf
 
