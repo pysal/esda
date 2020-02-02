@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.moran &#8212; esda v2.2.0 Manual</title>
+    <title>esda.moran &#8212; esda v2.2.1 Manual</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -298,7 +298,7 @@
         <span class="c1"># provide .z attribute that is znormalized</span>
         <span class="n">sy</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">/=</span> <span class="n">sy</span></div>
-        
+
     <span class="k">def</span> <span class="nf">__moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
@@ -312,7 +312,7 @@
         <span class="n">s0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">s0</span>
         <span class="n">s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">s2</span>
         <span class="n">s02</span> <span class="o">=</span> <span class="n">s0</span> <span class="o">*</span> <span class="n">s0</span>
-        <span class="n">v_num</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s02</span> 
+        <span class="n">v_num</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s02</span>
         <span class="n">v_den</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">s02</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">VI_norm</span> <span class="o">=</span> <span class="n">v_num</span> <span class="o">/</span> <span class="n">v_den</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seI_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VI_norm</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
@@ -327,7 +327,7 @@
         <span class="n">A</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">((</span><span class="n">n2</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s02</span><span class="p">)</span>
         <span class="n">B</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">((</span><span class="n">n2</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">s02</span>  <span class="p">)</span>
         <span class="n">VIR</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">*</span> <span class="n">s02</span><span class="p">)</span> <span class="o">-</span> <span class="n">EI</span><span class="o">*</span><span class="n">EI</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">VI_rand</span> <span class="o">=</span> <span class="n">VIR</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">VI_rand</span> <span class="o">=</span> <span class="n">VIR</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seI_rand</span> <span class="o">=</span> <span class="n">VIR</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -602,7 +602,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    </span>
+
 <span class="sd">    open dbf</span>
 
 <span class="sd">    &gt;&gt;&gt; import libpysal</span>
@@ -643,7 +643,7 @@
             <span class="n">variables_n</span> <span class="o">=</span> <span class="n">variables</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">variables_n</span> <span class="o">=</span> <span class="n">variables</span>
-    
+
     <span class="n">results</span> <span class="o">=</span> <span class="n">_Moran_BV_Matrix_array</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">variables_n</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
                                      <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span>
                                      <span class="n">varnames</span><span class="o">=</span><span class="n">varnames</span><span class="p">)</span>
@@ -674,7 +674,7 @@
 <div class="viewcode-block" id="Moran_Rate"><a class="viewcode-back" href="../../generated/esda.Moran_Rate.html#esda.Moran_Rate">[docs]</a><span class="k">class</span> <span class="nc">Moran_Rate</span><span class="p">(</span><span class="n">Moran</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adjusted Moran&#39;s I Global Autocorrelation Statistic for Rate</span>
-<span class="sd">    Variables :cite:`Assun_o_1999`</span>
+<span class="sd">    Variables :cite:`Assuncao1999`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -850,7 +850,7 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjusted</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">adjusted</span> <span class="o">=</span> <span class="p">[</span><span class="n">adjusted</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">swapname</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">swapname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">swapname</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="n">assuncao_rate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">])</span> <span class="k">if</span> <span class="n">adj</span>
@@ -858,7 +858,7 @@
                  <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">pop</span><span class="p">,</span><span class="n">adj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">adjusted</span><span class="p">)]</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">e</span><span class="p">,</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)]</span>
         <span class="n">out_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_items</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">)))</span> <span class="c1">#trick to avoid importing pandas</span>
+        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">)))</span> <span class="c1">#trick to avoid importing pandas</span>
         <span class="n">stat_df</span> <span class="o">=</span> <span class="n">_univariate_handler</span><span class="p">(</span><span class="n">rate_df</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                       <span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span> <span class="o">=</span> <span class="n">outvals</span><span class="p">,</span>
                                       <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
@@ -1341,7 +1341,7 @@
 
 <div class="viewcode-block" id="Moran_Local_Rate"><a class="viewcode-back" href="../../generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate">[docs]</a><span class="k">class</span> <span class="nc">Moran_Local_Rate</span><span class="p">(</span><span class="n">Moran_Local</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adjusted Local Moran Statistics for Rate Variables [Assuncao1999]_</span>
+<span class="sd">    Adjusted Local Moran Statistics for Rate Variables :cite:`Assuncao1999`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1508,7 +1508,7 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjusted</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">adjusted</span> <span class="o">=</span> <span class="p">[</span><span class="n">adjusted</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">swapname</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">swapname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">swapname</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="n">assuncao_rate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">])</span> <span class="k">if</span> <span class="n">adj</span>
@@ -1516,7 +1516,7 @@
                  <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">pop</span><span class="p">,</span><span class="n">adj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">adjusted</span><span class="p">)]</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">e</span><span class="p">,</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)]</span>
         <span class="n">out_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_items</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">)))</span> <span class="c1">#trick to avoid importing pandas</span>
+        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">)))</span> <span class="c1">#trick to avoid importing pandas</span>
         <span class="n">_univariate_handler</span><span class="p">(</span><span class="n">rate_df</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                       <span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span> <span class="o">=</span> <span class="n">outvals</span><span class="p">,</span>
                                       <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
@@ -1541,7 +1541,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

@@ -555,7 +555,7 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
 class Moran_Rate(Moran):
     """
     Adjusted Moran's I Global Autocorrelation Statistic for Rate
-    Variables :cite:`Assun_o_1999`
+    Variables :cite:`Assuncao1999`
 
     Parameters
     ----------
@@ -1222,7 +1222,7 @@ class Moran_Local_BV(object):
 
 class Moran_Local_Rate(Moran_Local):
     """
-    Adjusted Local Moran Statistics for Rate Variables [Assuncao1999]_
+    Adjusted Local Moran Statistics for Rate Variables :cite:`Assuncao1999`.
 
     Parameters
     ----------
