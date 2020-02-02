@@ -284,7 +284,8 @@ numpydoc_xref_ignore = {'type', 'optional', 'default', 'shape', 'fitted', 'insta
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='docsrc') %}
+{% set docname = env.doc2path(env.docname, base='docsrc/') %}
+{% set fullpath = env.doc2path(env.docname, base='tree/master/docsrc/') %}
 
 .. only:: html
 
@@ -297,7 +298,8 @@ nbsphinx_prolog = r"""
         Interactive online version:
         :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
 
-    __ https://github.com/pysal/esda/{{ docname }}
+    __ https://github.com/pysal/esda/{{ fullpath }}
+
 
 .. raw:: latex
 
@@ -321,3 +323,6 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.rc={'figure.dpi': 96}",
 ]
 
+mathjax_config = {
+    "TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": True}},
+}
