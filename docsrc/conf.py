@@ -284,7 +284,7 @@ numpydoc_xref_ignore = {'type', 'optional', 'default', 'shape', 'fitted', 'insta
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='doc') %}
+{% set docname = env.doc2path(env.docname, base='docsrc') %}
 
 .. only:: html
 
@@ -312,7 +312,7 @@ nbsphinx_epilog = r"""
 
     \nbsphinxstopnotebook{\scriptsize\noindent\strut
     \textcolor{gray}{\dotfill\ \sphinxcode{\sphinxupquote{\strut
-    {{ env.doc2path(env.docname, base='doc') | escape_latex }}}} ends here.}}
+    {{ env.doc2path(env.docname, base='docsrc') | escape_latex }}}} ends here.}}
 """
 
 # List of arguments to be passed to the kernel that executes the notebooks:
