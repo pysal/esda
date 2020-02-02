@@ -23,8 +23,9 @@ github:
 	@make html
 
 sync:
-	@rsync -avh _build/html/ ../docs/ --delete
-	@rsync -avh figs/ ../docs/figs/ --delete
+
+	@rsync -avh --exclude '.nojekyll' _build/html/ ../docs/ --delete
+	@rsync -avh --exclude '.nojekyll' figs/ ../docs/figs/ --delete
 	@make clean
 	touch ../docs/.nojekyll
 
