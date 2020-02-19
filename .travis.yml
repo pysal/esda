@@ -20,7 +20,7 @@ matrix:
       env: PYSAL_PYPI=false MPLBACKEND="pdf"
     - python: 3.7
       env: PYSAL_PYPI=false MPLBACKEND="pdf"
-    - python: 3.7
+    - python: 3.8
       env: PYSAL_PYPI=false MPLBACKEND="pdf"
 
 before_install:
