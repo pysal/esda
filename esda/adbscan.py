@@ -32,49 +32,52 @@ class ADBSCAN:
 
     Parameters
     ----------
-    eps         : float
-                  The maximum distance between two samples for them to be considered
-                  as in the same neighborhood.
-    min_samples : int
-                  The number of samples (or total weight) in a neighborhood
-                  for a point to be considered as a core point. This includes the
-                  point itself.
-    algorithm   : {'auto', 'ball_tree', 'kd_tree', 'brute'}, optional
-                  The algorithm to be used by the NearestNeighbors module
-                  to compute pointwise distances and find nearest neighbors.
-                  See NearestNeighbors module documentation for details.
-    n_jobs      : int
-                  [Optional. Default=1] The number of parallel jobs to run. If
-                  -1, then the number of jobs is set to the number of CPU
-                  cores.
-    pct_exact   : float
-                  [Optional. Default=0.1] Proportion of the entire dataset
-                  used to calculate DBSCAN in each draw
-    reps        : int
-                  [Optional. Default=100] Number of random samples to draw in order to
-                  build final solution
-    keep_solus  : Boolean
-                  [Optional. Default=False] If True, the `solus` and
-                  `solus_relabelled` objects are kept, else it is deleted to
-                  save memory
-    pct_thr     : float
-                  [Optional. Default=0.9] Minimum proportion of replications that a non-noise 
-                  label need to be assigned to an observation for that observation to be labelled
-                  as such
+    eps             : float
+                      The maximum distance between two samples for them to be considered
+                      as in the same neighborhood.
+    min_samples     : int
+                      The number of samples (or total weight) in a neighborhood
+                      for a point to be considered as a core point. This includes the
+                      point itself.
+    algorithm       : {'auto', 'ball_tree', 'kd_tree', 'brute'}, optional
+                      The algorithm to be used by the NearestNeighbors module
+                      to compute pointwise distances and find nearest neighbors.
+                      See NearestNeighbors module documentation for details.
+    n_jobs          : int
+                      [Optional. Default=1] The number of parallel jobs to run. If
+                      -1, then the number of jobs is set to the number of CPU
+                      cores.
+    pct_exact       : float
+                      [Optional. Default=0.1] Proportion of the entire dataset
+                      used to calculate DBSCAN in each draw
+    reps            : int
+                      [Optional. Default=100] Number of random samples to draw in order to
+                      build final solution
+    keep_solus      : Boolean
+                      [Optional. Default=False] If True, the `solus` and
+                      `solus_relabelled` objects are kept, else it is deleted to
+                      save memory
+    pct_thr         : float
+                      [Optional. Default=0.9] Minimum proportion of replications that a non-noise 
+                      label need to be assigned to an observation for that observation to be labelled
+                      as such
     
     Attributes
     ----------
-    labels_     : array
-                  [Only available after `fit`] Cluster labels for each point in the 
-                  dataset given to fit().
-                  Noisy (if the proportion of the most common label is < pct_thr) 
-                  samples are given the label -1.
-    votes       : DataFrame
-                  [Only available after `fit`] Table indexed on `X.index` with 
-                  `labels_` under the `lbls` column, and the frequency across draws of 
-                  that label under `pct`
-    solus       : DataFrame, shape = [n, reps]
-                  [Only available after `fit`] Each solution of labels for every draw
+    labels_         : array
+                      [Only available after `fit`] Cluster labels for each point in the 
+                      dataset given to fit().
+                      Noisy (if the proportion of the most common label is < pct_thr) 
+                      samples are given the label -1.
+    votes           : DataFrame
+                      [Only available after `fit`] Table indexed on `X.index` with 
+                      `labels_` under the `lbls` column, and the frequency across draws of 
+                      that label under `pct`
+    solus           : DataFrame, shape = [n, reps]
+                      [Only available after `fit`] Each solution of labels for every draw
+    solus_relabelled: DataFrame, shape = [n, reps]
+                      [Only available after `fit`] Each solution of labels for
+                      every draw, relabelled to be consistent across solutions
 
     Examples
     --------
@@ -373,24 +376,24 @@ def _remap_lbls_single(pars):
     return remap_ids
 
 
-def ensemble(remapped_solus):
+def ensemble(solus_relabelled):
     """
     Generate unique class prediction based on majority/hard voting
     ...
 
     Arguments
     ---------
-    remapped_solus  : DataFrame
-                      Table with labels for each point (row) and solution
-                      (column). Labels are assumed to be consistent across
-                      solutions.
+    solus_relabelled  : DataFrame
+                        Table with labels for each point (row) and solution
+                        (column). Labels are assumed to be consistent across
+                        solutions.
 
     Returns
     -------
-    pred            : DataFrame
-                      Table with one row per observation, a `lbls` column with the
-                      winning label, and a `pct` column with the proportion of
-                      times the winning label was voted
+    pred              : DataFrame
+                        Table with one row per observation, a `lbls` column with the
+                        winning label, and a `pct` column with the proportion of
+                        times the winning label was voted
 
     Examples
     --------
@@ -414,10 +417,10 @@ def ensemble(remapped_solus):
 
     """
     f = lambda a: Counter(a).most_common(1)[0]
-    counts = np.array(list(map(f, remapped_solus.values)))
+    counts = np.array(list(map(f, solus_relabelled.values)))
     winner = counts[:, 0]
-    votes = counts[:, 1].astype(int) / remapped_solus.shape[1]
-    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=remapped_solus.index)
+    votes = counts[:, 1].astype(int) / solus_relabelled.shape[1]
+    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=solus_relabelled.index)
     return pred
 
 
