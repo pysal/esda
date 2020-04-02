@@ -54,8 +54,9 @@ class ADBSCAN:
                   [Optional. Default=100] Number of random samples to draw in order to
                   build final solution
     keep_solus  : Boolean
-                  [Optional. Default=False] If True, the `solus` object is
-                  kept, else it is deleted to save memory
+                  [Optional. Default=False] If True, the `solus` and
+                  `solus_relabelled` objects are kept, else it is deleted to
+                  save memory
     pct_thr     : float
                   [Optional. Default=0.9] Minimum proportion of replications that a non-noise 
                   label need to be assigned to an observation for that observation to be labelled
@@ -219,15 +220,18 @@ class ADBSCAN:
                 lbls_pred = _one_draw(pars)
                 solus.iloc[:, i] = lbls_pred
 
-        self.votes = ensemble(solus, X, xy, n_jobs=self.n_jobs)
+        solus_relabelled = remap_lbls(solus, X, xy=xy, n_jobs=self.n_jobs)
+        self.votes = ensemble(solus_relabelled)
         lbls = self.votes["lbls"].values
         lbl_type = type(solus.iloc[0, 0])
         lbls[self.votes["pct"] < self.pct_thr] = lbl_type(-1)
         self.labels_ = lbls
         if not self.keep_solus:
             del solus
+            del solus_relabelled
         else:
             self.solus = solus
+            self.solus_relabelled = solus_relabelled
         return self
 
 
@@ -294,13 +298,13 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
                                   "rep-01": [4, 4, -1, 6, 6], \
                                   "rep-02": [5, 5, 8, 8, 8] \
                                  })
-    >>> remap_lbls(solus, db)
-       rep-00 rep-01  rep-02
-    0       0      0       0
-    1       0      0       0
-    2       7     -1       7
-    3       7      7       7
-    4      -1      7       7
+    >>> print(remap_lbls(solus, db).to_string())
+       rep-00  rep-01  rep-02
+    0       0       0       0
+    1       0       0       0
+    2       7      -1       7
+    3       7       7       7
+    4      -1       7       7
     """
     # N. of clusters by solution
     ns_clusters = solus.apply(lambda x: x.unique().shape[0])
@@ -369,31 +373,24 @@ def _remap_lbls_single(pars):
     return remap_ids
 
 
-def ensemble(solus, xys, xy=["X", "Y"], n_jobs=1):
+def ensemble(remapped_solus):
     """
     Generate unique class prediction based on majority/hard voting
     ...
 
     Arguments
     ---------
-    solus       : DataFrame
-                  Table with labels for each point (row) and solution (column)
-    xys         : DataFrame
-                  Table including coordinates
-    xy          : list
-                  [Default=`['X', 'Y']`] Ordered pair of names for XY
-                  coordinates in `xys`
-    n_jobs      : int
-                  [Optional. Default=1] The number of parallel jobs to run for
-                  remapping. If -1, then the number of jobs is set to the
-                  number of CPU cores.
+    remapped_solus  : DataFrame
+                      Table with labels for each point (row) and solution
+                      (column). Labels are assumed to be consistent across
+                      solutions.
 
     Returns
     -------
-    pred        : DataFrame
-                  Table with one row per observation, a `lbls` column with the
-                  winning label, and a `pct` column with the proportion of
-                  times the winning label was voted
+    pred            : DataFrame
+                      Table with one row per observation, a `lbls` column with the
+                      winning label, and a `pct` column with the proportion of
+                      times the winning label was voted
 
     Examples
     --------
@@ -406,21 +403,21 @@ def ensemble(solus, xys, xy=["X", "Y"], n_jobs=1):
                                   "rep-01": [4, 4, -1, 6, 6], \
                                   "rep-02": [5, 5, 8, 8, 8] \
                                  })
-    >>> print(round(ensemble(solus, db), 2).to_string())
+    >>> solus_rl = remap_lbls(solus, db)
+    >>> print(round(ensemble(solus_rl), 2).to_string())
        lbls   pct
-    0   0.0  1.00
-    1   0.0  1.00
-    2   7.0  0.67
-    3   7.0  1.00
-    4   7.0  0.67
+    0     0  1.00
+    1     0  1.00
+    2     7  0.67
+    3     7  1.00
+    4     7  0.67
 
     """
     f = lambda a: Counter(a).most_common(1)[0]
-    remapped_solus = remap_lbls(solus, xys, xy=xy, n_jobs=n_jobs)
     counts = np.array(list(map(f, remapped_solus.values)))
     winner = counts[:, 0]
-    votes = counts[:, 1].astype(int) / solus.shape[1]
-    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=solus.index)
+    votes = counts[:, 1].astype(int) / remapped_solus.shape[1]
+    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=remapped_solus.index)
     return pred
 
 
@@ -497,9 +494,8 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     >>> _ = clusterer.fit(db)
     >>> labels = pandas.Series(clusterer.labels_, index=db.index)
     >>> polys = get_cluster_boundary(labels, db)
-    >>> polys
-    0    POLYGON ((0.7217553174317995 0.819286995670068...
-    dtype: object
+    >>> polys[0].wkt
+    'POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))'
     """
 
     lbl_type = type(labels.iloc[0])
