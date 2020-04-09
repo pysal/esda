@@ -70,6 +70,18 @@ class Pearson_Local(BaseEstimator):
                                                                          )
                             for rx,ry in permuter
                             )
+        if self.conditional_inference == True:
+            rz = numpy.arctanh(simulations)
+            firsthalf, secondhalf = numpy.array_split(rz, 2)
+            from scipy.stats import ttest_rel
+            post_hoc_test = ttest_rel(firsthalf, secondhalf)
+            if post_hoc_test.pvalue < .01:
+                warn('The null hypothesis that permutations of X yield equivalent'
+                     ' correlations to permutations of y is very unlikely given'
+                     ' the permutations conducted (p = {p}). It is very likely'
+                     ' that any inference based on the conditional permutation'
+                     ' will be incorrect. Use conditional_inference=False in'
+                     ' this case.')
         self.reference_distribution_ = numpy.row_stack(simulations).T
         above = self.reference_distribution_ >= self.associations_.reshape(-1,1)
         larger = above.sum(axis=1)
