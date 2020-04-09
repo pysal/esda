@@ -179,7 +179,7 @@ class Join_Counts(object):
                 except ValueError:
                     # expected count of 0 -> inadmissible
                     pass
-            sim_jc = np.array(sim)
+            sim_jc = np.array(sim, dtype=object)
             self.sim_bb = sim_jc[:, 0]
             self.min_bb = np.min(self.sim_bb)
             self.mean_bb = np.mean(self.sim_bb)
