@@ -14,6 +14,7 @@ __all__ = ["Moran", "Moran_Local", "Moran_BV", "Moran_BV_matrix",
            "Moran_Local_BV", "Moran_Rate", "Moran_Local_Rate"]
 
 PERMUTATIONS = 999
+LARGE = 10**5
 
 
 class Moran(object):
@@ -786,10 +787,9 @@ class Moran_Local(object):
     Is           : array
                    local Moran's I values
     q            : array
-                   (if permutations>0)
                    values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
     sim          : array (permutations by n)
-                   (if permutations>0)
+                   (if permutations>0 and w.n < LARGE)
                    I values for permuted samples
     p_sim        : array
                    (if permutations>0)
@@ -799,19 +799,19 @@ class Moran_Local(object):
                    from the median of simulated values. It is either extremely
                    high or extremely low in the distribution of simulated Is.
     EI_sim       : array
-                   (if permutations>0)
+                   (if permutations>0 and w.n < LARGE)
                    average values of local Is from permutations
     VI_sim       : array
-                   (if permutations>0)
+                   (if permutations>0 and w.n < LARGE)
                    variance of Is from permutations
     seI_sim      : array
-                   (if permutations>0)
+                   (if permutations>0 and w.n < LARGE)
                    standard deviations of Is under permutations.
     z_sim        : arrray
-                   (if permutations>0)
+                   (if permutations>0 and w.n < LARGE)
                    standardized Is based on permutations
     p_z_sim      : array
-                   (if permutations>0)
+                   (if permutations>0 and w.n < LARGE)
                    p-values based on standard normal approximation from
                    permutations (one-sided)
                    for two-sided tests, these values should be multiplied by 2
@@ -871,9 +871,9 @@ class Moran_Local(object):
             quads = [1, 3, 2, 4]
         self.quads = quads
         self.__quads()
-        if permutations:
+        if permutations and n < LARGE:
             self.__crand()
-            sim = np.transpose(self.rlisas)
+            sim = np.transpose(self.rlisas)  # storing all sim is memory bound
             above = sim >= self.Is
             larger = above.sum(0)
             low_extreme = (self.permutations - larger) < larger
@@ -885,10 +885,43 @@ class Moran_Local(object):
             self.VI_sim = self.seI_sim * self.seI_sim
             self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
             self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+        elif permutations and n >= LARGE:
+            larger = self.__crand_lite()
+            low_extreme = (self.permutations - larger) < larger
+            larger[low_extreme] = self.permutations - larger[low_extreme]
+            self.p_sim = (larger + 1.0) / (permutations + 1.0)
 
     def calc(self, w, z):
         zl = slag(w, z)
         return self.n_1 * self.z * zl / self.den
+
+    def __crand_lite(self):
+        """
+        do not store all of the simulated lisas
+        accumulate counts
+        returns an array with the number of times the observed values are exceeded
+        """
+        larger = np.zeros((self.n))
+        z = self.z
+        n_1 = self.n - 1
+        prange = list(range(self.permutations))
+        k = self.w.max_neighbors + 1
+        nn = self.n - 1
+        rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
+        ids = np.arange(self.w.n)
+        ido = self.w.id_order
+        w = [self.w.weights[ido[i]] for i in ids]
+        wc = [self.w.cardinalities[ido[i]] for i in ids]
+
+        for i in range(self.w.n):
+            idsi = ids[ids != i]
+            np.random.shuffle(idsi)
+            tmp = z[idsi[rids[:, 0:wc[i]]]]
+            lisas_i = z[i] * (w[i] * tmp).sum(1)
+            larger[i] = (lisas_i > self.Is[i]).sum()
+
+        return larger
+
 
     def __crand(self):
         """
@@ -904,7 +937,7 @@ class Moran_Local(object):
 
         """
         z = self.z
-        lisas = np.zeros((self.n, self.permutations))
+        lisas = np.zeros((self.n, self.permutations))  # this is memory bound
         n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
