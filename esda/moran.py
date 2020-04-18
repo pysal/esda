@@ -787,6 +787,7 @@ class Moran_Local(object):
     Is           : array
                    local Moran's I values
     q            : array
+                   (if permutations>0)
                    values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
     sim          : array (permutations by n)
                    (if permutations>0 and w.n < LARGE)
@@ -873,7 +874,7 @@ class Moran_Local(object):
         self.__quads()
         if permutations and n < LARGE:
             self.__crand()
-            sim = np.transpose(self.rlisas)  # storing all sim is memory bound
+            sim = np.transpose(self.rlisas)  
             above = sim >= self.Is
             larger = above.sum(0)
             low_extreme = (self.permutations - larger) < larger
@@ -886,6 +887,7 @@ class Moran_Local(object):
             self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
             self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
         elif permutations and n >= LARGE:
+            print('Large N')
             larger = self.__crand_lite()
             low_extreme = (self.permutations - larger) < larger
             larger[low_extreme] = self.permutations - larger[low_extreme]
