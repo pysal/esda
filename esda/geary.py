@@ -102,6 +102,7 @@ class Geary(object):
         if not isinstance(w, weights.W):
             raise TypeError('w must be a pysal weights object, got {}'
                             ' instead'.format(type(w)))
+        self.al = w.to_adjlist()
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
@@ -114,6 +115,7 @@ class Geary(object):
         self.y2 = y * y
         yd = y - y.mean()
         yss = sum(yd * yd)
+
         self.den = yss * self.w.s0 * 2.0
         self.C = self.__calc(y)
         de = self.C - 1.0
@@ -174,15 +176,9 @@ class Geary(object):
         self.seC_norm = vc_norm ** (0.5)
 
     def __calc(self, y):
-        ys = np.zeros(y.shape)
-        y2 = y ** 2
-        for i, i0 in enumerate(self.w.id_order):
-            neighbors = self.w.neighbor_offsets[i0]
-            wijs = self.w.weights[i0]
-            z = list(zip(neighbors, wijs))
-            ys[i] = sum([wij * (y2[i] - 2 * y[i] * y[j] + y2[j])
-                         for j, wij in z])
-        a = (self.n - 1) * sum(ys)
+        al = self.al
+        num = (al.weight * ((y[al.focal]-y[al.neighbor])**2) ).sum()
+        a = (self.n - 1) * num 
         return a / self.den
 
     @classmethod
