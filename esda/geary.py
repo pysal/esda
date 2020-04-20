@@ -102,12 +102,12 @@ class Geary(object):
         if not isinstance(w, weights.W):
             raise TypeError('w must be a pysal weights object, got {}'
                             ' instead'.format(type(w)))
-        self.al = w.to_adjlist()
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
         w.transform = transformation
         self.w = w
+        self.al = w.to_adjlist()
         self.permutations = permutations
         self.__moments()
         xn = range(len(y))
@@ -176,7 +176,7 @@ class Geary(object):
         self.seC_norm = vc_norm ** (0.5)
 
     def __calc(self, y):
-        al = self.al
+        
         num = (al.weight * ((y[al.focal]-y[al.neighbor])**2) ).sum()
         a = (self.n - 1) * num 
         return a / self.den
