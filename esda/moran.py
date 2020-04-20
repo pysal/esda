@@ -951,7 +951,7 @@ class Moran_Local(object):
             if keep_simulations:
                 lisas[i] = lisas_i
             larger[i] = (lisas_i > lmo).sum()
-        self.rlisas = (n_1 / self.den) * lisas
+        self.rlisas = ((n_1 / self.den) * lisas).T
         return larger
 
     def __quads(self):
