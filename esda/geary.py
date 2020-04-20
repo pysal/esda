@@ -107,6 +107,8 @@ class Geary(object):
         self.y = y
         w.transform = transformation
         self.w = w
+        self._focal_ix, self._neighbor_ix = w.sparse.nonzero()
+        self._weights = w.sparse.data
         self.permutations = permutations
         self.__moments()
         xn = range(len(y))
@@ -114,6 +116,7 @@ class Geary(object):
         self.y2 = y * y
         yd = y - y.mean()
         yss = sum(yd * yd)
+
         self.den = yss * self.w.s0 * 2.0
         self.C = self.__calc(y)
         de = self.C - 1.0
@@ -173,16 +176,12 @@ class Geary(object):
         self.seC_rand = vc_rand ** (0.5)
         self.seC_norm = vc_norm ** (0.5)
 
+    
     def __calc(self, y):
-        ys = np.zeros(y.shape)
-        y2 = y ** 2
-        for i, i0 in enumerate(self.w.id_order):
-            neighbors = self.w.neighbor_offsets[i0]
-            wijs = self.w.weights[i0]
-            z = list(zip(neighbors, wijs))
-            ys[i] = sum([wij * (y2[i] - 2 * y[i] * y[j] + y2[j])
-                         for j, wij in z])
-        a = (self.n - 1) * sum(ys)
+        num = (self._weights * 
+               ((y[self._focal_ix] 
+                 - y[self._neighbor_ix])**2) ).sum()
+        a = (self.n - 1) * num 
         return a / self.den
 
     @classmethod
