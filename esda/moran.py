@@ -899,8 +899,8 @@ class Moran_Local(object):
             self.p_sim = (larger + 1.0) / (permutations + 1.0)
             if keep_simulations:
                 self.sim = self.rlisas
-                self.EI_sim = sim.mean(axis=0)
-                self.seI_sim = sim.std(axis=0)
+                self.EI_sim = self.sim.mean(axis=0)
+                self.seI_sim = self.sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
