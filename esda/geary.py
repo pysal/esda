@@ -107,7 +107,8 @@ class Geary(object):
         self.y = y
         w.transform = transformation
         self.w = w
-        self.al = w.to_adjlist()
+        self._focal_ix, self._neighbor_ix = w.sparse.nonzero()
+        self._weights = w.sparse.data
         self.permutations = permutations
         self.__moments()
         xn = range(len(y))
@@ -175,9 +176,11 @@ class Geary(object):
         self.seC_rand = vc_rand ** (0.5)
         self.seC_norm = vc_norm ** (0.5)
 
+    
     def __calc(self, y):
-        
-        num = (al.weight * ((y[al.focal]-y[al.neighbor])**2) ).sum()
+        num = (self._weights * 
+               ((y[self._focal_ix] 
+                 - y[self._neighbor_ix])**2) ).sum()
         a = (self.n - 1) * num 
         return a / self.den
 
