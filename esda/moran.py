@@ -790,32 +790,43 @@ class Moran_Local(object):
                    (if permutations>0)
                    values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
     sim          : array (permutations by n)
-                   (if permutations>0 and w.n < LARGE)
                    I values for permuted samples
+                   If keep_simulations = False or the input data is very large, 
+                   this attribute will be None
+    rlisa        : array (permutations by n)
+                   I values for permuted samples (same as sim)
+                   If keep_simulations = False or the input data is very large, 
+                   this attribute will be None
     p_sim        : array
-                   (if permutations>0)
-                   p-values based on permutations (one-sided)
+                   p-values based on permutations (one-sided). 
                    null: spatial randomness
                    alternative: the observed Ii is further away or extreme
                    from the median of simulated values. It is either extremely
                    high or extremely low in the distribution of simulated Is.
+                   If `keep_simulations = False`, `permutations < 1`,
+                   or the input data is very large, this attribute will be numpy.nan
     EI_sim       : array
-                   (if permutations>0 and w.n < LARGE)
-                   average values of local Is from permutations
+                   average values of local Is from permutations. 
+                   If `keep_simulations = False`, `permutations < 1`,
+                   or the input data is very large, this attribute will be numpy.nan
     VI_sim       : array
-                   (if permutations>0 and w.n < LARGE)
-                   variance of Is from permutations
+                   variance of Is from permutations. 
+                   If `keep_simulations = False`, `permutations < 1`,
+                   or the input data is very large, this attribute will be numpy.nan
     seI_sim      : array
-                   (if permutations>0 and w.n < LARGE)
                    standard deviations of Is under permutations.
+                   If `keep_simulations = False`, `permutations < 1`,
+                   or the input data is very large, this attribute will be numpy.nan
     z_sim        : arrray
-                   (if permutations>0 and w.n < LARGE)
-                   standardized Is based on permutations
+                   standardized Is based on permutations. 
+                   If `keep_simulations = False`, `permutations < 1`,
+                   or the input data is very large, this attribute will be numpy.nan
     p_z_sim      : array
-                   (if permutations>0 and w.n < LARGE)
                    p-values based on standard normal approximation from
-                   permutations (one-sided)
+                   permutations (one-sided). 
                    for two-sided tests, these values should be multiplied by 2
+                   If `keep_simulations = False`, `permutations < 1`,
+                   or the input data is very large, this attribute will be numpy.nan
 
     Notes
     -----
