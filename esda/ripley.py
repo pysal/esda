@@ -69,7 +69,27 @@ def _(shape: spatial.ConvexHull):
 
 
 @singledispatch
-def _within(x: float, y: float, shape: spatial.Delaunay):
+def _contains(shape, x, y):
+    """
+    Try to use the shape's contains method directly on XY 
+    """
+    shape.contains((x, y))
+
+
+@_contains.register
+def _(shape: numpy.ndarray, x: float, y: float):
+    """
+    If provided an ndarray, assume it's a bbox
+    """
+    xmin, xmax = shape[0], shape[2]
+    ymin, ymax = shape[1], shape[3]
+    in_x = (xmin <= x) and (x <= xmax)
+    in_y = (ymin <= y) and (y <= ymax)
+    return in_x & in_y
+
+
+@_contains.register
+def _(shape: spatial.Delaunay, x: float, y: float):
     """
     For points and a delaunay triangulation, use the find_simplex
     method to identify whether a point is inside the triangulation.
@@ -80,14 +100,14 @@ def _within(x: float, y: float, shape: spatial.Delaunay):
     return delaunay.find_simplex((x, y)) > 0
 
 
-@_within.register
-def _(x: float, y: float, shape: spatial.ConvexHull):
+@_contains.register
+def _(shape: spatial.ConvexHull, x: float, y: float):
     """
     For convex hulls, convert them first. 
     """
-    exterior = hull.points[hull.vertices]
+    exterior = shape.points[shape.vertices]
     delaunay = spatial.Delaunay(exterior)
-    return _within(x, y, delaunay)
+    return _contains(x, y, delaunay)
 
 
 try:
@@ -97,8 +117,8 @@ try:
 except ModuleNotFoundError:
     HAS_SHAPELY = False
 
-    @_.register
-    def _within(x: float, y: float, shape: shapely.geometry.Polygon):
+    @_contains.register
+    def _(shape: shapely.geometry.Polygon, x: float, y: float):
         """
         If we know we're working with a shapely polygon, 
         then use the contains method on the input shape. 
@@ -121,8 +141,8 @@ except ModuleNotFoundError:
         """
         return pygeos.area(shape)
 
-    @_within.register
-    def _(x: float, y: float, shape: pygeos.Geometry):
+    @_contains.register
+    def _(shape: pygeos.Geometry, x: float, y: float):
         """
         If we know we're working with a pygeos polygon, 
         then use pygeos.within
