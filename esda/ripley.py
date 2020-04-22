@@ -277,10 +277,10 @@ def simulate(hull, intensity=None, size=None):
         else:
             raise ValueError(
                 f"Intensity and size not understood. Provide size as a tuple"
-                " containing (number of observations, number of replications)"
-                " with no specified intensity, or an intensity and size equal"
-                " to the number of replications."
-                " Recieved: `intensity={intensity}, size={size}`"
+                f" containing (number of observations, number of replications)"
+                f" with no specified intensity, or an intensity and size equal"
+                f" to the number of replications."
+                f" Recieved: `intensity={intensity}, size={size}`"
             )
 
     elif intensity is not None and isinstance(size, int):  # catches default, too!
@@ -289,10 +289,10 @@ def simulate(hull, intensity=None, size=None):
     else:
         raise ValueError(
             f"Intensity and size not understood. Provide size as a tuple"
-            " containing (number of observations, number of replications)"
-            " with no specified intensity, or an intensity and size equal"
-            " to the number of replications."
-            " Recieved: `intensity={intensity}, size={size}`"
+            f" containing (number of observations, number of replications)"
+            f" with no specified intensity, or an intensity and size equal"
+            f" to the number of replications."
+            f" Recieved: `intensity={intensity}, size={size}`"
         )
     result = numpy.empty((n_replications, n_observations, 2))
 
@@ -447,8 +447,8 @@ def k_function(
             if distances.shape[0] != upper_tri_n:
                 raise ValueError(
                     f"Shape of inputted distances is not square, nor is the upper triangular"
-                    " matrix matching the number of input points. The shape of the input matrix"
-                    " is {distance.shape}, but required shape is ({upper_tri_n},) or ({n},{n})"
+                    f" matrix matching the number of input points. The shape of the input matrix"
+                    f" is {distance.shape}, but required shape is ({upper_tri_n},) or ({n},{n})"
                 )
             upper_tri_distances = distances
         elif distances.shape[0] == distances.shape[1] == n:
@@ -456,8 +456,8 @@ def k_function(
         else:
             raise ValueError(
                 f"Shape of inputted distances is not square, nor is the upper triangular"
-                " matrix matching the number of input points. The shape of the input matrix"
-                " is {distance.shape}, but required shape is ({upper_tri_n},) or ({n},{n})"
+                f" matrix matching the number of input points. The shape of the input matrix"
+                f" is {distance.shape}, but required shape is ({upper_tri_n},) or ({n},{n})"
             )
     n_pairs_less_than_d = (upper_tri_distances < support.reshape(-1, 1)).sum(axis=1)
     intensity = n / _area(hull)
