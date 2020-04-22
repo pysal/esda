@@ -403,6 +403,23 @@ def f_function(
     hull=None,
     edge_correction=None,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    """
     if isinstance(coordinates, TREE_TYPES):
         tree = coordinates
         coordinates = tree.data
@@ -460,6 +477,22 @@ def f_function(
 def g_function(
     coordinates, support=None, distances=None, metric="euclidean", edge_correction=None,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    """
+
     if isinstance(coordinates, (spatial.KDTree, spatial.cKDTree)):
         tree = coordinates
         coordinates = tree.data
@@ -524,17 +557,40 @@ def j_function(
     hull=None,
     edge_correction=None,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: tuple of numpy.ndarray
+        precomputed distances to use to evaluate the j function. 
+        The first must be of shape (n,n) or (n,) and is used in the g function.
+        the second must be of shape (n,p) or (p,) (with p possibly equal to n)
+        used in the f function.
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern for the f function.
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    """
+    if distances is not None:
+        g_distances, f_distances = distances
+    else:
+        g_distances = f_distances = None
     gsupport, gstats = g_function(
         coordinates,
         support=support,
-        distances=distances,
+        distances=g_distances,
         metric=metric,
         edge_correction=edge_correction,
     )
     fsupport, fstats = f_function(
         coordinates,
         support=support,
-        distances=distances,
+        distances=f_distances,
         metric=metric,
         hull=hull,
         edge_correction=edge_correction,
@@ -559,6 +615,23 @@ def k_function(
     hull=None,
     edge_correction=None,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    """
     coordinates, support, distances, metric, hull, edge_correction = _prepare(
         coordinates, support, distances, metric, hull, edge_correction
     )
@@ -599,7 +672,27 @@ def l_function(
     edge_correction=None,
     linearized=False,
 ):
-    # linearization proposed by Besag (1977)
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    linearized : bool
+        whether or not to subtract the expected value from l at each 
+        distance bin. This centers the l function on zero for all distances.
+        Proposed by Besag (1977) #TODO: fix besag ref
+    """
 
     support, k_estimate = k_function(
         coordinates,
@@ -695,17 +788,40 @@ def f_test(
     keep_replications=False,
     n_replications=9999,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    keep_replications: bool
+        whether or not to keep the simulation envelopes. If so, 
+        will be returned as the result's reference_distribution attribute
+    n_replications: int
+        how many simulations to conduct, assuming that the reference pattern
+        has complete spatial randomness. 
+    """
 
     return _ripley_test(
         "F",
         coordinates,
-        support=None,
-        distances=None,
-        metric="euclidean",
-        hull=None,
-        edge_correction=None,
-        keep_replications=False,
-        n_replications=9999,
+        support=support,
+        distances=distances,
+        metric=metric,
+        hull=hull,
+        edge_correction=edge_correction,
+        keep_replications=keep_replications,
+        n_replications=n_replications,
     )
 
 
@@ -719,16 +835,39 @@ def g_test(
     keep_replications=False,
     n_replications=9999,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    keep_replications: bool
+        whether or not to keep the simulation envelopes. If so, 
+        will be returned as the result's reference_distribution attribute
+    n_replications: int
+        how many simulations to conduct, assuming that the reference pattern
+        has complete spatial randomness. 
+    """
     return _ripley_test(
         "G",
         coordinates,
-        support=None,
-        distances=None,
-        metric="euclidean",
-        hull=None,
-        edge_correction=None,
-        keep_replications=False,
-        n_replications=9999,
+        support=support,
+        distances=distances,
+        metric=metric,
+        hull=hull,
+        edge_correction=edge_correction,
+        keep_replications=keep_replications,
+        n_replications=n_replications,
     )
 
 
@@ -742,16 +881,39 @@ def j_test(
     keep_replications=False,
     n_replications=9999,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    keep_replications: bool
+        whether or not to keep the simulation envelopes. If so, 
+        will be returned as the result's reference_distribution attribute
+    n_replications: int
+        how many simulations to conduct, assuming that the reference pattern
+        has complete spatial randomness. 
+    """
     return _ripley_test(
         "J",
         coordinates,
-        support=None,
-        distances=None,
-        metric="euclidean",
-        hull=None,
-        edge_correction=None,
-        keep_replications=False,
-        n_replications=9999,
+        support=support,
+        distances=distances,
+        metric=metric,
+        hull=hull,
+        edge_correction=edge_correction,
+        keep_replications=keep_replications,
+        n_replications=n_replications,
     )
 
 
@@ -764,16 +926,39 @@ def k_test(
     edge_correction=None,
     n_replications=9999,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    keep_replications: bool
+        whether or not to keep the simulation envelopes. If so, 
+        will be returned as the result's reference_distribution attribute
+    n_replications: int
+        how many simulations to conduct, assuming that the reference pattern
+        has complete spatial randomness. 
+    """
     return _ripley_test(
         "K",
         coordinates,
-        support=None,
-        distances=None,
-        metric="euclidean",
-        hull=None,
-        edge_correction=None,
-        keep_replications=False,
-        n_replications=9999,
+        support=support,
+        distances=distances,
+        metric=metric,
+        hull=hull,
+        edge_correction=edge_correction,
+        keep_replications=keep_replications,
+        n_replications=n_replications,
     )
 
 
@@ -787,15 +972,37 @@ def l_test(
     linearized=False,
     n_replications=9999,
 ):
+    """
+    coordinates : numpy.ndarray, (n,2)
+        input coordinates to function
+    support : tuple of length 1, 2, or 3, int, or numpy.ndarray
+        tuple, encoding (stop,), (start, stop), or (start, stop, num)
+        int, encoding number of equally-spaced intervals
+        numpy.ndarray, used directly within numpy.histogram
+    distances: numpy.ndarray, (n, p) or (p,)
+        distances from every point in a random point set of size p
+        to some point in `coordinates`
+    metric: str or callable
+        distance metric to use when building search tree
+    hull: bounding box, scipy.spatial.ConvexHull, shapely.geometry.Polygon, or pygeos.Geometry
+        the hull used to construct a random sample pattern, if distances is None
+    edge_correction: bool or str
+        whether or not to conduct edge correction. Not yet implemented.
+    keep_replications: bool
+        whether or not to keep the simulation envelopes. If so, 
+        will be returned as the result's reference_distribution attribute
+    n_replications: int
+        how many simulations to conduct, assuming that the reference pattern
+        has complete spatial randomness. 
+    """
     return _ripley_test(
         "L",
         coordinates,
-        support=None,
-        distances=None,
-        metric="euclidean",
-        hull=None,
-        edge_correction=None,
-        keep_replications=False,
-        linearized=False,
-        n_replications=9999,
+        support=support,
+        distances=distances,
+        metric=metric,
+        hull=hull,
+        edge_correction=edge_correction,
+        keep_replications=keep_replications,
+        n_replications=n_replications,
     )
