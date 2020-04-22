@@ -486,6 +486,8 @@ def k_function(
                 f" matrix matching the number of input points. The shape of the input matrix"
                 f" is {distance.shape}, but required shape is ({upper_tri_n},) or ({n},{n})"
             )
+    else:
+        upper_tri_distances = spatial.distance.pdist(coordinates, metric=metric)
     n_pairs_less_than_d = (upper_tri_distances < support.reshape(-1, 1)).sum(axis=1)
     intensity = n / _area(hull)
     k_estimate = ((n_pairs_less_than_d * 2) / n) / intensity
