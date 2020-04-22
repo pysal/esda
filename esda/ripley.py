@@ -434,11 +434,6 @@ def g_function(coordinates, support=None, distances=None, metric="euclidean"):
         except NameError:
             tree = _build_best_tree(coordinates, metric)
             distances, indices = tree.query(coordinates, k=2)
-        finally:
-            # in case the tree returns self-neighbors in slot 2
-            # when there are coincident points
-            arange = numpy.arange(distances.shape[0])
-            distances = distances[arange, indices[:, 1] != arange]
 
     counts, bins = numpy.histogram(distances, bins=support)
     fracs = numpy.cumsum(counts) / counts.sum()
