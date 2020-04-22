@@ -4,7 +4,8 @@ from scipy import spatial, interpolate
 from typing import Union, Any
 from functools import singledispatch
 from collections import namedtuple
-from libpysal.cg import alpha_shape_auto, Arc_KDTree
+from libpysal.cg import alpha_shape_auto
+from libpysal.cg.kdtree import Arc_KDTree
 
 ### Utilities and dispatching
 
