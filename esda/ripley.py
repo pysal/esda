@@ -491,7 +491,7 @@ def k_function(
     n_pairs_less_than_d = (upper_tri_distances < support.reshape(-1, 1)).sum(axis=1)
     intensity = n / _area(hull)
     k_estimate = ((n_pairs_less_than_d * 2) / n) / intensity
-    return support, kestimate
+    return support, k_estimate
 
 
 def l_function(
@@ -505,7 +505,7 @@ def l_function(
 ):
     # This is not equivalent to the estimator in pointpats, but that
     # is likely flawed according to https://github.com/pysal/pointpats/issues/44
-    support, kestimate = k_function(
+    support, k_estimate = k_function(
         coordinates,
         support=support,
         distances=distances,
@@ -513,7 +513,7 @@ def l_function(
         hull=hull,
         edge_correction=edge_correction,
     )
-    return support, numpy.sqrt(kestimate / numpy.pi)
+    return support, numpy.sqrt(k_estimate / numpy.pi)
 
 
 ### Ripley tests
