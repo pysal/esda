@@ -159,7 +159,7 @@ except ModuleNotFoundError:
 
 
 def _build_best_tree(coordinates, metric):
-    tree = scipy.spatial.cKDTree
+    tree = spatial.cKDTree
     try:
         from sklearn.neighbors import KDTree, BallTree
 
@@ -336,9 +336,9 @@ def simulate(hull, intensity=None, size=None):
                 numpy.random.uniform(bbox[1], bbox[3]),
             )
             if _contains(hull, x, y):
-                result[i_observation, i_replication] = (x, y)
+                result[i_replication, i_observation] = (x, y)
             i_observation += 1
-    return result
+    return result.squeeze()
 
 
 def simulate_from(coordinates, hull=None, size=None):
@@ -402,11 +402,13 @@ def f_function(
             distances, _ = tree.query(randoms, k=1)
 
     counts, bins = numpy.histogram(distances, bins=support)
-    return bins, numpy.cumsum(counts) / counts.sum()
+    fracs = numpy.cumsum(counts) / counts.sum()
+
+    return bins, numpy.asarray([*fracs, 1])
 
 
 def g_function(coordinates, support=None, distances=None, metric="euclidean"):
-    if isinstance(coordinates, (spatial.distance.KDTree, spatial.distance.cKDTree)):
+    if isinstance(coordinates, (spatial.KDTree, spatial.cKDTree)):
         tree = coordinates
         coordinates = tree.data
     coordinates, support, distances, metric = _prepare(
@@ -439,7 +441,9 @@ def g_function(coordinates, support=None, distances=None, metric="euclidean"):
             distances = distances[arange, indices[:, 1] != arange]
 
     counts, bins = numpy.histogram(distances, bins=support)
-    return bins, numpy.cumsum(counts) / counts.sum()
+    fracs = numpy.cumsum(counts) / counts.sum()
+
+    return bins, numpy.asarray([*fracs, 1])
 
 
 def j_function(
