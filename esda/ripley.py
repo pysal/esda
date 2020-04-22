@@ -1,7 +1,6 @@
 import numpy
 import warnings
 from scipy import spatial, interpolate
-from typing import Union, Any
 from functools import singledispatch
 from collections import namedtuple
 from libpysal.cg import alpha_shape_auto
@@ -30,7 +29,7 @@ def _area(shape):
 
 
 @_area.register
-def _area(shape: Union[list, tuple, numpy.ndarray]):
+def _(shape: numpy.ndarray):
     """
     If a shape describes a bounding box, compute length times width
     """
@@ -50,7 +49,7 @@ def _bbox(shape):
 
 
 @_bbox.register
-def _bbox(shape: numpy.array):
+def _(shape: numpy.ndarray):
     """
     If a shape is an array of points, compute the minima/maxima
     """
@@ -58,7 +57,7 @@ def _bbox(shape: numpy.array):
 
 
 @_bbox.register
-def _bbox(shape: spatial.ConvexHull):
+def _(shape: spatial.ConvexHull):
     """
     For scipy.spatial.ConvexHulls, compute the bounding box from
     their boundary points.
@@ -79,7 +78,7 @@ def _within(x: float, y: float, shape: spatial.Delaunay):
 
 
 @_within.register
-def _within(x: float, y: float, shape: spatial.ConvexHull):
+def _(x: float, y: float, shape: spatial.ConvexHull):
     """
     For convex hulls, convert them first. 
     """
@@ -95,7 +94,7 @@ try:
 except ModuleNotFoundError:
     HAS_SHAPELY = False
 
-    @_within.register
+    @_.register
     def _within(x: float, y: float, shape: shapely.geometry.Polygon):
         """
         If we know we're working with a shapely polygon, 
@@ -112,7 +111,7 @@ except ModuleNotFoundError:
     HAS_PYGEOS = False
 
     @_area.register
-    def _area(shape: pygeos.Geometry):
+    def _(shape: pygeos.Geometry):
         """
         If we know we're working with a pygeos polygon, 
         then use pygeos.area
@@ -120,7 +119,7 @@ except ModuleNotFoundError:
         return pygeos.area(shape)
 
     @_within.register
-    def _within(x: float, y: float, shape: pygeos.Geometry):
+    def _(x: float, y: float, shape: pygeos.Geometry):
         """
         If we know we're working with a pygeos polygon, 
         then use pygeos.within
@@ -128,7 +127,7 @@ except ModuleNotFoundError:
         return pygeos.within(pygeos.points((x, y)), shape)
 
     @_bbox.register
-    def _bbox(shape: pygeos.Geometry):
+    def _(shape: pygeos.Geometry):
         """
         If we know we're working with a pygeos polygon, 
         then use pygeos.bounds
@@ -368,7 +367,7 @@ def f_function(
                     " metrics, compute them using scipy.spatial.distance.cdist"
                     " "
                 )
-            tree = build_best_tree(coordinates, metric)
+            tree = _build_best_tree(coordinates, metric)
             distances, _ = tree.query(randoms, k=1)
 
     counts, bins = numpy.histogram(distances, bins=support)
@@ -400,7 +399,7 @@ def g_function(coordinates, support=None, distances=None, metric="euclidean"):
         try:
             distances, indices = tree.query(coordinates, k=2)
         except NameError:
-            tree = build_best_tree(coordinates, metric)
+            tree = _build_best_tree(coordinates, metric)
             distances, indices = tree.query(coordinates, k=2)
         finally:
             # in case the tree returns self-neighbors in slot 2
@@ -531,7 +530,7 @@ def _ripley_test(
         hull=None,
         edge_correction=None,
     )
-    tree = build_best_tree(coordinates, metric=metric)  # amortize this
+    tree = _build_best_tree(coordinates, metric=metric)  # amortize this
     hull = _prepare_hull(tree.data)  # and this over replications
     core_kwargs["hull"] = hull
 
