@@ -130,8 +130,6 @@ try:
     import pygeos
 
     HAS_PYGEOS = True
-except ModuleNotFoundError:
-    HAS_PYGEOS = False
 
     @_area.register
     def _(shape: pygeos.Geometry):
@@ -156,6 +154,10 @@ except ModuleNotFoundError:
         then use pygeos.bounds
         """
         return pygeos.bounds(shape)
+
+
+except ModuleNotFoundError:
+    HAS_PYGEOS = False
 
 
 def _build_best_tree(coordinates, metric):
