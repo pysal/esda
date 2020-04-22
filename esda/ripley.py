@@ -1,5 +1,4 @@
 import numpy
-import numba
 import warnings
 from scipy import spatial, interpolate
 from typing import Union, Any
