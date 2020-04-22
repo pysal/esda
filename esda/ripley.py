@@ -524,23 +524,30 @@ def _ripley_test(
 ):
     stat_function, result_container = dispatch.get(calltype)
     core_kwargs = dict(
-        support=None,
-        distances=None,
-        metric="euclidean",
-        hull=None,
-        edge_correction=None,
+        support=None, metric="euclidean", hull=None, edge_correction=None,
     )
     tree = _build_best_tree(coordinates, metric=metric)  # amortize this
     hull = _prepare_hull(tree.data)  # and this over replications
     core_kwargs["hull"] = hull
 
-    observed_support, observed_statistic = stat_function(tree, **core_kwargs)
+    if calltype in ("F", "J"):
+        random = simulate_from(coordinates)
+        distances, _ = tree.query(random)
+        random_tree = _build_best_tree(random)
+
+    observed_support, observed_statistic = stat_function(
+        tree, distances=distances, **core_kwargs
+    )
     core_kwargs["support"] = observed_support
 
     if keep_replications:
         replications = numpy.empty((len(observed_support), n_replications))
     for i_replication in range(n_replications):
-        replications_i = stat_function(tree, **core_kwargs)[1]
+        random_i = simulate_from(tree.coordinates)
+        if calltype in ("F", "J"):
+            distances, _ = random_tree(random_i)
+            core_kwargs["distance"] = distances
+        replications_i = stat_function(random_i, **core_kwargs)[1]
         if keep_replications:
             replications[i] = replications_i
     return result_container(
