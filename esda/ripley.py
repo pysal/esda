@@ -383,10 +383,14 @@ def f_function(
             )
     else:
         # if we only have a few, do 1000 empties.
-        # Otherwise, grow empties logarythmically
-        n_empty_points = numpy.minimum(  # default to 100 points
-            numpy.log10(coordinates.shape[0]).astype(int), 1000
-        )
+        # Otherwise, grow empties slowly
+        n = coordinates.shape[0]
+        order_of_magnitude = numpy.log10(n).astype(int)
+        if order_of_magnitude < 4:
+            n_empty_points = 1000
+        else:
+            n_empty_points = 10 ** (int(order_of_magnitude ** 0.5) + 1)
+
         randoms = simulate(hull=hull, size=(n_empty_points, 1))
         try:
             distances, _ = tree.query(randoms, k=1)
@@ -453,7 +457,11 @@ def j_function(
     if not numpy.allclose(gsupport, fsupport):
         ffunction = interpolate.interp1d(fsupport, fstats)
         fstats = ffunction(gsupport)
-    return gsupport, (1 - gstats) / (1 - fstats)
+    both_zero = (gstats == 1) & (fstats == 1)
+    with numpy.errstate(invalid="ignore", divide="ignore"):
+        hazard_ratio = (1 - gstats) / (1 - fstats)
+    hazard_ratio[both_zero] = 1
+    return gsupport, hazard_ratio
 
 
 def k_function(
