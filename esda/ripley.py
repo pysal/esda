@@ -198,7 +198,7 @@ def _prepare(coordinates, support, distances, metric, hull, edge_correction):
 
     # cast to coordinate array
     coordinates = numpy.asarray(coordinates)
-    hull = _prepare_hull(hull)
+    hull = _prepare_hull(coordinates, hull)
 
     # evaluate distances
     if (distances is None) and metric == "precomputed":
@@ -527,7 +527,7 @@ def _ripley_test(
         support=None, metric="euclidean", hull=None, edge_correction=None,
     )
     tree = _build_best_tree(coordinates, metric=metric)  # amortize this
-    hull = _prepare_hull(tree.data)  # and this over replications
+    hull = _prepare_hull(tree.data, hull)  # and this over replications
     core_kwargs["hull"] = hull
 
     if calltype in ("F", "J"):
