@@ -186,31 +186,29 @@ def _prepare_hull(coordinates, hull):
         - a scipy.spatial.ConvexHull object from the Qhull library
         - a shapely shape using alpha_shape_auto
     """
-    fail = True
     if (hull is None) or (hull == "bbox"):
-        hull = numpy.asarray([*coordinates.min(axis=0), *coordinates.max(axis=0)])
-        fail = False
-    elif hull.startswith("convex"):
-        hull = spatial.ConvexHull(coordinates)
-        fail = False
-    elif hull.startswith("alpha") or hull.startswith("α"):
-        hull = alpha_shape_auto(coordinates)
-        fail = False
-    elif HAS_SHAPELY:  # protect the isinstance check if import has failed
+        return numpy.array([*coordinates.min(axis=0), *coordinates.max(axis=0)])
+    if isinstance(hull, numpy.ndarray):
+        assert len(hull) == 4, f"bounding box provided is not shaped correctly! {hull}"
+        assert hull.ndim == 1, f"bounding box provided is not shaped correctly! {hull}"
+        return hull
+    if HAS_SHAPELY:  # protect the isinstance check if import has failed
         if isinstance(hull, shapely.geometry.Polygon):
-            hull = hull
-            fail = False
-    elif HAS_PYGEOS:
+            return hull
+    if HAS_PYGEOS:
         if isinstance(hull, pygeos.Geometry):
-            hull = hull
-            fail = False
-    if fail:
-        raise ValueError(
-            "Hull type {hull} not in the set of valid options:"
-            '{None, "bbox", "convex", "alpha", "α", '
-            " shapely.geometry.Polygon, pygeos.Geometry}"
-        )
-    return hull
+            return hull
+    if isinstance(hull, str):
+        if hull.startswith("convex"):
+            return spatial.ConvexHull(coordinates)
+        elif hull.startswith("alpha") or hull.startswith("α"):
+            return alpha_shape_auto(coordinates)
+
+    raise ValueError(
+        f"Hull type {hull} not in the set of valid options:"
+        f" (None, 'bbox', 'convex', 'alpha', 'α', "
+        f" shapely.geometry.Polygon, pygeos.Geometry)"
+    )
 
 
 def _prepare(coordinates, support, distances, metric, hull, edge_correction):
@@ -280,9 +278,16 @@ def _prepare(coordinates, support, distances, metric, hull, edge_correction):
 
 
 def simulate(hull, intensity=None, size=None):
-    if (intensity is None) and (size is None):
-        intensity = 100 / _area(hull)  # default to intensity at 100 points per area
-        size = 1  # default to one replication
+    if size is None:
+        if intensity is not None:
+            # if intensity is provided, assume
+            # n_observations
+            n_observations = int(_area(hull) * intensity)
+        else:
+            # default to 100 points
+            n_observations = 100
+        n_replications = 1
+        size = (n_observations, n_replications)
 
     if isinstance(size, tuple):
         if len(size) == 2 and intensity is None:
@@ -306,7 +311,8 @@ def simulate(hull, intensity=None, size=None):
                 f" Recieved: `intensity={intensity}, size={size}`"
             )
 
-    elif intensity is not None and isinstance(size, int):  # catches default, too!
+    elif intensity is not None and isinstance(size, int):
+        # assume int size with specified intensity means n_replications at x intensity
         n_observations = intensity * _area(hull)
         n_replications = size
     else:
@@ -326,10 +332,10 @@ def simulate(hull, intensity=None, size=None):
         i_observation = 0
         while i_observation < n_observations:
             x, y = (
-                numpy.random.random(bbox[0], bbox[2]),
-                numpy.random.random(bbox[1], bbox[3]),
+                numpy.random.uniform(bbox[0], bbox[2]),
+                numpy.random.uniform(bbox[1], bbox[3]),
             )
-            if _within(x, y, hull):
+            if _contains(hull, x, y):
                 result[i_observation, i_replication] = (x, y)
             i_observation += 1
     return result
@@ -342,7 +348,7 @@ def simulate_from(coordinates, hull=None, size=None):
 
     Note: will always assume the implicit intensity of the process. 
     """
-    n_observations = vertices.shape[0]
+    n_observations = coordinates.shape[0]
     hull = _prepare_hull(coordinates, hull)
     return simulate(hull, intensity=None, size=(n_observations, size))
 
@@ -378,11 +384,10 @@ def f_function(
     else:
         # if we only have a few, do 1000 empties.
         # Otherwise, grow empties logarythmically
-        n_empty_points = numpy.minimum(
+        n_empty_points = numpy.minimum(  # default to 100 points
             numpy.log10(coordinates.shape[0]).astype(int), 1000
         )
-        intensity = n_empty_points / _area(hull)
-        randoms = simulate(hull, intensity=intensity)
+        randoms = simulate(hull=hull, size=(n_empty_points, 1))
         try:
             distances, _ = tree.query(randoms, k=1)
         except NameError:
