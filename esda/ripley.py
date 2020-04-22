@@ -458,7 +458,7 @@ def k_function(
             )
     n_pairs_less_than_d = (upper_tri_distances < support.reshape(-1, 1)).sum(axis=1)
     intensity = n / _area(hull)
-    k_estimate = n_pairs_less_than_d * 2 / intensity
+    k_estimate = ((n_pairs_less_than_d * 2) / n) / intensity
     return support, kestimate
 
 
