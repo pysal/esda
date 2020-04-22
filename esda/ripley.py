@@ -34,7 +34,7 @@ def _(shape: numpy.ndarray):
     If a shape describes a bounding box, compute length times width
     """
     assert len(shape) == 4, "shape is not a bounding box!"
-    width, height = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    width, height = shape[2] - shape[0], shape[3] - shape[1]
     return numpy.abs(width * height)
 
 
@@ -228,7 +228,10 @@ def _prepare(coordinates, support, distances, metric, hull, edge_correction):
         support = 20
 
     if isinstance(support, int):
-        support = numpy.linspace(0, distances.max(), num=support)
+        bbox = _bbox(coordinates)
+        height, width = bbox[3] - bbox[1], bbox[2] - bbox[0]
+        ripley_rule = 0.25 * numpy.minimum(height, width)
+        support = numpy.linspace(0, ripley_rule, num=support)
     elif isinstance(support, tuple):
         if len(support) == 1:
             support = numpy.linspace(0, support[0], num=20)  # default support n bins
