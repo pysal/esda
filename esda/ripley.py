@@ -411,7 +411,7 @@ def g_function(coordinates, support=None, distances=None, metric="euclidean"):
     if isinstance(coordinates, (spatial.KDTree, spatial.cKDTree)):
         tree = coordinates
         coordinates = tree.data
-    coordinates, support, distances, metric = _prepare(
+    coordinates, support, distances, metric, *_ = _prepare(
         coordinates, support, distances, metric, None, None
     )
     if distances is not None:
