@@ -51,8 +51,11 @@ def _bbox(shape):
 @_bbox.register
 def _(shape: numpy.ndarray):
     """
-    If a shape is an array of points, compute the minima/maxima
+    If a shape is an array of points, compute the minima/maxima 
+    or let it slide if it's 1 dimensional & length 4
     """
+    if (shape.ndim == 1) & (len(shape) == 4):
+        return shape
     return numpy.array([*shape.min(axis=0), *shape.max(axis=0)])
 
 
