@@ -52,7 +52,7 @@ def _bbox(shape):
 def _(shape: numpy.ndarray):
     """
     If a shape is an array of points, compute the minima/maxima 
-    or let it slide if it's 1 dimensional & length 4
+    or let it pass through if it's 1 dimensional & length 4
     """
     if (shape.ndim == 1) & (len(shape) == 4):
         return shape
@@ -71,15 +71,17 @@ def _(shape: spatial.ConvexHull):
 @singledispatch
 def _contains(shape, x, y):
     """
-    Try to use the shape's contains method directly on XY 
+    Try to use the shape's contains method directly on XY.
+    Does not currently work on anything. 
     """
-    shape.contains((x, y))
+    return shape.contains((x, y))
 
 
 @_contains.register
 def _(shape: numpy.ndarray, x: float, y: float):
     """
     If provided an ndarray, assume it's a bbox
+    and return whether the point falls inside
     """
     xmin, xmax = shape[0], shape[2]
     ymin, ymax = shape[1], shape[3]
@@ -103,7 +105,8 @@ def _(shape: spatial.Delaunay, x: float, y: float):
 @_contains.register
 def _(shape: spatial.ConvexHull, x: float, y: float):
     """
-    For convex hulls, convert them first. 
+    For convex hulls, convert their exterior first into a Delaunay triangulation
+    and then use the delaunay dispatcher.
     """
     exterior = shape.points[shape.vertices]
     delaunay = spatial.Delaunay(exterior)
@@ -114,16 +117,18 @@ try:
     import shapely
 
     HAS_SHAPELY = True
-except ModuleNotFoundError:
-    HAS_SHAPELY = False
 
     @_contains.register
     def _(shape: shapely.geometry.Polygon, x: float, y: float):
         """
         If we know we're working with a shapely polygon, 
-        then use the contains method on the input shape. 
+        then use the contains method & cast input coords to a shapely point
         """
         return shape.contains(shapely.geometry.Point((x, y)))
+
+
+except ModuleNotFoundError:
+    HAS_SHAPELY = False
 
 
 try:
@@ -143,7 +148,7 @@ try:
     def _(shape: pygeos.Geometry, x: float, y: float):
         """
         If we know we're working with a pygeos polygon, 
-        then use pygeos.within
+        then use pygeos.within casting the points to a pygeos object too
         """
         return pygeos.within(pygeos.points((x, y)), shape)
 
@@ -161,6 +166,13 @@ except ModuleNotFoundError:
 
 
 def _build_best_tree(coordinates, metric):
+    """
+    Build the best query tree that can support the application.
+    Chooses from:
+    1. sklearn.KDTree if available and metric is simple
+    2. sklearn.BallTree if available and metric is complicated
+    3. scipy.spatial.cKDTree if nothing else
+    """
     tree = spatial.cKDTree
     try:
         from sklearn.neighbors import KDTree, BallTree
@@ -184,7 +196,7 @@ def _prepare_hull(coordinates, hull):
     """
     Construct a hull from the coordinates given a hull type
     Will either return:
-        - a bounding box of [xmin, ymin, xmax, ymax]
+        - a bounding box array of [xmin, ymin, xmax, ymax]
         - a scipy.spatial.ConvexHull object from the Qhull library
         - a shapely shape using alpha_shape_auto
     """
@@ -214,7 +226,24 @@ def _prepare_hull(coordinates, hull):
 
 
 def _prepare(coordinates, support, distances, metric, hull, edge_correction):
-
+    """
+    prepare the arguments to convert into a standard format
+    1. cast the coordinates to a numpy array
+    2. precomputed metrics must have distances provided
+    3. metrics must be callable or string
+    4. warn if distances are specified and metric is not default
+    5. make distances a numpy.ndarray
+    6. construct the support, accepting:
+        - num_steps -> a linspace with len(support) == num_steps
+                       from zero to a quarter of the bounding box's smallest side
+        - (stop, ) -> a linspace with len(support) == 20
+                 from zero to stop
+        - (start, stop) -> a linspace with len(support) == 20
+                           from start to stop
+        - (start, stop, num_steps) -> a linspace with len(support) == num_steps
+                                      from start to stop
+        - numpy.ndarray -> passed through
+    """
     # Throw early if edge correction is requested
     if edge_correction is not None:
         raise NotImplementedError("Edge correction is not currently implemented.")
@@ -229,23 +258,17 @@ def _prepare(coordinates, support, distances, metric, hull, edge_correction):
             "If metric =`precomputed` then distances must"
             " be provided as a (n,n) numpy array."
         )
-    elif not (isinstance(metric, str) or callable(metric)):
+    if not (isinstance(metric, str) or callable(metric)):
         raise TypeError(
             f"`metric` argument must be callable or a string. Recieved: {metric}"
         )
-    elif distances is not None and metric != "euclidean":
+    if distances is not None and metric != "euclidean":
         warnings.Warn(
             "Distances were provided. The specified metric will be ignored."
             " To use precomputed distances with a custom distance metric,"
             " do not specify a `metric` argument."
         )
-    elif isinstance(distances, numpy.ndarray):
-        assert (
-            distances.shape[0] == distances.shape[1] == coordinates.shape[0]
-        ), "Distances are not (n,n), aligned with coordinate matrix"
-
-    n = int(coordinates.shape[0])
-    upper_tri_n = int(n * (n - 1) * 0.5)
+        metric = "euclidean"
 
     if support is None:
         support = 20
@@ -280,6 +303,20 @@ def _prepare(coordinates, support, distances, metric, hull, edge_correction):
 
 
 def simulate(hull, intensity=None, size=None):
+    """
+    Simulate from the given hull with a specified intensity or size.
+    
+    Hulls can be:
+    - bounding boxes (numpy.ndarray with dim==1 and len == 4)
+    - scipy.spatial.ConvexHull
+    - shapely.geometry.Polygon
+    - pygeos.Geometry
+
+    If intensity is specified, size must be an integer reflecting
+    the number of realizations. 
+    If the size is specified as a tuple, then the intensity is 
+    determined by the area of the hull. 
+    """
     if size is None:
         if intensity is not None:
             # if intensity is provided, assume
@@ -359,30 +396,43 @@ def simulate_from(coordinates, hull=None, size=None):
 
 
 def f_function(
-    coordinates, support=None, distances=None, metric="euclidean", hull=None
+    coordinates,
+    support=None,
+    distances=None,
+    metric="euclidean",
+    hull=None,
+    edge_correction=None,
 ):
     if isinstance(coordinates, TREE_TYPES):
         tree = coordinates
         coordinates = tree.data
     coordinates, support, distances, metric, hull, _ = _prepare(
-        coordinates, support, distances, metric, hull, None
+        coordinates, support, distances, metric, hull, edge_correction
     )
     if distances is not None:
-        if distances.shape[0] == distances.shape[1] == coordinates.shape[0]:
-            warnings.Warn(
-                "The full distance matrix is not required for this function,"
-                " only the distance to the nearest neighbor within the pattern."
-                " Computing this, assuming provided distance matrix has rows"
-                " pertaining to the coordinates and columns pertaining to the"
-                " empty space sample points."
-            )
-            distances = distances.min(axis=1)
-        elif distance.shape[0] != coordinates.shape[0]:
-            raise ValueError(
-                "Distances are not aligned with coordinates! Distance"
-                " matrix must be (n_coordinates, p_random_points), but recieved"
-                " {distance.shape}"
-            )
+        n_observations = coordinates.shape[0]
+        if distances.ndim == 2:
+            k, p = distances.shape
+            if k == p == n:
+                warnings.Warn(
+                    f"A full distance matrix is not required for this function, and"
+                    f" the intput matrix is a square {n},{n} matrix. Only the"
+                    f" distances from p random points to their nearest neighbor within"
+                    f" the pattern is required, as an {n},p matrix. Assuming the"
+                    f" provided distance matrix has rows pertaining to input"
+                    f" pattern and columns pertaining to the output points."
+                )
+                distances = distances.min(axis=0)
+            elif k == n:
+                distances = distances.min(axis=0)
+            else:
+                raise ValueError(
+                    f"Distance matrix should have the same rows as the input"
+                    f" coordinates with p columns, where n may be equal to p."
+                    f" Recieved an {k},{p} distance matrix for {n} coordinates"
+                )
+        elif distances.ndim == 1:
+            p = len(distances)
     else:
         # if we only have a few, do 1000 empties.
         # Otherwise, grow empties slowly
@@ -395,16 +445,10 @@ def f_function(
 
         randoms = simulate(hull=hull, size=(n_empty_points, 1))
         try:
-            distances, _ = tree.query(randoms, k=1)
+            tree
         except NameError:
-            if metric != "euclidean":
-                raise ValueError(
-                    "KDTree can only use euclidean distances."
-                    " If you would like to use alternative distance"
-                    " metrics, compute them using scipy.spatial.distance.cdist"
-                    " "
-                )
             tree = _build_best_tree(coordinates, metric)
+        finally:
             distances, _ = tree.query(randoms, k=1)
 
     counts, bins = numpy.histogram(distances, bins=support)
@@ -413,32 +457,57 @@ def f_function(
     return bins, numpy.asarray([*fracs, 1])
 
 
-def g_function(coordinates, support=None, distances=None, metric="euclidean"):
+def g_function(
+    coordinates, support=None, distances=None, metric="euclidean", edge_correction=None,
+):
     if isinstance(coordinates, (spatial.KDTree, spatial.cKDTree)):
         tree = coordinates
         coordinates = tree.data
     coordinates, support, distances, metric, *_ = _prepare(
-        coordinates, support, distances, metric, None, None
+        coordinates, support, distances, metric, None, edge_correction
     )
     if distances is not None:
-        if distances.shape[0] == distances.shape[1] == coordinates.shape[0]:
-            warnings.Warn(
-                "The full distance matrix is not required for this function,"
-                " only the distance to the nearest neighbor within the pattern."
-                " Computing this and discarding the rest."
-            )
-            distances = distances.min(axis=1)
-        elif distance.shape[0] != coordinates.shape[0]:
+        if distances.ndim == 2:
+            if distances.shape[0] == distances.shape[1] == coordinates.shape[0]:
+                warnings.Warn(
+                    "The full distance matrix is not required for this function,"
+                    " only the distance to the nearest neighbor within the pattern."
+                    " Computing this and discarding the rest."
+                )
+                distances = distances.min(axis=1)
+            else:
+                k, p = distances.shape
+                n = coordinates.shape[0]
+                raise ValueError(
+                    " Input distance matrix has an invalid shape: {k},{p}."
+                    " Distances supplied can either be 2 dimensional"
+                    " square matrices with the same number of rows"
+                    " as `coordinates` ({n}) or 1 dimensional and contain"
+                    " the shortest distance from each point in "
+                    " `coordinates` to some other point in coordinates."
+                )
+        elif distances.ndim == 1:
+            if distance.shape[0] != coordinates.shape[0]:
+                raise ValueError(
+                    f"Distances are not aligned with coordinates! Distance"
+                    f" matrix must be (n_coordinates, n_coordinates), but recieved"
+                    f" {distance.shape} instead of ({coordinates.shape[0]},)"
+                )
+        else:
             raise ValueError(
-                "Distances are not aligned with coordinates! Distance"
-                " matrix must be (n_coordinates, n_coordinates), but recieved"
-                " {distance.shape}"
+                "Distances supplied can either be 2 dimensional"
+                " square matrices with the same number of rows"
+                " as `coordinates` or 1 dimensional and contain"
+                " the shortest distance from each point in "
+                " `coordinates` to some other point in coordinates."
+                " Input matrix was {distances.ndim} dimensioanl"
             )
     else:
         try:
-            distances, indices = tree.query(coordinates, k=2)
+            tree
         except NameError:
             tree = _build_best_tree(coordinates, metric)
+        finally:
             distances, indices = tree.query(coordinates, k=2)
 
     counts, bins = numpy.histogram(distances, bins=support)
@@ -448,13 +517,27 @@ def g_function(coordinates, support=None, distances=None, metric="euclidean"):
 
 
 def j_function(
-    coordinates, support=None, distances=None, metric="euclidean", hull=None
+    coordinates,
+    support=None,
+    distances=None,
+    metric="euclidean",
+    hull=None,
+    edge_correction=None,
 ):
     gsupport, gstats = g_function(
-        coordinates, support=support, distances=distances, metric=metric
+        coordinates,
+        support=support,
+        distances=distances,
+        metric=metric,
+        edge_correction=edge_correction,
     )
     fsupport, fstats = f_function(
-        coordinates, support=support, distances=distances, metric=metric, hull=hull
+        coordinates,
+        support=support,
+        distances=distances,
+        metric=metric,
+        hull=hull,
+        edge_correction=edge_correction,
     )
     if not numpy.allclose(gsupport, fsupport):
         ffunction = interpolate.interp1d(fsupport, fstats)
@@ -462,7 +545,9 @@ def j_function(
     both_zero = (gstats == 1) & (fstats == 1)
     with numpy.errstate(invalid="ignore", divide="ignore"):
         hazard_ratio = (1 - gstats) / (1 - fstats)
+
     hazard_ratio[both_zero] = 1
+
     return gsupport, hazard_ratio
 
 
@@ -512,9 +597,10 @@ def l_function(
     metric="euclidean",
     hull=None,
     edge_correction=None,
+    linearized=False,
 ):
-    # This is not equivalent to the estimator in pointpats, but that
-    # is likely flawed according to https://github.com/pysal/pointpats/issues/44
+    # linearization proposed by Besag (1977)
+
     support, k_estimate = k_function(
         coordinates,
         support=support,
@@ -523,7 +609,8 @@ def l_function(
         hull=hull,
         edge_correction=edge_correction,
     )
-    return support, numpy.sqrt(k_estimate / numpy.pi)
+
+    return support, numpy.sqrt(k_estimate / numpy.pi) - linearized * support
 
 
 ### Ripley tests
@@ -563,6 +650,7 @@ def _ripley_test(
     edge_correction=None,
     keep_replications=False,
     n_replications=9999,
+    **kwargs,
 ):
     stat_function, result_container = dispatch.get(calltype)
     core_kwargs = dict(
@@ -696,6 +784,7 @@ def l_test(
     metric="euclidean",
     hull=None,
     edge_correction=None,
+    linearized=False,
     n_replications=9999,
 ):
     return _ripley_test(
@@ -707,5 +796,6 @@ def l_test(
         hull=None,
         edge_correction=None,
         keep_replications=False,
+        linearized=False,
         n_replications=9999,
     )
