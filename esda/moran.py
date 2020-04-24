@@ -1412,18 +1412,23 @@ import numpy
 
 @jit(nopython=True)
 def _one_while_neighbors(i : int, n : int,
-                   z : numpy.ndarray, 
-                   row : numpy.ndarray, 
-                   weight : numpy.ndarray):
+                         z : numpy.ndarray, 
+                         row : numpy.ndarray, 
+                         weight : numpy.ndarray):
     cardinality = (row == i).sum()
     weights_i = weight[row == i]
-    j = 0
+    j = 1
     lag = 0
-    while j < cardinality:
+    rids = numpy.ones((cardinality+1,)) * -1
+    rids[0] = i
+    while j < (cardinality+1):
         rid = numpy.random.randint(n)
-        if (rid != i) & (rids != rid).any():
-            lag += weights_i[j] * z[rid]
-            j+=1
+        if (rids == rid).sum() > 1:
+            continue
+        # remember: weights_i is len(rids) - 1 = cardinality
+        lag += weights_i[j-1] * z[rid]
+        rids[j] = rid
+        j+=1
     return z[i] * lag
 
 @jit(nopython=True)
@@ -1434,7 +1439,7 @@ def while_neighbors(z: numpy.ndarray,
                     permutations : int,
                     keep : bool):
     n = len(z)
-    accumulator = numpy.empty((n,))
+    accumulator = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
         out = numpy.empty((n, permutations))
     else:
@@ -1444,7 +1449,7 @@ def while_neighbors(z: numpy.ndarray,
             rstat = _one_while_neighbors(i, n, z, row, weight)
             if keep:
                 out[i,j] = rstat
-            accumulator[i] += rstat >= observed[i]
+            accumulator[i] += (rstat >= observed[i])
     return accumulator, out
     
 
@@ -1469,7 +1474,7 @@ def choice_neighbors(z: numpy.ndarray,
                      keep:bool):
     n = len(z)
     full = numpy.arange(n)
-    accumulator = numpy.empty((n,))
+    accumulator = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
         out = numpy.empty((n, permutations))
     else:
