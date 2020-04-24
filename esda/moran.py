@@ -922,6 +922,7 @@ class Moran_Local(object):
             lisas[i] = z[i] * (w[i] * tmp).sum(1)
         self.rlisas = (n_1 / self.den) * lisas
 
+
     def __quads(self):
         zl = slag(self.w, self.z)
         zp = self.z > 0
@@ -1405,3 +1406,79 @@ class Moran_Local_Rate(Moran_Local):
                                       **stat_kws)
         for col in rate_df.columns:
             df[col] = rate_df[col]
+
+from numba import jit
+import numpy
+
+@jit(nopython=True)
+def _one_while_neighbors(i : int, n : int,
+                   z : numpy.ndarray, 
+                   row : numpy.ndarray, 
+                   weight : numpy.ndarray):
+    cardinality = (row == i).sum()
+    weights_i = weight[row == i]
+    j = 0
+    lag = 0
+    while j < cardinality:
+        rid = numpy.random.randint(n)
+        if (rid != i) & (rids != rid).any():
+            lag += weights_i[j] * z[rid]
+            j+=1
+    return z[i] * lag
+
+@jit(nopython=True)
+def while_neighbors(z: numpy.ndarray, 
+                    observed : numpy.ndarray,
+                    row : numpy.ndarray,
+                    weight: numpy.ndarray,
+                    permutations : int,
+                    keep : bool):
+    n = len(z)
+    accumulator = numpy.empty((n,))
+    if keep:
+        out = numpy.empty((n, permutations))
+    else:
+        out = numpy.empty((1,1))
+    for i in range(n):
+        for j in range(permutations):
+            rstat = _one_while_neighbors(i, n, z, row, weight)
+            if keep:
+                out[i,j] = rstat
+            accumulator[i] += rstat >= observed[i]
+    return accumulator, out
+    
+
+
+@jit(nopython=True)
+def _one_choice_neighbors(i : int, full : numpy.ndarray,
+                     z : numpy.ndarray, 
+                     row: numpy.ndarray,
+                     weight :numpy.ndarray):
+    cardinality = (row == i).sum()
+    weights_i = weight[row == i]
+    known_rids = numpy.random.choice(full[numpy.where(full != i)], cardinality)
+    zrid = z[known_rids]
+    return z[i] * (weights_i * zrid).sum()
+
+@jit(nopython=True)
+def choice_neighbors(z: numpy.ndarray, 
+                     observed: numpy.ndarray,
+                     row:numpy.ndarray, 
+                     weight:numpy.ndarray,
+                     permutations:int,
+                     keep:bool):
+    n = len(z)
+    full = numpy.arange(n)
+    accumulator = numpy.empty((n,))
+    if keep:
+        out = numpy.empty((n, permutations))
+    else:
+        out = numpy.empty((1,1))
+    for i in range(n):
+        for j in range(permutations):
+            rstat = _one_choice_neighbors(i,full,z,row,weight)
+            if keep:
+                out[i,j] = rstat
+            accumulator[i] += rstat >= observed[i]
+    return accumulator, out
+
