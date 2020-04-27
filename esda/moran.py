@@ -1580,7 +1580,7 @@ from numba import jit
 import numpy
 
 
-# @jit(nopython=True)
+@jit(nopython=True)
 def while_neighbors(
     z: numpy.ndarray,
     observed: numpy.ndarray,
@@ -1617,7 +1617,7 @@ def while_neighbors(
     return accumulator, out
 
 
-# @jit(nopython=True)
+@jit(nopython=True)
 def choice_neighbors(
     z: numpy.ndarray,
     observed: numpy.ndarray,
