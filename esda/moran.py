@@ -1576,72 +1576,156 @@ class Moran_Local_Rate(Moran_Local):
             df[col] = rate_df[col]
 
 
-from numba import jit
+from numba import njit
 import numpy
 
 
-@jit(nopython=True)
-def while_neighbors(
+@njit
+def neighbors(
     z: numpy.ndarray,
     observed: numpy.ndarray,
+    cardinalities: numpy.ndarray,
     row: numpy.ndarray,
-    weight: numpy.ndarray,
+    weights: numpy.ndarray,
     permutations: int,
     keep: bool,
 ):
+    z = z.copy()
     n = len(z)
     accumulator = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
         out = numpy.empty((n, permutations))
     else:
         out = numpy.empty((1, 1))
-    for i in range(n):
-        cardinality = (row == i).sum()
-        weights_i = weight[row == i]
-        rids = numpy.ones((cardinality + 1,)) * -1
-        rids[0] = i
-        j = 1
-        lag = 0
-        for j in range(permutations):
-            while j < (cardinality + 1):
-                rid = numpy.random.randint(n)
-                if (rids == rid).sum() > 1:
-                    continue
-                lag += weights_i[j - 1] * z[rid]
-                rids[j] = rid
-                j += 1
-            rstat = z[i] * lag
+
+    wloc = 0
+    max_card = cardinalities.max()
+    mask = numpy.ones_like(accumulator)
+    for i in prange(n):
+        cardinality = cardinalities[i]
+        ### this chomps the first `cardinality` weights off of `weights`
+        weights_i = weights[wloc : (wloc + cardinality)]
+        wloc += cardinality
+        zi = z[i]
+        observed_Ii = observed[i]
+        # copy delete
+        # z_tmp = numpy.delete(z, i)
+        # no copy delete
+        mask[i] = 0
+        z_tmp = z[mask]
+        mask[i] = 1
+        for j in prange(permutations):
+            numpy.random.shuffle(z_tmp)
+            rstat = zi * (z_tmp[:cardinality] * weights_i).sum()
             if keep:
                 out[i, j] = rstat
-            accumulator[i] += rstat >= observed[i]
+            accumulator[i] += rstat >= observed_Ii
     return accumulator, out
 
 
-@jit(nopython=True)
-def choice_neighbors(
+from numba import jit, njit, prange
+
+
+@njit(parallel=True, fastmath=True)
+def while_neighbors(
     z: numpy.ndarray,
     observed: numpy.ndarray,
+    cardinalities: numpy.ndarray,
     row: numpy.ndarray,
-    weight: numpy.ndarray,
+    weights: numpy.ndarray,
     permutations: int,
     keep: bool,
 ):
+    z = z.copy()
     n = len(z)
-    full = numpy.arange(n)
     accumulator = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
         out = numpy.empty((n, permutations))
     else:
         out = numpy.empty((1, 1))
-    for i in range(n):
-        cardinality = (row == i).sum()
-        weights_i = weight[row == i]
-        not_i = numpy.delete(full, i)
-        for j in range(permutations):
-            known_rids = numpy.random.choice(not_i, cardinality)
-            zrid = z[known_rids]
-            rstat = z[i] * (weights_i * zrid).sum()
+
+    wloc = 0
+    max_card = cardinalities.max()
+    random_ids = numpy.ones((max_card + 1,))
+    for i in prange(n):
+        cardinality = cardinalities[i]
+        ### this chomps the first `cardinality` weights off of `weights`
+        weights_i = weights[wloc : (wloc + cardinality)]
+        wloc += cardinality
+        zi = z[i]
+        observed_Ii = observed[i]
+        random_ids[0] = i
+        random_ids[1:] = -1
+        z_tmp = numpy.delete(z, i)
+        for j in prange(permutations):
+            k = 0
+            lag = 0
+            while k < cardinality:
+                random_id = numpy.random.randint(n)
+                not_seen_before = (random_ids != random_id).all()
+                lag += weights_i[k] * z[random_id] * not_seen_before
+                k += not_seen_before
+            rstat = lag * zi
             if keep:
                 out[i, j] = rstat
-            accumulator[i] += rstat >= observed[i]
+            accumulator[i] += rstat >= observed_Ii
+    return accumulator, out
+
+
+@njit(parallel=True, fastmath=True)
+def vec_permutations(n_permuted: int, k_replications: int):
+    result = numpy.empty((k_replications, n_permuted), dtype=numpy.int64)
+    for i in prange(k_replications):
+        result[i] = numpy.random.permutation(n_permuted)
+    return result
+
+
+@njit(fastmath=True, parallel=True)
+def square_ragged_array(cardinalities: numpy.ndarray, weights: numpy.ndarray):
+    n = len(cardinalities)
+    max_card = numpy.max(cardinalities)
+    square_ragged = numpy.zeros((n, max_card), dtype=numpy.float32)
+    wloc = 0
+    for i in range(n):
+        square_ragged[i, : cardinalities[i]] = weights[wloc : (wloc + cardinalities[i])]
+    return square_ragged
+
+
+def neighbors_perm(
+    z: numpy.ndarray,
+    observed: numpy.ndarray,
+    cardinalities: numpy.ndarray,
+    row: numpy.ndarray,
+    weights: numpy.ndarray,
+    permutations: int,
+    keep: bool,
+):
+    z = z.copy().reshape(-1, 1)
+    n = len(z)
+    accumulator = numpy.zeros((n,), dtype=numpy.int64)
+    if keep:
+        out = numpy.empty((n, permutations))
+    else:
+        out = numpy.empty((1, 1))
+
+    max_card = cardinalities.max()
+    permutations = vec_permutations(max_card, permutations)
+    mask = numpy.ones((n,), dtype=numpy.int8) == 1
+    wloc = 0
+    for i in range(n):
+        cardinality = cardinalities[i]
+        ### this chomps the first `cardinality` weights off of `weights`
+        weights_i = weights[wloc : (wloc + cardinality)]
+        wloc += cardinality
+        zi = z[i]
+        mask[i] = False
+        z_no_i = z[
+            mask,
+        ]
+        rstats = numpy.sum(z_no_i[permutations[:, :cardinality]] * weights_i, axis=1)
+        mask[i] = True
+        rstats *= zi
+        if keep:
+            out[i,] = rstats
+        accumulator[i] = numpy.sum(rstats >= observed[i])
     return accumulator, out
