@@ -1582,9 +1582,11 @@ class Moran_Local_Rate(Moran_Local):
 #--------------------------------------------------------------------#
 #                  Performance Optimisations                         #
 #--------------------------------------------------------------------#
-from numba import njit
-import numpy
 
+from numba import njit, jit, prange
+
+
+import numpy
 
 @njit
 def neighbors(
@@ -1674,7 +1676,6 @@ def while_neighbors(
             accumulator[i] += rstat >= observed_Ii
     return accumulator, out
 
-
 @njit(parallel=True, fastmath=True)
 def vec_permutations(n_permuted: int, k_replications: int):
     result = numpy.empty((k_replications, n_permuted), dtype=numpy.int64)
@@ -1682,18 +1683,7 @@ def vec_permutations(n_permuted: int, k_replications: int):
         result[i] = numpy.random.permutation(n_permuted)
     return result
 
-
-@njit(fastmath=True, parallel=True)
-def square_ragged_array(cardinalities: numpy.ndarray, weights: numpy.ndarray):
-    n = len(cardinalities)
-    max_card = numpy.max(cardinalities)
-    square_ragged = numpy.zeros((n, max_card), dtype=numpy.float32)
-    wloc = 0
-    for i in range(n):
-        square_ragged[i, : cardinalities[i]] = weights[wloc : (wloc + cardinalities[i])]
-    return square_ragged
-
-
+@njit(fastmath=True)
 def neighbors_perm(
     z: numpy.ndarray,
     observed: numpy.ndarray,
@@ -1715,7 +1705,7 @@ def neighbors_perm(
     permutations = vec_permutations(max_card, permutations)
     mask = numpy.ones((n,), dtype=numpy.int8) == 1
     wloc = 0
-    for i in range(n):
+    for i in prange(n):
         cardinality = cardinalities[i]
         ### this chomps the first `cardinality` weights off of `weights`
         weights_i = weights[wloc : (wloc + cardinality)]
@@ -1725,20 +1715,16 @@ def neighbors_perm(
         z_no_i = z[
             mask,
         ]
-        rstats = numpy.sum(z_no_i[permutations[:, :cardinality]] * weights_i, axis=1)
+        flat_permutation_indices = permutations[:, :cardinality].flatten()
+
+        rstats = numpy.sum(z_no_i[flat_permutation_indices].reshape(-1, cardinality)
+                           * weights_i, axis=1)
         mask[i] = True
         rstats *= zi
         if keep:
             out[i,] = rstats
         accumulator[i] = numpy.sum(rstats >= observed[i])
     return accumulator, out
-
-@njit(parallel=True, fastmath=True)
-def vec_permutations(n_permuted: int, k_replications: int):
-    result = numpy.empty((k_replications, n_permuted), dtype=numpy.int64)
-    for i in prange(k_replications):
-        result[i] = numpy.random.permutation(n_permuted)
-    return result
 
 @njit(parallel=True, fastmath=True)
 def neighbors_perm_plus(
