@@ -962,17 +962,19 @@ class Moran_Local(object):
         if permutations:
             if numba is False:
                 self.__crand()
+                sim = np.transpose(self.rlisas)
+                above = sim >= self.Is
+                larger = above.sum(0)
+                low_extreme = (self.permutations - larger) < larger
+                larger[low_extreme] = self.permutations - larger[low_extreme]
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                self.sim = sim
             else:
-                self.rlisas = crand_plus(w, y)
-            sim = np.transpose(self.rlisas)
-            above = sim >= self.Is
-            larger = above.sum(0)
-            low_extreme = (self.permutations - larger) < larger
-            larger[low_extreme] = self.permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
-            self.sim = sim
-            self.EI_sim = sim.mean(axis=0)
-            self.seI_sim = sim.std(axis=0)
+                keep = True
+                self.p_sim, self.rlisas = crand_plus(w, self, permutations, keep)
+                self.sim = np.transpose(self.rlisas)
+            self.EI_sim = self.sim.mean(axis=0)
+            self.seI_sim = self.sim.std(axis=0)
             self.VI_sim = self.seI_sim * self.seI_sim
             self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
             self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
@@ -1726,7 +1728,7 @@ def neighbors_perm(
         accumulator[i] = numpy.sum(rstats >= observed[i])
     return accumulator, out
 
-@njit(parallel=True, fastmath=True)
+@njit(fastmath=True)
 def neighbors_perm_plus(
     z: numpy.ndarray,
     observed: numpy.ndarray,
@@ -1737,11 +1739,11 @@ def neighbors_perm_plus(
 ):
     z = z.copy().reshape(-1, 1)
     n = len(z)
-    accumulator = numpy.zeros((n,), dtype=numpy.int64)
+    larger = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
-        out = numpy.empty((n, permutations))
+        rlisas = numpy.empty((n, permutations))
     else:
-        out = numpy.empty((1, 1))
+        rlisas = numpy.empty((1, 1))
 
     max_card = cardinalities.max()
     permutations = vec_permutations(max_card, permutations)
@@ -1764,12 +1766,22 @@ def neighbors_perm_plus(
         mask[i] = True
         rstats *= zi
         if keep:
-            out[i,] = rstats
-        accumulator[i] = numpy.sum(rstats >= observed[i])
-    return accumulator, out        
+            rlisas[i,] = rstats
+        larger[i] = numpy.sum(rstats >= observed[i])
+    return larger, rlisas
 
-def crand_plus(w, y):
-    for i in range(w.n):
-        # Card
-        card = None
-    return rlisas
+def crand_plus(w, lisa, permutations, keep):
+    cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
+    larger, rlisas = neighbors_perm_plus(
+        lisa.z, 
+        lisa.Is, 
+        cardinalities, 
+        w.sparse.data,
+        permutations,
+        keep
+    )
+    low_extreme = (permutations - larger) < larger
+    larger[low_extreme] = permutations - larger[low_extreme]
+    p_sim = (larger + 1.0) / (permutations + 1.0)
+
+    return p_sim, rlisas
