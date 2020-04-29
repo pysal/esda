@@ -933,7 +933,7 @@ class Moran_Local(object):
     """
 
     def __init__(
-        self, y, w, transformation="r", permutations=PERMUTATIONS, geoda_quads=False
+        self, y, w, transformation="r", permutations=PERMUTATIONS, geoda_quads=False, numba=False
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -960,7 +960,10 @@ class Moran_Local(object):
         self.quads = quads
         self.__quads()
         if permutations:
-            self.__crand()
+            if numba is False:
+                self.__crand()
+            else:
+                self.rlisas = crand_plus(w, y)
             sim = np.transpose(self.rlisas)
             above = sim >= self.Is
             larger = above.sum(0)
@@ -1576,6 +1579,9 @@ class Moran_Local_Rate(Moran_Local):
             df[col] = rate_df[col]
 
 
+#--------------------------------------------------------------------#
+#                  Performance Optimisations                         #
+#--------------------------------------------------------------------#
 from numba import njit
 import numpy
 
@@ -1621,9 +1627,6 @@ def neighbors(
                 out[i, j] = rstat
             accumulator[i] += rstat >= observed_Ii
     return accumulator, out
-
-
-from numba import jit, njit, prange
 
 
 @njit(parallel=True, fastmath=True)
@@ -1729,3 +1732,58 @@ def neighbors_perm(
             out[i,] = rstats
         accumulator[i] = numpy.sum(rstats >= observed[i])
     return accumulator, out
+
+@njit(parallel=True, fastmath=True)
+def vec_permutations(n_permuted: int, k_replications: int):
+    result = numpy.empty((k_replications, n_permuted), dtype=numpy.int64)
+    for i in prange(k_replications):
+        result[i] = numpy.random.permutation(n_permuted)
+    return result
+
+@njit(parallel=True, fastmath=True)
+def neighbors_perm_plus(
+    z: numpy.ndarray,
+    observed: numpy.ndarray,
+    cardinalities: numpy.ndarray,
+    weights: numpy.ndarray,
+    permutations: int,
+    keep: bool,
+):
+    z = z.copy().reshape(-1, 1)
+    n = len(z)
+    accumulator = numpy.zeros((n,), dtype=numpy.int64)
+    if keep:
+        out = numpy.empty((n, permutations))
+    else:
+        out = numpy.empty((1, 1))
+
+    max_card = cardinalities.max()
+    permutations = vec_permutations(max_card, permutations)
+    mask = numpy.ones((n,), dtype=numpy.int8) == 1
+    wloc = 0
+    for i in prange(n):
+        cardinality = cardinalities[i]
+        ### this chomps the first `cardinality` weights off of `weights`
+        weights_i = weights[wloc : (wloc + cardinality)]
+        wloc += cardinality
+        zi = z[i]
+        mask[i] = False
+        z_no_i = z[
+            mask,
+        ]
+        flat_permutation_indices = permutations[:, :cardinality].flatten()
+
+        rstats = numpy.sum(z_no_i[flat_permutation_indices].reshape(-1, cardinality)
+                           * weights_i, axis=1)
+        mask[i] = True
+        rstats *= zi
+        if keep:
+            out[i,] = rstats
+        accumulator[i] = numpy.sum(rstats >= observed[i])
+    return accumulator, out        
+
+def crand_plus(w, y):
+    for i in range(w.n):
+        # Card
+        card = None
+    return rlisas
