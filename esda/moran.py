@@ -963,6 +963,10 @@ class Moran_Local(object):
         if permutations:
             if numba is False:
                 self.__crand(keep_simulations)
+            else:
+                self.p_sim, self.rlisas = crand_plus(w, self, permutations, keep_simulations)
+                self.sim = np.transpose(self.rlisas)
+            if keep_simulations:
                 sim = np.transpose(self.rlisas)
                 above = sim >= self.Is
                 larger = above.sum(0)
@@ -970,22 +974,18 @@ class Moran_Local(object):
                 larger[low_extreme] = self.permutations - larger[low_extreme]
                 self.p_sim = (larger + 1.0) / (permutations + 1.0)
                 self.sim = sim
+                self.EI_sim = self.sim.mean(axis=0)
+                self.seI_sim = self.sim.std(axis=0)
+                self.VI_sim = self.seI_sim * self.seI_sim
+                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
             else:
-                self.p_sim, self.rlisas = crand_plus(w, self, permutations, keep_simulations)
-                self.sim = np.transpose(self.rlisas)
-        if keep_simulations:
-            self.EI_sim = self.sim.mean(axis=0)
-            self.seI_sim = self.sim.std(axis=0)
-            self.VI_sim = self.seI_sim * self.seI_sim
-            self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
-        else:
-            self.sim = self.rlisas = None
-            self.EI_sim = np.nan
-            self.seI_sim = np.nan
-            self.VI_sim = np.nan
-            self.z_sim = np.nan
-            self.p_z_sim = np.nan
+                self.sim = self.rlisas = None
+                self.EI_sim = np.nan
+                self.seI_sim = np.nan
+                self.VI_sim = np.nan
+                self.z_sim = np.nan
+                self.p_z_sim = np.nan
 
     def calc(self, w, z):
         zl = slag(w, z)
@@ -1007,6 +1007,7 @@ class Moran_Local(object):
         z = self.z
         if keep_simulations:
             lisas = np.zeros((self.n, self.permutations))
+        larger = numpy.zeros((self.n, ), )
         n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
@@ -1028,8 +1029,13 @@ class Moran_Local(object):
             if keep_simulations:
                 lisas[i] = lisas_i
             larger[i] = (lisas_i >= lmo).sum()
-       
-        self.rlisas = (n_1 / self.den) * lisas
+
+        low_extreme = (self.permutations - larger) < larger
+        larger[low_extreme] = self.permutations - larger[low_extreme]
+        self.p_sim = (larger + 1.0) / (self.permutations + 1.0)
+        
+        if keep_simulations:
+            self.rlisas = lisas
 
     def __quads(self):
         zl = slag(self.w, self.z)
@@ -1635,6 +1641,9 @@ def neighbors_perm_plus(
     permutations = vec_permutations(max_card, permutations)
     mask = numpy.ones((n,), dtype=numpy.int8) == 1
     wloc = 0
+
+    scaling = (n-1) / (z * z).sum()
+
     for i in prange(n):
         cardinality = cardinalities[i]
         ### this chomps the first `cardinality` weights off of `weights`
@@ -1645,12 +1654,13 @@ def neighbors_perm_plus(
         z_no_i = z[
             mask,
         ]
+        np.random.shuffle(z_no_i)
         flat_permutation_indices = permutations[:, :cardinality].flatten()
 
         rstats = numpy.sum(z_no_i[flat_permutation_indices].reshape(-1, cardinality)
                            * weights_i, axis=1)
         mask[i] = True
-        rstats *= zi
+        rstats *= zi * scaling
         if keep:
             rlisas[i,] = rstats
         larger[i] = numpy.sum(rstats >= observed[i])
