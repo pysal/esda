@@ -1619,6 +1619,13 @@ def vec_permutations(n_permuted: int, k_replications: int):
         result[i] = numpy.random.permutation(n_permuted)
     return result
 
+@njit(parallel=True, fastmath=True)
+def vec_permutations_all(max_card: int, n:int, k_replications: int):
+    result = numpy.empty((k_replications, max_card), dtype=numpy.int64)
+    for k in prange(k_replications):
+        result[k] = numpy.random.choice(n-1, size=max_card, replace=False)
+    return result
+
 
 @njit(fastmath=True)
 def neighbors_perm_plus(
@@ -1638,7 +1645,7 @@ def neighbors_perm_plus(
         rlisas = numpy.empty((1, 1))
 
     max_card = cardinalities.max()
-    #permutations = vec_permutations(max_card, permutations)
+    permuted_ids = vec_permutations_all(max_card, n, permutations)
     mask = numpy.ones((n,), dtype=numpy.int8) == 1
     wloc = 0
 
@@ -1655,19 +1662,10 @@ def neighbors_perm_plus(
             mask,
         ]
         #------
-        """
-        np.random.shuffle(z_no_i)
-        flat_permutation_indices = permutations[:, :cardinality].flatten()
-
-        rstats = numpy.sum(z_no_i[flat_permutation_indices].reshape(-1, cardinality)
-                           * weights_i, axis=1)
-        """
-        #---
-        rstats = numpy.empty(permutations)
-        for j in prange(permutations):
-            r_z_no_i = z_no_i[numpy.random.choice(n-1, size=cardinality, replace=False)]
-            rstat = r_z_no_i.dot(weights_i)
-            rstats[j] = rstat
+        flat_permuted_ids = permuted_ids[:, :cardinality].flatten()
+        rstats = z_no_i[flat_permuted_ids]\
+                       .reshape(-1, cardinality)\
+                       .dot(weights_i)
         #------
         mask[i] = True
         rstats *= zi * scaling
