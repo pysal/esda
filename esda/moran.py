@@ -1629,7 +1629,7 @@ def neighbors_perm_plus(
     permutations: int,
     keep: bool,
 ):
-    z = z.copy().reshape(-1, 1)
+    #z = z.copy().reshape(-1, 1)
     n = len(z)
     larger = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
@@ -1638,7 +1638,7 @@ def neighbors_perm_plus(
         rlisas = numpy.empty((1, 1))
 
     max_card = cardinalities.max()
-    permutations = vec_permutations(max_card, permutations)
+    #permutations = vec_permutations(max_card, permutations)
     mask = numpy.ones((n,), dtype=numpy.int8) == 1
     wloc = 0
 
@@ -1654,11 +1654,21 @@ def neighbors_perm_plus(
         z_no_i = z[
             mask,
         ]
+        #------
+        """
         np.random.shuffle(z_no_i)
         flat_permutation_indices = permutations[:, :cardinality].flatten()
 
         rstats = numpy.sum(z_no_i[flat_permutation_indices].reshape(-1, cardinality)
                            * weights_i, axis=1)
+        """
+        #---
+        rstats = numpy.empty(permutations)
+        for j in prange(permutations):
+            r_z_no_i = z_no_i[numpy.random.choice(n-1, size=cardinality, replace=False)]
+            rstat = r_z_no_i.dot(weights_i)
+            rstats[j] = rstat
+        #------
         mask[i] = True
         rstats *= zi * scaling
         if keep:
