@@ -34,7 +34,7 @@ If you are having issues, please talk to us in the [gitter room](https://gitter.
 License
 -------
 
-The project is licensed under the [BSD license](https://github.com/pysal/esda/blob/master/LICENSE).
+The project is licensed under the [BSD 3-Clause license](https://github.com/pysal/esda/blob/master/LICENSE).
 
 Funding
 -------
