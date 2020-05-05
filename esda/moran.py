@@ -1607,10 +1607,8 @@ class Moran_Local_Rate(Moran_Local):
 #                  Performance Optimisations                         #
 #--------------------------------------------------------------------#
 
-from numba import njit, jit, prange
-
-
 import numpy
+from numba import njit, jit, prange
 
 @njit(parallel=True, fastmath=True)
 def vec_permutations(n_permuted: int, k_replications: int):
@@ -1633,25 +1631,22 @@ def neighbors_perm_plus(
     observed: numpy.ndarray,
     cardinalities: numpy.ndarray,
     weights: numpy.ndarray,
-    permutations: int,
+    permuted_ids: numpy.ndarray,
+    scaling: numpy.float64,
+    max_card: int,
     keep: bool,
 ):
-    #z = z.copy().reshape(-1, 1)
-    n = len(z)
-    larger = numpy.zeros((n,), dtype=numpy.int64)
+    chunk_n = z.shape[0]
+    larger = numpy.zeros((chunk_n,), dtype=numpy.int64)
     if keep:
-        rlisas = numpy.empty((n, permutations))
+        rlisas = numpy.empty((chunk_n, permuted_ids.shape[0]))
     else:
         rlisas = numpy.empty((1, 1))
 
-    max_card = cardinalities.max()
-    permuted_ids = vec_permutations_all(max_card, n, permutations)
-    mask = numpy.ones((n,), dtype=numpy.int8) == 1
+    mask = numpy.ones((chunk_n,), dtype=numpy.int8) == 1
     wloc = 0
 
-    scaling = (n-1) / (z * z).sum()
-
-    for i in prange(n):
+    for i in prange(chunk_n):
         cardinality = cardinalities[i]
         ### this chomps the first `cardinality` weights off of `weights`
         weights_i = weights[wloc : (wloc + cardinality)]
@@ -1674,16 +1669,44 @@ def neighbors_perm_plus(
         larger[i] = numpy.sum(rstats >= observed[i])
     return larger, rlisas
 
-def crand_plus(w, lisa, permutations, keep):
+@njit(fastmath=True)
+def chunk_weights(cardinalities, n_chunks):
+    boundary_points = numpy.empty((n_chunks,))
+    step = numpy.int64(cardinalities.shape[0] / n_chunks) + 1
+    start = 0
+    for i in prange(n_chunks):
+        advance = cardinalities[start:start+step].sum()
+        boundary_points[i] = start + advance
+        start += step
+    return boundary_points
+
+def crand_plus(w, lisa, permutations, keep, n_jobs=1):
     cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
-    larger, rlisas = neighbors_perm_plus(
-        lisa.z, 
-        lisa.Is, 
-        cardinalities, 
-        w.sparse.data,
-        permutations,
-        keep
-    )
+    max_card = cardinalities.max()
+    n = len(lisa.z)
+    scaling = (n-1) / (lisa.z * lisa.z).sum()
+
+    # paralellise over permutations?
+    permuted_ids = vec_permutations_all(max_card, n, permutations)
+
+    if n_jobs == 1:
+        larger, rlisas = neighbors_perm_plus(
+            lisa.z, 
+            lisa.Is, 
+            cardinalities, 
+            w.sparse.data,
+            permuted_ids,
+            scaling,
+            max_card,
+            keep
+        )
+    else:
+        # Chunks for z, Is, cardinalities, weights
+        w_boundary_points = chunk_weights(w.sparse.data, cardinalities, n_jobs)
+        # Pool of n_jobs workers (seeds OK, no randomness in parallel jobs)
+        # Reassemblage
+        pass
+
     low_extreme = (permutations - larger) < larger
     larger[low_extreme] = permutations - larger[low_extreme]
     p_sim = (larger + 1.0) / (permutations + 1.0)
