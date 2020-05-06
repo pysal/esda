@@ -968,7 +968,7 @@ class Moran_Local(object):
             if numba is False:
                 self.__crand(keep_simulations)
             else:
-                self.p_sim, self.rlisas = crand_plus(w, self, permutations, keep_simulations)
+                self.p_sim, self.rlisas = crand_plus(w, self, permutations, keep_simulations, n_jobs=n_jobs)
                 self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
@@ -1692,14 +1692,14 @@ def parallel_neighbors_perm_plus(
         observed: numpy.ndarray, 
         cardinalities: numpy.ndarray,
         weights: numpy.ndarray,
-        permutted_ids: numpy.ndarray,
+        permuted_ids: numpy.ndarray,
         scaling: numpy.float64,
         max_card: int,
         n_jobs: int,
         keep: bool,
         ):
     n = z.shape[0]
-    w_boundary_points = chunk_weights(w.sparse.data, cardinalities, n_jobs)
+    w_boundary_points = chunk_weights(cardinalities, n_jobs)
     chunk_size = numpy.int64(n / n_jobs) + 1
     # Set up output holders
     larger = numpy.zeros((n,), dtype=numpy.int64)
@@ -1712,7 +1712,7 @@ def parallel_neighbors_perm_plus(
     for i in prange(n_jobs):
         # Chunks for z, Is, cardinalities, weights
         z_chunk = z[start:start+chunk_size]
-        observed_chunk = observed_chunk[start:start+chunk_size]
+        observed_chunk = observed[start:start+chunk_size]
         cardinalities_chunk = cardinalities[start:start+chunk_size]
         w_chunk = weights[w_boundary_points[i]:w_boundary_points[i+1]]
         # Compute on chunk
@@ -1734,7 +1734,7 @@ def parallel_neighbors_perm_plus(
             rlisas[start:start+chunk_size] = rlisas_chunk
     return larger, rlisas
 
-def crand_plus(w, lisa, permutations, keep, n_jobs=1):
+def crand_plus(w, lisa, permutations, keep, n_jobs):
     cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
     max_card = cardinalities.max()
     n = len(lisa.z)
