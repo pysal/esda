@@ -1612,6 +1612,7 @@ class Moran_Local_Rate(Moran_Local):
 #--------------------------------------------------------------------#
 
 import numpy
+import joblib
 from numba import njit, jit, prange
 
 @njit(parallel=True, fastmath=True)
@@ -1707,6 +1708,9 @@ def parallel_neighbors_perm_plus(
         rlisas = numpy.empty((n, permuted_ids.shape[0]))
     else:
         rlisas = numpy.empty((1, 1))
+    #------------------------------------------------------------------
+    # Parallel version with joblib
+    # Generator for chunking
     # Parallel loop (seeds OK, no randomness in parallel jobs)
     start = 0
     for i in prange(n_jobs):
@@ -1732,6 +1736,9 @@ def parallel_neighbors_perm_plus(
         if keep:
             # Confirm this is correct
             rlisas[start:start+chunk_size] = rlisas_chunk
+        # Update
+        start += chunk_size
+    #------------------------------------------------------------------
     return larger, rlisas
 
 def crand_plus(w, lisa, permutations, keep, n_jobs):
