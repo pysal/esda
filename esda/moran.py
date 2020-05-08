@@ -1630,10 +1630,10 @@ def vec_permutations_all(max_card: int, n:int, k_replications: int):
     return result
 
 
-@njit(parallel=False, fastmath=True)
+#@njit(parallel=False, fastmath=True)
 def neighbors_perm_plus(
-    z: numpy.ndarray,
     z_chunk: numpy.ndarray,
+    z: numpy.ndarray,
     observed: numpy.ndarray,
     cardinalities: numpy.ndarray,
     weights: numpy.ndarray,
@@ -1643,13 +1643,14 @@ def neighbors_perm_plus(
     keep: bool,
 ):
     chunk_n = z_chunk.shape[0]
+    n = z.shape[0]
     larger = numpy.zeros((chunk_n,), dtype=numpy.int64)
     if keep:
         rlisas = numpy.empty((chunk_n, permuted_ids.shape[0]))
     else:
         rlisas = numpy.empty((1, 1))
 
-    mask = numpy.ones((chunk_n,), dtype=numpy.int8) == 1
+    mask = numpy.ones((n,), dtype=numpy.int8) == 1
     wloc = 0
 
     for i in range(chunk_n):
@@ -1677,7 +1678,7 @@ def neighbors_perm_plus(
 
 @njit(fastmath=True)
 def chunk_weights(cardinalities, n_chunks):
-    boundary_points = numpy.zeros((n_chunks+1,))
+    boundary_points = numpy.zeros((n_chunks+1,), dtype=numpy.int64)
     n = cardinalities.shape[0]
     chunk_size = numpy.int64(n / n_chunks) + 1
     start = 0
@@ -1687,7 +1688,7 @@ def chunk_weights(cardinalities, n_chunks):
         start += chunk_size
     return boundary_points
 
-@njit(parallel=True, fastmath=True)
+#@njit(parallel=True, fastmath=True)
 def parallel_neighbors_perm_plus(
         z: numpy.ndarray, 
         observed: numpy.ndarray, 
@@ -1709,11 +1710,12 @@ def parallel_neighbors_perm_plus(
     else:
         rlisas = numpy.empty((1, 1))
     #------------------------------------------------------------------
-    # Parallel version with joblib
-    # Generator for chunking
     # Parallel loop (seeds OK, no randomness in parallel jobs)
-    start = 0
+    starts = numpy.zeros((n_jobs+1,), dtype=numpy.int64)
+    for i in range(n_jobs):
+        starts[i+1] = starts[i] + chunk_size
     for i in prange(n_jobs):
+        start = starts[i]
         # Chunks for z, Is, cardinalities, weights
         z_chunk = z[start:start+chunk_size]
         observed_chunk = observed[start:start+chunk_size]
@@ -1737,7 +1739,6 @@ def parallel_neighbors_perm_plus(
             # Confirm this is correct
             rlisas[start:start+chunk_size] = rlisas_chunk
         # Update
-        start += chunk_size
     #------------------------------------------------------------------
     return larger, rlisas
 
