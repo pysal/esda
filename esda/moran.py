@@ -1630,8 +1630,9 @@ def vec_permutations_all(max_card: int, n:int, k_replications: int):
     return result
 
 
-#@njit(parallel=False, fastmath=True)
+@njit(parallel=False, fastmath=True)
 def neighbors_perm_plus(
+    chunk_start: int, # Obs. i the chunk starts in
     z_chunk: numpy.ndarray,
     z: numpy.ndarray,
     observed: numpy.ndarray,
@@ -1659,7 +1660,7 @@ def neighbors_perm_plus(
         weights_i = weights[wloc : (wloc + cardinality)]
         wloc += cardinality
         z_chunk_i = z_chunk[i]
-        mask[i] = False
+        mask[chunk_start + i] = False
         z_no_i = z[
             mask,
         ]
@@ -1669,7 +1670,7 @@ def neighbors_perm_plus(
                        .reshape(-1, cardinality)\
                        .dot(weights_i)
         #------
-        mask[i] = True
+        mask[chunk_start + i] = True
         rstats *= z_chunk_i * scaling
         if keep:
             rlisas[i,] = rstats
@@ -1682,13 +1683,13 @@ def chunk_weights(cardinalities, n_chunks):
     n = cardinalities.shape[0]
     chunk_size = numpy.int64(n / n_chunks) + 1
     start = 0
-    for i in prange(n_chunks):
+    for i in range(n_chunks):
         advance = cardinalities[start:start+chunk_size].sum()
-        boundary_points[i+1] = start + advance
+        boundary_points[i+1] = boundary_points[i] + advance
         start += chunk_size
     return boundary_points
 
-#@njit(parallel=True, fastmath=True)
+@njit(parallel=True, fastmath=True)
 def parallel_neighbors_perm_plus(
         z: numpy.ndarray, 
         observed: numpy.ndarray, 
@@ -1703,6 +1704,10 @@ def parallel_neighbors_perm_plus(
     n = z.shape[0]
     w_boundary_points = chunk_weights(cardinalities, n_jobs)
     chunk_size = numpy.int64(n / n_jobs) + 1
+    starts = numpy.zeros((n_jobs+1,), dtype=numpy.int64)
+    for i in range(n_jobs):
+        starts[i+1] = starts[i] + chunk_size
+    #------------------------------------------------------------------
     # Set up output holders
     larger = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
@@ -1711,9 +1716,6 @@ def parallel_neighbors_perm_plus(
         rlisas = numpy.empty((1, 1))
     #------------------------------------------------------------------
     # Parallel loop (seeds OK, no randomness in parallel jobs)
-    starts = numpy.zeros((n_jobs+1,), dtype=numpy.int64)
-    for i in range(n_jobs):
-        starts[i+1] = starts[i] + chunk_size
     for i in prange(n_jobs):
         start = starts[i]
         # Chunks for z, Is, cardinalities, weights
@@ -1723,6 +1725,7 @@ def parallel_neighbors_perm_plus(
         w_chunk = weights[w_boundary_points[i]:w_boundary_points[i+1]]
         # Compute on chunk
         larger_chunk, rlisas_chunk = neighbors_perm_plus(
+            start,
             z_chunk, 
             z,
             observed_chunk, 
@@ -1731,7 +1734,7 @@ def parallel_neighbors_perm_plus(
             permuted_ids,
             scaling,
             max_card,
-            keep
+            keep,
         )
         # Insert in output
         larger[start:start+chunk_size] = larger_chunk
@@ -1753,6 +1756,7 @@ def crand_plus(w, lisa, permutations, keep, n_jobs):
 
     if n_jobs == 1:
         larger, rlisas = neighbors_perm_plus(
+            0,
             lisa.z, 
             lisa.z, 
             lisa.Is, 
