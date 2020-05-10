@@ -1611,6 +1611,7 @@ class Moran_Local_Rate(Moran_Local):
 #                  Performance Optimisations                         #
 #--------------------------------------------------------------------#
 
+import os
 import numpy
 from numba import njit, jit, prange
 from joblib import Parallel, delayed, parallel_backend
@@ -1801,7 +1802,9 @@ def crand_plus(w, lisa, permutations, keep, n_jobs):
             keep
         )
     else:
-        # Parallel implementation
+        if n_jobs == -1:
+            n_jobs = os.cpu_count()
+    # Parallel implementation
         larger, rlisas = parallel_neighbors_perm_plus(
                 lisa.z,
                 lisa.Is,
