@@ -1747,36 +1747,6 @@ def parallel_neighbors_perm_plus(
         larger[start:start+chunk_size] = larger_chunk
         if keep:
             rlisas[start:start+chunk_size] = rlisas_chunk
-    #------------------------------------------------------------------
-    # Parallel loop (seeds OK, no randomness in parallel jobs)
-    """
-    for i in prange(n_jobs):
-        start = starts[i]
-        # Chunks for z, Is, cardinalities, weights
-        z_chunk = z[start:start+chunk_size]
-        observed_chunk = observed[start:start+chunk_size]
-        cardinalities_chunk = cardinalities[start:start+chunk_size]
-        w_chunk = weights[w_boundary_points[i]:w_boundary_points[i+1]]
-        # Compute on chunk
-        larger_chunk, rlisas_chunk = neighbors_perm_plus(
-            start,
-            z_chunk, 
-            z,
-            observed_chunk, 
-            cardinalities_chunk, 
-            w_chunk,
-            permuted_ids,
-            scaling,
-            max_card,
-            keep,
-        )
-        # Insert in output
-        larger[start:start+chunk_size] = larger_chunk
-        if keep:
-            # Confirm this is correct
-            rlisas[start:start+chunk_size] = rlisas_chunk
-    """
-    #------------------------------------------------------------------
     return larger, rlisas
 
 def crand_plus(w, lisa, permutations, keep, n_jobs):
