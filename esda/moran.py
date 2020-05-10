@@ -1612,8 +1612,8 @@ class Moran_Local_Rate(Moran_Local):
 #--------------------------------------------------------------------#
 
 import numpy
-import joblib
 from numba import njit, jit, prange
+from joblib import Parallel, delayed, parallel_backend
 
 @njit(parallel=True, fastmath=True)
 def vec_permutations(n_permuted: int, k_replications: int):
@@ -1689,7 +1689,7 @@ def chunk_weights(cardinalities, n_chunks):
         start += chunk_size
     return boundary_points
 
-@njit(parallel=True, fastmath=True)
+#@njit(parallel=True, fastmath=True)
 def parallel_neighbors_perm_plus(
         z: numpy.ndarray, 
         observed: numpy.ndarray, 
@@ -1715,7 +1715,40 @@ def parallel_neighbors_perm_plus(
     else:
         rlisas = numpy.empty((1, 1))
     #------------------------------------------------------------------
+    # Joblib parallel loop by chunks
+    chunks = []
+    for i in range(n_jobs):
+        start = starts[i]
+        # Chunks for z, Is, cardinalities, weights
+        z_chunk = z[start:start+chunk_size]
+        observed_chunk = observed[start:start+chunk_size]
+        cardinalities_chunk = cardinalities[start:start+chunk_size]
+        w_chunk = weights[w_boundary_points[i]:w_boundary_points[i+1]]
+        chunks.append((start, 
+                       z_chunk, 
+                       z, 
+                       observed_chunk, 
+                       cardinalities_chunk,
+                       w_chunk,
+                       permuted_ids,
+                       scaling,
+                       max_card,
+                       keep,
+                      ))
+    with parallel_backend("loky", inner_max_num_threads=1):
+        worker_out = Parallel(n_jobs=n_jobs)(
+                delayed(neighbors_perm_plus)(*pars)
+                for pars in chunks
+                )
+    for i in range(len(worker_out)):
+        larger_chunk, rlisas_chunk = worker_out[i]
+        start = chunks[i][0]
+        larger[start:start+chunk_size] = larger_chunk
+        if keep:
+            rlisas[start:start+chunk_size] = rlisas_chunk
+    #------------------------------------------------------------------
     # Parallel loop (seeds OK, no randomness in parallel jobs)
+    """
     for i in prange(n_jobs):
         start = starts[i]
         # Chunks for z, Is, cardinalities, weights
@@ -1741,7 +1774,7 @@ def parallel_neighbors_perm_plus(
         if keep:
             # Confirm this is correct
             rlisas[start:start+chunk_size] = rlisas_chunk
-        # Update
+    """
     #------------------------------------------------------------------
     return larger, rlisas
 
