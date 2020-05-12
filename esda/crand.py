@@ -4,12 +4,13 @@
 
 import os
 import numpy as np
-from numba import njit, jit, prange 
+from numba import njit, jit, prange
 from joblib import Parallel, delayed, parallel_backend
 
 #######################################################################
 #                   Utilities for all functions                       #
 #######################################################################
+
 
 @njit(fastmath=True)
 def vec_permutations(max_card: int, n: int, k_replications: int):
@@ -17,6 +18,7 @@ def vec_permutations(max_card: int, n: int, k_replications: int):
     for k in prange(k_replications):
         result[k] = np.random.choice(n - 1, size=max_card, replace=False)
     return result
+
 
 def crand(z, w, observed, permutations, keep, n_jobs):
     """
@@ -65,9 +67,11 @@ def crand(z, w, observed, permutations, keep, n_jobs):
 
     return p_sim, rlocals
 
+
 #######################################################################
 #                   Serial Implementation                             #
 #######################################################################
+
 
 @njit(parallel=False, fastmath=True)
 def serial_crand(
@@ -114,13 +118,14 @@ def serial_crand(
         larger[i] = np.sum(rstats >= observed[i])
     return larger, rlocals
 
+
 #######################################################################
 #                   Parallel Implementation                           #
 #######################################################################
 
+
 @njit(fastmath=True)
-def build_weights_offsets(cardinalities: np.ndarray, 
-                          n_chunks:int):
+def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int):
     """
     This is a utility function to construct offsets into the weights
     flat data array found in the W.sparse.data object.
@@ -138,17 +143,17 @@ def build_weights_offsets(cardinalities: np.ndarray,
 
 @njit(fastmath=True)
 def chunk_generator(
-        n_jobs :int ,
-        starts: np.ndarray,
-        z : np.ndarray,
-        observed: np.ndarray,
-        cardinalities: np.ndarray,
-        weights: np.ndarray,
-        w_boundary_points: np.ndarray,
-        permuted_ids: np.ndarray,
-        scaling: float,
-        max_card: int,
-        keep: bool,
+    n_jobs: int,
+    starts: np.ndarray,
+    z: np.ndarray,
+    observed: np.ndarray,
+    cardinalities: np.ndarray,
+    weights: np.ndarray,
+    w_boundary_points: np.ndarray,
+    permuted_ids: np.ndarray,
+    scaling: float,
+    max_card: int,
+    keep: bool,
 ):
     """
     Construct chunks to iterate over in numba
@@ -238,49 +243,79 @@ def parallel_crand(
     return larger, rlocals
 
 
-def crand(z, w, observed, permutations, keep, n_jobs):
-    """
-    Conduct conditional randomization of a given input using the provided simulation function.
-    """
-    cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
-    max_card = cardinalities.max()
-    n = len(z)
-    scaling = (n - 1) / (z * z).sum()
+#######################################################################
+#                   Local statistical functions                       #
+#####################################################################from numba import njit, boolean
+import numpy
 
-    # paralellise over permutations?
-    permuted_ids = vec_permutations(max_card, n, permutations)
 
-    if n_jobs == 1:
-        larger, rlocals = serial_crand(
-            0,
-            z,
-            z,
-            observed,
-            cardinalities,
-            w.sparse.data,
-            permuted_ids,
-            scaling,
-            max_card,
-            keep,
-        )
-    else:
-        if n_jobs == -1:
-            n_jobs = os.cpu_count()
-        # Parallel implementation
-        larger, rlocals = parallel_crand(
-            z,
-            Is,
-            cardinalities,
-            w.sparse.data,
-            permuted_ids,
-            scaling,
-            max_card,
-            n_jobs,
-            keep,
-        )
+@njit
+def _prepare_univariate(i, z, permuted_ids, weights_i):
+    mask = numpy.ones_like(z, dtype=boolean)
+    mask[i] = False
+    z_no_i = z[mask]
+    cardinality = len(weights_i)
+    flat_permutation_ids = permuted_ids[:, :cardinality].flatten()
+    zrand = z_no_i[flat_permutation_ids].reshape(-1, cardinality)
+    return z[i], zrand
 
-    low_extreme = (permutations - larger) < larger
-    larger[low_extreme] = permutations - larger[low_extreme]
-    p_sim = (larger + 1.0) / (permutations + 1.0)
 
-    return p_sim, rlocals
+@njit
+def _prepare_bivariate(i, z, permuted_ids, weights_i):
+    zx = z[:, 0]
+    zy = z[:, 1]
+
+    cardinality = len(weights_i)
+
+    mask = numpy.ones_like(zx, dtype=boolean)
+    zx_no_i = zy[mask]
+    zy_no_i = zx[mask]
+
+    flat_permutation_indices = permuted_ids[:, :cardinality].flatten()
+
+    zxrand = zx_no_i[flat_permutation_indices].reshape(-1, cardinality)
+    zyrand = zy_no_i[flat_permutation_indices].reshape(-1, cardinality)
+
+    return zx[i], zxrand, zy[i], zyrand
+
+
+@njit(fastmath=True)
+def local_moran(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return zi * (zrand @ weights_i) * scaling
+
+
+@njit(fastmath=True)
+def local_geary(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return numpy.power(zrand - zi, 2) @ weights_i * scaling
+
+
+@njit(fastmath=True)
+def local_gamma(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return (zi * zrand) @ weights_i * scaling
+
+
+@njit(fastmath=True)
+def local_spatial_pearson(i, z, permuted_ids, weights_i, scaling):
+    zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
+    return (zyrand @ weights_i) * (zxrand @ weights_i) * scaling
+
+
+@njit(fastmath=True)
+def local_wartenburg(i, z, permuted_ids, weights_i, scaling):
+    zx = z[:, 0]
+    zy = z[:, 1]
+    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, weights_i)
+    return zx[i] * (zyrand @ weights_i) * scaling
+
+
+@njit(fastmath=True)
+def local_join_count():
+    raise NotImplementedError
+
+
+def local(i, z, permuted_ids, weights_i, scaling):
+    raise NotImplementedError
+    # returns (k_permuotations,) array of random statistics for observation i##
