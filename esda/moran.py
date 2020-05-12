@@ -10,6 +10,7 @@ from .tabular import _univariate_handler, _bivariate_handler
 from warnings import warn
 import scipy.stats as stats
 import numpy as np
+import tempfile
 
 __all__ = [
     "Moran",
@@ -937,8 +938,15 @@ class Moran_Local(object):
     """
 
     def __init__(
-        self, y, w, transformation="r", permutations=PERMUTATIONS,
-        geoda_quads=False, numba=False, n_jobs=1, keep_simulations=False
+        self,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        geoda_quads=False,
+        numba=False,
+        n_jobs=1,
+        keep_simulations=False,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -968,7 +976,9 @@ class Moran_Local(object):
             if numba is False:
                 self.__crand(keep_simulations)
             else:
-                self.p_sim, self.rlisas = crand_plus(w, self, permutations, keep_simulations, n_jobs=n_jobs)
+                self.p_sim, self.rlisas = crand_plus(
+                    w, self, permutations, keep_simulations, n_jobs=n_jobs
+                )
                 self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
@@ -1011,7 +1021,7 @@ class Moran_Local(object):
         z = self.z
         if keep_simulations:
             lisas = np.zeros((self.n, self.permutations))
-        larger = numpy.zeros((self.n, ), )
+        larger = numpy.zeros((self.n,),)
         n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
@@ -1022,14 +1032,14 @@ class Moran_Local(object):
         w = [self.w.weights[ido[i]] for i in ids]
         wc = [self.w.cardinalities[ido[i]] for i in ids]
 
-        scaling = (n_1 / self.den)
+        scaling = n_1 / self.den
 
-        for i,lmo in enumerate(self.Is):
+        for i, lmo in enumerate(self.Is):
             idsi = ids[ids != i]
             np.random.shuffle(idsi)
             tmp = z[idsi[rids[:, 0 : wc[i]]]]
             lisas_i = z[i] * (w[i] * tmp).sum(1)
-            lisas_i *= scaling 
+            lisas_i *= scaling
             if keep_simulations:
                 lisas[i] = lisas_i
             larger[i] = (lisas_i >= lmo).sum()
@@ -1037,7 +1047,7 @@ class Moran_Local(object):
         low_extreme = (self.permutations - larger) < larger
         larger[low_extreme] = self.permutations - larger[low_extreme]
         self.p_sim = (larger + 1.0) / (self.permutations + 1.0)
-        
+
         if keep_simulations:
             self.rlisas = lisas
 
@@ -1607,14 +1617,15 @@ class Moran_Local_Rate(Moran_Local):
             df[col] = rate_df[col]
 
 
-#--------------------------------------------------------------------#
+# --------------------------------------------------------------------#
 #                  Performance Optimisations                         #
-#--------------------------------------------------------------------#
+# --------------------------------------------------------------------#
 
 import os
 import numpy
 from numba import njit, jit, prange
 from joblib import Parallel, delayed, parallel_backend
+
 
 @njit(parallel=True, fastmath=True)
 def vec_permutations(n_permuted: int, k_replications: int):
@@ -1623,17 +1634,18 @@ def vec_permutations(n_permuted: int, k_replications: int):
         result[i] = numpy.random.permutation(n_permuted)
     return result
 
+
 @njit(parallel=True, fastmath=True)
-def vec_permutations_all(max_card: int, n:int, k_replications: int):
+def vec_permutations_all(max_card: int, n: int, k_replications: int):
     result = numpy.empty((k_replications, max_card), dtype=numpy.int64)
     for k in prange(k_replications):
-        result[k] = numpy.random.choice(n-1, size=max_card, replace=False)
+        result[k] = numpy.random.choice(n - 1, size=max_card, replace=False)
     return result
 
 
 @njit(parallel=False, fastmath=True)
 def neighbors_perm_plus(
-    chunk_start: int, # Obs. i the chunk starts in
+    chunk_start: int,  # Obs. i the chunk starts in
     z_chunk: numpy.ndarray,
     z: numpy.ndarray,
     observed: numpy.ndarray,
@@ -1665,12 +1677,10 @@ def neighbors_perm_plus(
         z_no_i = z[
             mask,
         ]
-        #------
+        # ------
         flat_permuted_ids = permuted_ids[:, :cardinality].flatten()
-        rstats = z_no_i[flat_permuted_ids]\
-                       .reshape(-1, cardinality)\
-                       .dot(weights_i)
-        #------
+        rstats = z_no_i[flat_permuted_ids].reshape(-1, cardinality).dot(weights_i)
+        # ------
         mask[chunk_start + i] = True
         rstats *= z_chunk_i * scaling
         if keep:
@@ -1678,82 +1688,122 @@ def neighbors_perm_plus(
         larger[i] = numpy.sum(rstats >= observed[i])
     return larger, rlisas
 
+
 @njit(fastmath=True)
 def chunk_weights(cardinalities, n_chunks):
-    boundary_points = numpy.zeros((n_chunks+1,), dtype=numpy.int64)
+    boundary_points = numpy.zeros((n_chunks + 1,), dtype=numpy.int64)
     n = cardinalities.shape[0]
     chunk_size = numpy.int64(n / n_chunks) + 1
     start = 0
     for i in range(n_chunks):
-        advance = cardinalities[start:start+chunk_size].sum()
-        boundary_points[i+1] = boundary_points[i] + advance
+        advance = cardinalities[start : start + chunk_size].sum()
+        boundary_points[i + 1] = boundary_points[i] + advance
         start += chunk_size
     return boundary_points
 
-#@njit(parallel=True, fastmath=True)
+
+@njit(fastmath=True)
+def chunk_generator(
+    n_jobs,
+    starts,
+    z,
+    observed,
+    cardinalities,
+    weights,
+    w_boundary_points,
+    permuted_ids,
+    scaling,
+    max_card,
+    keep,
+):
+    for i in range(n_jobs):
+        start = starts[i]
+        z_chunk = z[start : (start + chunk_size)]
+        observed_chunk = observed[start : (start + chunk_size)]
+        cardinalities_chunk = cardinalities[start : (start + chunk_size)]
+        w_chunk = weights[w_boundary_points[i] : w_boundary_points[i + 1]]
+        yield (
+            start,
+            z_chunk,
+            z,
+            observed_chunk,
+            cardinalities_chunk,
+            w_chunk,
+            permuted_ids,
+            scaling,
+            max_card,
+            keep,
+        )
+
+
+# @njit(parallel=True, fastmath=True)
 def parallel_neighbors_perm_plus(
-        z: numpy.ndarray, 
-        observed: numpy.ndarray, 
-        cardinalities: numpy.ndarray,
-        weights: numpy.ndarray,
-        permuted_ids: numpy.ndarray,
-        scaling: numpy.float64,
-        max_card: int,
-        n_jobs: int,
-        keep: bool,
-        ):
+    z: numpy.ndarray,
+    observed: numpy.ndarray,
+    cardinalities: numpy.ndarray,
+    weights: numpy.ndarray,
+    permuted_ids: numpy.ndarray,
+    scaling: numpy.float64,
+    max_card: int,
+    n_jobs: int,
+    keep: bool,
+):
     n = z.shape[0]
     w_boundary_points = chunk_weights(cardinalities, n_jobs)
     chunk_size = numpy.int64(n / n_jobs) + 1
-    starts = numpy.zeros((n_jobs+1,), dtype=numpy.int64)
+    starts = numpy.zeros((n_jobs + 1,), dtype=numpy.int64)
     for i in range(n_jobs):
-        starts[i+1] = starts[i] + chunk_size
-    #------------------------------------------------------------------
+        starts[i + 1] = starts[i] + chunk_size
+    # ------------------------------------------------------------------
     # Set up output holders
     larger = numpy.zeros((n,), dtype=numpy.int64)
     if keep:
         rlisas = numpy.empty((n, permuted_ids.shape[0]))
     else:
         rlisas = numpy.empty((1, 1))
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # Joblib parallel loop by chunks
-    chunks = []
-    for i in range(n_jobs):
-        start = starts[i]
-        # Chunks for z, Is, cardinalities, weights
-        z_chunk = z[start:start+chunk_size]
-        observed_chunk = observed[start:start+chunk_size]
-        cardinalities_chunk = cardinalities[start:start+chunk_size]
-        w_chunk = weights[w_boundary_points[i]:w_boundary_points[i+1]]
-        chunks.append((start, 
-                       z_chunk, 
-                       z, 
-                       observed_chunk, 
-                       cardinalities_chunk,
-                       w_chunk,
-                       permuted_ids,
-                       scaling,
-                       max_card,
-                       keep,
-                      ))
+
+    # prepare memory map for data shared across all cores
+    tmp = tempfile.SpooledTemporaryFile()
+    zmm = np.memmap(tmp, shape=z.shape)
+    zmm[:] = z[:]
+
+    # construct chunks using a generator
+    chunks = chunk_generator(
+        n_jobs,
+        starts,
+        zmm,
+        observed,
+        cardinalities,
+        weights,
+        w_boundary_points,
+        permuted_ids,
+        scaling,
+        max_card,
+        keep,
+    )
+
     with parallel_backend("loky", inner_max_num_threads=1):
         worker_out = Parallel(n_jobs=n_jobs)(
-                delayed(neighbors_perm_plus)(*pars)
-                for pars in chunks
-                )
+            delayed(neighbors_perm_plus)(*pars) for pars in chunks
+        )
+
     for i in range(len(worker_out)):
         larger_chunk, rlisas_chunk = worker_out[i]
         start = chunks[i][0]
-        larger[start:start+chunk_size] = larger_chunk
+        larger[start : start + chunk_size] = larger_chunk
         if keep:
-            rlisas[start:start+chunk_size] = rlisas_chunk
+            rlisas[start : start + chunk_size] = rlisas_chunk
+    tmp.close()
     return larger, rlisas
+
 
 def crand_plus(w, lisa, permutations, keep, n_jobs):
     cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
     max_card = cardinalities.max()
     n = len(lisa.z)
-    scaling = (n-1) / (lisa.z * lisa.z).sum()
+    scaling = (n - 1) / (lisa.z * lisa.z).sum()
 
     # paralellise over permutations?
     permuted_ids = vec_permutations_all(max_card, n, permutations)
@@ -1761,30 +1811,30 @@ def crand_plus(w, lisa, permutations, keep, n_jobs):
     if n_jobs == 1:
         larger, rlisas = neighbors_perm_plus(
             0,
-            lisa.z, 
-            lisa.z, 
-            lisa.Is, 
-            cardinalities, 
+            lisa.z,
+            lisa.z,
+            lisa.Is,
+            cardinalities,
             w.sparse.data,
             permuted_ids,
             scaling,
             max_card,
-            keep
+            keep,
         )
     else:
         if n_jobs == -1:
             n_jobs = os.cpu_count()
-    # Parallel implementation
+        # Parallel implementation
         larger, rlisas = parallel_neighbors_perm_plus(
-                lisa.z,
-                lisa.Is,
-                cardinalities,
-                w.sparse.data,
-                permuted_ids,
-                scaling,
-                max_card,
-                n_jobs,
-                keep,
+            lisa.z,
+            lisa.Is,
+            cardinalities,
+            w.sparse.data,
+            permuted_ids,
+            scaling,
+            max_card,
+            n_jobs,
+            keep,
         )
 
     low_extreme = (permutations - larger) < larger
