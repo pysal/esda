@@ -135,7 +135,7 @@ def compute_chunk(
         # mask[chunk_start + i] = True
         # rstats *= z_chunk_i * scaling
         # ------
-        rstats = stat_func(i, z, permuted_ids, weights_i, scaling)
+        rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
         if keep:
             rlocals[i,] = rstats
         larger[i] = np.sum(rstats >= observed[i])
