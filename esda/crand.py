@@ -245,13 +245,12 @@ def parallel_crand(
 
 #######################################################################
 #                   Local statistical functions                       #
-#####################################################################from numba import njit, boolean
-import numpy
+#######################################################################
 
 
 @njit
 def _prepare_univariate(i, z, permuted_ids, weights_i):
-    mask = numpy.ones_like(z, dtype=boolean)
+    mask = np.ones_like(z, dtype=boolean)
     mask[i] = False
     z_no_i = z[mask]
     cardinality = len(weights_i)
@@ -267,7 +266,7 @@ def _prepare_bivariate(i, z, permuted_ids, weights_i):
 
     cardinality = len(weights_i)
 
-    mask = numpy.ones_like(zx, dtype=boolean)
+    mask = np.ones_like(zx, dtype=boolean)
     zx_no_i = zy[mask]
     zy_no_i = zx[mask]
 
@@ -288,7 +287,7 @@ def local_moran(i, z, permuted_ids, weights_i, scaling):
 @njit(fastmath=True)
 def local_geary(i, z, permuted_ids, weights_i, scaling):
     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return numpy.power(zrand - zi, 2) @ weights_i * scaling
+    return np.power(zrand - zi, 2) @ weights_i * scaling
 
 
 @njit(fastmath=True)
