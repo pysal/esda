@@ -7,7 +7,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, \
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
-from .crand import crand as _crand_plus
+from .crand import crand as _crand_plus, local_moran as _local_moran
 from warnings import warn
 import scipy.stats as stats
 import numpy as np
@@ -978,7 +978,13 @@ class Moran_Local(object):
                 self.__crand(keep_simulations)
             else:
                 self.p_sim, self.rlisas = _crand_plus(
-                    z, w, self.Is, permutations, keep_simulations, n_jobs=n_jobs
+                    z,
+                    w,
+                    self.Is,
+                    permutations,
+                    keep_simulations,
+                    n_jobs=n_jobs,
+                    stat_func=_local_moran,
                 )
                 self.sim = np.transpose(self.rlisas)
             if keep_simulations:
