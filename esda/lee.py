@@ -3,6 +3,103 @@ from scipy import sparse
 from sklearn.base import BaseEstimator
 from sklearn import preprocessing
 from sklearn import utils
+from itertools import chain
+
+try:
+    from joblib import Parallel, delayed
+    _HAS_JOBLIB = True
+except ModuleNotFoundError:
+    _HAS_JOBLIB = False
+
+class Pearson_Local(BaseEstimator):
+    """This splits the pearson's R into its individual site components"""
+
+    def __init__(self, conditional_inference=False, permutations=999i, n_jobs=-1):
+        self.permutations = permutations
+        self.conditional_inference = conditional_inference
+        self.n_jobs = -1
+
+    def fit(self, x, y=None):
+        if y is not None:
+            x,y = utils.check_X_y(x, y, ensure_2d=False, estimator=self)
+            X = numpy.column_stack((x, y))
+        else:
+            X = utils.check_array(x, ensure_2d=True, ensure_min_features=2, estimator=self)
+        n,p = X.shape
+        Z = preprocessing.StandardScaler().fit_transform(X)
+        self.associations_ = self._statistic(Z)
+
+        if y is not None:
+            self.associations_ = self.associations[0,1]
+        
+        if (self.permutations is None) or (self.permutations < 1):
+            self.reference_distribution_ = None
+            self.significance_ = numpy.nan
+            return self
+        
+        if self.conditinal_inference is not False:
+            if self.conditional_inference == 'x':
+                permuter = ((numpy.arange(n), numpy.random.permutation(n))
+                            for _ in range(self.permutations))
+            elif self.conditional_inference == 'y':
+                permuter = ((numpy.random.permutation(n), numpy.arange(n))
+                            for _ in range(self.permutations))
+            elif self.conditional_inference == True:
+                permute_x = ((numpy.random.permutation(n), numpy.arange(n))
+                              for _ in range(self.permutations // 2))
+                permute_y = ((numpy.arange(n), numpy.random.permutation(n))
+                              for _ in range(self.permutations // 2))
+                permuter = chain(permute_x, permute_y) 
+        else:
+            permuter = ((numpy.random.permutation(n), numpy.random.permutation(n))
+                        for _ in range(self.permutations))
+        n_jobs = self.n_jobs
+        if not HAS_JOBLIB and (n_jobs != 1):
+            warn('The joblib package is required to run parallel'
+                 ' simulations for this model. Please install '
+                 ' joblib to enable parallel processing for simulations.')
+            n_jobs = 1
+            simulations = [self._statistic(numpy.column_stack((Z[0,rx], 
+                                                               Z[1,ry]))
+                                                               )
+                           for rx,ry in permuter]
+        else:
+            simulations = Parallel(n_jobs=n_jobs)(
+                            delayed(self._statistic)(numpy.column_stack((Z[0,rx],
+                                                                         Z[1,ry]))
+                                                                         )
+                            for rx,ry in permuter
+                            )
+        if self.conditional_inference == True:
+            rz = numpy.arctanh(simulations)
+            firsthalf, secondhalf = numpy.array_split(rz, 2)
+            from scipy.stats import ttest_rel
+            post_hoc_test = ttest_rel(firsthalf, secondhalf)
+            if post_hoc_test.pvalue < .01:
+                warn('The null hypothesis that permutations of X yield equivalent'
+                     ' correlations to permutations of y is very unlikely given'
+                     ' the permutations conducted (p = {p}). It is very likely'
+                     ' that any inference based on the conditional permutation'
+                     ' will be incorrect. Use conditional_inference=False in'
+                     ' this case.')
+        self.reference_distribution_ = numpy.row_stack(simulations).T
+        above = self.reference_distribution_ >= self.associations_.reshape(-1,1)
+        larger = above.sum(axis=1)
+        extreme = numpy.minimum(larger, self.permutations - larger)
+        self.significance_ = (extreme + 1.) / (self.permutations + 1.)
+        self.reference_distribution_ = self.reference_distribution_.T
+        return self
+           
+
+            
+        
+
+    @staticmethod
+    def _statistic(Z):
+        N,P = X.shape
+        # is in shape n, p, p
+        return (Z.T * Z.T[:,None]) / N
+        
 
 class Spatial_Pearson(BaseEstimator):
     """Global Spatial Pearson Statistic"""
@@ -72,8 +169,12 @@ class Spatial_Pearson(BaseEstimator):
                                                   self.connectivity.sum(axis=1))
 
         if (self.permutations is None):
+            self.reference_distribution_ = None
+            self.significance_ = numpy.nan
             return self
         elif self.permutations < 1:
+            self.reference_distribution_ = None
+            self.significance_ = numpy.nan
             return self
 
         if self.permutations:
@@ -93,7 +194,7 @@ class Spatial_Pearson(BaseEstimator):
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
 
 
-class Local_Spatial_Pearson(BaseEstimator):
+class Spatial_Pearson_Local(BaseEstimator):
     """Local Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):
@@ -218,6 +319,7 @@ class Local_Spatial_Pearson(BaseEstimator):
             self.reference_distribution_ = self.reference_distribution_.T
         else:
             self.reference_distribution_ = None
+            self.significance_ = numpy.nan
         return self
 
     @staticmethod
