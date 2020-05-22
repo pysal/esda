@@ -30,7 +30,20 @@ def crand(z, w, observed, permutations, keep, n_jobs, stat_func):
     cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
     max_card = cardinalities.max()
     n = len(z)
-    scaling = (n - 1) / (z * z).sum()
+    if z.ndim == 2:
+        if z.shape[1] == 2:
+            # assume that matrix is [X Y]
+            scaling = (n - 1) / (z[:,0] * z[:,0]).sum()
+        elif z.shape[1] == 1:
+            scaling = (n - 1) / (z * z).sum()
+        else:
+            raise NotImplementedError(f'multivariable input is not yet supported in '
+                                      f'conditional randomization. Recieved `z` of shape {z.shape}')
+    elif z.ndim == 1:
+        scaling = (n - 1) / (z * z).sum()
+    else:
+        raise NotImplementedError(f'multivariable input is not yet supported in '
+                                  f'conditional randomization. Recieved `z` of shape {z.shape}')
 
     # paralellise over permutations?
     permuted_ids = vec_permutations(max_card, n, permutations)
