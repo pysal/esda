@@ -1,6 +1,6 @@
-# --------------------------------------------------------------------#
-#                  Performance Optimisations                          #
-# --------------------------------------------------------------------#
+"""
+Centralised conditional randomisation engine. Numba accelerated.
+"""
 
 import os
 import numpy as np
@@ -17,6 +17,25 @@ __all__ = ["crand"]
 
 @njit(fastmath=True)
 def vec_permutations(max_card: int, n: int, k_replications: int):
+    """
+    Generate `max_card` permuted IDs, sampled from `n` without replacement,
+    `k_replications` times
+    ...
+
+    Parameters
+    ----------
+    max_card : int
+        Number of permuted IDs to generate per sample
+    n : int
+        Size of the sample to sample IDs from
+    k_replications : int
+        Number of samples of permuted IDs to perform
+
+    Returns
+    -------
+    result : ndarray
+        (k_replications, max_card) array with permuted IDs
+    """
     result = np.empty((k_replications, max_card), dtype=np.int64)
     for k in prange(k_replications):
         result[k] = np.random.choice(n - 1, size=max_card, replace=False)
@@ -25,7 +44,48 @@ def vec_permutations(max_card: int, n: int, k_replications: int):
 
 def crand(z, w, observed, permutations, keep, n_jobs, stat_func):
     """
-    Conduct conditional randomization of a given input using the provided simulation function.
+    Conduct conditional randomization of a given input using the provided
+    statistic function. Numba accelerated.
+    ...
+
+    Parameters
+    ----------
+    z : ndarray
+        2D array with N rows with standardised observed values
+    w : libpysal.weights.W
+        Spatial weights object
+    observed : ndarray
+        (N,) array with observed values
+    permutations : int
+        Number of permutations for conditional randomisation
+    keep : Boolean
+        If True, store simulation; else do not return randomised statistics
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.
+    stat_func : callable
+        Method implementing the spatial statistic to be evaluated under
+        conditional randomisation. The method needs to have the following
+        signature:
+            i : int
+                Position of observation to be evaluated in the sample
+            z : ndarray
+                2D array with N rows with standardised observed values
+            permuted_ids : ndarray
+                (permutations, max_cardinality) array with indices of permuted
+                IDs
+            weights_i : ndarray
+                Weights for neighbors in i
+            scaling : float
+                Scaling value to apply to every local statistic
+
+    Returns
+    -------
+    p_sim : ndarray
+        (N,) array with pseudo p-values from conditional permutation
+    rlocals : ndarray
+        If keep=True, (N, permutations) array with simulated values of stat_func under the
+        null of spatial randomness; else, empty (1, 1) array
     """
     cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
     max_card = cardinalities.max()
@@ -85,28 +145,41 @@ def compute_chunk(
     stat_func,
 ):
     """
+    Compute conditional randomisation for a single chunk
+    ...
+
     Arguments
     ---------
-    chunk_start :   int
-        the starting index the chunk of input. Should be zero if z_chunk == z.
+    chunk_start : int
+        Starting index for the chunk of input. Should be zero if z_chunk == z.
     z_chunk : numpy.ndarray 
-        (n_chunk,) array containing the chunk of data to process.
-    z   :   numpy.ndarray
-        (n_observations,1) array containing all of the rest of the data
-    observed    :   numpy.ndarray
-        (n_chunk,) array observed local statistics within the chunk
-    cardinalities   :   numpy.ndarray
-        (n_chunk,) array containing the cardinalities pertaining to each element. 
-    weights :   numpy.ndarray
-        array containing the weights within the chunk. This is as long as the
-        sum of cardinalities within this chunk.
-    permuted_ids    :   numpy.ndarray
-        (n_observations,n_permutations) array containing the permutation 
+        (n_chunk,) array containing the chunk of standardised observed values.
+    z : ndarray
+        2D array with N rows with standardised observed values
+    observed : ndarray
+        (n_chunk,) array containing observed values for the chunk
+    cardinalities : ndarray
+        (n_chunk,) array containing the cardinalities for each element. 
+    weights : ndarray
+        Array containing the weights within the chunk in a flat format (ie. as
+        obtained from the `values` attribute of a CSR sparse representation of
+        the original W. This is as long as the sum of `cardinalities`
+    permuted_ids : ndarray
+        (permutations, max_cardinality) array with indices of permuted
         ids to use to construct random realizations of the statistic
-    scaling :   float
-        scaling value to apply to every local statistic
+    scaling : float
+        Scaling value to apply to every local statistic
     keep : bool
-        whether or not to keep the simulated statistics
+        If True, store simulation; else do not return randomised statistics
+
+    Returns
+    -------
+    larger : ndarray
+        (n_chunk,) array with number of random draws under the null larger
+        than observed value of statistic
+    rlocals : ndarray
+        (n_chunk, max_cardinality) array with local statistics simulated under
+        the null of spatial randomness
     """
     chunk_n = z_chunk.shape[0]
     n = z.shape[0]
@@ -129,12 +202,6 @@ def compute_chunk(
         z_no_i = z[
             mask,
         ]
-        # ------
-        # flat_permuted_ids = permuted_ids[:, :cardinality].flatten()
-        # rstats = z_no_i[flat_permuted_ids].reshape(-1, cardinality).dot(weights_i)
-        # mask[chunk_start + i] = True
-        # rstats *= z_chunk_i * scaling
-        # ------
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
         if keep:
             rlocals[i,] = rstats
@@ -150,8 +217,22 @@ def compute_chunk(
 @njit(fastmath=True)
 def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int):
     """
-    This is a utility function to construct offsets into the weights
-    flat data array found in the W.sparse.data object.
+    Utility function to construct offsets into the weights
+    flat data array found in the W.sparse.data object
+    ...
+
+    Parameters
+    ----------
+    cardinalities : ndarray
+        (n_chunk,) array containing the cardinalities for each element. 
+    n_chunks : int
+        Number of chunks to split the weights into
+
+    Returns
+    -------
+    boundary_points : ndarray
+        (n_chunks,) array with positions to split a flat representation of W
+        for every chunk
     """
     boundary_points = np.zeros((n_chunks + 1,), dtype=np.int64)
     n = cardinalities.shape[0]
@@ -175,7 +256,46 @@ def chunk_generator(
     w_boundary_points: np.ndarray,
 ):
     """
-    Construct chunks to iterate over in numba
+    Construct chunks to iterate over within numba in parallel
+    ...
+
+    Parameters
+    ----------
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.
+    starts : ndarray
+        (n_chunks+1,) array of positional starts for each chunk
+    z : ndarray
+        2D array with N rows with standardised observed values
+    observed : ndarray
+        (N,) array with observed values
+    cardinalities : ndarray
+        (N,) array containing the cardinalities for each element. 
+    weights : ndarray
+        Array containing the weights within the chunk in a flat format (ie. as
+        obtained from the `values` attribute of a CSR sparse representation of
+        the original W. This is as long as the sum of `cardinalities`
+    w_boundary_points : ndarray
+        (n_chunks,) array with positions to split a flat representation of W
+        for every chunk
+
+    Yields
+    ------
+    start : int
+        Starting index for the chunk of input. Should be zero if z_chunk == z.
+    z_chunk : numpy.ndarray 
+        (n_chunk,) array containing the chunk of standardised observed values.
+    z : ndarray
+        2D array with N rows with standardised observed values
+    observed_chunk : ndarray
+        (n_chunk,) array containing observed values for the chunk
+    cardinalities_chunk : ndarray
+        (n_chunk,) array containing the cardinalities for each element. 
+    weights_chunk : ndarray
+        Array containing the weights within the chunk in a flat format (ie. as
+        obtained from the `values` attribute of a CSR sparse representation of
+        the original W. This is as long as the sum of `cardinalities`
     """
     chunk_size = starts[1] - starts[0]
     for i in range(n_jobs):
@@ -206,7 +326,55 @@ def parallel_crand(
     stat_func,
 ):
     """
-    conduct conditional randomization in parallel using numba
+    Conduct conditional randomization in parallel using numba
+    ...
+
+    Parameters
+    ----------
+    z : ndarray
+        2D array with N rows with standardised observed values
+    observed : ndarray
+        (N,) array with observed values
+    cardinalities : ndarray
+        (N,) array containing the cardinalities for each element. 
+    weights : ndarray
+        Array containing the weights in a flat format (ie. as
+        obtained from the `values` attribute of a CSR sparse representation of
+        the original W. This is as long as the sum of `cardinalities`
+    permuted_ids : ndarray
+        (permutations, max_cardinality) array with indices of permuted
+        ids to use to construct random realizations of the statistic
+    scaling : float64
+        Scaling value to apply to every local statistic
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.
+    keep : Boolean
+        If True, store simulation; else do not return randomised statistics
+    stat_func : callable
+        Method implementing the spatial statistic to be evaluated under
+        conditional randomisation. The method needs to have the following
+        signature:
+            i : int
+                Position of observation to be evaluated in the sample
+            z : ndarray
+                2D array with N rows with standardised observed values
+            permuted_ids : ndarray
+                (permutations, max_cardinality) array with indices of permuted
+                IDs
+            weights_i : ndarray
+                Weights for neighbors in i
+            scaling : float
+                Scaling value to apply to every local statistic
+
+    Returns
+    -------
+    larger : ndarray
+        (N,) array with number of random draws under the null larger
+        than observed value of statistic
+    rlocals : ndarray
+        (N, max_cardinality) array with local statistics simulated under
+        the null of spatial randomness
     """
     n = z.shape[0]
     w_boundary_points = build_weights_offsets(cardinalities, n_jobs)
