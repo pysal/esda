@@ -7,7 +7,8 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, \
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
-from .crand import crand as _crand_plus, local_moran as _local_moran
+from .crand import (crand as _crand_plus, local_moran as _local_moran, 
+                    local_wartenburg as _local_wartenburg)
 from warnings import warn
 import scipy.stats as stats
 import numpy as np
@@ -837,6 +838,11 @@ class Moran_Rate(Moran):
             df[col] = stat_df[col]
 
 
+# -----------------------------------------------------------------------------#
+#                            Local Statistics                                 #
+# -----------------------------------------------------------------------------#
+
+
 class Moran_Local(object):
     """Local Moran Statistics
 
@@ -966,7 +972,7 @@ class Moran_Local(object):
         self.w = w
         self.permutations = permutations
         self.den = (z * z).sum()
-        self.Is = self.calc(self.w, self.z)
+        self.Is = self.__calc(self.w, self.z)
         self.geoda_quads = geoda_quads
         quads = [1, 2, 3, 4]
         if geoda_quads:
@@ -978,7 +984,7 @@ class Moran_Local(object):
                 self.__crand(keep_simulations)
             else:
                 self.p_sim, self.rlisas = _crand_plus(
-                    z,
+                    z.reshape(-1,1),
                     w,
                     self.Is,
                     permutations,
@@ -1008,7 +1014,7 @@ class Moran_Local(object):
                 self.z_sim = np.nan
                 self.p_z_sim = np.nan
 
-    def calc(self, w, z):
+    def __calc(self, w, z):
         zl = slag(w, z)
         return self.n_1 * self.z * zl / self.den
 
@@ -1226,13 +1232,23 @@ class Moran_Local_BV(object):
     """
 
     def __init__(
-        self, x, y, w, transformation="r", permutations=PERMUTATIONS, geoda_quads=False
+        self, 
+        x, 
+        y, 
+        w, 
+        transformation="r", 
+        permutations=PERMUTATIONS, 
+        geoda_quads=False, 
+        numba=False, 
+        n_jobs=1, 
+        keep_simulations=False
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
         self.y = y
         self.x = x
         n = len(y)
+        assert len(y) == len(x), 'x and y must have the same shape!'
         self.n = n
         self.n_1 = n - 1
         zx = x - x.mean()
@@ -1251,7 +1267,7 @@ class Moran_Local_BV(object):
         self.w = w
         self.permutations = permutations
         self.den = (zx * zx).sum()
-        self.Is = self.calc(self.w, self.zx, self.zy)
+        self.Is = self.__calc(self.w, self.zx, self.zy)
         self.geoda_quads = geoda_quads
         quads = [1, 2, 3, 4]
         if geoda_quads:
@@ -1259,25 +1275,36 @@ class Moran_Local_BV(object):
         self.quads = quads
         self.__quads()
         if permutations:
-            self.__crand()
-            sim = np.transpose(self.rlisas)
-            above = sim >= self.Is
-            larger = above.sum(0)
-            low_extreme = (self.permutations - larger) < larger
-            larger[low_extreme] = self.permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
-            self.sim = sim
-            self.EI_sim = sim.mean(axis=0)
-            self.seI_sim = sim.std(axis=0)
-            self.VI_sim = self.seI_sim * self.seI_sim
-            self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            if numba is False:
+                self.__crand(keep_simulations)
+            else:
+                self.p_sim, self.rlisas = _crand_plus(np.column_stack((zx,zy)), 
+                                                      w, 
+                                                      self.Is, 
+                                                      permutations, 
+                                                      keep_simulations, 
+                                                      n_jobs=n_jobs, 
+                                                      stat_func=_local_wartenburg)
+                self.sim = np.transpose(self.rlisas)
+            if keep_simulations:
+                sim = np.transpose(self.rlisas)
+                above = sim >= self.Is
+                larger = above.sum(0)
+                low_extreme = (self.permutations - larger) < larger
+                larger[low_extreme] = self.permutations - larger[low_extreme]
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                self.sim = sim
+                self.EI_sim = sim.mean(axis=0)
+                self.seI_sim = sim.std(axis=0)
+                self.VI_sim = self.seI_sim * self.seI_sim
+                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
 
-    def calc(self, w, zx, zy):
+    def __calc(self, w, zx, zy):
         zly = slag(w, zy)
         return self.n_1 * self.zx * zly / self.den
 
-    def __crand(self):
+    def __crand(self, keep_simulations):
         """
         conditional randomization
 
@@ -1290,7 +1317,9 @@ class Moran_Local_BV(object):
         neighbors to i in each randomization.
 
         """
-        lisas = np.zeros((self.n, self.permutations))
+        if keep_simulations:
+            lisas = np.zeros((self.n, self.permutations))
+        larger = np.zeros((self.n, ),)
         n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
@@ -1300,15 +1329,26 @@ class Moran_Local_BV(object):
         ido = self.w.id_order
         w = [self.w.weights[ido[i]] for i in ids]
         wc = [self.w.cardinalities[ido[i]] for i in ids]
+        
+        scaling = n_1 / self.den
 
         zx = self.zx
         zy = self.zy
-        for i in range(self.w.n):
+        for i,lmo in enumerate(self.Is):
             idsi = ids[ids != i]
             np.random.shuffle(idsi)
             tmp = zy[idsi[rids[:, 0 : wc[i]]]]
-            lisas[i] = zx[i] * (w[i] * tmp).sum(1)
-        self.rlisas = (n_1 / self.den) * lisas
+            lisas_i = zx[i] * (w[i] * tmp).sum(1) * scaling
+            if keep_simulations:
+                lisas[i] = lisas_i
+            larger[i] = (lisas_i >= lmo).sum()
+
+        low_extreme = (self.permutations - larger) < larger
+        larger[low_extreme] = self.permutations - larger[low_extreme]
+        self.p_sim = (larger + 1.0) / (self.permutations + 1.0)
+
+        if keep_simulations:
+            self.rlisas = lisas
 
     def __quads(self):
         zl = slag(self.w, self.zy)
