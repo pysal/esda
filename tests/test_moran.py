@@ -36,7 +36,7 @@ class Moran_Tester(unittest.TestCase):
     def test_z_consistency(self):
         m1 = moran.Moran(self.y, self.w)
         # m2 = moran.Moran_BV(self.x, self.y, self.w) TODO testing for other.z values
-        m3 = moran.Moran_Local(self.y, self.w)
+        m3 = moran.Moran_Local(self.y, self.w, keep_simulations=True)
         # m4 = moran.Moran_Local_BV(self.x, self.y, self.w)
         np.testing.assert_allclose(m1.z, m3.z, atol=ATOL, rtol=RTOL)
 
@@ -47,7 +47,7 @@ class Moran_Tester(unittest.TestCase):
         np.random.seed(11213)
         df = pdio.read_files(libpysal.examples.get_path('sids2.dbf'))
         w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
-        mi = moran.Moran.by_col(df, ['SIDR74'], w=w, two_tailed=False)
+        mi = moran.Moran.by_col(df, ['SIDR74'], w=w, two_tailed=False, keep_simulations=True)
         sidr = np.unique(mi.SIDR74_moran.values).item()
         pval = np.unique(mi.SIDR74_p_sim.values).item()
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
@@ -101,8 +101,8 @@ class Moran_Local_Tester(unittest.TestCase):
         self.y = np.array(f.by_col['z'])
 
     def test_Moran_Local(self):
-        lm = moran.Moran_Local(
-            self.y, self.w, transformation="r", permutations=99)
+        lm = moran.Moran_Local(self.y, self.w, transformation="r", 
+                               permutations=99, keep_simulations=True)
         self.assertAlmostEqual(lm.z_sim[0], -0.68493799168603808)
         self.assertAlmostEqual(lm.p_z_sim[0],  0.24669152541631179)
 
@@ -111,7 +111,7 @@ class Moran_Local_Tester(unittest.TestCase):
         import pandas as pd
         df = pd.DataFrame(self.y, columns =['z'])
         lm = moran.Moran_Local.by_col(df, ['z'], w=self.w, transformation='r',
-                permutations=99, outvals=['z_sim', 'p_z_sim'])
+                permutations=99, outvals=['z_sim', 'p_z_sim'], keep_simulations=True)
         self.assertAlmostEqual(lm.z_z_sim[0], -0.68493799168603808)
         self.assertAlmostEqual(lm.z_p_z_sim[0],  0.24669152541631179)
 
@@ -125,7 +125,7 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         self.y = np.array(f.by_col['SIDR74'])
 
     def test_Moran_Local_BV(self):
-        lm = moran.Moran_Local_BV(self.x, self.y, self.w,
+        lm = moran.Moran_Local_BV(self.x, self.y, self.w, keep_simulations=True,
                                   transformation="r", permutations=99)
         self.assertAlmostEqual(lm.Is[0], 1.4649221250620736)
         self.assertAlmostEqual(lm.z_sim[0],  1.5816540860500772)
@@ -138,7 +138,8 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         np.random.seed(12345)
         moran.Moran_Local_BV.by_col(df, ['SIDR74', 'SIDR79'], w=self.w,
                                     inplace=True, outvals=['z_sim', 'p_z_sim'],
-                                    transformation='r', permutations=99)
+                                    transformation='r', permutations=99, 
+                                    keep_simulations=True)
         bvstats = df['SIDR79-SIDR74_moran_local_bv'].values
         bvz = df['SIDR79-SIDR74_z_sim'].values
         bvzp = df['SIDR79-SIDR74_p_z_sim'].values
