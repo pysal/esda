@@ -984,7 +984,7 @@ class Moran_Local(object):
                 self.__crand(keep_simulations)
             else:
                 self.p_sim, self.rlisas = _crand_plus(
-                    z.reshape(-1,1),
+                    z,
                     w,
                     self.Is,
                     permutations,
