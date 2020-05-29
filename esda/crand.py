@@ -112,20 +112,36 @@ def crand(z, w, observed, permutations, keep, n_jobs, stat_func):
     if z.ndim == 2:
         if z.shape[1] == 2:
             # assume that matrix is [X Y]
-            scaling = (n - 1) / (z[:,0] * z[:,0]).sum()
+            scaling = (n - 1) / (z[:, 0] * z[:, 0]).sum()
         elif z.shape[1] == 1:
             scaling = (n - 1) / (z * z).sum()
         else:
-            raise NotImplementedError(f'multivariable input is not yet supported in '
-                                      f'conditional randomization. Recieved `z` of shape {z.shape}')
+            raise NotImplementedError(
+                f"multivariable input is not yet supported in "
+                f"conditional randomization. Recieved `z` of shape {z.shape}"
+            )
     elif z.ndim == 1:
         scaling = (n - 1) / (z * z).sum()
     else:
-        raise NotImplementedError(f'multivariable input is not yet supported in '
-                                  f'conditional randomization. Recieved `z` of shape {z.shape}')
+        raise NotImplementedError(
+            f"multivariable input is not yet supported in "
+            f"conditional randomization. Recieved `z` of shape {z.shape}"
+        )
 
     # paralellise over permutations?
     permuted_ids = vec_permutations(max_card, n, permutations)
+
+    if n_jobs != 1:
+        try:
+            import joblib
+        except (ModuleNotFoundError, ImportError):
+            warnings.warn(
+                f"Parallel processing is requested (n_jobs={n_jobs}),"
+                f" but joblib cannot be imported. n_jobs will be set"
+                f" to 1.",
+                stacklevel=2,
+            )
+            n_jobs = 1
 
     if n_jobs == 1:
         larger, rlocals = compute_chunk(
