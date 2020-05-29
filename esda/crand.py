@@ -4,8 +4,27 @@ Centralised conditional randomisation engine. Numba accelerated.
 
 import os
 import numpy as np
-from numba import njit, jit, prange, boolean
-from joblib import Parallel, delayed, parallel_backend
+import warnings
+
+try:
+    from numba import njit, jit, prange, boolean
+except (ImportError, ModuleNotFoundError):
+
+    def jit(*dec_args, **dec_kwargs):
+        """
+        decorator mimicking numba.jit
+        """
+
+        def intercepted_function(f, *f_args, **f_kwargs):
+            return f
+
+        return intercepted_function
+
+    njit = jit
+
+    prange = range
+    boolean = bool
+
 import tempfile
 
 __all__ = ["crand"]
@@ -389,6 +408,8 @@ def parallel_crand(
         (N, max_cardinality) array with local statistics simulated under
         the null of spatial randomness
     """
+    from joblib import Parallel, delayed, parallel_backend
+
     n = z.shape[0]
     w_boundary_points = build_weights_offsets(cardinalities, n_jobs)
     chunk_size = n // n_jobs + 1
@@ -424,7 +445,7 @@ def parallel_crand(
 #######################################################################
 
 
-@njit
+@njit(fastmath=False)
 def _prepare_univariate(i, z, permuted_ids, weights_i):
     mask = np.ones_like(z, dtype=boolean)
     mask[i] = False
@@ -435,7 +456,7 @@ def _prepare_univariate(i, z, permuted_ids, weights_i):
     return z[i], zrand
 
 
-@njit
+@njit(fastmath=False)
 def _prepare_bivariate(i, z, permuted_ids, weights_i):
     zx = z[:, 0]
     zy = z[:, 1]
