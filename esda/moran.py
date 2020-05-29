@@ -7,8 +7,11 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, \
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
-from .crand import (crand as _crand_plus, local_moran as _local_moran, 
-                    local_wartenburg as _local_wartenburg)
+from .crand import (
+    crand as _crand_plus,
+    local_moran as _local_moran,
+    local_wartenburg as _local_wartenburg,
+)
 from warnings import warn
 import scipy.stats as stats
 import numpy as np
@@ -1232,23 +1235,23 @@ class Moran_Local_BV(object):
     """
 
     def __init__(
-        self, 
-        x, 
-        y, 
-        w, 
-        transformation="r", 
-        permutations=PERMUTATIONS, 
-        geoda_quads=False, 
-        numba=False, 
-        n_jobs=1, 
-        keep_simulations=False
+        self,
+        x,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        geoda_quads=False,
+        numba=False,
+        n_jobs=1,
+        keep_simulations=False,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
         self.y = y
         self.x = x
         n = len(y)
-        assert len(y) == len(x), 'x and y must have the same shape!'
+        assert len(y) == len(x), "x and y must have the same shape!"
         self.n = n
         self.n_1 = n - 1
         zx = x - x.mean()
@@ -1278,13 +1281,15 @@ class Moran_Local_BV(object):
             if numba is False:
                 self.__crand(keep_simulations)
             else:
-                self.p_sim, self.rlisas = _crand_plus(np.column_stack((zx,zy)), 
-                                                      w, 
-                                                      self.Is, 
-                                                      permutations, 
-                                                      keep_simulations, 
-                                                      n_jobs=n_jobs, 
-                                                      stat_func=_local_wartenburg)
+                self.p_sim, self.rlisas = _crand_plus(
+                    np.column_stack((zx, zy)),
+                    w,
+                    self.Is,
+                    permutations,
+                    keep_simulations,
+                    n_jobs=n_jobs,
+                    stat_func=_local_wartenburg,
+                )
                 self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
@@ -1319,7 +1324,7 @@ class Moran_Local_BV(object):
         """
         if keep_simulations:
             lisas = np.zeros((self.n, self.permutations))
-        larger = np.zeros((self.n, ),)
+        larger = np.zeros((self.n,),)
         n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
@@ -1329,12 +1334,12 @@ class Moran_Local_BV(object):
         ido = self.w.id_order
         w = [self.w.weights[ido[i]] for i in ids]
         wc = [self.w.cardinalities[ido[i]] for i in ids]
-        
+
         scaling = n_1 / self.den
 
         zx = self.zx
         zy = self.zy
-        for i,lmo in enumerate(self.Is):
+        for i, lmo in enumerate(self.Is):
             idsi = ids[ids != i]
             np.random.shuffle(idsi)
             tmp = zy[idsi[rids[:, 0 : wc[i]]]]
@@ -1540,6 +1545,9 @@ class Moran_Local_Rate(Moran_Local):
         transformation="r",
         permutations=PERMUTATIONS,
         geoda_quads=False,
+        numba=False,
+        n_jobs=1,
+        keep_simulations=False,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1554,6 +1562,9 @@ class Moran_Local_Rate(Moran_Local):
             transformation=transformation,
             permutations=permutations,
             geoda_quads=geoda_quads,
+            numba=numba,
+            n_jobs=n_jobs,
+            keep_simulations=keep_simulations,
         )
 
     @classmethod
