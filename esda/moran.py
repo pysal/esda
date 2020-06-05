@@ -3,7 +3,8 @@ Moran's I Spatial Autocorrelation Statistics
 
 """
 __author__ = "Sergio J. Rey <srey@asu.edu>, \
-        Dani Arribas-Bel <daniel.arribas.bel@gmail.com>"
+        Dani Arribas-Bel <daniel.arribas.bel@gmail.com>, \
+        Levi John Wolf <levi.john.wolf@gmail.com>"
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
@@ -983,10 +984,7 @@ class Moran_Local(object):
         self.quads = quads
         self.__quads()
         if permutations:
-            if numba is False:
-                self.__crand(keep_simulations)
-            else:
-                self.p_sim, self.rlisas = _crand_plus(
+            self.p_sim, self.rlisas = _crand_plus(
                     z,
                     w,
                     self.Is,
@@ -1021,51 +1019,6 @@ class Moran_Local(object):
         zl = slag(w, z)
         return self.n_1 * self.z * zl / self.den
 
-    def __crand(self, keep_simulations):
-        """
-        conditional randomization
-
-        for observation i with ni neighbors,  the candidate set cannot include
-        i (we don't want i being a neighbor of i). we have to sample without
-        replacement from a set of ids that doesn't include i. numpy doesn't
-        directly support sampling wo replacement and it is expensive to
-        implement this. instead we omit i from the original ids,  permute the
-        ids and take the first ni elements of the permuted ids as the
-        neighbors to i in each randomization.
-
-        """
-        z = self.z
-        if keep_simulations:
-            lisas = np.zeros((self.n, self.permutations))
-        larger = np.zeros((self.n,),)
-        n_1 = self.n - 1
-        prange = list(range(self.permutations))
-        k = self.w.max_neighbors + 1
-        nn = self.n - 1
-        rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
-        ids = np.arange(self.w.n)
-        ido = self.w.id_order
-        w = [self.w.weights[ido[i]] for i in ids]
-        wc = [self.w.cardinalities[ido[i]] for i in ids]
-
-        scaling = n_1 / self.den
-
-        for i, lmo in enumerate(self.Is):
-            idsi = ids[ids != i]
-            np.random.shuffle(idsi)
-            tmp = z[idsi[rids[:, 0 : wc[i]]]]
-            lisas_i = z[i] * (w[i] * tmp).sum(1)
-            lisas_i *= scaling
-            if keep_simulations:
-                lisas[i] = lisas_i
-            larger[i] = (lisas_i >= lmo).sum()
-
-        low_extreme = (self.permutations - larger) < larger
-        larger[low_extreme] = self.permutations - larger[low_extreme]
-        self.p_sim = (larger + 1.0) / (self.permutations + 1.0)
-
-        if keep_simulations:
-            self.rlisas = lisas
 
     def __quads(self):
         zl = slag(self.w, self.z)
@@ -1278,10 +1231,7 @@ class Moran_Local_BV(object):
         self.quads = quads
         self.__quads()
         if permutations:
-            if numba is False:
-                self.__crand(keep_simulations)
-            else:
-                self.p_sim, self.rlisas = _crand_plus(
+            self.p_sim, self.rlisas = _crand_plus(
                     np.column_stack((zx, zy)),
                     w,
                     self.Is,
@@ -1304,56 +1254,6 @@ class Moran_Local_BV(object):
                 self.VI_sim = self.seI_sim * self.seI_sim
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
-
-    def __calc(self, w, zx, zy):
-        zly = slag(w, zy)
-        return self.n_1 * self.zx * zly / self.den
-
-    def __crand(self, keep_simulations):
-        """
-        conditional randomization
-
-        for observation i with ni neighbors,  the candidate set cannot include
-        i (we don't want i being a neighbor of i). we have to sample without
-        replacement from a set of ids that doesn't include i. numpy doesn't
-        directly support sampling wo replacement and it is expensive to
-        implement this. instead we omit i from the original ids,  permute the
-        ids and take the first ni elements of the permuted ids as the
-        neighbors to i in each randomization.
-
-        """
-        if keep_simulations:
-            lisas = np.zeros((self.n, self.permutations))
-        larger = np.zeros((self.n,),)
-        n_1 = self.n - 1
-        prange = list(range(self.permutations))
-        k = self.w.max_neighbors + 1
-        nn = self.n - 1
-        rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
-        ids = np.arange(self.w.n)
-        ido = self.w.id_order
-        w = [self.w.weights[ido[i]] for i in ids]
-        wc = [self.w.cardinalities[ido[i]] for i in ids]
-
-        scaling = n_1 / self.den
-
-        zx = self.zx
-        zy = self.zy
-        for i, lmo in enumerate(self.Is):
-            idsi = ids[ids != i]
-            np.random.shuffle(idsi)
-            tmp = zy[idsi[rids[:, 0 : wc[i]]]]
-            lisas_i = zx[i] * (w[i] * tmp).sum(1) * scaling
-            if keep_simulations:
-                lisas[i] = lisas_i
-            larger[i] = (lisas_i >= lmo).sum()
-
-        low_extreme = (self.permutations - larger) < larger
-        larger[low_extreme] = self.permutations - larger[low_extreme]
-        self.p_sim = (larger + 1.0) / (self.permutations + 1.0)
-
-        if keep_simulations:
-            self.rlisas = lisas
 
     def __quads(self):
         zl = slag(self.w, self.zy)
