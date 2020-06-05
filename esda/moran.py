@@ -10,8 +10,9 @@ from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
 from .crand import (
     crand as _crand_plus,
-    local_moran as _local_moran,
-    local_wartenburg as _local_wartenburg,
+    njit as _njit,
+    _prepare_univariate,
+    _prepare_bivariate,
 )
 from warnings import warn
 import scipy.stats as stats
@@ -985,15 +986,15 @@ class Moran_Local(object):
         self.__quads()
         if permutations:
             self.p_sim, self.rlisas = _crand_plus(
-                    z,
-                    w,
-                    self.Is,
-                    permutations,
-                    keep_simulations,
-                    n_jobs=n_jobs,
-                    stat_func=_local_moran,
-                )
-                self.sim = np.transpose(self.rlisas)
+                z,
+                w,
+                self.Is,
+                permutations,
+                keep_simulations,
+                n_jobs=n_jobs,
+                stat_func=_moran_local_crand,
+            )
+            self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
                 above = sim >= self.Is
@@ -1018,7 +1019,6 @@ class Moran_Local(object):
     def __calc(self, w, z):
         zl = slag(w, z)
         return self.n_1 * self.z * zl / self.den
-
 
     def __quads(self):
         zl = slag(self.w, self.z)
@@ -1232,15 +1232,15 @@ class Moran_Local_BV(object):
         self.__quads()
         if permutations:
             self.p_sim, self.rlisas = _crand_plus(
-                    np.column_stack((zx, zy)),
-                    w,
-                    self.Is,
-                    permutations,
-                    keep_simulations,
-                    n_jobs=n_jobs,
-                    stat_func=_local_wartenburg,
-                )
-                self.sim = np.transpose(self.rlisas)
+                np.column_stack((zx, zy)),
+                w,
+                self.Is,
+                permutations,
+                keep_simulations,
+                n_jobs=n_jobs,
+                stat_func=_moran_local_bv_crand,
+            )
+            self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
                 above = sim >= self.Is
@@ -1254,6 +1254,10 @@ class Moran_Local_BV(object):
                 self.VI_sim = self.seI_sim * self.seI_sim
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+
+    def __calc(self, w, zx, zy):
+        zly = slag(w, zy)
+        return self.n_1 * self.zx * zly / self.den
 
     def __quads(self):
         zl = slag(self.w, self.zy)
@@ -1573,3 +1577,22 @@ class Moran_Local_Rate(Moran_Local):
         )
         for col in rate_df.columns:
             df[col] = rate_df[col]
+
+
+# --------------------------------------------------------------
+# Conditional Randomization Function Implementations
+# --------------------------------------------------------------
+
+
+@_njit(fastmath=True)
+def _moran_local_bv_crand(i, z, permuted_ids, weights_i, scaling):
+    zx = z[:, 0]
+    zy = z[:, 1]
+    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, weights_i)
+    return zx[i] * (zyrand @ weights_i) * scaling
+
+
+@_njit(fastmath=True)
+def _moran_local_crand(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return zi * (zrand @ weights_i) * scaling

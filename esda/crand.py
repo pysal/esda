@@ -493,42 +493,6 @@ def _prepare_bivariate(i, z, permuted_ids, weights_i):
 
 
 @njit(fastmath=True)
-def local_moran(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return zi * (zrand @ weights_i) * scaling
-
-
-@njit(fastmath=True)
-def local_geary(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return np.power(zrand - zi, 2) @ weights_i * scaling
-
-
-@njit(fastmath=True)
-def local_gamma(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return (zi * zrand) @ weights_i * scaling
-
-
-@njit(fastmath=True)
-def local_spatial_pearson(i, z, permuted_ids, weights_i, scaling):
-    zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
-    return (zyrand @ weights_i) * (zxrand @ weights_i) * scaling
-
-
-@njit(fastmath=True)
-def local_wartenburg(i, z, permuted_ids, weights_i, scaling):
-    zx = z[:, 0]
-    zy = z[:, 1]
-    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, weights_i)
-    return zx[i] * (zyrand @ weights_i) * scaling
-
-
-@njit(fastmath=True)
-def local_join_count():
-    raise NotImplementedError
-
-
 def local(i, z, permuted_ids, weights_i, scaling):
     raise NotImplementedError
-    # returns (k_permuotations,) array of random statistics for observation i##
+    # returns (k_permutations,) array of random statistics for observation i
