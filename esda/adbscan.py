@@ -12,11 +12,12 @@ from scipy.spatial import cKDTree
 from collections import Counter
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.base import BaseEstimator as _BaseEstimator, ClusterMixin as _ClusterMixin
 
 __all__ = ["ADBSCAN", "remap_lbls", "ensemble", "get_cluster_boundary"]
 
 
-class ADBSCAN:
+class ADBSCAN(_ClusterMixin, _BaseEstimator):
     """
     A-DBSCAN, as introduced in :cite:`ab_gl_vm2020joue`.
 
