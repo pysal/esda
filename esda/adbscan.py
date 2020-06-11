@@ -7,7 +7,6 @@ __author__ = "Dani Arribas-Bel <daniel.arribas.bel@gmail.com>"
 import warnings
 import pandas
 import numpy as np
-from geopandas import GeoSeries
 from libpysal.cg.alpha_shapes import alpha_shape_auto
 from scipy.spatial import cKDTree
 from collections import Counter
@@ -500,7 +499,11 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     >>> polys[0].wkt
     'POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))'
     """
-
+    try:
+        from geopandas import GeoSeries
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError('geopandas is required in order '
+                                  ' to get cluster boundaries')
     lbl_type = type(labels.iloc[0])
     noise = lbl_type(-1)
     ids_in_cluster = labels[labels != noise].index
