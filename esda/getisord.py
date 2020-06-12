@@ -401,7 +401,7 @@ class G_Local(object):
         self.calc()
         self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
         if permutations:
-            self.p_sim, self.rGs = _crand_plus(
+            self.p_sim, rGs = _crand_plus(
                 y,
                 w,
                 self.Gs,
@@ -410,18 +410,14 @@ class G_Local(object):
                 n_jobs=n_jobs,
                 stat_func=_gistar_crand if star else _gi_crand,
             )
-            sim = np.transpose(self.rGs)
-            above = sim >= self.Gs
-            larger = sum(above)
-            low_extreme = (self.permutations - larger) < larger
-            larger[low_extreme] = self.permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1)
-            self.sim = sim
-            self.EG_sim = sim.mean(axis=0)
-            self.seG_sim = sim.std(axis=0)
-            self.VG_sim = self.seG_sim * self.seG_sim
-            self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            if keep_simulations:
+                self.rGs = rGs
+                self.sim = rGs.T
+                self.EG_sim = sim.mean(axis=0)
+                self.seG_sim = sim.std(axis=0)
+                self.VG_sim = self.seG_sim * self.seG_sim
+                self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
+                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
 
     def __crand(self):
         y = self.y
