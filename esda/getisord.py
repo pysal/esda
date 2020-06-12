@@ -7,6 +7,12 @@ __all__ = ["G", "G_Local"]
 from libpysal.common import np, stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .tabular import _univariate_handler
+from .crand import (
+    crand as _crand_plus,
+    njit as _njit,
+    _prepare_univariate,
+    _prepare_bivariate,
+)
 
 PERMUTATIONS = 999
 
@@ -374,7 +380,16 @@ class G_Local(object):
 
     """
 
-    def __init__(self, y, w, transform="R", permutations=PERMUTATIONS, star=False):
+    def __init__(
+        self,
+        y,
+        w,
+        transform="R",
+        permutations=PERMUTATIONS,
+        star=False,
+        keep_simulations=False,
+        n_jobs=-1,
+    ):
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
@@ -386,7 +401,15 @@ class G_Local(object):
         self.calc()
         self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
         if permutations:
-            self.__crand()
+            self.p_sim, self.rGs = _crand_plus(
+                y,
+                w,
+                self.Gs,
+                permutations,
+                keep_simulations,
+                n_jobs=n_jobs,
+                stat_func=_gistar_crand if star else _gi_crand,
+            )
             sim = np.transpose(self.rGs)
             above = sim >= self.Gs
             larger = sum(above)
@@ -520,3 +543,20 @@ class G_Local(object):
             swapname=cls.__name__.lower(),
             **stat_kws
         )
+
+
+# --------------------------------------------------------------
+# Conditional Randomization Function Implementations
+# --------------------------------------------------------------
+
+
+@_njit(fastmath=True)
+def _gi_crand(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return (zrand * weights_i).sum(axis=1) / (scaling - zi)
+
+
+@_njit(fastmath=True)
+def _gistar_crand(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return ((zrand * weights_i).sum(axis=1) + zi) / scaling
