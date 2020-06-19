@@ -61,7 +61,7 @@ def vec_permutations(max_card: int, n: int, k_replications: int):
     return result
 
 
-def crand(z, w, observed, permutations, keep, n_jobs, stat_func):
+def crand(z, w, observed, permutations, keep, n_jobs, stat_func, scaling=None):
     """
     Conduct conditional randomization of a given input using the provided
     statistic function. Numba accelerated.
@@ -111,17 +111,20 @@ def crand(z, w, observed, permutations, keep, n_jobs, stat_func):
     n = len(z)
     if z.ndim == 2:
         if z.shape[1] == 2:
-            # assume that matrix is [X Y]
-            scaling = (n - 1) / (z[:, 0] * z[:, 0]).sum()
+            # assume that matrix is [X Y], and scaling is moran-like
+            scaling = (
+                (n - 1) / (z[:, 0] * z[:, 0]).sum() if (scaling is None) else scaling
+            )
         elif z.shape[1] == 1:
-            scaling = (n - 1) / (z * z).sum()
+            # assume that matrix is [X], and scaling is moran-like
+            scaling = (n - 1) / (z * z).sum() if (scaling is None) else scaling
         else:
             raise NotImplementedError(
                 f"multivariable input is not yet supported in "
                 f"conditional randomization. Recieved `z` of shape {z.shape}"
             )
     elif z.ndim == 1:
-        scaling = (n - 1) / (z * z).sum()
+        scaling = (n - 1) / (z * z).sum() if (scaling is None) else scaling
     else:
         raise NotImplementedError(
             f"multivariable input is not yet supported in "
