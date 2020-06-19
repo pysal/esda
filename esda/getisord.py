@@ -389,6 +389,7 @@ class G_Local(object):
         star=False,
         keep_simulations=False,
         n_jobs=-1,
+        numba=False,
     ):
         y = np.asarray(y).flatten()
         self.n = len(y)
@@ -401,15 +402,19 @@ class G_Local(object):
         self.calc()
         self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
         if permutations:
-            self.p_sim, rGs = _crand_plus(
-                y,
-                w,
-                self.Gs,
-                permutations,
-                keep_simulations,
-                n_jobs=n_jobs,
-                stat_func=_gistar_crand if star else _gi_crand,
-            )
+            if numba:
+                self.p_sim, rGs = _crand_plus(
+                    y,
+                    w,
+                    self.Gs,
+                    permutations,
+                    keep_simulations,
+                    n_jobs=n_jobs,
+                    stat_func=_gistar_crand if star else _gi_crand,
+                    scaling=y.sum(),
+                )
+            else:
+                self.__crand()
             if keep_simulations:
                 self.rGs = rGs
                 self.sim = rGs.T
@@ -442,6 +447,10 @@ class G_Local(object):
             rGs[i] = (y[idsi[rids[:, 0:wci]]]).sum(1) + yi_star
             rGs[i] = (np.array(rGs[i]) / den[i]) / (self.y_sum - (1 - self.star) * y[i])
         self.rGs = rGs
+        larger = (rGs >= self.Gs.reshape(-1, 1)).sum(axis=1)
+        below = (self.permutations - larger) < larger
+        larger[below] = self.permutations - larger[below]
+        self.p_sim = (larger + 1) / (self.permutations + 1)
 
     def __getCardinalities(self):
         ido = self.w.id_order
