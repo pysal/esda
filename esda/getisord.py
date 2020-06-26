@@ -381,7 +381,7 @@ class G_Local(object):
         transform="R",
         permutations=PERMUTATIONS,
         star=False,
-        keep_simulations=False,
+        keep_simulations=True,
     ):
         y = np.asarray(y).flatten()
         self.n = len(y)
@@ -394,9 +394,9 @@ class G_Local(object):
         self.calc()
         self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
         if permutations:
-                self.__crand(keep_simulations)
+            self.__crand(keep_simulations)
             if keep_simulations:
-                self.sim = self.rGs.T
+                self.sim = sim = self.rGs.T
                 self.EG_sim = sim.mean(axis=0)
                 self.seG_sim = sim.std(axis=0)
                 self.VG_sim = self.seG_sim * self.seG_sim
@@ -407,7 +407,7 @@ class G_Local(object):
         y = self.y
         if keep_simulations:
             rGs = np.zeros((self.n, self.permutations))
-        larger = numpy.zeros((self.n,))
+        larger = np.zeros((self.n,))
         n_1 = self.n - 1
         rid = list(range(n_1))
         prange = list(range(self.permutations))
