@@ -956,7 +956,7 @@ class Moran_Local(object):
         permutations=PERMUTATIONS,
         geoda_quads=False,
         n_jobs=1,
-        keep_simulations=False,
+        keep_simulations=True,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1194,7 +1194,7 @@ class Moran_Local_BV(object):
         permutations=PERMUTATIONS,
         geoda_quads=False,
         n_jobs=1,
-        keep_simulations=False,
+        keep_simulations=True,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1447,7 +1447,7 @@ class Moran_Local_Rate(Moran_Local):
         permutations=PERMUTATIONS,
         geoda_quads=False,
         n_jobs=1,
-        keep_simulations=False,
+        keep_simulations=True,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
