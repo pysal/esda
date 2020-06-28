@@ -3,9 +3,11 @@ import libpysal
 from libpysal.common import pandas, RTOL, ATOL
 from esda import moran
 import numpy as np
+from numpy.random import seed
 
 
 PANDAS_EXTINCT = pandas is None
+SEED = 12345
 
 class Moran_Tester(unittest.TestCase):
     def setUp(self):
@@ -47,7 +49,7 @@ class Moran_Tester(unittest.TestCase):
         np.random.seed(11213)
         df = pdio.read_files(libpysal.examples.get_path('sids2.dbf'))
         w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
-        mi = moran.Moran.by_col(df, ['SIDR74'], w=w, two_tailed=False, keep_simulations=True)
+        mi = moran.Moran.by_col(df, ['SIDR74'], w=w, two_tailed=False)
         sidr = np.unique(mi.SIDR74_moran.values).item()
         pval = np.unique(mi.SIDR74_p_sim.values).item()
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
@@ -101,9 +103,10 @@ class Moran_Local_Tester(unittest.TestCase):
         self.y = np.array(f.by_col['z'])
 
     def test_Moran_Local(self):
+        seed(SEED)
         lm = moran.Moran_Local(self.y, self.w, transformation="r", 
                                permutations=99, keep_simulations=True)
-        self.assertAlmostEqual(lm.z_sim[0], -0.68493799168603808)
+        self.assertAlmostEqual(lm.z_sim[0], -0.4235655872198752)
         self.assertAlmostEqual(lm.p_z_sim[0],  0.24669152541631179)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
@@ -112,7 +115,7 @@ class Moran_Local_Tester(unittest.TestCase):
         df = pd.DataFrame(self.y, columns =['z'])
         lm = moran.Moran_Local.by_col(df, ['z'], w=self.w, transformation='r',
                 permutations=99, outvals=['z_sim', 'p_z_sim'], keep_simulations=True)
-        self.assertAlmostEqual(lm.z_z_sim[0], -0.68493799168603808)
+        self.assertAlmostEqual(lm.z_z_sim[0], -0.5112756507940792)
         self.assertAlmostEqual(lm.z_p_z_sim[0],  0.24669152541631179)
 
 
@@ -128,7 +131,7 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         lm = moran.Moran_Local_BV(self.x, self.y, self.w, keep_simulations=True,
                                   transformation="r", permutations=99)
         self.assertAlmostEqual(lm.Is[0], 1.4649221250620736)
-        self.assertAlmostEqual(lm.z_sim[0],  1.5816540860500772)
+        self.assertAlmostEqual(lm.z_sim[0],  1.495117397050917)
         self.assertAlmostEqual(lm.p_z_sim[0], 0.056864279811026153)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
@@ -144,7 +147,7 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         bvz = df['SIDR79-SIDR74_z_sim'].values
         bvzp = df['SIDR79-SIDR74_p_z_sim'].values
         self.assertAlmostEqual(bvstats[0], 1.4649221250620736)
-        self.assertAlmostEqual(bvz[0],  1.657427, 5)
+        self.assertAlmostEqual(bvz[0],  1.4588935845731252, 5)
         self.assertAlmostEqual(bvzp[0], 0.048717, 5)
 
 
