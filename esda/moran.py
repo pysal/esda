@@ -872,7 +872,6 @@ class Moran_Local(object):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    numba
     n_jobs
     keep_simulations
 
@@ -956,7 +955,6 @@ class Moran_Local(object):
         transformation="r",
         permutations=PERMUTATIONS,
         geoda_quads=False,
-        numba=False,
         n_jobs=1,
         keep_simulations=True,
     ):
@@ -1195,7 +1193,6 @@ class Moran_Local_BV(object):
         transformation="r",
         permutations=PERMUTATIONS,
         geoda_quads=False,
-        numba=False,
         n_jobs=1,
         keep_simulations=True,
     ):
@@ -1449,7 +1446,6 @@ class Moran_Local_Rate(Moran_Local):
         transformation="r",
         permutations=PERMUTATIONS,
         geoda_quads=False,
-        numba=False,
         n_jobs=1,
         keep_simulations=True,
     ):
@@ -1466,7 +1462,6 @@ class Moran_Local_Rate(Moran_Local):
             transformation=transformation,
             permutations=permutations,
             geoda_quads=geoda_quads,
-            numba=numba,
             n_jobs=n_jobs,
             keep_simulations=keep_simulations,
         )
