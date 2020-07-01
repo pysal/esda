@@ -16,7 +16,7 @@ class Fdr_Tester(unittest.TestCase):
                                permutations=999)
         self.assertAlmostEqual(util.fdr(lm.p_sim, 0.1),
                                0.002564102564102564)
-        self.assertAlmostEqual(util.fdr(lm.p_sim, 0.05), 0.000641025641025641)
+        self.assertAlmostEqual(util.fdr(lm.p_sim, 0.05), 0.001282051282051282)
 
 
 suite = unittest.TestSuite()
