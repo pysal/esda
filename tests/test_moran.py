@@ -106,7 +106,7 @@ class Moran_Local_Tester(unittest.TestCase):
         seed(SEED)
         lm = moran.Moran_Local(self.y, self.w, transformation="r", 
                                permutations=99, keep_simulations=True)
-        self.assertAlmostEqual(lm.z_sim[0], -0.4235655872198752)
+        self.assertAlmostEqual(lm.z_sim[0], -0.6533699772241975)
         self.assertAlmostEqual(lm.p_z_sim[0],  0.24669152541631179)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
