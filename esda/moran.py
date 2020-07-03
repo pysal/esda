@@ -873,9 +873,13 @@ class Moran_Local(object):
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     n_jobs : int
-        Number of cores to be used in the conditional randomisation. If -1,
-        all available cores are used.    
-    keep_simulations
+             Number of cores to be used in the conditional randomisation. If -1,
+             all available cores are used.    
+    keep_simulations : Boolean
+                       (default=True)
+                       If True, the entire matrix of replications under the null 
+                       is stored in memory and accessible; otherwise, replications 
+                       are not saved
     seed : None/int
            Seed to be set inside the function so it can be compiled afterwards               
         
@@ -924,7 +928,11 @@ class Moran_Local(object):
     n_jobs : int
         Number of cores to be used in the conditional randomisation. If -1,
         all available cores are used.    
-    keep_simulations
+    keep_simulations : Boolean
+                      (default=True)
+                      If True, the entire matrix of replications under the null 
+                      is stored in memory and accessible; otherwise, replications 
+                      are not saved   
     seed : None/int
            Seed to be set inside the function so it can be compiled afterwards               
            
@@ -1127,7 +1135,11 @@ class Moran_Local_BV(object):
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     njobs
-    keep_simulations
+    keep_simulations : Boolean
+                      (default=True)
+                      If True, the entire matrix of replications under the null 
+                      is stored in memory and accessible; otherwise, replications 
+                      are not saved      
     seed : None/int
            Seed to be set inside the function so it can be compiled afterwards               
            
@@ -1390,7 +1402,11 @@ class Moran_Local_Rate(Moran_Local):
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     njobs
-    keep_simulations
+    keep_simulations : Boolean
+                      (default=True)
+                      If True, the entire matrix of replications under the null 
+                      is stored in memory and accessible; otherwise, replications 
+                      are not saved         
     seed : None/int
            Seed to be set inside the function so it can be compiled afterwards                
            
