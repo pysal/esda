@@ -48,7 +48,7 @@ install:
   - pip install -r requirements.txt
   - pip install -r requirements_tests.txt
   - if "$NUMBA"; then
-        echo 'testing with numba' && conda install --yes "numba>=0.50";
+        echo 'testing with numba' && conda install --yes -c conda-forge "numba>=0.50";
     else
         echo 'testing without numba';
     fi;
