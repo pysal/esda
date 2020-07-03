@@ -4,6 +4,8 @@ import unittest
 from libpysal.io import open as popen
 from libpysal import examples
 from libpysal.common import pandas
+from libpysal.weights import W
+from libpysal.weights import Rook
 
 from esda import geary
 import numpy as np
@@ -13,47 +15,44 @@ PANDAS_EXTINCT = pandas is None
 class Geary_Tester(unittest.TestCase):
     """Geary class for unit tests."""
     def setUp(self):
-        self.w = popen(examples.get_path("book.gal")).read()
-        f = popen(examples.get_path("book.txt"))
-        self.y = np.array(f.by_col['y'])
+        w = Rook.from_shapefile(examples.get_path("columbus.shp"))
+        f = popen(examples.get_path("columbus.dbf"))
+        w.transform = 'r'
+        self.w = w
+        self.y = np.array(f.by_col['CRIME'])
 
     def test_Geary(self):
         c = geary.Geary(self.y, self.w, permutations=0)
-        self.assertAlmostEqual(c.C, 0.33301083591331254)
+        self.assertAlmostEqual(c.C, 0.5154408058652411)
         self.assertAlmostEqual(c.EC, 1.0)
+        self.assertAlmostEqual(c.VC_norm, 0.011403109626468939)
+        self.assertAlmostEqual(c.seC_norm,0.10678534368755357 )
+        self.assertAlmostEqual(c.p_norm, 2.8436375936967054e-06)
+        self.assertAlmostEqual(c.z_norm,-4.5376938201608)
 
-        self.assertAlmostEqual(c.VC_norm, 0.031805300245097874)
-        self.assertAlmostEqual(c.p_norm, 9.2018240680169505e-05)
-        self.assertAlmostEqual(c.z_norm, -3.7399778367629564)
-        self.assertAlmostEqual(c.seC_norm, 0.17834040553138225)
-
-        self.assertAlmostEquals(c.VC_rand,0.033411917666958356)
-        self.assertAlmostEquals(c.p_rand,0.00013165646189214729)
-        self.assertAlmostEquals(c.z_rand, -3.6489513837253944)
-        self.assertAlmostEquals(c.seC_rand, 0.18278927120309429)
+        self.assertAlmostEquals(c.VC_rand,0.010848882767131886)
+        self.assertAlmostEquals(c.p_rand,1.6424069196305004e-06)
+        self.assertAlmostEquals(c.z_rand, -4.652156651668989)
 
         np.random.seed(12345)
         c = geary.Geary(self.y, self.w, permutations=999)
-        self.assertAlmostEquals(c.C, 0.33301083591331254)
-        self.assertAlmostEquals(c.EC, 1.0)
+        self.assertAlmostEqual(c.C, 0.5154408058652411)
+        self.assertAlmostEqual(c.EC, 1.0)
+        self.assertAlmostEqual(c.VC_norm, 0.011403109626468939)
+        self.assertAlmostEqual(c.seC_norm,0.10678534368755357 )
+        self.assertAlmostEqual(c.p_norm, 2.8436375936967054e-06)
+        self.assertAlmostEqual(c.z_norm,-4.5376938201608)
 
-        self.assertAlmostEquals(c.VC_norm, 0.031805300245097874)
-        self.assertAlmostEquals(c.p_norm, 9.2018240680169505e-05)
-        self.assertAlmostEquals(c.z_norm, -3.7399778367629564)
-        self.assertAlmostEquals(c.seC_norm, 0.17834040553138225)
-
-        self.assertAlmostEquals(c.VC_rand,0.033411917666958356)
-        self.assertAlmostEquals(c.p_rand,0.00013165646189214729)
-        self.assertAlmostEquals(c.z_rand, -3.6489513837253944)
-        self.assertAlmostEquals(c.seC_rand, 0.18278927120309429)
+        self.assertAlmostEquals(c.VC_rand,0.010848882767131886)
+        self.assertAlmostEquals(c.p_rand,1.6424069196305004e-06)
+        self.assertAlmostEquals(c.z_rand, -4.652156651668989)
 
 
-        self.assertAlmostEquals(c.EC_sim, 0.9980676303238214)
-        self.assertAlmostEquals(c.VC_sim, 0.034430408799858946)
+
+        self.assertAlmostEquals(c.EC_sim,0.9981883958193233)
+        self.assertAlmostEquals(c.VC_sim,  0.010631247074115058)
         self.assertAlmostEquals(c.p_sim, 0.001)
-        self.assertAlmostEquals(c.p_z_sim, 0.00016908100514811952)
-        self.assertAlmostEquals(c.z_sim, -3.5841621159171746)
-        self.assertAlmostEquals(c.seC_sim, 0.18555432843202269)
+        self.assertAlmostEquals(c.p_z_sim, 1.4207015378575605e-06)
 
     @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
     def test_by_col(self):

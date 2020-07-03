@@ -7,14 +7,8 @@ import numpy as np
 import scipy.stats as stats
 from libpysal import weights
 from .tabular import _univariate_handler
-from .crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate,
-    _prepare_bivariate,
-)
 
-__all__ = ["Geary"]
+__all__ = ['Geary']
 
 
 class Geary(object):
@@ -104,17 +98,17 @@ class Geary(object):
     Technical details and derivations can be found in :cite:`cliff81`.
 
     """
-
     def __init__(self, y, w, transformation="r", permutations=999):
         if not isinstance(w, weights.W):
-            raise TypeError(
-                "w must be a pysal weights object, got {}" " instead".format(type(w))
-            )
+            raise TypeError('w must be a pysal weights object, got {}'
+                            ' instead'.format(type(w)))
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
         w.transform = transformation
         self.w = w
+        self._focal_ix, self._neighbor_ix = w.sparse.nonzero()
+        self._weights = w.sparse.data
         self.permutations = permutations
         self.__moments()
         xn = range(len(y))
@@ -122,6 +116,7 @@ class Geary(object):
         self.y2 = y * y
         yd = y - y.mean()
         yss = sum(yd * yd)
+
         self.den = yss * self.w.s0 * 2.0
         self.C = self.__calc(y)
         de = self.C - 1.0
@@ -135,16 +130,16 @@ class Geary(object):
             self.p_norm = stats.norm.cdf(self.z_norm)
             self.p_rand = stats.norm.cdf(self.z_rand)
 
+
         if permutations:
-            sim = [
-                self.__calc(np.random.permutation(self.y)) for i in range(permutations)
-            ]
+            sim = [self.__calc(np.random.permutation(self.y))
+                   for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.C
             larger = sum(above)
             if (permutations - larger) < larger:
                 larger = permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = (larger + 1.) / (permutations + 1.)
             self.EC_sim = sum(sim) / permutations
             self.seC_sim = np.array(sim).std()
             self.VC_sim = self.seC_sim ** 2
@@ -165,36 +160,32 @@ class Geary(object):
         s2 = w.s2
         s02 = s0 * s0
         yd = y - y.mean()
-        yd4 = yd ** 4
-        yd2 = yd ** 2
+        yd4 = yd**4
+        yd2 = yd**2
         n2 = n * n
-        k = (yd4.sum() / n) / ((yd2.sum() / n) ** 2)
-        A = (n - 1) * s1 * (n2 - 3 * n + 3 - (n - 1) * k)
-        B = (1.0 / 4) * ((n - 1) * s2 * (n2 + 3 * n - 6 - (n2 - n + 2) * k))
-        C = s02 * (n2 - 3 - (n - 1) ** 2 * k)
-        vc_rand = (A - B + C) / (n * (n - 2) * (n - 3) * s02)
-        vc_norm = (1 / (2 * (n + 1) * s02)) * ((2 * s1 + s2) * (n - 1) - 4 * s02)
+        k = (yd4.sum() / n) / ((yd2.sum()/n)**2)
+        A = (n-1) * s1 * (n2 - 3*n + 3 - (n-1) * k)
+        B = (1./4) * ((n-1) * s2 * (n2 + 3*n - 6 - (n2 - n +2) * k ))
+        C = s02 * (n2 - 3 - (n-1)**2 * k)
+        vc_rand = (A-B+C) / (n * (n-2) * (n-3)*s02)
+        vc_norm = ((1 / (2 * (n + 1) * s02)) *
+                   ((2 * s1 + s2) * (n - 1) - 4 * s02))
 
         self.VC_rand = vc_rand
         self.VC_norm = vc_norm
         self.seC_rand = vc_rand ** (0.5)
         self.seC_norm = vc_norm ** (0.5)
 
+    
     def __calc(self, y):
-        ys = np.zeros(y.shape)
-        y2 = y ** 2
-        for i, i0 in enumerate(self.w.id_order):
-            neighbors = self.w.neighbor_offsets[i0]
-            wijs = self.w.weights[i0]
-            z = list(zip(neighbors, wijs))
-            ys[i] = sum([wij * (y2[i] - 2 * y[i] * y[j] + y2[j]) for j, wij in z])
-        a = (self.n - 1) * sum(ys)
+        num = (self._weights * 
+               ((y[self._focal_ix] 
+                 - y[self._neighbor_ix])**2) ).sum()
+        a = (self.n - 1) * num 
         return a / self.den
 
     @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
+    def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
         """
         Function to compute a Geary statistic on a dataframe
 
@@ -232,25 +223,6 @@ class Geary(object):
         Technical details and derivations can be found in :cite:`cliff81`.
 
         """
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname=cls.__name__.lower(),
-            **stat_kws
-        )
-
-
-# --------------------------------------------------------------
-# Conditional Randomization Function Implementations
-# --------------------------------------------------------------
-
-
-@_njit(fastmath=True)
-def _local_geary_crand(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return np.power(zrand - zi, 2) @ weights_i * scaling
+        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
+                                   outvals=outvals, stat=cls,
+                                   swapname=cls.__name__.lower(), **stat_kws)
