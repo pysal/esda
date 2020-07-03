@@ -184,7 +184,7 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
             columns=["rep-%s" % str(i).zfill(zfiller) for i in range(self.reps)],
         )
         # Multi-core implementation of parallel draws
-        if (self.n_jobs is -1) or (self.n_jobs > 1):
+        if (self.n_jobs == -1) or (self.n_jobs > 1):
             pool = _setup_pool(self.n_jobs)
             # Set different parallel seeds!!!
             warn_msg = (
@@ -329,7 +329,7 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
             index=solus.index,
             columns=solus.columns,
         )
-        if (n_jobs is -1) or (n_jobs > 1):
+        if (n_jobs == -1) or (n_jobs > 1):
             pool = _setup_pool(n_jobs)
             s_ids = solus.drop(ref, axis=1).columns.tolist()
             to_loop_over = [(solus[s], ref_centroids, ref_kdt, xys, xy) for s in s_ids]
