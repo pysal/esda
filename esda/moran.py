@@ -872,7 +872,9 @@ class Moran_Local(object):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    n_jobs
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.    
     keep_simulations
     seed : None/int
            Seed to be set inside the function so it can be compiled afterwards               
@@ -919,7 +921,9 @@ class Moran_Local(object):
                    p-values based on standard normal approximation from
                    permutations (one-sided)
                    for two-sided tests, these values should be multiplied by 2
-    n_jobs
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.    
     keep_simulations
     seed : None/int
            Seed to be set inside the function so it can be compiled afterwards               
