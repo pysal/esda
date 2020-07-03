@@ -874,7 +874,9 @@ class Moran_Local(object):
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     n_jobs
     keep_simulations
-
+    seed : None/int
+           Seed to be set inside the function so it can be compiled afterwards               
+        
     Attributes
     ----------
 
@@ -917,7 +919,11 @@ class Moran_Local(object):
                    p-values based on standard normal approximation from
                    permutations (one-sided)
                    for two-sided tests, these values should be multiplied by 2
-
+    n_jobs
+    keep_simulations
+    seed : None/int
+           Seed to be set inside the function so it can be compiled afterwards               
+           
     Notes
     -----
 
@@ -957,6 +963,7 @@ class Moran_Local(object):
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
+        seed=None
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -991,6 +998,7 @@ class Moran_Local(object):
                 keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_moran_local_crand,
+                seed=seed
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1114,7 +1122,11 @@ class Moran_Local_BV(object):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-
+    njobs
+    keep_simulations
+    seed : None/int
+           Seed to be set inside the function so it can be compiled afterwards               
+           
     Attributes
     ----------
 
@@ -1195,6 +1207,7 @@ class Moran_Local_BV(object):
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
+        seed=None
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1236,6 +1249,7 @@ class Moran_Local_BV(object):
                 keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_moran_local_bv_crand,
+                seed=seed
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1371,6 +1385,11 @@ class Moran_Local_Rate(Moran_Local):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
+    njobs
+    keep_simulations
+    seed : None/int
+           Seed to be set inside the function so it can be compiled afterwards                
+           
     Attributes
     ----------
     y            : array
@@ -1448,6 +1467,7 @@ class Moran_Local_Rate(Moran_Local):
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
+        seed=None
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1464,6 +1484,7 @@ class Moran_Local_Rate(Moran_Local):
             geoda_quads=geoda_quads,
             n_jobs=n_jobs,
             keep_simulations=keep_simulations,
+            seed=seed
         )
 
     @classmethod
