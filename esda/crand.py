@@ -35,7 +35,7 @@ __all__ = ["crand"]
 
 
 @njit(fastmath=True)
-def vec_permutations(max_card: int, n: int, k_replications: int, seed:int):
+def vec_permutations(max_card: int, n: int, k_replications: int, seed: int):
     """
     Generate `max_card` permuted IDs, sampled from `n` without replacement,
     `k_replications` times
@@ -50,7 +50,7 @@ def vec_permutations(max_card: int, n: int, k_replications: int, seed:int):
     k_replications : int
         Number of samples of permuted IDs to perform
     seed : int
-        Seed to be set inside the function so it can be compiled afterwards
+        Seed to ensure reproducibility of conditional randomizations
 
     Returns
     -------
@@ -64,7 +64,9 @@ def vec_permutations(max_card: int, n: int, k_replications: int, seed:int):
     return result
 
 
-def crand(z, w, observed, permutations, keep, n_jobs, stat_func, scaling=None, seed=None):
+def crand(
+    z, w, observed, permutations, keep, n_jobs, stat_func, scaling=None, seed=None
+):
     """
     Conduct conditional randomization of a given input using the provided
     statistic function. Numba accelerated.
@@ -101,7 +103,7 @@ def crand(z, w, observed, permutations, keep, n_jobs, stat_func, scaling=None, s
             scaling : float
                 Scaling value to apply to every local statistic
      seed : None/int
-        Seed to be set inside the function so it can be compiled afterwards               
+        Seed to ensure reproducibility of conditional randomizations               
 
     Returns
     -------

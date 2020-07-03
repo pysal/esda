@@ -881,7 +881,9 @@ class Moran_Local(object):
                        is stored in memory and accessible; otherwise, replications 
                        are not saved
     seed : None/int
-           Seed to be set inside the function so it can be compiled afterwards               
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba 
+           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
         
     Attributes
     ----------
@@ -934,7 +936,9 @@ class Moran_Local(object):
                       is stored in memory and accessible; otherwise, replications 
                       are not saved   
     seed : None/int
-           Seed to be set inside the function so it can be compiled afterwards               
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba does 
+           not correctly interpret external seeds nor numpy.random.RandomState instances.               
            
     Notes
     -----
@@ -975,7 +979,7 @@ class Moran_Local(object):
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
-        seed=None
+        seed=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1010,7 +1014,7 @@ class Moran_Local(object):
                 keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_moran_local_crand,
-                seed=seed
+                seed=seed,
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1141,7 +1145,9 @@ class Moran_Local_BV(object):
                       is stored in memory and accessible; otherwise, replications 
                       are not saved      
     seed : None/int
-           Seed to be set inside the function so it can be compiled afterwards               
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba 
+           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
            
     Attributes
     ----------
@@ -1223,7 +1229,7 @@ class Moran_Local_BV(object):
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
-        seed=None
+        seed=None,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1265,7 +1271,7 @@ class Moran_Local_BV(object):
                 keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_moran_local_bv_crand,
-                seed=seed
+                seed=seed,
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1408,7 +1414,9 @@ class Moran_Local_Rate(Moran_Local):
                       is stored in memory and accessible; otherwise, replications 
                       are not saved         
     seed : None/int
-           Seed to be set inside the function so it can be compiled afterwards                
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba does not 
+           correctly interpret external seeds nor numpy.random.RandomState instances.                
            
     Attributes
     ----------
@@ -1487,7 +1495,7 @@ class Moran_Local_Rate(Moran_Local):
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
-        seed=None
+        seed=None,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1504,7 +1512,7 @@ class Moran_Local_Rate(Moran_Local):
             geoda_quads=geoda_quads,
             n_jobs=n_jobs,
             keep_simulations=keep_simulations,
-            seed=seed
+            seed=seed,
         )
 
     @classmethod
