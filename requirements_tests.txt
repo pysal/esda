@@ -4,4 +4,3 @@ nose-exclude
 coverage
 coveralls
 geopandas
-numba

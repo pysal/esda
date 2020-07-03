@@ -11,8 +11,10 @@ python:
   - 3.8
 
 env:
-  - PYSAL_PYPI=true  MPLBACKEND="pdf"
-  - PYSAL_PYPI=false MPLBACKEND="pdf"
+  - PYSAL_PYPI=true  MPLBACKEND="pdf" NUMBA=false
+  - PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=false
+  - PYSAL_PYPI=true  MPLBACKEND="pdf" NUMBA=true
+  - PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=true
 
 matrix:
   allow_failures:
@@ -38,6 +40,10 @@ install:
   - conda install --yes pip
   - pip install -r requirements.txt
   - pip install -r requirements_tests.txt
+  - if "$NUMBA"; then
+        echo 'testing with numba' && conda install --yes "numba>=0.50"
+    else
+        echo 'testing without numba'
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
     else
