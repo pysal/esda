@@ -35,7 +35,7 @@ __all__ = ["crand"]
 
 
 @njit(fastmath=True)
-def vec_permutations(max_card: int, n: int, k_replications: int, seed=None):
+def vec_permutations(max_card: int, n: int, k_replications: int, seed=int):
     """
     Generate `max_card` permuted IDs, sampled from `n` without replacement,
     `k_replications` times
@@ -49,7 +49,7 @@ def vec_permutations(max_card: int, n: int, k_replications: int, seed=None):
         Size of the sample to sample IDs from
     k_replications : int
         Number of samples of permuted IDs to perform
-    seed : None/int
+    seed : int
         Seed to be set inside the function so it can be compiled afterwards
 
     Returns
@@ -57,8 +57,7 @@ def vec_permutations(max_card: int, n: int, k_replications: int, seed=None):
     result : ndarray
         (k_replications, max_card) array with permuted IDs
     """
-    if seed:
-        np.random.seed(seed)
+    np.random.seed(seed)
     result = np.empty((k_replications, max_card), dtype=np.int64)
     for k in prange(k_replications):
         result[k] = np.random.choice(n - 1, size=max_card, replace=False)
@@ -138,7 +137,9 @@ def crand(z, w, observed, permutations, keep, n_jobs, stat_func, scaling=None, s
         )
 
     # paralellise over permutations?
-    permuted_ids = vec_permutations(max_card, n, permutations, seed=seed)
+    if seed is None:
+        seed = np.random.randint(12345, 12345000)
+    permuted_ids = vec_permutations(max_card, n, permutations, seed)
 
     if n_jobs != 1:
         try:
