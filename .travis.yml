@@ -51,6 +51,7 @@ install:
         echo 'testing with numba' && conda install --yes "numba>=0.50";
     else
         echo 'testing without numba';
+    fi;
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
     else
