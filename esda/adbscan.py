@@ -420,7 +420,9 @@ def ensemble(solus_relabelled):
     counts = np.array(list(map(f, solus_relabelled.values)))
     winner = counts[:, 0]
     votes = counts[:, 1].astype(int) / solus_relabelled.shape[1]
-    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=solus_relabelled.index)
+    pred = pandas.DataFrame(
+        {"lbls": winner, "pct": votes}, index=solus_relabelled.index
+    )
     return pred
 
 
@@ -503,8 +505,10 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     try:
         from geopandas import GeoSeries
     except ModuleNotFoundError:
-        raise ModuleNotFoundError('geopandas is required in order '
-                                  ' to get cluster boundaries')
+
+        def GeoSeries(data, index=None, crs=None):
+            return list(data)
+
     lbl_type = type(labels.iloc[0])
     noise = lbl_type(-1)
     ids_in_cluster = labels[labels != noise].index
