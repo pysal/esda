@@ -142,7 +142,7 @@ class Join_Counts(object):
         y = np.asarray(y).flatten()
         w.transformation = 'b'  # ensure we have binary weights
         self.w = w
-        self.adj_list = self.w.to_adjlist(remove_symmetric=True)
+        self.adj_list = self.w.to_adjlist(remove_symmetric=False)
         self.y = y
         self.permutations = permutations
         self.J = w.s0 / 2.
@@ -214,10 +214,10 @@ class Join_Counts(object):
         neighbor = zseries.loc[adj_list.neighbor].values
         sim = focal == neighbor
         dif = 1 - sim
-        bb = (focal * sim).sum()
-        ww = ((1-focal) * sim).sum()
-        bw = (focal * dif).sum()
-        wb = ((1-focal) * dif).sum()
+        bb = (focal * sim).sum() / 2
+        ww = ((1-focal) * sim).sum() / 2
+        bw = (focal * dif).sum() / 2
+        wb = ((1-focal) * dif).sum() /2
         table = [[ww, wb],
                 [bw, bb]]
         chi2 = chi2_contingency(table)
