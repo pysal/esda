@@ -35,7 +35,7 @@
        - shell: bash -l {0}
          run: conda config --show
        - shell: bash -l {0}
-         run: py.test esda --cov esda -v --cov-report=xml
+         run: py.test tests --cov esda -v --cov-report=xml
        - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
          uses: codecov/codecov-action@v1
          with:
