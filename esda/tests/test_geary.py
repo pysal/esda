@@ -7,7 +7,7 @@ from libpysal.common import pandas
 from libpysal.weights import W
 from libpysal.weights import Rook
 
-from esda import geary
+from .. import geary
 import numpy as np
 
 PANDAS_EXTINCT = pandas is None

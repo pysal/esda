@@ -1,7 +1,7 @@
 import unittest
 import libpysal
 from libpysal.common import pandas, RTOL, ATOL
-from esda import moran
+from .. import moran
 import numpy as np
 
 
