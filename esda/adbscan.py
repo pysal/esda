@@ -7,17 +7,17 @@ __author__ = "Dani Arribas-Bel <daniel.arribas.bel@gmail.com>"
 import warnings
 import pandas
 import numpy as np
-from geopandas import GeoSeries
 from libpysal.cg.alpha_shapes import alpha_shape_auto
 from scipy.spatial import cKDTree
 from collections import Counter
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.base import BaseEstimator as _BaseEstimator, ClusterMixin as _ClusterMixin
 
 __all__ = ["ADBSCAN", "remap_lbls", "ensemble", "get_cluster_boundary"]
 
 
-class ADBSCAN:
+class ADBSCAN(_ClusterMixin, _BaseEstimator):
     """
     A-DBSCAN, as introduced in :cite:`ab_gl_vm2020joue`.
 
@@ -184,7 +184,7 @@ class ADBSCAN:
             columns=["rep-%s" % str(i).zfill(zfiller) for i in range(self.reps)],
         )
         # Multi-core implementation of parallel draws
-        if (self.n_jobs is -1) or (self.n_jobs > 1):
+        if (self.n_jobs == -1) or (self.n_jobs > 1):
             pool = _setup_pool(self.n_jobs)
             # Set different parallel seeds!!!
             warn_msg = (
@@ -329,7 +329,7 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
             index=solus.index,
             columns=solus.columns,
         )
-        if (n_jobs is -1) or (n_jobs > 1):
+        if (n_jobs == -1) or (n_jobs > 1):
             pool = _setup_pool(n_jobs)
             s_ids = solus.drop(ref, axis=1).columns.tolist()
             to_loop_over = [(solus[s], ref_centroids, ref_kdt, xys, xy) for s in s_ids]
@@ -420,7 +420,9 @@ def ensemble(solus_relabelled):
     counts = np.array(list(map(f, solus_relabelled.values)))
     winner = counts[:, 0]
     votes = counts[:, 1].astype(int) / solus_relabelled.shape[1]
-    pred = pandas.DataFrame({"lbls": winner, "pct": votes}, index=solus_relabelled.index)
+    pred = pandas.DataFrame(
+        {"lbls": winner, "pct": votes}, index=solus_relabelled.index
+    )
     return pred
 
 
@@ -500,6 +502,12 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     >>> polys[0].wkt
     'POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))'
     """
+    try:
+        from geopandas import GeoSeries
+    except ModuleNotFoundError:
+
+        def GeoSeries(data, index=None, crs=None):
+            return list(data)
 
     lbl_type = type(labels.iloc[0])
     noise = lbl_type(-1)
