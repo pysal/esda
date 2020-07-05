@@ -1,7 +1,7 @@
 import unittest
 import libpysal
 from libpysal.weights.distance import KNN, Kernel
-from esda import smoothing as sm
+from .. import smoothing as sm
 import numpy as np
 from libpysal.common import RTOL, ATOL, pandas
 

@@ -1,4 +1,4 @@
-from esda import silhouettes
+from .. import silhouettes
 import geopandas
 import libpysal
 import numpy

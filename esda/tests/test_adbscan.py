@@ -1,7 +1,7 @@
 import unittest
 import pandas
 import numpy as np
-from esda import adbscan
+from .. import adbscan
 
 
 class ADBSCAN_Tester(unittest.TestCase):

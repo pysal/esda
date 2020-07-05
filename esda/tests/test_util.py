@@ -1,7 +1,7 @@
 import unittest
 import libpysal
-from esda import util
-from esda import moran
+from .. import util
+from .. import moran
 import numpy as np
 
 
