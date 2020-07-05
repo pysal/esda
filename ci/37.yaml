@@ -1,0 +1,17 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.7
+  # required
+  - scipy
+  - pandas
+  - libpysal
+  - scikit-learn
+  # testing
+  - pytest
+  - pytest-cov
+  - codecov
+  - matplotlib
+  # optional
+  - geopandas
