@@ -11,17 +11,26 @@ python:
   - 3.8
 
 env:
-  - PYSAL_PYPI=true  MPLBACKEND="pdf"
-  - PYSAL_PYPI=false MPLBACKEND="pdf"
+  - PYSAL_PYPI=true  MPLBACKEND="pdf" NUMBA=false
+  - PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=false
+  - PYSAL_PYPI=true  MPLBACKEND="pdf" NUMBA=true
+  - PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=true
 
 matrix:
   allow_failures:
     - python: 3.6
-      env: PYSAL_PYPI=false MPLBACKEND="pdf"
+      env: PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=false
     - python: 3.7
-      env: PYSAL_PYPI=false MPLBACKEND="pdf"
+      env: PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=false
     - python: 3.8
-      env: PYSAL_PYPI=false MPLBACKEND="pdf"
+      env: PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=false
+    - python: 3.6
+      env: PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=true
+    - python: 3.7
+      env: PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=true
+    - python: 3.8
+      env: PYSAL_PYPI=false MPLBACKEND="pdf" NUMBA=true
+
 
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -29,8 +38,6 @@ before_install:
   - ./miniconda.sh -b -p ./miniconda
   - export PATH=`pwd`/miniconda/bin:$PATH
   - conda update --yes conda
-  - conda config --add channels conda-forge
-  - conda config --set channel_priority strict
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
 
@@ -38,6 +45,11 @@ install:
   - conda install --yes pip
   - pip install -r requirements.txt
   - pip install -r requirements_tests.txt
+  - if "$NUMBA"; then
+        echo 'testing with numba' && conda install --yes "numba>=0.50";
+    else
+        echo 'testing without numba';
+    fi;
   - if "$PYSAL_PYPI"; then
         echo 'testing pypi libpysal' && pip install libpysal;
     else

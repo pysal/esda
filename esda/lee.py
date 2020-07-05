@@ -3,6 +3,13 @@ from scipy import sparse
 from sklearn.base import BaseEstimator
 from sklearn import preprocessing
 from sklearn import utils
+from .crand import (
+    crand as _crand_plus,
+    njit as _njit,
+    _prepare_univariate,
+    _prepare_bivariate,
+)
+
 
 class Spatial_Pearson(BaseEstimator):
     """Global Spatial Pearson Statistic"""
@@ -62,32 +69,39 @@ class Spatial_Pearson(BaseEstimator):
         """
         x = utils.check_array(x)
         y = utils.check_array(y)
-        Z = numpy.column_stack((preprocessing.StandardScaler().fit_transform(x),
-                                preprocessing.StandardScaler().fit_transform(y)))
+        Z = numpy.column_stack(
+            (
+                preprocessing.StandardScaler().fit_transform(x),
+                preprocessing.StandardScaler().fit_transform(y),
+            )
+        )
         if self.connectivity is None:
             self.connectivity = sparse.eye(Z.shape[0])
-        self.association_ = self._statistic(Z, self.connectivity) 
-        
-        standard_connectivity = sparse.csc_matrix(self.connectivity /
-                                                  self.connectivity.sum(axis=1))
+        self.association_ = self._statistic(Z, self.connectivity)
 
-        if (self.permutations is None):
+        standard_connectivity = sparse.csc_matrix(
+            self.connectivity / self.connectivity.sum(axis=1)
+        )
+
+        if self.permutations is None:
             return self
         elif self.permutations < 1:
             return self
 
         if self.permutations:
-            simulations = [self._statistic(numpy.random.permutation(Z), self.connectivity)
-                           for _ in range(self.permutations)]
+            simulations = [
+                self._statistic(numpy.random.permutation(Z), self.connectivity)
+                for _ in range(self.permutations)
+            ]
             self.reference_distribution_ = simulations = numpy.array(simulations)
             above = simulations >= self.association_
             larger = above.sum(axis=0)
             extreme = numpy.minimum(self.permutations - larger, larger)
-            self.significance_ = (extreme + 1.) / (self.permutations + 1.)
+            self.significance_ = (extreme + 1.0) / (self.permutations + 1.0)
         return self
 
     @staticmethod
-    def _statistic(Z,W):
+    def _statistic(Z, W):
         ctc = W.T @ W
         ones = numpy.ones(ctc.shape[0])
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
@@ -174,15 +188,16 @@ class Local_Spatial_Pearson(BaseEstimator):
         """
         x = utils.check_array(x)
         x = preprocessing.StandardScaler().fit_transform(x)
-        
+
         y = utils.check_array(y)
         y = preprocessing.StandardScaler().fit_transform(y)
 
         Z = numpy.column_stack((x, y))
 
-        standard_connectivity = sparse.csc_matrix(self.connectivity /
-                                                  self.connectivity.sum(axis=1))
-        
+        standard_connectivity = sparse.csc_matrix(
+            self.connectivity / self.connectivity.sum(axis=1)
+        )
+
         n, _ = x.shape
 
         self.associations_ = self._statistic(Z, standard_connectivity)
@@ -190,51 +205,70 @@ class Local_Spatial_Pearson(BaseEstimator):
         if self.permutations:
             self.reference_distribution_ = numpy.empty((n, self.permutations))
             max_neighbors = (standard_connectivity != 0).sum(axis=1).max()
-            random_ids = numpy.array([numpy.random.permutation(n - 1)[0:max_neighbors + 1]
-                                      for i in range(self.permutations)])
+            random_ids = numpy.array(
+                [
+                    numpy.random.permutation(n - 1)[0 : max_neighbors + 1]
+                    for i in range(self.permutations)
+                ]
+            )
             ids = numpy.arange(n)
 
             for i in range(n):
                 row = standard_connectivity[i]
-                weight = numpy.asarray(row[row.nonzero()]).reshape(-1,1)
+                weight = numpy.asarray(row[row.nonzero()]).reshape(-1, 1)
                 cardinality = row.nonzero()[0].shape[0]
 
                 ids_not_i = ids[ids != i]
                 numpy.random.shuffle(ids_not_i)
                 randomizer = random_ids[:, 0:cardinality]
                 random_neighbors = ids_not_i[randomizer]
-                
+
                 random_neighbor_x = x[random_neighbors]
                 random_neighbor_y = y[random_neighbors]
 
-                self.reference_distribution_[i] = (weight * random_neighbor_y - y.mean())\
-                                                    .sum(axis=1).squeeze()
-                self.reference_distribution_[i] *= (weight * random_neighbor_x - x.mean())\
-                                                    .sum(axis=1).squeeze()
-            above = self.reference_distribution_ >= self.associations_.reshape(-1,1)
+                self.reference_distribution_[i] = (
+                    (weight * random_neighbor_y - y.mean()).sum(axis=1).squeeze()
+                )
+                self.reference_distribution_[i] *= (
+                    (weight * random_neighbor_x - x.mean()).sum(axis=1).squeeze()
+                )
+            above = self.reference_distribution_ >= self.associations_.reshape(-1, 1)
             larger = above.sum(axis=1)
             extreme = numpy.minimum(larger, self.permutations - larger)
-            self.significance_ = (extreme + 1.) / (self.permutations + 1.)
+            self.significance_ = (extreme + 1.0) / (self.permutations + 1.0)
             self.reference_distribution_ = self.reference_distribution_.T
         else:
             self.reference_distribution_ = None
         return self
 
     @staticmethod
-    def _statistic(Z,W):
-        return (Z[:,1] @ W.T) * (W @ Z[:,0]) 
+    def _statistic(Z, W):
+        return (Z[:, 1] @ W.T) * (W @ Z[:, 0])
 
-if __name__ == '__main__':
+
+# --------------------------------------------------------------
+# Conditional Randomization Function Implementations
+# --------------------------------------------------------------
+
+
+@_njit(fastmath=True)
+def _local_spatial_pearson_crand(i, z, permuted_ids, weights_i, scaling):
+    zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
+    return (zyrand @ weights_i) * (zxrand @ weights_i) * scaling
+
+
+if __name__ == "__main__":
     import geopandas
     import libpysal
-    df = geopandas.read_file(libpysal.examples.get_path('columbus.shp'))
-    x = df[['HOVAL']].values
-    y = df[['CRIME']].values
+
+    df = geopandas.read_file(libpysal.examples.get_path("columbus.shp"))
+    x = df[["HOVAL"]].values
+    y = df[["CRIME"]].values
     zx = preprocessing.StandardScaler().fit_transform(x)
     zy = preprocessing.StandardScaler().fit_transform(y)
     w = libpysal.weights.Queen.from_dataframe(df)
-    w.transform = 'r'
+    w.transform = "r"
     numpy.random.seed(2478879)
-    testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x,y)
+    testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x, y)
     numpy.random.seed(2478879)
-    testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x,y)
+    testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x, y)
