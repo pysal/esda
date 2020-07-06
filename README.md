@@ -5,6 +5,11 @@
 
 Methods for  testing for global and local autocorrelation in areal unit data.
 
+## Documentation
+- [Home](https://pysal.org/esda)
+- [Tutorial](https://pysal.org/esda/tutorial.html)
+- [API](https://pysal.org/esda/api.html)
+
 
 ## Installation
 
