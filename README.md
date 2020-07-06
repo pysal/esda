@@ -1,6 +1,6 @@
 # Exploratory Spatial Data Analysis in PySAL
-
-[![Build Status](https://travis-ci.org/pysal/esda.svg?branch=master)](https://travis-ci.org/pysal/esda)
+[![unittests](https://github.com/pysal/esda/workflows/.github/workflows/unittests.yml/badge.svg)](https://github.com/pysal/esda/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml)
+[![codecov](https://codecov.io/gh/pysal/esda/branch/master/graph/badge.svg)](https://codecov.io/gh/pysal/esda)
 [![DOI](https://zenodo.org/badge/81873636.svg)](https://zenodo.org/badge/latestdoi/81873636)
 
 Methods for  testing for global and local autocorrelation in areal unit data.
