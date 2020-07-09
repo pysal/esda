@@ -4,8 +4,10 @@ Getis and Ord G statistic for spatial autocorrelation
 __author__ = "Sergio J. Rey <srey@asu.edu>, Myunghwa Hwang <mhwang4@gmail.com> "
 __all__ = ["G", "G_Local"]
 
+import warnings
 from libpysal.common import np, stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
+from libpysal.weights.util import fill_diagonal
 from .tabular import _univariate_handler
 
 PERMUTATIONS = 999
@@ -220,7 +222,7 @@ class G(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
 
 
@@ -463,8 +465,45 @@ class G_Local(object):
         self.EGs = (EGs_num * 1.0) / N
         self.VGs = (VGs_num) * (1.0 / (N ** 2)) * ((s2 * 1.0) / (yl_mean ** 2))
         self.Zs = (self.Gs - self.EGs) / np.sqrt(self.VGs)
-
+        self.s2 = s2
+        self.yl_mean = yl_mean
         self.w.transform = self.w_original
+
+    def _calc2(self):
+        w = self.w
+        w, star = _infer_star_and_structure_w(w, self.star, self.w_transform)
+        w.transform = self.w_transform
+        W = w.sparse
+
+
+        y = self.y
+        remove_self = not self.star
+        N = self.w.n - remove_self
+
+        statistic = (W @ y) / (y.sum() - y * remove_self)
+
+        # ----------------------------------------------------#
+        # compute moments necessary for analytical inference  #
+        # ----------------------------------------------------#
+
+        empirical_mean = (y.sum() - y * remove_self) / N
+        # variance looks complex, yes, but it obtains from E[x^2] - E[x]^2.
+        # So, break it down to allow subtraction of the self-neighbor.
+        mean_of_squares = ((y ** 2).sum() - (y ** 2) * remove_self) / N
+        empirical_variance = mean_of_squares - empirical_mean ** 2
+
+        # Since we have corrected the diagonal, this should work
+        cardinality = np.asarray(W.sum(axis=1)).squeeze()
+        expected_value = cardinality / N
+        expected_variance = (cardinality * (N - cardinality) / (N - 1) 
+                             * (1 / N ** 2) 
+                             * (empirical_variance / (empirical_mean ** 2))
+        )
+        z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
+        return statistic, expected_value, expected_variance, z_scores, empirical_mean, empirical_variance
+        self.EGs = expected_value
+        self.VGs = expected_variance
+        self.Zs = z_scores
 
     @property
     def _statistic(self):
@@ -518,5 +557,88 @@ class G_Local(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
+
+
+def _infer_star_and_structure_w(weights, star, transform):
+    assert transform.lower() in ("r", "b"), (
+        f'Transforms must be binary "b" or row-standardized "r".'
+        f"Recieved: {transform.upper()}"
+    )
+    adj_matrix = weights.sparse
+    diagonal = adj_matrix.diagonal()
+    zero_diagonal = (diagonal == 0).all()
+
+    # Gi has a zero diagonal, Gi* has a nonzero diagonal
+    star = (not zero_diagonal) if star is None else star
+
+    # Want zero diagonal but do not have it
+    if (not zero_diagonal) & (star is False):
+        weights = fill_diagonal(weights, 0)
+    # Want nonzero diagonal and have it
+    elif (not zero_diagonal) & (star is True):
+        weights = weights
+    # Want zero diagonal and have it
+    elif zero_diagonal & (star is False):
+        weights = weights
+    # Want nonzero diagonal and do not have it
+    elif zero_diagonal & (star is True):
+        # if the input is binary or requested transform is binary,
+        # set the diagonal to 1.
+        if transform.lower() == "b" or weights.transform.lower() == "b":
+            weights = fill_diagonal(weights, 1)
+        # if we know the target is row-standardized, use the row max
+        # this works successfully for effectively binar but "O"-transformed input
+        elif transform.lower() == "r":
+            # This warning is probably better as a documentation instead of a warning.
+            # warnings.warn(
+            #     "Gi* requested, but no weights are on the diagonal and"
+            #     " no default value supplied to star. Assuming that the"
+            #     " self-weight is equivalent to the maximum weight in the"
+            #     " row. To use a different default (like, .5), set `star=.5`,"
+            #     " or use libpysal.weights.fill_diagonal() to set the diagonal"
+            #     " values of your weights matrix and use `star=None` in Gi_Local."
+            # )
+            weights = fill_diagonal(
+                weights, np.asarray(adj_matrix.max(axis=1).todense()).flatten()
+            )
+    else:  # star was something else, so try to fill the weights with it
+        try:
+            weights = fill_diagonal(weights, star)
+        except:
+            raise TypeError(
+                f"Type of star ({type(star)}) not understood."
+                f" Must be an integer, boolean, float, or numpy.ndarray."
+            )
+    star = (weights.sparse.diagonal() > 0).any()
+    weights.transform = transform
+
+    return weights, star
+
+if __name__ is '__main__':
+    import geopandas, numpy, esda, importlib
+    import matplotlib.pyplot as plt
+    from libpysal import weights, examples
+
+    df = geopandas.read_file(examples.get_path('NAT.shp'))
+
+    w = weights.Rook.from_dataframe(df)
+
+    for transform in ('r', 'b'):
+      for star in (True, False):
+        test = esda.getisord.G_Local(df.GI89, w, transform=transform, star=star)
+        out = test._calc2()
+        (statistic, expected_value, 
+         expected_variance, z_scores, 
+         empirical_mean, empirical_variance) = out
+
+        numpy.testing.assert_allclose(statistic, test.Gs)
+        numpy.testing.assert_allclose(expected_value, test.EGs)
+        numpy.testing.assert_allclose(expected_variance, test.VGs)
+        numpy.testing.assert_allclose(z_scores, test.Zs)
+        numpy.testing.assert_allclose(empirical_mean, test.yl_mean)
+        numpy.testing.assert_allclose(empirical_variance, test.s2)
+
+    # Also check that the None configuration works
+    test = esda.getisord.G_Local(df.GI89, w, star=None)
