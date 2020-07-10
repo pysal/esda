@@ -5,7 +5,7 @@ from .. import getisord
 from libpysal.weights.distance import DistanceBand
 from libpysal.common import pandas
 
-POINTS = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
+POINTS = np.array([(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)])
 W = DistanceBand(POINTS, threshold=15)
 Y = np.array([2, 3, 3.2, 5, 8, 7])
 
@@ -45,23 +45,23 @@ class G_Local_Tester(unittest.TestCase):
         np.random.seed(10)
 
     def test_G_Local_Binary(self):
-        lg = getisord.G_Local(self.y, self.w, transform="B")
+        lg = getisord.G_Local(self.y, self.w, transform="B", seed=10)
         self.assertAlmostEqual(lg.Zs[0], -1.0136729, places=7)
         self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
         self.assertAlmostEqual(lg.p_z_sim[0], 0.154373052, places=7)
 
     def test_G_Local_Row_Standardized(self):
-        lg = getisord.G_Local(self.y, self.w, transform="R")
+        lg = getisord.G_Local(self.y, self.w, transform="R", seed=10)
         self.assertAlmostEqual(lg.Zs[0], -0.62074534, places=7)
         self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
     def test_G_star_Local_Binary(self):
-        lg = getisord.G_Local(self.y, self.w, transform="B", star=True)
+        lg = getisord.G_Local(self.y, self.w, transform="B", star=True, seed=10)
         self.assertAlmostEqual(lg.Zs[0], -1.39727626, places=8)
         self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
     def test_G_star_Row_Standardized(self):
-        lg = getisord.G_Local(self.y, self.w, transform="R", star=True)
+        lg = getisord.G_Local(self.y, self.w, transform="R", star=True, seed=10)
         self.assertAlmostEqual(lg.Zs[0], -0.62488094, places=8)
         self.assertAlmostEqual(lg.p_sim[0], 0.10100000000000001, places=7)
 
@@ -70,10 +70,8 @@ class G_Local_Tester(unittest.TestCase):
         import pandas as pd
 
         df = pd.DataFrame(self.y, columns=["y"])
-        np.random.seed(12345)
-        r1 = getisord.G_Local.by_col(df, ["y"], w=self.w)
-        np.random.seed(12345)
-        stat = getisord.G_Local(self.y, self.w)
+        r1 = getisord.G_Local.by_col(df, ["y"], w=self.w, seed=12345)
+        stat = getisord.G_Local(self.y, self.w, seed=12345)
         np.testing.assert_allclose(r1.y_g_local.values, stat.Gs)
         np.testing.assert_allclose(r1.y_p_sim, stat.p_sim)
 
