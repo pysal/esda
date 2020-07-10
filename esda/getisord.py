@@ -382,6 +382,7 @@ class G_Local(object):
         self.y = y
         w, star = _infer_star_and_structure_w(w, star, transform)
         w.transform = transform
+        self.w_transform = transform
         self.w = w
         self.permutations = permutations
         self.star = star
