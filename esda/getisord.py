@@ -432,49 +432,13 @@ class G_Local(object):
         return self.wc
 
     def calc(self):
-        y = self.y
-        y2 = y * y
-        self.y_sum = y_sum = sum(y)
-        y2_sum = sum(y2)
-
-        if not self.star:
-            yl = 1.0 * slag(self.w, y)
-            ydi = y_sum - y
-            self.Gs = yl / ydi
-            N = self.n - 1
-            yl_mean = ydi / N
-            s2 = (y2_sum - y2) / N - (yl_mean) ** 2
-        else:
-            self.w.transform = "B"
-            yl = 1.0 * slag(self.w, y)
-            yl += y
-            if self.w_transform == "r":
-                yl = yl / (self.__getCardinalities() + 1.0)
-            self.Gs = yl / y_sum
-            N = self.n
-            yl_mean = y.mean()
-            s2 = y.var()
-
-        EGs_num, VGs_num = 1.0, 1.0
-        if self.w_transform == "b":
-            W = self.__getCardinalities()
-            W += self.star
-            EGs_num = W * 1.0
-            VGs_num = (W * (1.0 * N - W)) / (1.0 * N - 1)
-
-        self.EGs = (EGs_num * 1.0) / N
-        self.VGs = (VGs_num) * (1.0 / (N ** 2)) * ((s2 * 1.0) / (yl_mean ** 2))
-        self.Zs = (self.Gs - self.EGs) / np.sqrt(self.VGs)
-        self.s2 = s2
-        self.yl_mean = yl_mean
-        self.w.transform = self.w_original
-
-    def _calc2(self):
         w = self.w
         w, star = _infer_star_and_structure_w(w, self.star, self.w_transform)
         w.transform = self.w_transform
         W = w.sparse
 
+        # REMOVE THIS
+        self.y_sum = self.y.sum()
 
         y = self.y
         remove_self = not self.star
