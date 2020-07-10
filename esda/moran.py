@@ -3,15 +3,31 @@ Moran's I Spatial Autocorrelation Statistics
 
 """
 __author__ = "Sergio J. Rey <srey@asu.edu>, \
-        Dani Arribas-Bel <daniel.arribas.bel@gmail.com>"
+        Dani Arribas-Bel <daniel.arribas.bel@gmail.com>, \
+        Levi John Wolf <levi.john.wolf@gmail.com>"
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from .smoothing import assuncao_rate
 from .tabular import _univariate_handler, _bivariate_handler
+from .crand import (
+    crand as _crand_plus,
+    njit as _njit,
+    _prepare_univariate,
+    _prepare_bivariate,
+)
+from warnings import warn
 import scipy.stats as stats
 import numpy as np
+import tempfile
 
-__all__ = ["Moran", "Moran_Local", "Moran_BV", "Moran_BV_matrix",
-           "Moran_Local_BV", "Moran_Rate", "Moran_Local_Rate"]
+__all__ = [
+    "Moran",
+    "Moran_Local",
+    "Moran_BV",
+    "Moran_BV_matrix",
+    "Moran_Local_BV",
+    "Moran_Rate",
+    "Moran_Local_Rate",
+]
 
 PERMUTATIONS = 999
 
@@ -135,8 +151,10 @@ class Moran(object):
     0.0001
 
     """
-    def __init__(self, y, w, transformation="r", permutations=PERMUTATIONS,
-                 two_tailed=True):
+
+    def __init__(
+        self, y, w, transformation="r", permutations=PERMUTATIONS, two_tailed=True
+    ):
         y = np.asarray(y).flatten()
         self.y = y
         w.transform = transformation
@@ -155,18 +173,19 @@ class Moran(object):
             self.p_rand = stats.norm.cdf(self.z_rand)
 
         if two_tailed:
-            self.p_norm *= 2.
-            self.p_rand *= 2.
+            self.p_norm *= 2.0
+            self.p_rand *= 2.0
 
         if permutations:
-            sim = [self.__calc(np.random.permutation(self.z))
-                   for i in range(permutations)]
+            sim = [
+                self.__calc(np.random.permutation(self.z)) for i in range(permutations)
+            ]
             self.sim = sim = np.array(sim)
             above = sim >= self.I
             larger = above.sum()
             if (self.permutations - larger) < larger:
                 larger = self.permutations - larger
-            self.p_sim = (larger + 1.) / (permutations + 1.)
+            self.p_sim = (larger + 1.0) / (permutations + 1.0)
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim ** 2
@@ -186,7 +205,7 @@ class Moran(object):
         z = y - y.mean()
         self.z = z
         self.z2ss = (z * z).sum()
-        self.EI = -1. / (self.n - 1)
+        self.EI = -1.0 / (self.n - 1)
         n = self.n
         n2 = n * n
         s1 = self.w.s1
@@ -196,20 +215,20 @@ class Moran(object):
         v_num = n2 * s1 - n * s2 + 3 * s02
         v_den = (n - 1) * (n + 1) * s02
         self.VI_norm = v_num / v_den - (1.0 / (n - 1)) ** 2
-        self.seI_norm = self.VI_norm ** (1 / 2.)
+        self.seI_norm = self.VI_norm ** (1 / 2.0)
 
         # variance under randomization
-        xd4 = z**4
-        xd2 = z**2
+        xd4 = z ** 4
+        xd2 = z ** 2
         k_num = xd4.sum() / n
-        k_den = (xd2.sum() / n)**2
+        k_den = (xd2.sum() / n) ** 2
         k = k_num / k_den
         EI = self.EI
         A = n * ((n2 - 3 * n + 3) * s1 - n * s2 + 3 * s02)
-        B = k * ((n2 - n) * s1 - 2 * n * s2 + 6 * s02  )
-        VIR = (A - B) / ((n - 1) * (n - 2) * (n - 3 ) * s02) - EI*EI
+        B = k * ((n2 - n) * s1 - 2 * n * s2 + 6 * s02)
+        VIR = (A - B) / ((n - 1) * (n - 2) * (n - 3) * s02) - EI * EI
         self.VI_rand = VIR
-        self.seI_rand = VIR ** (1 / 2.)
+        self.seI_rand = VIR ** (1 / 2.0)
 
     def __calc(self, z):
         zl = slag(self.w, z)
@@ -222,7 +241,9 @@ class Moran(object):
         return self.I
 
     @classmethod
-    def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
+    def by_col(
+        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
+    ):
         """
         Function to compute a Moran statistic on a dataframe
 
@@ -256,9 +277,18 @@ class Moran(object):
         returns a copy of the dataframe with the relevant columns attached.
 
         """
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
-                                   outvals=outvals, stat=cls,
-                                   swapname=cls.__name__.lower(), **stat_kws)
+        return _univariate_handler(
+            df,
+            cols,
+            w=w,
+            inplace=inplace,
+            pvalue=pvalue,
+            outvals=outvals,
+            stat=cls,
+            swapname=cls.__name__.lower(),
+            **stat_kws
+        )
+
 
 class Moran_BV(object):
     """
@@ -366,6 +396,7 @@ class Moran_BV(object):
 
 
     """
+
     def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -376,7 +407,7 @@ class Moran_BV(object):
         self.zx = zx
         self.zy = zy
         n = x.shape[0]
-        self.den = n - 1.  # zx'zx = zy'zy = n-1
+        self.den = n - 1.0  # zx'zx = zy'zy = n-1
         w.transform = transformation
         self.w = w
         self.I = self.__calc(zy)
@@ -388,7 +419,7 @@ class Moran_BV(object):
             larger = above.sum()
             if (permutations - larger) < larger:
                 larger = permutations - larger
-            self.p_sim = (larger + 1.) / (permutations + 1.)
+            self.p_sim = (larger + 1.0) / (permutations + 1.0)
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim ** 2
@@ -409,7 +440,17 @@ class Moran_BV(object):
         return self.I
 
     @classmethod
-    def by_col(cls, df, x, y=None, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
+    def by_col(
+        cls,
+        df,
+        x,
+        y=None,
+        w=None,
+        inplace=False,
+        pvalue="sim",
+        outvals=None,
+        **stat_kws
+    ):
         """
         Function to compute a Moran_BV statistic on a dataframe
 
@@ -450,9 +491,18 @@ class Moran_BV(object):
         returns a copy of the dataframe with the relevant columns attached.
 
         """
-        return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
-                                  pvalue = pvalue, outvals = outvals,
-                                  swapname=cls.__name__.lower(), stat=cls,**stat_kws)
+        return _bivariate_handler(
+            df,
+            x,
+            y=y,
+            w=w,
+            inplace=inplace,
+            pvalue=pvalue,
+            outvals=outvals,
+            swapname=cls.__name__.lower(),
+            stat=cls,
+            **stat_kws
+        )
 
 
 def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
@@ -514,6 +564,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     try:
         # check if pandas is installed
         import pandas
+
         if isinstance(variables, pandas.DataFrame):
             # if yes use variables as df and convert to numpy_array
             varnames = pandas.Index.tolist(variables.columns)
@@ -525,9 +576,9 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     except ImportError:
         variables_n = variables
 
-    results = _Moran_BV_Matrix_array(variables=variables_n, w=w,
-                                     permutations=permutations,
-                                     varnames=varnames)
+    results = _Moran_BV_Matrix_array(
+        variables=variables_n, w=w, permutations=permutations, varnames=varnames
+    )
     return results
 
 
@@ -536,7 +587,7 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     Base calculation for MORAN_BV_Matrix
     """
     if varnames is None:
-        varnames = ['x{}'.format(i) for i in range(k)]
+        varnames = ["x{}".format(i) for i in range(k)]
 
     k = len(variables)
     rk = list(range(0, k - 1))
@@ -547,8 +598,8 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
             y2 = variables[j]
             results[i, j] = Moran_BV(y1, y2, w, permutations=permutations)
             results[j, i] = Moran_BV(y2, y1, w, permutations=permutations)
-            results[i, j].varnames = {'x': varnames[i], 'y': varnames[j]}
-            results[j, i].varnames = {'x': varnames[j], 'y': varnames[i]}
+            results[i, j].varnames = {"x": varnames[i], "y": varnames[j]}
+            results[j, i].varnames = {"x": varnames[j], "y": varnames[i]}
     return results
 
 
@@ -658,20 +709,44 @@ class Moran_Rate(Moran):
     '0.0042'
     """
 
-    def __init__(self, e, b, w, adjusted=True, transformation="r",
-                 permutations=PERMUTATIONS, two_tailed=True):
+    def __init__(
+        self,
+        e,
+        b,
+        w,
+        adjusted=True,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        two_tailed=True,
+    ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
         if adjusted:
             y = assuncao_rate(e, b)
         else:
             y = e * 1.0 / b
-        Moran.__init__(self, y, w, transformation=transformation,
-                       permutations=permutations, two_tailed=two_tailed)
+        Moran.__init__(
+            self,
+            y,
+            w,
+            transformation=transformation,
+            permutations=permutations,
+            two_tailed=two_tailed,
+        )
 
     @classmethod
-    def by_col(cls, df, events, populations, w=None, inplace=False,
-               pvalue='sim', outvals=None, swapname='',  **stat_kws):
+    def by_col(
+        cls,
+        df,
+        events,
+        populations,
+        w=None,
+        inplace=False,
+        pvalue="sim",
+        outvals=None,
+        swapname="",
+        **stat_kws
+    ):
         """
         Function to compute a Moran_Rate statistic on a dataframe
 
@@ -713,9 +788,17 @@ class Moran_Rate(Moran):
         """
         if not inplace:
             new = df.copy()
-            cls.by_col(new, events, populations, w=w, inplace=True,
-                              pvalue=pvalue, outvals=outvals, swapname=swapname,
-                              **stat_kws)
+            cls.by_col(
+                new,
+                events,
+                populations,
+                w=w,
+                inplace=True,
+                pvalue=pvalue,
+                outvals=outvals,
+                swapname=swapname,
+                **stat_kws
+            )
             return new
         if isinstance(events, str):
             events = [events]
@@ -724,29 +807,46 @@ class Moran_Rate(Moran):
         if len(populations) < len(events):
             populations = populations * len(events)
         if len(events) != len(populations):
-            raise ValueError('There is not a one-to-one matching between events and '
-                              'populations!\nEvents: {}\n\nPopulations:'
-                              ' {}'.format(events, populations))
-        adjusted = stat_kws.pop('adjusted', True)
+            raise ValueError(
+                "There is not a one-to-one matching between events and "
+                "populations!\nEvents: {}\n\nPopulations:"
+                " {}".format(events, populations)
+            )
+        adjusted = stat_kws.pop("adjusted", True)
 
         if isinstance(adjusted, bool):
             adjusted = [adjusted] * len(events)
-        if swapname == '':
+        if swapname == "":
             swapname = cls.__name__.lower()
 
-        rates = [assuncao_rate(df[e], df[pop]) if adj
-                 else df[e].astype(float) / df[pop]
-                 for e,pop,adj in zip(events, populations, adjusted)]
-        names = ['-'.join((e,p)) for e,p in zip(events, populations)]
+        rates = [
+            assuncao_rate(df[e], df[pop]) if adj else df[e].astype(float) / df[pop]
+            for e, pop, adj in zip(events, populations, adjusted)
+        ]
+        names = ["-".join((e, p)) for e, p in zip(events, populations)]
         out_df = df.copy()
-        rate_df = out_df.from_dict(dict(zip(names, rates))) #trick to avoid importing pandas
-        stat_df = _univariate_handler(rate_df, names, w=w, inplace=False,
-                                      pvalue = pvalue, outvals = outvals,
-                                      swapname=swapname,
-                                      stat=Moran, #how would this get done w/super?
-                                      **stat_kws)
+        rate_df = out_df.from_dict(
+            dict(zip(names, rates))
+        )  # trick to avoid importing pandas
+        stat_df = _univariate_handler(
+            rate_df,
+            names,
+            w=w,
+            inplace=False,
+            pvalue=pvalue,
+            outvals=outvals,
+            swapname=swapname,
+            stat=Moran,  # how would this get done w/super?
+            **stat_kws
+        )
         for col in stat_df.columns:
             df[col] = stat_df[col]
+
+
+# -----------------------------------------------------------------------------#
+#                            Local Statistics                                 #
+# -----------------------------------------------------------------------------#
+
 
 class Moran_Local(object):
     """Local Moran Statistics
@@ -772,7 +872,19 @@ class Moran_Local(object):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-
+    n_jobs : int
+             Number of cores to be used in the conditional randomisation. If -1,
+             all available cores are used.    
+    keep_simulations : Boolean
+                       (default=True)
+                       If True, the entire matrix of replications under the null 
+                       is stored in memory and accessible; otherwise, replications 
+                       are not saved
+    seed : None/int
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba 
+           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
+        
     Attributes
     ----------
 
@@ -815,7 +927,19 @@ class Moran_Local(object):
                    p-values based on standard normal approximation from
                    permutations (one-sided)
                    for two-sided tests, these values should be multiplied by 2
-
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.    
+    keep_simulations : Boolean
+                      (default=True)
+                      If True, the entire matrix of replications under the null 
+                      is stored in memory and accessible; otherwise, replications 
+                      are not saved   
+    seed : None/int
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba does 
+           not correctly interpret external seeds nor numpy.random.RandomState instances.               
+           
     Notes
     -----
 
@@ -845,8 +969,18 @@ class Moran_Local(object):
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures
     """
-    def __init__(self, y, w, transformation="r", permutations=PERMUTATIONS,
-                 geoda_quads=False):
+
+    def __init__(
+        self,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        geoda_quads=False,
+        n_jobs=1,
+        keep_simulations=True,
+        seed=None,
+    ):
         y = np.asarray(y).flatten()
         self.y = y
         n = len(y)
@@ -864,7 +998,7 @@ class Moran_Local(object):
         self.w = w
         self.permutations = permutations
         self.den = (z * z).sum()
-        self.Is = self.calc(self.w, self.z)
+        self.Is = self.__calc(self.w, self.z)
         self.geoda_quads = geoda_quads
         quads = [1, 2, 3, 4]
         if geoda_quads:
@@ -872,55 +1006,41 @@ class Moran_Local(object):
         self.quads = quads
         self.__quads()
         if permutations:
-            self.__crand()
-            sim = np.transpose(self.rlisas)
-            above = sim >= self.Is
-            larger = above.sum(0)
-            low_extreme = (self.permutations - larger) < larger
-            larger[low_extreme] = self.permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
-            self.sim = sim
-            self.EI_sim = sim.mean(axis=0)
-            self.seI_sim = sim.std(axis=0)
-            self.VI_sim = self.seI_sim * self.seI_sim
-            self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            self.p_sim, self.rlisas = _crand_plus(
+                z,
+                w,
+                self.Is,
+                permutations,
+                keep_simulations,
+                n_jobs=n_jobs,
+                stat_func=_moran_local_crand,
+                seed=seed,
+            )
+            self.sim = np.transpose(self.rlisas)
+            if keep_simulations:
+                sim = np.transpose(self.rlisas)
+                above = sim >= self.Is
+                larger = above.sum(0)
+                low_extreme = (self.permutations - larger) < larger
+                larger[low_extreme] = self.permutations - larger[low_extreme]
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                self.sim = sim
+                self.EI_sim = self.sim.mean(axis=0)
+                self.seI_sim = self.sim.std(axis=0)
+                self.VI_sim = self.seI_sim * self.seI_sim
+                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            else:
+                self.sim = self.rlisas = None
+                self.EI_sim = np.nan
+                self.seI_sim = np.nan
+                self.VI_sim = np.nan
+                self.z_sim = np.nan
+                self.p_z_sim = np.nan
 
-    def calc(self, w, z):
+    def __calc(self, w, z):
         zl = slag(w, z)
         return self.n_1 * self.z * zl / self.den
-
-    def __crand(self):
-        """
-        conditional randomization
-
-        for observation i with ni neighbors,  the candidate set cannot include
-        i (we don't want i being a neighbor of i). we have to sample without
-        replacement from a set of ids that doesn't include i. numpy doesn't
-        directly support sampling wo replacement and it is expensive to
-        implement this. instead we omit i from the original ids,  permute the
-        ids and take the first ni elements of the permuted ids as the
-        neighbors to i in each randomization.
-
-        """
-        z = self.z
-        lisas = np.zeros((self.n, self.permutations))
-        n_1 = self.n - 1
-        prange = list(range(self.permutations))
-        k = self.w.max_neighbors + 1
-        nn = self.n - 1
-        rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
-        ids = np.arange(self.w.n)
-        ido = self.w.id_order
-        w = [self.w.weights[ido[i]] for i in ids]
-        wc = [self.w.cardinalities[ido[i]] for i in ids]
-
-        for i in range(self.w.n):
-            idsi = ids[ids != i]
-            np.random.shuffle(idsi)
-            tmp = z[idsi[rids[:, 0:wc[i]]]]
-            lisas[i] = z[i] * (w[i] * tmp).sum(1)
-        self.rlisas = (n_1 / self.den) * lisas
 
     def __quads(self):
         zl = slag(self.w, self.z)
@@ -930,8 +1050,12 @@ class Moran_Local(object):
         np = (1 - zp) * lp
         nn = (1 - zp) * (1 - lp)
         pn = zp * (1 - lp)
-        self.q = self.quads[0] * pp + self.quads[1] * np + self.quads[2] * nn \
+        self.q = (
+            self.quads[0] * pp
+            + self.quads[1] * np
+            + self.quads[2] * nn
             + self.quads[3] * pn
+        )
 
     @property
     def _statistic(self):
@@ -939,7 +1063,9 @@ class Moran_Local(object):
         return self.Is
 
     @classmethod
-    def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
+    def by_col(
+        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
+    ):
         """
         Function to compute a Moran_Local statistic on a dataframe
 
@@ -973,9 +1099,17 @@ class Moran_Local(object):
         returns a copy of the dataframe with the relevant columns attached.
 
         """
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
-                                   outvals=outvals, stat=cls,
-                                   swapname=cls.__name__.lower(), **stat_kws)
+        return _univariate_handler(
+            df,
+            cols,
+            w=w,
+            inplace=inplace,
+            pvalue=pvalue,
+            outvals=outvals,
+            stat=cls,
+            swapname=cls.__name__.lower(),
+            **stat_kws
+        )
 
 
 class Moran_Local_BV(object):
@@ -1004,7 +1138,17 @@ class Moran_Local_BV(object):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-
+    njobs
+    keep_simulations : Boolean
+                      (default=True)
+                      If True, the entire matrix of replications under the null 
+                      is stored in memory and accessible; otherwise, replications 
+                      are not saved      
+    seed : None/int
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba 
+           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
+           
     Attributes
     ----------
 
@@ -1074,13 +1218,25 @@ class Moran_Local_BV(object):
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures
     """
-    def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS,
-                 geoda_quads=False):
+
+    def __init__(
+        self,
+        x,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        geoda_quads=False,
+        n_jobs=1,
+        keep_simulations=True,
+        seed=None,
+    ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
         self.y = y
-        self.x =x
+        self.x = x
         n = len(y)
+        assert len(y) == len(x), "x and y must have the same shape!"
         self.n = n
         self.n_1 = n - 1
         zx = x - x.mean()
@@ -1099,7 +1255,7 @@ class Moran_Local_BV(object):
         self.w = w
         self.permutations = permutations
         self.den = (zx * zx).sum()
-        self.Is = self.calc(self.w, self.zx, self.zy)
+        self.Is = self.__calc(self.w, self.zx, self.zy)
         self.geoda_quads = geoda_quads
         quads = [1, 2, 3, 4]
         if geoda_quads:
@@ -1107,56 +1263,34 @@ class Moran_Local_BV(object):
         self.quads = quads
         self.__quads()
         if permutations:
-            self.__crand()
-            sim = np.transpose(self.rlisas)
-            above = sim >= self.Is
-            larger = above.sum(0)
-            low_extreme = (self.permutations - larger) < larger
-            larger[low_extreme] = self.permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
-            self.sim = sim
-            self.EI_sim = sim.mean(axis=0)
-            self.seI_sim = sim.std(axis=0)
-            self.VI_sim = self.seI_sim * self.seI_sim
-            self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            self.p_sim, self.rlisas = _crand_plus(
+                np.column_stack((zx, zy)),
+                w,
+                self.Is,
+                permutations,
+                keep_simulations,
+                n_jobs=n_jobs,
+                stat_func=_moran_local_bv_crand,
+                seed=seed,
+            )
+            self.sim = np.transpose(self.rlisas)
+            if keep_simulations:
+                sim = np.transpose(self.rlisas)
+                above = sim >= self.Is
+                larger = above.sum(0)
+                low_extreme = (self.permutations - larger) < larger
+                larger[low_extreme] = self.permutations - larger[low_extreme]
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                self.sim = sim
+                self.EI_sim = sim.mean(axis=0)
+                self.seI_sim = sim.std(axis=0)
+                self.VI_sim = self.seI_sim * self.seI_sim
+                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
 
-    def calc(self, w, zx, zy):
+    def __calc(self, w, zx, zy):
         zly = slag(w, zy)
         return self.n_1 * self.zx * zly / self.den
-
-    def __crand(self):
-        """
-        conditional randomization
-
-        for observation i with ni neighbors,  the candidate set cannot include
-        i (we don't want i being a neighbor of i). we have to sample without
-        replacement from a set of ids that doesn't include i. numpy doesn't
-        directly support sampling wo replacement and it is expensive to
-        implement this. instead we omit i from the original ids,  permute the
-        ids and take the first ni elements of the permuted ids as the
-        neighbors to i in each randomization.
-
-        """
-        lisas = np.zeros((self.n, self.permutations))
-        n_1 = self.n - 1
-        prange = list(range(self.permutations))
-        k = self.w.max_neighbors + 1
-        nn = self.n - 1
-        rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
-        ids = np.arange(self.w.n)
-        ido = self.w.id_order
-        w = [self.w.weights[ido[i]] for i in ids]
-        wc = [self.w.cardinalities[ido[i]] for i in ids]
-
-        zx = self.zx
-        zy = self.zy
-        for i in range(self.w.n):
-            idsi = ids[ids != i]
-            np.random.shuffle(idsi)
-            tmp = zy[idsi[rids[:, 0:wc[i]]]]
-            lisas[i] = zx[i] * (w[i] * tmp).sum(1)
-        self.rlisas = (n_1 / self.den) * lisas
 
     def __quads(self):
         zl = slag(self.w, self.zy)
@@ -1166,8 +1300,12 @@ class Moran_Local_BV(object):
         np = (1 - zp) * lp
         nn = (1 - zp) * (1 - lp)
         pn = zp * (1 - lp)
-        self.q = self.quads[0] * pp + self.quads[1] * np + self.quads[2] * nn \
+        self.q = (
+            self.quads[0] * pp
+            + self.quads[1] * np
+            + self.quads[2] * nn
             + self.quads[3] * pn
+        )
 
     @property
     def _statistic(self):
@@ -1175,7 +1313,17 @@ class Moran_Local_BV(object):
         return self.Is
 
     @classmethod
-    def by_col(cls, df, x, y=None, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
+    def by_col(
+        cls,
+        df,
+        x,
+        y=None,
+        w=None,
+        inplace=False,
+        pvalue="sim",
+        outvals=None,
+        **stat_kws
+    ):
         """
         Function to compute a Moran_Local_BV statistic on a dataframe
 
@@ -1216,9 +1364,19 @@ class Moran_Local_BV(object):
         returns a copy of the dataframe with the relevant columns attached.
 
         """
-        return _bivariate_handler(df, x, y=y, w=w, inplace=inplace,
-                                  pvalue = pvalue, outvals = outvals,
-                                  swapname=cls.__name__.lower(), stat=cls,**stat_kws)
+        return _bivariate_handler(
+            df,
+            x,
+            y=y,
+            w=w,
+            inplace=inplace,
+            pvalue=pvalue,
+            outvals=outvals,
+            swapname=cls.__name__.lower(),
+            stat=cls,
+            **stat_kws
+        )
+
 
 class Moran_Local_Rate(Moran_Local):
     """
@@ -1249,6 +1407,17 @@ class Moran_Local_Rate(Moran_Local):
                      (default=False)
                      If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
                      If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
+    njobs
+    keep_simulations : Boolean
+                      (default=True)
+                      If True, the entire matrix of replications under the null 
+                      is stored in memory and accessible; otherwise, replications 
+                      are not saved         
+    seed : None/int
+           Seed to ensure reproducibility of conditional randomizations. 
+           Must be set here, and not outside of the function, since numba does not 
+           correctly interpret external seeds nor numpy.random.RandomState instances.                
+           
     Attributes
     ----------
     y            : array
@@ -1315,22 +1484,50 @@ class Moran_Local_Rate(Moran_Local):
     moved into unittests that are conditional on architectures
     """
 
-    def __init__(self, e, b, w, adjusted=True, transformation="r",
-                 permutations=PERMUTATIONS, geoda_quads=False):
+    def __init__(
+        self,
+        e,
+        b,
+        w,
+        adjusted=True,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        geoda_quads=False,
+        n_jobs=1,
+        keep_simulations=True,
+        seed=None,
+    ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
         if adjusted:
             y = assuncao_rate(e, b)
         else:
             y = e * 1.0 / b
-        Moran_Local.__init__(self, y, w,
-                             transformation=transformation,
-                             permutations=permutations,
-                             geoda_quads=geoda_quads)
+        Moran_Local.__init__(
+            self,
+            y,
+            w,
+            transformation=transformation,
+            permutations=permutations,
+            geoda_quads=geoda_quads,
+            n_jobs=n_jobs,
+            keep_simulations=keep_simulations,
+            seed=seed,
+        )
 
     @classmethod
-    def by_col(cls, df, events, populations, w=None, inplace=False,
-               pvalue='sim', outvals=None, swapname='',  **stat_kws):
+    def by_col(
+        cls,
+        df,
+        events,
+        populations,
+        w=None,
+        inplace=False,
+        pvalue="sim",
+        outvals=None,
+        swapname="",
+        **stat_kws
+    ):
         """
         Function to compute a Moran_Local_Rate statistic on a dataframe
 
@@ -1371,9 +1568,17 @@ class Moran_Local_Rate(Moran_Local):
         """
         if not inplace:
             new = df.copy()
-            cls.by_col(new, events, populations, w=w, inplace=True,
-                              pvalue=pvalue, outvals=outvals, swapname=swapname,
-                              **stat_kws)
+            cls.by_col(
+                new,
+                events,
+                populations,
+                w=w,
+                inplace=True,
+                pvalue=pvalue,
+                outvals=outvals,
+                swapname=swapname,
+                **stat_kws
+            )
             return new
         if isinstance(events, str):
             events = [events]
@@ -1382,26 +1587,56 @@ class Moran_Local_Rate(Moran_Local):
         if len(populations) < len(events):
             populations = populations * len(events)
         if len(events) != len(populations):
-            raise ValueError('There is not a one-to-one matching between events and '
-                              'populations!\nEvents: {}\n\nPopulations:'
-                              ' {}'.format(events, populations))
-        adjusted = stat_kws.pop('adjusted', True)
+            raise ValueError(
+                "There is not a one-to-one matching between events and "
+                "populations!\nEvents: {}\n\nPopulations:"
+                " {}".format(events, populations)
+            )
+        adjusted = stat_kws.pop("adjusted", True)
 
         if isinstance(adjusted, bool):
             adjusted = [adjusted] * len(events)
-        if swapname == '':
+        if swapname == "":
             swapname = cls.__name__.lower()
 
-        rates = [assuncao_rate(df[e], df[pop]) if adj
-                 else df[e].astype(float) / df[pop]
-                 for e,pop,adj in zip(events, populations, adjusted)]
-        names = ['-'.join((e,p)) for e,p in zip(events, populations)]
+        rates = [
+            assuncao_rate(df[e], df[pop]) if adj else df[e].astype(float) / df[pop]
+            for e, pop, adj in zip(events, populations, adjusted)
+        ]
+        names = ["-".join((e, p)) for e, p in zip(events, populations)]
         out_df = df.copy()
-        rate_df = out_df.from_dict(dict(zip(names, rates))) #trick to avoid importing pandas
-        _univariate_handler(rate_df, names, w=w, inplace=True,
-                                      pvalue = pvalue, outvals = outvals,
-                                      swapname=swapname,
-                                      stat=Moran_Local, #how would this get done w/super?
-                                      **stat_kws)
+        rate_df = out_df.from_dict(
+            dict(zip(names, rates))
+        )  # trick to avoid importing pandas
+        _univariate_handler(
+            rate_df,
+            names,
+            w=w,
+            inplace=True,
+            pvalue=pvalue,
+            outvals=outvals,
+            swapname=swapname,
+            stat=Moran_Local,  # how would this get done w/super?
+            **stat_kws
+        )
         for col in rate_df.columns:
             df[col] = rate_df[col]
+
+
+# --------------------------------------------------------------
+# Conditional Randomization Function Implementations
+# --------------------------------------------------------------
+
+
+@_njit(fastmath=True)
+def _moran_local_bv_crand(i, z, permuted_ids, weights_i, scaling):
+    zx = z[:, 0]
+    zy = z[:, 1]
+    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, weights_i)
+    return zx[i] * (zyrand @ weights_i) * scaling
+
+
+@_njit(fastmath=True)
+def _moran_local_crand(i, z, permuted_ids, weights_i, scaling):
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+    return zi * (zrand @ weights_i) * scaling

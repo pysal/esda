@@ -10,8 +10,14 @@ from scipy.stats import chi2_contingency
 from scipy.stats import chi2
 import numpy as np
 import pandas as pd
+from .crand import (
+    crand as _crand_plus,
+    njit as _njit,
+    _prepare_univariate,
+    _prepare_bivariate,
+)
 
-__all__ = ['Join_Counts']
+__all__ = ["Join_Counts"]
 
 PERMUTATIONS = 999
 
@@ -138,14 +144,15 @@ class Join_Counts(object):
     Technical details and derivations can be found in :cite:`cliff81`.
 
     """
+
     def __init__(self, y, w, permutations=PERMUTATIONS):
         y = np.asarray(y).flatten()
-        w.transformation = 'b'  # ensure we have binary weights
+        w.transformation = "b"  # ensure we have binary weights
         self.w = w
-        self.adj_list = self.w.to_adjlist(remove_symmetric=True)
+        self.adj_list = self.w.to_adjlist(remove_symmetric=False)
         self.y = y
         self.permutations = permutations
-        self.J = w.s0 / 2.
+        self.J = w.s0 / 2.0
         results = self.__calc(self.y)
         self.bb = results[0]
         self.ww = results[1]
@@ -157,14 +164,14 @@ class Join_Counts(object):
         self.autocorr_neg = self.bw
 
         crosstab = pd.DataFrame(data=results[-1])
-        id_names = ['W', 'B']
-        idx = pd.Index(id_names, name='Focal')
+        id_names = ["W", "B"]
+        idx = pd.Index(id_names, name="Focal")
         crosstab.set_index(idx, inplace=True)
-        crosstab.columns = pd.Index(id_names, name='Neighbor')
+        crosstab.columns = pd.Index(id_names, name="Neighbor")
         self.crosstab = crosstab
         expected = pd.DataFrame(data=results[6])
         expected.set_index(idx, inplace=True)
-        expected.columns = pd.Index(id_names, name='Neighbor')
+        expected.columns = pd.Index(id_names, name="Neighbor")
         self.expected = expected
         self.calc = self.__calc
 
@@ -188,19 +195,27 @@ class Join_Counts(object):
             self.min_bw = np.min(self.sim_bw)
             self.mean_bw = np.mean(self.sim_bw)
             self.max_bw = np.max(self.sim_bw)
-            self.sim_autocurr_pos = sim_jc[:, 0]+sim_jc[:, 1]
+            self.sim_autocurr_pos = sim_jc[:, 0] + sim_jc[:, 1]
             self.sim_autocurr_neg = sim_jc[:, 2]
             self.sim_chi2 = sim_jc[:, 3]
 
-            stat = ((self.autocorr_pos - np.mean(self.sim_autocurr_pos))**2 / np.mean(self.sim_autocurr_pos)**2 +
-                                              (self.autocorr_neg - np.mean(self.sim_autocurr_neg))**2 / np.mean(self.sim_autocurr_pos)**2)
+            stat = (
+                (self.autocorr_pos - np.mean(self.sim_autocurr_pos)) ** 2
+                / np.mean(self.sim_autocurr_pos) ** 2
+                + (self.autocorr_neg - np.mean(self.sim_autocurr_neg)) ** 2
+                / np.mean(self.sim_autocurr_pos) ** 2
+            )
             self.sim_autocorr_chi2 = 1 - chi2.cdf(stat, 1)
 
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
             p_sim_bw = self.__pseudop(self.sim_bw, self.bw)
             p_sim_chi2 = self.__pseudop(self.sim_chi2, self.chi2)
-            p_sim_autocorr_pos = self.__pseudop(self.sim_autocurr_pos, self.autocorr_pos)
-            p_sim_autocorr_neg = self.__pseudop(self.sim_autocurr_neg, self.autocorr_neg)
+            p_sim_autocorr_pos = self.__pseudop(
+                self.sim_autocurr_pos, self.autocorr_pos
+            )
+            p_sim_autocorr_neg = self.__pseudop(
+                self.sim_autocurr_neg, self.autocorr_neg
+            )
             self.p_sim_bb = p_sim_bb
             self.p_sim_bw = p_sim_bw
             self.p_sim_chi2 = p_sim_chi2
@@ -214,20 +229,20 @@ class Join_Counts(object):
         neighbor = zseries.loc[adj_list.neighbor].values
         sim = focal == neighbor
         dif = 1 - sim
-        bb = (focal * sim).sum()
-        ww = ((1-focal) * sim).sum()
-        bw = (focal * dif).sum()
-        wb = ((1-focal) * dif).sum()
+        bb = (focal * sim).sum() / 2
+        ww = ((1-focal) * sim).sum() / 2
+        bw = (focal * dif).sum() / 2
+        wb = ((1-focal) * dif).sum() /2
         table = [[ww, wb],
                 [bw, bb]]
         chi2 = chi2_contingency(table)
         stat, pvalue, dof, expected = chi2
-        return (bb, ww, bw+wb, stat, pvalue, dof, expected, np.array(table))
+        return (bb, ww, bw + wb, stat, pvalue, dof, expected, np.array(table))
 
     def __pseudop(self, sim, jc):
-        above = sim >=jc
+        above = sim >= jc
         larger = sum(above)
-        psim = (larger + 1.) / (self.permutations + 1.)
+        psim = (larger + 1.0) / (self.permutations + 1.0)
         return psim
 
     @property
@@ -235,7 +250,9 @@ class Join_Counts(object):
         return self.bw
 
     @classmethod
-    def by_col(cls, df, cols, w=None, inplace=False, pvalue='sim', outvals=None, **stat_kws):
+    def by_col(
+        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
+    ):
         """
         Function to compute a Join_Count statistic on a dataframe
 
@@ -271,11 +288,24 @@ class Join_Counts(object):
         """
         if outvals is None:
             outvals = []
-            outvals.extend(['bb', 'p_sim_bw', 'p_sim_bb'])
-            pvalue = ''
-        return _univariate_handler(df, cols, w=w, inplace=inplace, pvalue=pvalue,
-                                   outvals=outvals, stat=cls,
-                                   swapname='bw', **stat_kws)
+            outvals.extend(["bb", "p_sim_bw", "p_sim_bb"])
+            pvalue = ""
+        return _univariate_handler(
+            df,
+            cols,
+            w=w,
+            inplace=inplace,
+            pvalue=pvalue,
+            outvals=outvals,
+            stat=cls,
+            swapname="bw",
+            **stat_kws
+        )
 
 
-
+# --------------------------------------------------------------
+# Conditional Randomization Function Implementations
+# --------------------------------------------------------------
+@_njit(fastmath=True)
+def _local_join_count_crand():
+    raise NotImplementedError

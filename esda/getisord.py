@@ -376,7 +376,15 @@ class G_Local(object):
 
     """
 
-    def __init__(self, y, w, transform="R", permutations=PERMUTATIONS, star=None):
+    def __init__(
+        self,
+        y,
+        w,
+        transform="R",
+        permutations=PERMUTATIONS,
+        star=False,
+        keep_simulations=True,
+    ):
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
@@ -389,23 +397,20 @@ class G_Local(object):
         self.calc()
         self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
         if permutations:
-            self.__crand()
-            sim = np.transpose(self.rGs)
-            above = sim >= self.Gs
-            larger = sum(above)
-            low_extreme = (self.permutations - larger) < larger
-            larger[low_extreme] = self.permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1)
-            self.sim = sim
-            self.EG_sim = sim.mean(axis=0)
-            self.seG_sim = sim.std(axis=0)
-            self.VG_sim = self.seG_sim * self.seG_sim
-            self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            self.__crand(keep_simulations)
+            if keep_simulations:
+                self.sim = sim = self.rGs.T
+                self.EG_sim = sim.mean(axis=0)
+                self.seG_sim = sim.std(axis=0)
+                self.VG_sim = self.seG_sim * self.seG_sim
+                self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
+                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
 
-    def __crand(self):
+    def __crand(self, keep_simulations):
         y = self.y
-        rGs = np.zeros((self.n, self.permutations))
+        if keep_simulations:
+            rGs = np.zeros((self.n, self.permutations))
+        larger = np.zeros((self.n,))
         n_1 = self.n - 1
         rid = list(range(n_1))
         prange = list(range(self.permutations))
@@ -423,9 +428,16 @@ class G_Local(object):
             np.random.shuffle(idsi)
             yi_star = y[i] * self.star
             wci = wc[i]
-            rGs[i] = (y[idsi[rids[:, 0:wci]]]).sum(1) + yi_star
-            rGs[i] = (np.array(rGs[i]) / den[i]) / (self.y_sum - (1 - self.star) * y[i])
-        self.rGs = rGs
+            rGs_i = (y[idsi[rids[:, 0:wci]]]).sum(1) + yi_star
+            rGs_i = (np.array(rGs_i) / den[i]) / (self.y_sum - (1 - self.star) * y[i])
+            if keep_simulations:
+                rGs[i] = rGs_i
+            larger[i] = (rGs_i >= self.Gs[i]).sum()
+        if keep_simulations:
+            self.rGs = rGs
+        below = (self.permutations - larger) < larger
+        larger[below] = self.permutations - larger[below]
+        self.p_sim = (larger + 1) / (self.permutations + 1)
 
     def __getCardinalities(self):
         ido = self.w.id_order
@@ -582,6 +594,23 @@ def _infer_star_and_structure_w(weights, star, transform):
     weights.transform = transform
 
     return weights, star
+
+
+# --------------------------------------------------------------
+# Conditional Randomization Function Implementations
+# --------------------------------------------------------------
+
+# TODO: Flesh these out correctly and implement for Gi stats
+# @_njit(fastmath=True)
+# def _gi_crand(i, z, permuted_ids, weights_i, scaling):
+#     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+#     return (zrand * weights_i).sum(axis=1) / (scaling - zi)
+
+
+# @_njit(fastmath=True)
+# def _gistar_crand(i, z, permuted_ids, weights_i, scaling):
+#     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
+#     return ((zrand * weights_i).sum(axis=1)) / scaling
 
 
 if __name__ is "__main__":
