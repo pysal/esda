@@ -171,6 +171,8 @@ def crand(
     else:
         if n_jobs == -1:
             n_jobs = os.cpu_count()
+        if n_jobs > len(z):
+            n_jobs = len(z)
         # Parallel implementation
         larger, rlocals = parallel_crand(
             z,
