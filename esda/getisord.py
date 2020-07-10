@@ -376,13 +376,13 @@ class G_Local(object):
 
     """
 
-    def __init__(self, y, w, transform="R", permutations=PERMUTATIONS, star=False):
+    def __init__(self, y, w, transform="R", permutations=PERMUTATIONS, star=None):
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
+        w, star = _infer_star_and_structure_w(w, star, transform)
+        w.transform = transform
         self.w = w
-        self.w_original = w.transform
-        self.w.transform = self.w_transform = transform.lower()
         self.permutations = permutations
         self.star = star
         self.calc()
@@ -433,8 +433,6 @@ class G_Local(object):
 
     def calc(self):
         w = self.w
-        w, star = _infer_star_and_structure_w(w, self.star, self.w_transform)
-        w.transform = self.w_transform
         W = w.sparse
 
         # REMOVE THIS
