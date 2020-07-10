@@ -147,8 +147,12 @@ def crand(
     ### extract the self-weight, if any
     self_weights = adj_matrix.diagonal()
     ### force the self-site weight to zero
-    adj_matrix.setdiag(0)
-    adj_matrix.eliminate_zeros()
+    with warnings.catch_warnings():
+        # massive changes to sparsity incur a cost, but it's not
+        # large for simply changing the diag
+        warnings.simplefilter("ignore")
+        adj_matrix.setdiag(0)
+        adj_matrix.eliminate_zeros()
     ### extract the weights from a now no-self-weighted adj_matrix
     other_weights = adj_matrix.data
     ### use the non-self weight as the cardinality, since
@@ -506,8 +510,8 @@ def parallel_crand(
             for pars in chunks
         )
     larger, rlocals = zip(*worker_out)
-    larger = np.hstack([array for array in larger if array.size > 0]).flatten()
-    rlocals = np.hstack([array for array in rlocals if array.size > 0]).flatten()
+    larger = np.hstack(larger).squeeze()
+    rlocals = np.row_stack(rlocals).squeeze()
     return larger, rlocals
 
 
