@@ -467,7 +467,8 @@ class G_Local(object):
             * (empirical_variance / (empirical_mean ** 2))
         )
         z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
-        return statistic, expected_value, expected_variance, z_scores, empirical_mean, empirical_variance
+
+        self.Gs = statistic
         self.EGs = expected_value
         self.VGs = expected_variance
         self.Zs = z_scores
