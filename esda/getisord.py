@@ -408,6 +408,7 @@ class G_Local(object):
                 keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_g_local_star_crand if star else _g_local_crand,
+                scaling=y.sum(),
                 seed=seed,
             )
             if keep_simulations:
@@ -612,17 +613,20 @@ def _infer_star_and_structure_w(weights, star, transform):
 # Conditional Randomization Function Implementations
 # --------------------------------------------------------------
 
-# TODO: Flesh these out correctly and implement for Gi stats
+
 @_njit(fastmath=True)
 def _g_local_crand(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return (zrand * weights_i).sum(axis=1) / (scaling - zi)
+    other_weights = weights_i[1:]
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
+    return (zrand @ other_weights) / (scaling - zi)
 
 
 @_njit(fastmath=True)
 def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return ((zrand * weights_i).sum(axis=1)) / scaling
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
+    return (zrand @ other_weights + self_weight * zi) / scaling
 
 
 if __name__ is "__main__":

@@ -1630,13 +1630,17 @@ class Moran_Local_Rate(Moran_Local):
 
 @_njit(fastmath=True)
 def _moran_local_bv_crand(i, z, permuted_ids, weights_i, scaling):
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
     zx = z[:, 0]
     zy = z[:, 1]
-    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, weights_i)
-    return zx[i] * (zyrand @ weights_i) * scaling
+    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, other_weights)
+    return zx[i] * (zyrand @ other_weights + self_weight * zyi) * scaling
 
 
 @_njit(fastmath=True)
 def _moran_local_crand(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return zi * (zrand @ weights_i) * scaling
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
+    return zi * (zrand @ other_weights + self_weight * zi) * scaling
