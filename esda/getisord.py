@@ -580,29 +580,35 @@ def _infer_star_and_structure_w(weights, star, transform):
 
     return weights, star
 
-if __name__ is '__main__':
+
+if __name__ is "__main__":
     import geopandas, numpy, esda, importlib
     import matplotlib.pyplot as plt
     from libpysal import weights, examples
 
-    df = geopandas.read_file(examples.get_path('NAT.shp'))
+    df = geopandas.read_file(examples.get_path("NAT.shp"))
 
     w = weights.Rook.from_dataframe(df)
 
-    for transform in ('r', 'b'):
-      for star in (True, False):
-        test = esda.getisord.G_Local(df.GI89, w, transform=transform, star=star)
-        out = test._calc2()
-        (statistic, expected_value, 
-         expected_variance, z_scores, 
-         empirical_mean, empirical_variance) = out
+    for transform in ("r", "b"):
+        for star in (True, False):
+            test = esda.getisord.G_Local(df.GI89, w, transform=transform, star=star)
+            out = test._calc2()
+            (
+                statistic,
+                expected_value,
+                expected_variance,
+                z_scores,
+                empirical_mean,
+                empirical_variance,
+            ) = out
 
-        numpy.testing.assert_allclose(statistic, test.Gs)
-        numpy.testing.assert_allclose(expected_value, test.EGs)
-        numpy.testing.assert_allclose(expected_variance, test.VGs)
-        numpy.testing.assert_allclose(z_scores, test.Zs)
-        numpy.testing.assert_allclose(empirical_mean, test.yl_mean)
-        numpy.testing.assert_allclose(empirical_variance, test.s2)
+            numpy.testing.assert_allclose(statistic, test.Gs)
+            numpy.testing.assert_allclose(expected_value, test.EGs)
+            numpy.testing.assert_allclose(expected_variance, test.VGs)
+            numpy.testing.assert_allclose(z_scores, test.Zs)
+            numpy.testing.assert_allclose(empirical_mean, test.yl_mean)
+            numpy.testing.assert_allclose(empirical_variance, test.s2)
 
     # Also check that the None configuration works
     test = esda.getisord.G_Local(df.GI89, w, star=None)
