@@ -459,9 +459,12 @@ class G_Local(object):
         # Since we have corrected the diagonal, this should work
         cardinality = np.asarray(W.sum(axis=1)).squeeze()
         expected_value = cardinality / N
-        expected_variance = (cardinality * (N - cardinality) / (N - 1) 
-                             * (1 / N ** 2) 
-                             * (empirical_variance / (empirical_mean ** 2))
+        expected_variance = (
+            cardinality
+            * (N - cardinality)
+            / (N - 1)
+            * (1 / N ** 2)
+            * (empirical_variance / (empirical_mean ** 2))
         )
         z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
         return statistic, expected_value, expected_variance, z_scores, empirical_mean, empirical_variance
