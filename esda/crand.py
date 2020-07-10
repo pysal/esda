@@ -465,8 +465,8 @@ def parallel_crand(
             for pars in chunks
         )
     larger, rlocals = zip(*worker_out)
-    larger = np.hstack(larger).flatten()
-    rlocals = np.hstack(rlocals).flatten()
+    larger = np.hstack([array for array in larger if array.size > 0]).flatten()
+    rlocals = np.hstack([array for array in rlocals if array.size > 0]).flatten()
     return larger, rlocals
 
 
