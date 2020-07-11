@@ -3,17 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.Spatial_Pearson &#8212; esda v2.2.1 Manual</title>
+    <title>esda.Spatial_Pearson &#8212; esda v2.3.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -70,6 +70,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
@@ -84,6 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -98,9 +100,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
@@ -231,7 +235,7 @@ correlations.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>
