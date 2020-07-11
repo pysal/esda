@@ -5,6 +5,18 @@
 API reference
 =============
 
+.. _adbscan_api:
+
+A-DBSCAN
+--------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.adbscan.ADBSCAN
+
+
+
 .. _gamma_api:
 
 Gamma Statistic
