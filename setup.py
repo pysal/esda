@@ -43,7 +43,7 @@ def setup_package():
     _groups_files = {
         'base': 'requirements.txt',
         'tests': 'requirements_tests.txt',
-        'docs': 'requirements_docs.txt'
+        'docs': 'requirements_docs.txt',
         'plus': 'requirements_plus.txt'
     }
 
