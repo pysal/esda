@@ -15,7 +15,6 @@ esda.Moran\_Local\_Rate
    
       ~Moran_Local_Rate.__init__
       ~Moran_Local_Rate.by_col
-      ~Moran_Local_Rate.calc
    
    
 

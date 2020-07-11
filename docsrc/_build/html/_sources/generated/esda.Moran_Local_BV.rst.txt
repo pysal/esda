@@ -15,7 +15,6 @@ esda.Moran\_Local\_BV
    
       ~Moran_Local_BV.__init__
       ~Moran_Local_BV.by_col
-      ~Moran_Local_BV.calc
    
    
 

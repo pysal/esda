@@ -7,4 +7,5 @@ Tutorial
 
     notebooks/spatialautocorrelation.ipynb
     notebooks/geosilhouettes.ipynb
+    notebooks/adbscan_berlin_example.ipynb
 

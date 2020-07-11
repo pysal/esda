@@ -3,17 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.getisord &#8212; esda v2.2.1 Manual</title>
+    <title>esda.getisord &#8212; esda v2.3.0 Manual</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
@@ -82,6 +83,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
@@ -96,9 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
@@ -528,7 +532,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="G_Local.__init__"><a class="viewcode-back" href="../../generated/esda.G_Local.html#esda.G_Local.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="G_Local.__init__"><a class="viewcode-back" href="../../generated/esda.G_Local.html#esda.G_Local.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span>
+        <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
+        <span class="n">star</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">keep_simulations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
@@ -540,23 +552,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zs</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">permutations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__crand</span><span class="p">()</span>
-            <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rGs</span><span class="p">)</span>
-            <span class="n">above</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gs</span>
-            <span class="n">larger</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">above</span><span class="p">)</span>
-            <span class="n">low_extreme</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span>
-            <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">EG_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">VG_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gs</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">EG_sim</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__crand</span><span class="p">(</span><span class="n">keep_simulations</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rGs</span><span class="o">.</span><span class="n">T</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">EG_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">VG_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gs</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">EG_sim</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">seG_sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">__crand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__crand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_simulations</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-        <span class="n">rGs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
+            <span class="n">rGs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
+        <span class="n">larger</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,))</span>
         <span class="n">n_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">rid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_1</span><span class="p">))</span>
         <span class="n">prange</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
@@ -574,9 +583,16 @@
             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">idsi</span><span class="p">)</span>
             <span class="n">yi_star</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">star</span>
             <span class="n">wci</span> <span class="o">=</span> <span class="n">wc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">rGs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">idsi</span><span class="p">[</span><span class="n">rids</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">wci</span><span class="p">]]])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">yi_star</span>
-            <span class="n">rGs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rGs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">den</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_sum</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">star</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rGs</span> <span class="o">=</span> <span class="n">rGs</span>
+            <span class="n">rGs_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">idsi</span><span class="p">[</span><span class="n">rids</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">wci</span><span class="p">]]])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">yi_star</span>
+            <span class="n">rGs_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rGs_i</span><span class="p">)</span> <span class="o">/</span> <span class="n">den</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_sum</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">star</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
+                <span class="n">rGs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rGs_i</span>
+            <span class="n">larger</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rGs_i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rGs</span> <span class="o">=</span> <span class="n">rGs</span>
+        <span class="n">below</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span>
+        <span class="n">larger</span><span class="p">[</span><span class="n">below</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">below</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getCardinalities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ido</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">id_order</span>
@@ -674,6 +690,23 @@
             <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
             <span class="o">**</span><span class="n">stat_kws</span>
         <span class="p">)</span></div>
+
+
+<span class="c1"># --------------------------------------------------------------</span>
+<span class="c1"># Conditional Randomization Function Implementations</span>
+<span class="c1"># --------------------------------------------------------------</span>
+
+<span class="c1"># TODO: Flesh these out correctly and implement for Gi stats</span>
+<span class="c1"># @_njit(fastmath=True)</span>
+<span class="c1"># def _gi_crand(i, z, permuted_ids, weights_i, scaling):</span>
+<span class="c1">#     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)</span>
+<span class="c1">#     return (zrand * weights_i).sum(axis=1) / (scaling - zi)</span>
+
+
+<span class="c1"># @_njit(fastmath=True)</span>
+<span class="c1"># def _gistar_crand(i, z, permuted_ids, weights_i, scaling):</span>
+<span class="c1">#     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)</span>
+<span class="c1">#     return ((zrand * weights_i).sum(axis=1)) / scaling</span>
 </pre></div>
 
     </div>
@@ -691,7 +724,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

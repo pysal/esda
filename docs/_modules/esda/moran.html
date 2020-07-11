@@ -3,17 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>esda.moran &#8212; esda v2.2.1 Manual</title>
+    <title>esda.moran &#8212; esda v2.3.0 Manual</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.2.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
@@ -82,6 +83,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
@@ -96,9 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
@@ -157,15 +161,31 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Sergio J. Rey &lt;srey@asu.edu&gt;, </span><span class="se">\</span>
-<span class="s2">        Dani Arribas-Bel &lt;daniel.arribas.bel@gmail.com&gt;&quot;</span>
+<span class="s2">        Dani Arribas-Bel &lt;daniel.arribas.bel@gmail.com&gt;, </span><span class="se">\</span>
+<span class="s2">        Levi John Wolf &lt;levi.john.wolf@gmail.com&gt;&quot;</span>
 <span class="kn">from</span> <span class="nn">libpysal.weights.spatial_lag</span> <span class="kn">import</span> <span class="n">lag_spatial</span> <span class="k">as</span> <span class="n">slag</span>
 <span class="kn">from</span> <span class="nn">.smoothing</span> <span class="kn">import</span> <span class="n">assuncao_rate</span>
 <span class="kn">from</span> <span class="nn">.tabular</span> <span class="kn">import</span> <span class="n">_univariate_handler</span><span class="p">,</span> <span class="n">_bivariate_handler</span>
+<span class="kn">from</span> <span class="nn">.crand</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">crand</span> <span class="k">as</span> <span class="n">_crand_plus</span><span class="p">,</span>
+    <span class="n">njit</span> <span class="k">as</span> <span class="n">_njit</span><span class="p">,</span>
+    <span class="n">_prepare_univariate</span><span class="p">,</span>
+    <span class="n">_prepare_bivariate</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Moran&quot;</span><span class="p">,</span> <span class="s2">&quot;Moran_Local&quot;</span><span class="p">,</span> <span class="s2">&quot;Moran_BV&quot;</span><span class="p">,</span> <span class="s2">&quot;Moran_BV_matrix&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;Moran_Local_BV&quot;</span><span class="p">,</span> <span class="s2">&quot;Moran_Rate&quot;</span><span class="p">,</span> <span class="s2">&quot;Moran_Local_Rate&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Moran&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Moran_Local&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Moran_BV&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Moran_BV_matrix&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Moran_Local_BV&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Moran_Rate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Moran_Local_Rate&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="n">PERMUTATIONS</span> <span class="o">=</span> <span class="mi">999</span>
 
@@ -289,8 +309,10 @@
 <span class="sd">    0.0001</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Moran.__init__"><a class="viewcode-back" href="../../generated/esda.Moran.html#esda.Moran.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
-                 <span class="n">two_tailed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Moran.__init__"><a class="viewcode-back" href="../../generated/esda.Moran.html#esda.Moran.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span> <span class="n">two_tailed</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
         <span class="n">w</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transformation</span>
@@ -309,18 +331,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">p_rand</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_rand</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">two_tailed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_norm</span> <span class="o">*=</span> <span class="mf">2.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_rand</span> <span class="o">*=</span> <span class="mf">2.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_norm</span> <span class="o">*=</span> <span class="mf">2.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_rand</span> <span class="o">*=</span> <span class="mf">2.0</span>
 
         <span class="k">if</span> <span class="n">permutations</span><span class="p">:</span>
-            <span class="n">sim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__calc</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
-                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">permutations</span><span class="p">)]</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__calc</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">permutations</span><span class="p">)</span>
+            <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
             <span class="n">above</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">I</span>
             <span class="n">larger</span> <span class="o">=</span> <span class="n">above</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span><span class="p">:</span>
                 <span class="n">larger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">permutations</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">**</span> <span class="mi">2</span>
@@ -340,7 +363,7 @@
         <span class="n">z</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z2ss</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">EI</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">EI</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
         <span class="n">n2</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
         <span class="n">s1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">s1</span>
@@ -350,20 +373,20 @@
         <span class="n">v_num</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s02</span>
         <span class="n">v_den</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">s02</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">VI_norm</span> <span class="o">=</span> <span class="n">v_num</span> <span class="o">/</span> <span class="n">v_den</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seI_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VI_norm</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seI_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VI_norm</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
         <span class="c1"># variance under randomization</span>
-        <span class="n">xd4</span> <span class="o">=</span> <span class="n">z</span><span class="o">**</span><span class="mi">4</span>
-        <span class="n">xd2</span> <span class="o">=</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">xd4</span> <span class="o">=</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">4</span>
+        <span class="n">xd2</span> <span class="o">=</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="n">k_num</span> <span class="o">=</span> <span class="n">xd4</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span>
-        <span class="n">k_den</span> <span class="o">=</span> <span class="p">(</span><span class="n">xd2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">k_den</span> <span class="o">=</span> <span class="p">(</span><span class="n">xd2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">k_num</span> <span class="o">/</span> <span class="n">k_den</span>
         <span class="n">EI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EI</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">((</span><span class="n">n2</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">s02</span><span class="p">)</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">((</span><span class="n">n2</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">s02</span>  <span class="p">)</span>
-        <span class="n">VIR</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">*</span> <span class="n">s02</span><span class="p">)</span> <span class="o">-</span> <span class="n">EI</span><span class="o">*</span><span class="n">EI</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">((</span><span class="n">n2</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">s02</span><span class="p">)</span>
+        <span class="n">VIR</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">s02</span><span class="p">)</span> <span class="o">-</span> <span class="n">EI</span> <span class="o">*</span> <span class="n">EI</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">VI_rand</span> <span class="o">=</span> <span class="n">VIR</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seI_rand</span> <span class="o">=</span> <span class="n">VIR</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seI_rand</span> <span class="o">=</span> <span class="n">VIR</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="n">zl</span> <span class="o">=</span> <span class="n">slag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
@@ -376,7 +399,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to compute a Moran statistic on a dataframe</span>
 
@@ -410,9 +435,18 @@
 <span class="sd">        returns a copy of the dataframe with the relevant columns attached.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_univariate_handler</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
-                                   <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
-                                   <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_univariate_handler</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">cols</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="o">**</span><span class="n">stat_kws</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Moran_BV"><a class="viewcode-back" href="../../generated/esda.Moran_BV.html#esda.Moran_BV">[docs]</a><span class="k">class</span> <span class="nc">Moran_BV</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -520,6 +554,7 @@
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="Moran_BV.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_BV.html#esda.Moran_BV.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
@@ -530,7 +565,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">zx</span> <span class="o">=</span> <span class="n">zx</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zy</span> <span class="o">=</span> <span class="n">zy</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mf">1.</span>  <span class="c1"># zx&#39;zx = zy&#39;zy = n-1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mf">1.0</span>  <span class="c1"># zx&#39;zx = zy&#39;zy = n-1</span>
         <span class="n">w</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transformation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calc</span><span class="p">(</span><span class="n">zy</span><span class="p">)</span>
@@ -542,7 +577,7 @@
             <span class="n">larger</span> <span class="o">=</span> <span class="n">above</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span><span class="p">:</span>
                 <span class="n">larger</span> <span class="o">=</span> <span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">permutations</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">**</span> <span class="mi">2</span>
@@ -563,7 +598,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+        <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to compute a Moran_BV statistic on a dataframe</span>
 
@@ -604,9 +649,18 @@
 <span class="sd">        returns a copy of the dataframe with the relevant columns attached.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_bivariate_handler</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
-                                  <span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span> <span class="o">=</span> <span class="n">outvals</span><span class="p">,</span>
-                                  <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span><span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_bivariate_handler</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">stat_kws</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Moran_BV_matrix"><a class="viewcode-back" href="../../generated/esda.Moran_BV_matrix.html#esda.Moran_BV_matrix">[docs]</a><span class="k">def</span> <span class="nf">Moran_BV_matrix</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -668,6 +722,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># check if pandas is installed</span>
         <span class="kn">import</span> <span class="nn">pandas</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="c1"># if yes use variables as df and convert to numpy_array</span>
             <span class="n">varnames</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Index</span><span class="o">.</span><span class="n">tolist</span><span class="p">(</span><span class="n">variables</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -679,9 +734,9 @@
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">variables_n</span> <span class="o">=</span> <span class="n">variables</span>
 
-    <span class="n">results</span> <span class="o">=</span> <span class="n">_Moran_BV_Matrix_array</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">variables_n</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
-                                     <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span>
-                                     <span class="n">varnames</span><span class="o">=</span><span class="n">varnames</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">_Moran_BV_Matrix_array</span><span class="p">(</span>
+        <span class="n">variables</span><span class="o">=</span><span class="n">variables_n</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span> <span class="n">varnames</span><span class="o">=</span><span class="n">varnames</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">results</span></div>
 
 
@@ -690,7 +745,7 @@
 <span class="sd">    Base calculation for MORAN_BV_Matrix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">varnames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">varnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+        <span class="n">varnames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
 
     <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
     <span class="n">rk</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
@@ -701,8 +756,8 @@
             <span class="n">y2</span> <span class="o">=</span> <span class="n">variables</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
             <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Moran_BV</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">)</span>
             <span class="n">results</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Moran_BV</span><span class="p">(</span><span class="n">y2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">)</span>
-            <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">varnames</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">j</span><span class="p">]}</span>
-            <span class="n">results</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">varnames</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">i</span><span class="p">]}</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">varnames</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">j</span><span class="p">]}</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">varnames</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">varnames</span><span class="p">[</span><span class="n">i</span><span class="p">]}</span>
     <span class="k">return</span> <span class="n">results</span>
 
 
@@ -812,20 +867,44 @@
 <span class="sd">    &#39;0.0042&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Moran_Rate.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Rate.html#esda.Moran_Rate.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">adjusted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
-                 <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span> <span class="n">two_tailed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Moran_Rate.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Rate.html#esda.Moran_Rate.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">e</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">adjusted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+        <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
+        <span class="n">two_tailed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">adjusted</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">assuncao_rate</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">e</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">b</span>
-        <span class="n">Moran</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">,</span>
-                       <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span> <span class="n">two_tailed</span><span class="o">=</span><span class="n">two_tailed</span><span class="p">)</span></div>
+        <span class="n">Moran</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">w</span><span class="p">,</span>
+            <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">,</span>
+            <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span>
+            <span class="n">two_tailed</span><span class="o">=</span><span class="n">two_tailed</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-               <span class="n">pvalue</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">swapname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="o">**</span><span class="n">stat_kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">events</span><span class="p">,</span>
+        <span class="n">populations</span><span class="p">,</span>
+        <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+        <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">swapname</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to compute a Moran_Rate statistic on a dataframe</span>
 
@@ -867,9 +946,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="n">new</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">by_col</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                              <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span> <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
-                              <span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">by_col</span><span class="p">(</span>
+                <span class="n">new</span><span class="p">,</span>
+                <span class="n">events</span><span class="p">,</span>
+                <span class="n">populations</span><span class="p">,</span>
+                <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+                <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+                <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">stat_kws</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">new</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="n">events</span><span class="p">]</span>
@@ -878,29 +965,46 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">populations</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
             <span class="n">populations</span> <span class="o">=</span> <span class="n">populations</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">populations</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There is not a one-to-one matching between events and &#39;</span>
-                              <span class="s1">&#39;populations!</span><span class="se">\n</span><span class="s1">Events: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">Populations:&#39;</span>
-                              <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">))</span>
-        <span class="n">adjusted</span> <span class="o">=</span> <span class="n">stat_kws</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;adjusted&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;There is not a one-to-one matching between events and &quot;</span>
+                <span class="s2">&quot;populations!</span><span class="se">\n</span><span class="s2">Events: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">Populations:&quot;</span>
+                <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">adjusted</span> <span class="o">=</span> <span class="n">stat_kws</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;adjusted&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjusted</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">adjusted</span> <span class="o">=</span> <span class="p">[</span><span class="n">adjusted</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">swapname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">swapname</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">swapname</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="n">assuncao_rate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">])</span> <span class="k">if</span> <span class="n">adj</span>
-                 <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">]</span>
-                 <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">pop</span><span class="p">,</span><span class="n">adj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">adjusted</span><span class="p">)]</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">e</span><span class="p">,</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)]</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">assuncao_rate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">])</span> <span class="k">if</span> <span class="n">adj</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">pop</span><span class="p">,</span> <span class="n">adj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">adjusted</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)]</span>
         <span class="n">out_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">)))</span> <span class="c1">#trick to avoid importing pandas</span>
-        <span class="n">stat_df</span> <span class="o">=</span> <span class="n">_univariate_handler</span><span class="p">(</span><span class="n">rate_df</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                      <span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span> <span class="o">=</span> <span class="n">outvals</span><span class="p">,</span>
-                                      <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
-                                      <span class="n">stat</span><span class="o">=</span><span class="n">Moran</span><span class="p">,</span> <span class="c1">#how would this get done w/super?</span>
-                                      <span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span>
+        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">))</span>
+        <span class="p">)</span>  <span class="c1"># trick to avoid importing pandas</span>
+        <span class="n">stat_df</span> <span class="o">=</span> <span class="n">_univariate_handler</span><span class="p">(</span>
+            <span class="n">rate_df</span><span class="p">,</span>
+            <span class="n">names</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">=</span><span class="n">Moran</span><span class="p">,</span>  <span class="c1"># how would this get done w/super?</span>
+            <span class="o">**</span><span class="n">stat_kws</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">stat_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat_df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span></div>
+
+
+<span class="c1"># -----------------------------------------------------------------------------#</span>
+<span class="c1">#                            Local Statistics                                 #</span>
+<span class="c1"># -----------------------------------------------------------------------------#</span>
+
 
 <div class="viewcode-block" id="Moran_Local"><a class="viewcode-back" href="../../generated/esda.Moran_Local.html#esda.Moran_Local">[docs]</a><span class="k">class</span> <span class="nc">Moran_Local</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Local Moran Statistics</span>
@@ -926,7 +1030,19 @@
 <span class="sd">                     (default=False)</span>
 <span class="sd">                     If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4</span>
 <span class="sd">                     If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4</span>
-
+<span class="sd">    n_jobs : int</span>
+<span class="sd">             Number of cores to be used in the conditional randomisation. If -1,</span>
+<span class="sd">             all available cores are used.    </span>
+<span class="sd">    keep_simulations : Boolean</span>
+<span class="sd">                       (default=True)</span>
+<span class="sd">                       If True, the entire matrix of replications under the null </span>
+<span class="sd">                       is stored in memory and accessible; otherwise, replications </span>
+<span class="sd">                       are not saved</span>
+<span class="sd">    seed : None/int</span>
+<span class="sd">           Seed to ensure reproducibility of conditional randomizations. </span>
+<span class="sd">           Must be set here, and not outside of the function, since numba </span>
+<span class="sd">           does not correctly interpret external seeds nor numpy.random.RandomState instances.               </span>
+<span class="sd">        </span>
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 
@@ -969,7 +1085,19 @@
 <span class="sd">                   p-values based on standard normal approximation from</span>
 <span class="sd">                   permutations (one-sided)</span>
 <span class="sd">                   for two-sided tests, these values should be multiplied by 2</span>
-
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        Number of cores to be used in the conditional randomisation. If -1,</span>
+<span class="sd">        all available cores are used.    </span>
+<span class="sd">    keep_simulations : Boolean</span>
+<span class="sd">                      (default=True)</span>
+<span class="sd">                      If True, the entire matrix of replications under the null </span>
+<span class="sd">                      is stored in memory and accessible; otherwise, replications </span>
+<span class="sd">                      are not saved   </span>
+<span class="sd">    seed : None/int</span>
+<span class="sd">           Seed to ensure reproducibility of conditional randomizations. </span>
+<span class="sd">           Must be set here, and not outside of the function, since numba does </span>
+<span class="sd">           not correctly interpret external seeds nor numpy.random.RandomState instances.               </span>
+<span class="sd">           </span>
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 
@@ -999,8 +1127,18 @@
 <span class="sd">    architectures so the results have been removed from doctests and will be</span>
 <span class="sd">    moved into unittests that are conditional on architectures</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Moran_Local.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Local.html#esda.Moran_Local.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
-                 <span class="n">geoda_quads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Moran_Local.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Local.html#esda.Moran_Local.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+        <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
+        <span class="n">geoda_quads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">keep_simulations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -1018,7 +1156,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geoda_quads</span> <span class="o">=</span> <span class="n">geoda_quads</span>
         <span class="n">quads</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">geoda_quads</span><span class="p">:</span>
@@ -1026,55 +1164,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">quads</span> <span class="o">=</span> <span class="n">quads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__quads</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">permutations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__crand</span><span class="p">()</span>
-            <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span><span class="p">)</span>
-            <span class="n">above</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Is</span>
-            <span class="n">larger</span> <span class="o">=</span> <span class="n">above</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">low_extreme</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span>
-            <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span> <span class="o">=</span> <span class="n">_crand_plus</span><span class="p">(</span>
+                <span class="n">z</span><span class="p">,</span>
+                <span class="n">w</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Is</span><span class="p">,</span>
+                <span class="n">permutations</span><span class="p">,</span>
+                <span class="n">keep_simulations</span><span class="p">,</span>
+                <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span>
+                <span class="n">stat_func</span><span class="o">=</span><span class="n">_moran_local_crand</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
+                <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span><span class="p">)</span>
+                <span class="n">above</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Is</span>
+                <span class="n">larger</span> <span class="o">=</span> <span class="n">above</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">low_extreme</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span>
+                <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span></div>
 
-    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="n">zl</span> <span class="o">=</span> <span class="n">slag</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">zl</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span>
-
-    <span class="k">def</span> <span class="nf">__crand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        conditional randomization</span>
-
-<span class="sd">        for observation i with ni neighbors,  the candidate set cannot include</span>
-<span class="sd">        i (we don&#39;t want i being a neighbor of i). we have to sample without</span>
-<span class="sd">        replacement from a set of ids that doesn&#39;t include i. numpy doesn&#39;t</span>
-<span class="sd">        directly support sampling wo replacement and it is expensive to</span>
-<span class="sd">        implement this. instead we omit i from the original ids,  permute the</span>
-<span class="sd">        ids and take the first ni elements of the permuted ids as the</span>
-<span class="sd">        neighbors to i in each randomization.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
-        <span class="n">lisas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
-        <span class="n">n_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">prange</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">max_neighbors</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">nn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">rids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">nn</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">])</span>
-        <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-        <span class="n">ido</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">id_order</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
-        <span class="n">wc</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
-            <span class="n">idsi</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">ids</span> <span class="o">!=</span> <span class="n">i</span><span class="p">]</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">idsi</span><span class="p">)</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">idsi</span><span class="p">[</span><span class="n">rids</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">wc</span><span class="p">[</span><span class="n">i</span><span class="p">]]]]</span>
-            <span class="n">lisas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">)</span> <span class="o">*</span> <span class="n">lisas</span>
 
     <span class="k">def</span> <span class="nf">__quads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">zl</span> <span class="o">=</span> <span class="n">slag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
@@ -1084,8 +1208,12 @@
         <span class="n">np</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">zp</span><span class="p">)</span> <span class="o">*</span> <span class="n">lp</span>
         <span class="n">nn</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">zp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lp</span><span class="p">)</span>
         <span class="n">pn</span> <span class="o">=</span> <span class="n">zp</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lp</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">nn</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pp</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">nn</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">pn</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1093,7 +1221,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Is</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to compute a Moran_Local statistic on a dataframe</span>
 
@@ -1127,9 +1257,17 @@
 <span class="sd">        returns a copy of the dataframe with the relevant columns attached.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_univariate_handler</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
-                                   <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
-                                   <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_univariate_handler</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">cols</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="o">**</span><span class="n">stat_kws</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Moran_Local_BV"><a class="viewcode-back" href="../../generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV">[docs]</a><span class="k">class</span> <span class="nc">Moran_Local_BV</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1158,7 +1296,17 @@
 <span class="sd">                     (default=False)</span>
 <span class="sd">                     If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4</span>
 <span class="sd">                     If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4</span>
-
+<span class="sd">    njobs</span>
+<span class="sd">    keep_simulations : Boolean</span>
+<span class="sd">                      (default=True)</span>
+<span class="sd">                      If True, the entire matrix of replications under the null </span>
+<span class="sd">                      is stored in memory and accessible; otherwise, replications </span>
+<span class="sd">                      are not saved      </span>
+<span class="sd">    seed : None/int</span>
+<span class="sd">           Seed to ensure reproducibility of conditional randomizations. </span>
+<span class="sd">           Must be set here, and not outside of the function, since numba </span>
+<span class="sd">           does not correctly interpret external seeds nor numpy.random.RandomState instances.               </span>
+<span class="sd">           </span>
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 
@@ -1228,13 +1376,25 @@
 <span class="sd">    architectures so the results have been removed from doctests and will be</span>
 <span class="sd">    moved into unittests that are conditional on architectures</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Moran_Local_BV.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
-                 <span class="n">geoda_quads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Moran_Local_BV.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+        <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
+        <span class="n">geoda_quads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">keep_simulations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span><span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;x and y must have the same shape!&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_1</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">zx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1253,7 +1413,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="p">(</span><span class="n">zx</span> <span class="o">*</span> <span class="n">zx</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zy</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geoda_quads</span> <span class="o">=</span> <span class="n">geoda_quads</span>
         <span class="n">quads</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">geoda_quads</span><span class="p">:</span>
@@ -1261,56 +1421,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">quads</span> <span class="o">=</span> <span class="n">quads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__quads</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">permutations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__crand</span><span class="p">()</span>
-            <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span><span class="p">)</span>
-            <span class="n">above</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Is</span>
-            <span class="n">larger</span> <span class="o">=</span> <span class="n">above</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">low_extreme</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span>
-            <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span> <span class="o">=</span> <span class="n">_crand_plus</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">zx</span><span class="p">,</span> <span class="n">zy</span><span class="p">)),</span>
+                <span class="n">w</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Is</span><span class="p">,</span>
+                <span class="n">permutations</span><span class="p">,</span>
+                <span class="n">keep_simulations</span><span class="p">,</span>
+                <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span>
+                <span class="n">stat_func</span><span class="o">=</span><span class="n">_moran_local_bv_crand</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
+                <span class="n">sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span><span class="p">)</span>
+                <span class="n">above</span> <span class="o">=</span> <span class="n">sim</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Is</span>
+                <span class="n">larger</span> <span class="o">=</span> <span class="n">above</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">low_extreme</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">larger</span>
+                <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">low_extreme</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">permutations</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sim</span> <span class="o">=</span> <span class="n">sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">VI_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">EI_sim</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">seI_sim</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_z_sim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_sim</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">zx</span><span class="p">,</span> <span class="n">zy</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">zx</span><span class="p">,</span> <span class="n">zy</span><span class="p">):</span>
         <span class="n">zly</span> <span class="o">=</span> <span class="n">slag</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">zy</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">zx</span> <span class="o">*</span> <span class="n">zly</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span>
-
-    <span class="k">def</span> <span class="nf">__crand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        conditional randomization</span>
-
-<span class="sd">        for observation i with ni neighbors,  the candidate set cannot include</span>
-<span class="sd">        i (we don&#39;t want i being a neighbor of i). we have to sample without</span>
-<span class="sd">        replacement from a set of ids that doesn&#39;t include i. numpy doesn&#39;t</span>
-<span class="sd">        directly support sampling wo replacement and it is expensive to</span>
-<span class="sd">        implement this. instead we omit i from the original ids,  permute the</span>
-<span class="sd">        ids and take the first ni elements of the permuted ids as the</span>
-<span class="sd">        neighbors to i in each randomization.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">lisas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
-        <span class="n">n_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">prange</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">max_neighbors</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">nn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">rids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">nn</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">])</span>
-        <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-        <span class="n">ido</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">id_order</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
-        <span class="n">wc</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
-
-        <span class="n">zx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zx</span>
-        <span class="n">zy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zy</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
-            <span class="n">idsi</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">ids</span> <span class="o">!=</span> <span class="n">i</span><span class="p">]</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">idsi</span><span class="p">)</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">zy</span><span class="p">[</span><span class="n">idsi</span><span class="p">[</span><span class="n">rids</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">wc</span><span class="p">[</span><span class="n">i</span><span class="p">]]]]</span>
-            <span class="n">lisas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">zx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rlisas</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">)</span> <span class="o">*</span> <span class="n">lisas</span>
 
     <span class="k">def</span> <span class="nf">__quads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">zl</span> <span class="o">=</span> <span class="n">slag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zy</span><span class="p">)</span>
@@ -1320,8 +1458,12 @@
         <span class="n">np</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">zp</span><span class="p">)</span> <span class="o">*</span> <span class="n">lp</span>
         <span class="n">nn</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">zp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lp</span><span class="p">)</span>
         <span class="n">pn</span> <span class="o">=</span> <span class="n">zp</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lp</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">nn</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">pp</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">nn</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">quads</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">pn</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1329,7 +1471,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Is</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+        <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to compute a Moran_Local_BV statistic on a dataframe</span>
 
@@ -1370,9 +1522,19 @@
 <span class="sd">        returns a copy of the dataframe with the relevant columns attached.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_bivariate_handler</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
-                                  <span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span> <span class="o">=</span> <span class="n">outvals</span><span class="p">,</span>
-                                  <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span><span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_bivariate_handler</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">stat_kws</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Moran_Local_Rate"><a class="viewcode-back" href="../../generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate">[docs]</a><span class="k">class</span> <span class="nc">Moran_Local_Rate</span><span class="p">(</span><span class="n">Moran_Local</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1403,6 +1565,17 @@
 <span class="sd">                     (default=False)</span>
 <span class="sd">                     If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4</span>
 <span class="sd">                     If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4</span>
+<span class="sd">    njobs</span>
+<span class="sd">    keep_simulations : Boolean</span>
+<span class="sd">                      (default=True)</span>
+<span class="sd">                      If True, the entire matrix of replications under the null </span>
+<span class="sd">                      is stored in memory and accessible; otherwise, replications </span>
+<span class="sd">                      are not saved         </span>
+<span class="sd">    seed : None/int</span>
+<span class="sd">           Seed to ensure reproducibility of conditional randomizations. </span>
+<span class="sd">           Must be set here, and not outside of the function, since numba does not </span>
+<span class="sd">           correctly interpret external seeds nor numpy.random.RandomState instances.                </span>
+<span class="sd">           </span>
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    y            : array</span>
@@ -1469,22 +1642,50 @@
 <span class="sd">    moved into unittests that are conditional on architectures</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Moran_Local_Rate.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">adjusted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
-                 <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span> <span class="n">geoda_quads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Moran_Local_Rate.__init__"><a class="viewcode-back" href="../../generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">e</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">,</span>
+        <span class="n">adjusted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+        <span class="n">permutations</span><span class="o">=</span><span class="n">PERMUTATIONS</span><span class="p">,</span>
+        <span class="n">geoda_quads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">keep_simulations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">adjusted</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">assuncao_rate</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">e</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">b</span>
-        <span class="n">Moran_Local</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span>
-                             <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">,</span>
-                             <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span>
-                             <span class="n">geoda_quads</span><span class="o">=</span><span class="n">geoda_quads</span><span class="p">)</span></div>
+        <span class="n">Moran_Local</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">w</span><span class="p">,</span>
+            <span class="n">transformation</span><span class="o">=</span><span class="n">transformation</span><span class="p">,</span>
+            <span class="n">permutations</span><span class="o">=</span><span class="n">permutations</span><span class="p">,</span>
+            <span class="n">geoda_quads</span><span class="o">=</span><span class="n">geoda_quads</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span>
+            <span class="n">keep_simulations</span><span class="o">=</span><span class="n">keep_simulations</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-               <span class="n">pvalue</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">swapname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="o">**</span><span class="n">stat_kws</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">events</span><span class="p">,</span>
+        <span class="n">populations</span><span class="p">,</span>
+        <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+        <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">swapname</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to compute a Moran_Local_Rate statistic on a dataframe</span>
 
@@ -1525,9 +1726,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="n">new</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">by_col</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                              <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span> <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
-                              <span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">by_col</span><span class="p">(</span>
+                <span class="n">new</span><span class="p">,</span>
+                <span class="n">events</span><span class="p">,</span>
+                <span class="n">populations</span><span class="p">,</span>
+                <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+                <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+                <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">stat_kws</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">new</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="n">events</span><span class="p">]</span>
@@ -1536,29 +1745,59 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">populations</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
             <span class="n">populations</span> <span class="o">=</span> <span class="n">populations</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">populations</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There is not a one-to-one matching between events and &#39;</span>
-                              <span class="s1">&#39;populations!</span><span class="se">\n</span><span class="s1">Events: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">Populations:&#39;</span>
-                              <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">))</span>
-        <span class="n">adjusted</span> <span class="o">=</span> <span class="n">stat_kws</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;adjusted&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;There is not a one-to-one matching between events and &quot;</span>
+                <span class="s2">&quot;populations!</span><span class="se">\n</span><span class="s2">Events: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">Populations:&quot;</span>
+                <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">adjusted</span> <span class="o">=</span> <span class="n">stat_kws</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;adjusted&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjusted</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">adjusted</span> <span class="o">=</span> <span class="p">[</span><span class="n">adjusted</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">swapname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">swapname</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">swapname</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="n">assuncao_rate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">])</span> <span class="k">if</span> <span class="n">adj</span>
-                 <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">]</span>
-                 <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">pop</span><span class="p">,</span><span class="n">adj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">adjusted</span><span class="p">)]</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">e</span><span class="p">,</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)]</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">assuncao_rate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">])</span> <span class="k">if</span> <span class="n">adj</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="n">e</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="n">pop</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">pop</span><span class="p">,</span> <span class="n">adj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">adjusted</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">e</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">populations</span><span class="p">)]</span>
         <span class="n">out_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">)))</span> <span class="c1">#trick to avoid importing pandas</span>
-        <span class="n">_univariate_handler</span><span class="p">(</span><span class="n">rate_df</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                      <span class="n">pvalue</span> <span class="o">=</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">outvals</span> <span class="o">=</span> <span class="n">outvals</span><span class="p">,</span>
-                                      <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
-                                      <span class="n">stat</span><span class="o">=</span><span class="n">Moran_Local</span><span class="p">,</span> <span class="c1">#how would this get done w/super?</span>
-                                      <span class="o">**</span><span class="n">stat_kws</span><span class="p">)</span>
+        <span class="n">rate_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">rates</span><span class="p">))</span>
+        <span class="p">)</span>  <span class="c1"># trick to avoid importing pandas</span>
+        <span class="n">_univariate_handler</span><span class="p">(</span>
+            <span class="n">rate_df</span><span class="p">,</span>
+            <span class="n">names</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="n">swapname</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">=</span><span class="n">Moran_Local</span><span class="p">,</span>  <span class="c1"># how would this get done w/super?</span>
+            <span class="o">**</span><span class="n">stat_kws</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">rate_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">rate_df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span></div>
+
+
+<span class="c1"># --------------------------------------------------------------</span>
+<span class="c1"># Conditional Randomization Function Implementations</span>
+<span class="c1"># --------------------------------------------------------------</span>
+
+
+<span class="nd">@_njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_moran_local_bv_crand</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">weights_i</span><span class="p">,</span> <span class="n">scaling</span><span class="p">):</span>
+    <span class="n">zx</span> <span class="o">=</span> <span class="n">z</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">zy</span> <span class="o">=</span> <span class="n">z</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">zyi</span><span class="p">,</span> <span class="n">zyrand</span> <span class="o">=</span> <span class="n">_prepare_univariate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">zy</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">weights_i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">zx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">zyrand</span> <span class="o">@</span> <span class="n">weights_i</span><span class="p">)</span> <span class="o">*</span> <span class="n">scaling</span>
+
+
+<span class="nd">@_njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_moran_local_crand</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">weights_i</span><span class="p">,</span> <span class="n">scaling</span><span class="p">):</span>
+    <span class="n">zi</span><span class="p">,</span> <span class="n">zrand</span> <span class="o">=</span> <span class="n">_prepare_univariate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">weights_i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">zi</span> <span class="o">*</span> <span class="p">(</span><span class="n">zrand</span> <span class="o">@</span> <span class="n">weights_i</span><span class="p">)</span> <span class="o">*</span> <span class="n">scaling</span>
 </pre></div>
 
     </div>
@@ -1576,7 +1815,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>
