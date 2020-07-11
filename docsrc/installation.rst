@@ -3,7 +3,7 @@
 Installation
 ============
 
-esda supports Python `3.6`_ and `3.7`_ only. Please make sure that you are
+esda supports Python `>=3.6`. Please make sure that you are
 operating in a Python 3 environment.
 
 Installing released version
@@ -21,6 +21,13 @@ Type::
 
   pip install .
 
+
+You may also install the latest stable esda via conda-forge channel by running::
+
+  conda install --channel conda-forge esda
+
+
+
 Installing development version
 ------------------------------
 
@@ -36,8 +43,6 @@ your fork. By making changes
 to your local clone and submitting a pull request to `pysal/esda`_, you can
 contribute to esda development.
 
-.. _3.6: https://docs.python.org/3.6/
-.. _3.7: https://docs.python.org/3.7/
 .. _Python Package Index: https://pypi.org/project/esda/
 .. _pysal/esda: https://github.com/pysal/esda
 .. _fork: https://help.github.com/articles/fork-a-repo/
