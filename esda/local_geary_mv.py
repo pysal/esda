@@ -59,6 +59,11 @@ class Local_Geary_MV(BaseEstimator):
         >>> guerry = lp.examples.load_example('Guerry')
         >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+        >>> x1 = guerry_ds['Donatns']
+        >>> x2 = guerry_ds['Suicids']
+        >>> lG_mv = Local_Geary(connectivity=w).fit([x1,x2])
+        >>> lG_mv.localG[0:5]
+        >>> lG_mv.p_sim[0:5]
         """
         self.variables = np.array(variables, dtype='float')
 
