@@ -464,7 +464,7 @@ def parallel_crand(
         )
     larger, rlocals = zip(*worker_out)
     larger = np.hstack(larger).flatten()
-    rlocals = np.hstack(rlocals).flatten()
+    rlocals = np.row_stack(rlocals)
     return larger, rlocals
 
 
