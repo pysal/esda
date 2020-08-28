@@ -7,7 +7,7 @@ import numpy as np
 
 PANDAS_EXTINCT = pandas is None
 
-from ..losh import losh
+from ..losh import LOSH
 
 class Losh_Tester(unittest.TestCase):
     def setUp(self):
@@ -17,7 +17,7 @@ class Losh_Tester(unittest.TestCase):
         self.y = np.array(f.by_col['HR8893'])
 
     def test_losh(self):
-        ls = losh(connectivity=self.w, inference="chi-square").fit(self.y)
+        ls = LOSH(connectivity=self.w, inference="chi-square").fit(self.y)
         self.assertAlmostEqual(ls.Hi[0], 0.77613471)
         self.assertAlmostEqual(ls.pval[0], 0.22802201)
         

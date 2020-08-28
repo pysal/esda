@@ -6,10 +6,10 @@ from sklearn.base import BaseEstimator
 import libpysal as lp
 
 
-class losh(BaseEstimator):
+class LOSH(BaseEstimator):
     """Local spatial heteroscedasticity (LOSH)"""
 
-    def __init__(self, connectivity=None, inference=None):
+    def __init__(self, connectivity=None, inference=None, a=2):
         """
         Initialize a losh estimator
 
@@ -21,6 +21,10 @@ class losh(BaseEstimator):
         inference        : str
                            describes type of inference to be used. options are
                            "chi-square" or "permutation" methods.
+        a                : int
+                           residual multiplier. Default is 2 in order
+                           to generate a variance measure. Users may
+                           use 1 for absolute deviations.
 
         Attributes
         ----------
@@ -39,17 +43,14 @@ class losh(BaseEstimator):
 
         self.connectivity = connectivity
         self.inference = inference
+        self.a = a
 
-    def fit(self, y, a=2):
+    def fit(self, x):
         """
         Arguments
         ---------
-        y                : numpy.ndarray
+        x                : numpy.ndarray
                            array containing continuous data
-        a                : int
-                           residual multiplier. Default is 2 in order
-                           to generate a variance measure. Users may
-                           use 1 for absolute deviations.
 
         Returns
         -------
@@ -64,27 +65,28 @@ class losh(BaseEstimator):
         >>> import libpysal
         >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
         >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
-        >>> y = np.array(f.by_col['HR8893'])
+        >>> x = np.array(f.by_col['HR8893'])
         >>> from esda import losh
-        >>> ls = losh(connectivity=w, inference="chi-square").fit(y)
+        >>> ls = losh(connectivity=w, inference="chi-square").fit(x)
         >>> np.round(ls.Hi[0], 3)
         >>> np.round(ls.pval[0], 3)
 
         Boston housing data replicating R spdep::LOSH()
         >>> import libpysal
-        >>> import geopandas as gpd
         >>> boston = libpysal.examples.load_example('Bostonhsg')
-        >>> boston_ds = gpd.read_file(boston.get_path('boston.shp'))
+        >>> boston_ds = geopandas.read_file(boston.get_path('boston.shp'))
         >>> w = libpysal.weights.Queen.from_dataframe(boston_ds)
         >>> ls = losh(connectivity=w, inference="chi-square").fit(boston['NOX'])
         >>> np.round(ls.Hi[0], 3)
         >>> np.round(ls.VarHi[0], 3)
         """
-        y = np.asarray(y).flatten()
+        x = np.asarray(x).flatten()
 
         w = self.connectivity
 
-        self.Hi, self.ylag, self.yresid, self.VarHi = self._statistic(y, w, a)
+        a = self.a
+
+        self.Hi, self.ylag, self.yresid, self.VarHi = self._statistic(x, w, a)
 
         if self.inference is None:
             return self
@@ -103,7 +105,7 @@ class losh(BaseEstimator):
         return self
 
     @staticmethod
-    def _statistic(y, w, a):
+    def _statistic(x, w, a):
         # Define what type of variance to use
         if a is None:
             a = 2
@@ -113,9 +115,9 @@ class losh(BaseEstimator):
         rowsum = np.array(w.sparse.sum(axis=1)).flatten()
 
         # Calculate spatial mean
-        ylag = lp.weights.lag_spatial(w, y)/rowsum
+        ylag = lp.weights.lag_spatial(w, x)/rowsum
         # Calculate and adjust residuals based on multiplier
-        yresid = abs(y-ylag)**a
+        yresid = abs(x-ylag)**a
         # Calculate denominator of Hi equation
         denom = np.mean(yresid) * np.array(rowsum)
         # Carry out final Hi calculation
@@ -123,7 +125,7 @@ class losh(BaseEstimator):
         # Calculate average of residuals
         yresid_mean = np.mean(yresid)
         # Calculate VarHi
-        n = len(y)
+        n = len(x)
         squared_rowsum = np.asarray(w.sparse.multiply(w.sparse).sum(axis=1)).flatten()
 
         VarHi = ((n-1)**-1) * \
