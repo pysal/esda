@@ -12,17 +12,17 @@ from esda.crand import (
 )
 
 
-PERMUTATIONS = 999
-SIG = 0.05
-
-
 class Local_Geary(BaseEstimator):
+
     """Local Geary - Univariate"""
 
-    def __init__(self, connectivity=None, labels=False, sig=SIG,
-                 permutations=PERMUTATIONS, n_jobs=1, keep_simulations=True,
+    def __init__(self, connectivity=None, labels=False, sig=0.05,
+                 permutations=999, n_jobs=1, keep_simulations=True,
                  seed=None):
         """
+        Initialize a Local_Geary estimator
+        Arguments
+        ---------
         connectivity     : scipy.sparse matrix object
                            the connectivity structure describing
                            the relationships between observed units.
@@ -40,9 +40,11 @@ class Local_Geary(BaseEstimator):
                            Default significance threshold used for
                            creation of labels groups.
         permutations     : int
+                           (default=999)
                            number of random permutations for calculation
                            of pseudo p_values
         n_jobs           : int
+                           (default=1)
                            Number of cores to be used in the conditional
                            randomisation. If -1, all available cores are used.
         keep_simulations : Boolean
@@ -77,7 +79,7 @@ class Local_Geary(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
 
-    def fit(self, x, n_jobs=1, permutations=999):
+    def fit(self, x):
         """
         Arguments
         ---------
@@ -109,10 +111,15 @@ class Local_Geary(BaseEstimator):
 
         w = self.connectivity
         w.transform = 'r'
+        
+        permutations = self.permutations
+        sig = self.sig
+        n_jobs = self.n_jobs
+        seed = self.seed
 
         self.localG = self._statistic(x, w)
 
-        if self.permutations:
+        if permutations:
             self.p_sim, self.rlocalG = _crand_plus(
                 z=(x - np.mean(x))/np.std(x),
                 w=w,
@@ -131,16 +138,16 @@ class Local_Geary(BaseEstimator):
             # Outliers
             self.labs[(self.localG < Eij_mean) &
                       (y > y_mean) &
-                      (self.p_sim <= self.sig)] = 1
+                      (self.p_sim <= sig)] = 1
             # Clusters
             self.labs[(self.localG < Eij_mean) &
                       (y < y_mean) &
-                      (self.p_sim <= self.sig)] = 2
+                      (self.p_sim <= sig)] = 2
             # Other
             self.labs[(self.localG > Eij_mean) &
-                      (self.p_sim <= self.sig)] = 3
+                      (self.p_sim <= sig)] = 3
             # Non-significant
-            self.labs[self.p_sim > self.sig] = 4
+            self.labs[self.p_sim > sig] = 4
 
         del (self.keep_simulations, self.n_jobs,
              self.permutations, self.seed, self.rlocalG,
@@ -173,7 +180,6 @@ class Local_Geary(BaseEstimator):
 # --------------------------------------------------------------
 
 # Note: does not using the scaling parameter
-
 
 @_njit(fastmath=True)
 def _local_geary(i, z, permuted_ids, weights_i, scaling):

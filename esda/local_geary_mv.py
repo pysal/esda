@@ -7,20 +7,21 @@ from sklearn.base import BaseEstimator
 import libpysal as lp
 
 
-PERMUTATIONS = 999
-
-
 class Local_Geary_MV(BaseEstimator):
 
     """Local Geary - Multivariate"""
 
-    def __init__(self, connectivity=None, permutations=PERMUTATIONS):
+    def __init__(self, connectivity=None, permutations=999):
         """
+        Initialize a Local_Geary_MV estimator
+        Arguments
+        ---------
         connectivity     : scipy.sparse matrix object
                            the connectivity structure describing
                            the relationships between observed units.
                            Need not be row-standardized.
         permutations     : int
+                           (default=999)
                            number of random permutations for calculation
                            of pseudo p_values
         Attributes
@@ -36,7 +37,7 @@ class Local_Geary_MV(BaseEstimator):
         self.connectivity = connectivity
         self.permutations = permutations
 
-    def fit(self, variables, permutations=999):
+    def fit(self, variables):
         """
         Arguments
         ---------
@@ -59,6 +60,11 @@ class Local_Geary_MV(BaseEstimator):
         >>> guerry = lp.examples.load_example('Guerry')
         >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+        >>> import libpysal
+        >>> import geopandas as gpd
+        >>> guerry = lp.examples.load_example('Guerry')
+        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
         >>> x1 = guerry_ds['Donatns']
         >>> x2 = guerry_ds['Suicids']
         >>> lG_mv = Local_Geary(connectivity=w).fit([x1,x2])
@@ -72,6 +78,8 @@ class Local_Geary_MV(BaseEstimator):
 
         self.n = len(variables[0])
         self.w = w
+        
+        permutations = self.permutations
 
         # Caclulate z-scores for input variables
         # to be used in _statistic and _crand
