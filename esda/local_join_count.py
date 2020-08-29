@@ -9,14 +9,11 @@ from esda.crand import (
 )
 
 
-PERMUTATIONS = 999
-
-
 class Local_Join_Count(BaseEstimator):
 
     """Univariate Local Join Count Statistic"""
 
-    def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
+    def __init__(self, connectivity=None, permutations=999, n_jobs=1, 
                  keep_simulations=True, seed=None):
         """
         Initialize a Local_Join_Count estimator
@@ -60,11 +57,11 @@ class Local_Join_Count(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
 
-    def fit(self, y, n_jobs=1, permutations=999):
+    def fit(self, x):
         """
         Arguments
         ---------
-        y               : numpy.ndarray
+        x               : numpy.ndarray
                           array containing binary (0/1) data
         Returns
         -------
@@ -78,9 +75,9 @@ class Local_Join_Count(BaseEstimator):
         --------
         >>> import libpysal
         >>> w = libpysal.weights.lat2W(4, 4)
-        >>> y = np.ones(16)
-        >>> y[0:8] = 0
-        >>> LJC_uni = Local_Join_Count(connectivity=w).fit(y)
+        >>> x = np.ones(16)
+        >>> x[0:8] = 0
+        >>> LJC_uni = Local_Join_Count(connectivity=w).fit(x)
         >>> LJC_uni.LJC
         >>> LJC_uni.p_sim
 
@@ -98,7 +95,7 @@ class Local_Join_Count(BaseEstimator):
         """
         # Need to ensure that the np.array() are of
         # dtype='float' for numba
-        y = np.array(y, dtype='float')
+        x = np.array(x, dtype='float')
 
         w = self.connectivity
         # Fill the diagonal with 0s
@@ -109,15 +106,17 @@ class Local_Join_Count(BaseEstimator):
         n_jobs = self.n_jobs
         seed = self.seed
         
-        self.y = y
-        self.n = len(y)
+        permutations = self.permutations
+        
+        self.x = x
+        self.n = len(x)
         self.w = w
 
-        self.LJC = self._statistic(y, w)
+        self.LJC = self._statistic(x, w)
         
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
-                z=self.y, 
+                z=self.x, 
                 w=self.w, 
                 observed=self.LJC,
                 permutations=permutations, 
@@ -129,17 +128,17 @@ class Local_Join_Count(BaseEstimator):
             self.p_sim[self.LJC == 0] = 'NaN'
         
         del (self.n, self.keep_simulations, self.n_jobs, 
-             self.permutations, self.seed, self.w, self.y,
+             self.permutations, self.seed, self.w, self.x,
              self.connectivity, self.rjoins)
         
         return self
 
     @staticmethod
-    def _statistic(y, w):
+    def _statistic(x, w):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
         adj_list = w.to_adjlist(remove_symmetric=False)
-        zseries = pd.Series(y, index=w.id_order)
+        zseries = pd.Series(x, index=w.id_order)
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values
         LJC = (focal == 1) & (neighbor == 1)

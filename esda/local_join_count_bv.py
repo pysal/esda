@@ -12,14 +12,11 @@ from esda.crand import (
 )
 
 
-PERMUTATIONS = 999
-
-
 class Local_Join_Count_BV(BaseEstimator):
 
     """Univariate Local Join Count Statistic"""
 
-    def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
+    def __init__(self, connectivity=None, permutations=999, n_jobs=1, 
                  keep_simulations=True, seed=None):
         """
         Initialize a Local_Join_Count_BV estimator
@@ -54,14 +51,19 @@ class Local_Join_Count_BV(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
 
-    def fit(self, x, z, case="CLC", n_jobs=1, permutations=999):
+    def fit(self, x, y, case="CLC"):
         """
         Arguments
         ---------
         x                : numpy.ndarray
                            array containing binary (0/1) data
-        z                : numpy.ndarray
+        y                : numpy.ndarray
                            array containing binary (0/1) data
+        case             : str
+                           "BJC" for bivariate local join count,
+                           "CLC" for co-location local join count.
+                           Details in :cite:`AnselinLi2019`.
+
         Returns
         -------
         the fitted estimator.
@@ -76,9 +78,9 @@ class Local_Join_Count_BV(BaseEstimator):
         >>> w = libpysal.weights.lat2W(4, 4)
         >>> x = np.ones(16)
         >>> x[0:8] = 0
-        >>> z = [0,1,0,1,1,1,1,1,0,0,1,1,0,0,1,1]
-        >>> LJC_BV_C1 = Local_Join_Count_BV(connectivity=w).fit(x, z, case="BJC")
-        >>> LJC_BV_C2 = Local_Join_Count_BV(connectivity=w).fit(x, z, case="CLC")
+        >>> y = [0,1,0,1,1,1,1,1,0,0,1,1,0,0,1,1]
+        >>> LJC_BV_C1 = Local_Join_Count_BV(connectivity=w).fit(x, y, case="BJC")
+        >>> LJC_BV_C2 = Local_Join_Count_BV(connectivity=w).fit(x, y, case="CLC")
         >>> LJC_BV_C1.LJC
         >>> LJC_BV_C1.p_sim
         >>> LJC_BV_C2.LJC
@@ -110,7 +112,7 @@ class Local_Join_Count_BV(BaseEstimator):
         # Need to ensure that the np.array() are of
         # dtype='float' for numba
         x = np.array(x, dtype='float')
-        z = np.array(z, dtype='float')
+        y = np.array(y, dtype='float')
 
         w = self.connectivity
         # Fill the diagonal with 0s
@@ -118,7 +120,7 @@ class Local_Join_Count_BV(BaseEstimator):
         w.transform = 'b'
 
         self.x = x
-        self.z = z
+        self.y = y
         self.n = len(x)
         self.w = w
         self.case = case
@@ -126,13 +128,15 @@ class Local_Join_Count_BV(BaseEstimator):
         keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
         seed = self.seed
+        
+        permutations = self.permutations
 
-        self.LJC = self._statistic(x, z, w, case=case)
+        self.LJC = self._statistic(x, y, w, case=case)
 
         if permutations:
             if case == "BJC":
                 self.p_sim, self.rjoins = _crand_plus(
-                    z=np.column_stack((x, z)),
+                    z=np.column_stack((x, y)),
                     w=self.w, 
                     observed=self.LJC,
                     permutations=permutations, 
@@ -144,7 +148,7 @@ class Local_Join_Count_BV(BaseEstimator):
                 self.p_sim[self.LJC == 0] = 'NaN'
             elif case == "CLC":
                 self.p_sim, self.rjoins = _crand_plus(
-                    z=np.column_stack((x, z)),
+                    z=np.column_stack((x, y)),
                     w=self.w, 
                     observed=self.LJC,
                     permutations=permutations, 
@@ -160,12 +164,12 @@ class Local_Join_Count_BV(BaseEstimator):
 
         del (self.n, self.keep_simulations, self.n_jobs, 
              self.permutations, self.seed, self.w, self.x,
-             self.z, self.connectivity, self.rjoins)
+             self.y, self.connectivity, self.rjoins)
                 
         return self
 
     @staticmethod
-    def _statistic(x, z, w, case):
+    def _statistic(x, y, w, case):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
         adj_list = w.to_adjlist(remove_symmetric=False)
@@ -173,27 +177,27 @@ class Local_Join_Count_BV(BaseEstimator):
         # First, set up a series that maps the values
         # to the weights table
         zseries_x = pd.Series(x, index=w.id_order)
-        zseries_z = pd.Series(z, index=w.id_order)
+        zseries_y = pd.Series(y, index=w.id_order)
 
         # Map the values to the focal (i) values
         focal_x = zseries_x.loc[adj_list.focal].values
-        focal_z = zseries_z.loc[adj_list.focal].values
+        focal_y = zseries_y.loc[adj_list.focal].values
 
         # Map the values to the neighbor (j) values
         neighbor_x = zseries_x.loc[adj_list.neighbor].values
-        neighbor_z = zseries_z.loc[adj_list.neighbor].values
+        neighbor_y = zseries_y.loc[adj_list.neighbor].values
 
         if case == "BJC":
-            BJC = (focal_x == 1) & (focal_z == 0) & \
-                  (neighbor_x == 0) & (neighbor_z == 1)
+            BJC = (focal_x == 1) & (focal_y == 0) & \
+                  (neighbor_x == 0) & (neighbor_y == 1)
             adj_list_BJC = pd.DataFrame(adj_list.focal.values,
                                         BJC.astype('uint8')).reset_index()
             adj_list_BJC.columns = ['BJC', 'ID']
             adj_list_BJC = adj_list_BJC.groupby(by='ID').sum()
             return (np.array(adj_list_BJC.BJC.values, dtype='float'))
         elif case == "CLC":
-            CLC = (focal_x == 1) & (focal_z == 1) & \
-                  (neighbor_x == 1) & (neighbor_z == 1)
+            CLC = (focal_x == 1) & (focal_y == 1) & \
+                  (neighbor_x == 1) & (neighbor_y == 1)
             adj_list_CLC = pd.DataFrame(adj_list.focal.values,
                                         CLC.astype('uint8')).reset_index()
             adj_list_CLC.columns = ['CLC', 'ID']

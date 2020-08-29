@@ -10,14 +10,11 @@ from esda.crand import (
 )
 
 
-PERMUTATIONS = 999
-
-
 class Local_Join_Count_MV(BaseEstimator):
 
     """Multivariate Local Join Count Statistic"""
 
-    def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
+    def __init__(self, connectivity=None, permutations=999, n_jobs=1, 
                  keep_simulations=True, seed=None):
         """
         Initialize a Local_Join_Count_MV estimator
@@ -52,12 +49,13 @@ class Local_Join_Count_MV(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
 
-    def fit(self, variables, n_jobs=1, permutations=999):
+    def fit(self, variables):
         """
         Arguments
         ---------
         variables     : numpy.ndarray
                         array(s) containing binary (0/1) data
+
         Returns
         -------
         the fitted estimator.
@@ -102,6 +100,8 @@ class Local_Join_Count_MV(BaseEstimator):
 
         self.n = len(variables[0])
         self.w = w
+        
+        permutations = self.permutations
 
         self.variables = np.array(variables, dtype='float')
         
