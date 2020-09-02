@@ -114,6 +114,7 @@ class Local_Geary(BaseEstimator):
         
         permutations = self.permutations
         sig = self.sig
+        keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
         seed = self.seed
 
@@ -125,7 +126,7 @@ class Local_Geary(BaseEstimator):
                 w=w,
                 observed=self.localG,
                 permutations=permutations,
-                keep=True,
+                keep=keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_local_geary
             )
@@ -137,11 +138,11 @@ class Local_Geary(BaseEstimator):
             self.labs = np.empty(len(x)) * np.nan
             # Outliers
             self.labs[(self.localG < Eij_mean) &
-                      (y > y_mean) &
+                      (x > x_mean) &
                       (self.p_sim <= sig)] = 1
             # Clusters
             self.labs[(self.localG < Eij_mean) &
-                      (y < y_mean) &
+                      (x < x_mean) &
                       (self.p_sim <= sig)] = 2
             # Other
             self.labs[(self.localG > Eij_mean) &
