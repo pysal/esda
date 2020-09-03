@@ -113,7 +113,7 @@ class Local_Geary_MV(BaseEstimator):
         neighbor = [zseries[i].loc[adj_list.neighbor].values for
                     i in range(len(variables))]
         # Carry out local Geary calculation
-        gs = sum(list(w.weights.values()), []) * \
+        gs = adj_list.weight.values * \
             (np.array(focal) - np.array(neighbor))**2
         # Reorganize data
         temp = pd.DataFrame(gs).T

@@ -166,7 +166,7 @@ class Local_Geary(BaseEstimator):
         zi = zseries.loc[adj_list.focal].values
         zj = zseries.loc[adj_list.neighbor].values
         # Carry out local Geary calculation
-        gs = sum(list(w.weights.values()), []) * (zi-zj)**2
+        gs = adj_list.weight.values * (zi-zj)**2
         # Reorganize data
         adj_list_gs = pd.DataFrame(adj_list.focal.values, gs).reset_index()
         adj_list_gs.columns = ['gs', 'ID']
