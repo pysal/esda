@@ -19,7 +19,7 @@
          environment-file: [ci/36.yaml, ci/36-numba.yaml, ci/37.yaml, ci/37-numba.yaml, ci/38.yaml, ci/38-numba.yaml]
      steps:
        - uses: actions/checkout@v2
-       - uses: goanpeca/setup-miniconda@v1
+       - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
             auto-update-conda: true
@@ -37,7 +37,7 @@
        - shell: bash -l {0}
          run: py.test esda --cov esda -v --cov-report=xml
        - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
-         uses: codecov/codecov-action@v1.0.14
+         uses: codecov/codecov-action@v1
          with:
            token: ${{ secrets.CODECOV_TOKEN }}
            file: ./coverage.xml
