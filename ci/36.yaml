@@ -5,7 +5,8 @@ dependencies:
   - python=3.6
   # required
   - scipy
-  - pandas
+  - pandas>=1.0
+  - scipy>=1.0
   - libpysal
   - scikit-learn
   # testing
@@ -14,4 +15,4 @@ dependencies:
   - codecov
   - matplotlib
   # optional
-  - geopandas
+  - geopandas>=0.7.0
