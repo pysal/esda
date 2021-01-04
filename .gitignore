@@ -6,3 +6,6 @@
 *.egg
 *.egg-info
 dist
+
+# for sjr local dev
+Makefile
