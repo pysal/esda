@@ -12,8 +12,8 @@ from .geary_local_mv import Geary_Local_MV
 from .getisord import G, G_Local
 from .join_counts import Join_Counts
 from .join_counts_local import Join_Counts_Local
-from .join_counts_local import Join_Counts_Local_BV
-from .join_counts_local import Join_Counts_Local_MV
+from .join_counts_local_BV import Join_Counts_Local_BV
+from .join_counts_local_MV import Join_Counts_Local_MV
 from .lee import Spatial_Pearson, Local_Spatial_Pearson
 from .moran import (
     Moran,
