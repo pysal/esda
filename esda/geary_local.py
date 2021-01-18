@@ -12,7 +12,7 @@ from esda.crand import (
 )
 
 
-class Local_Geary(BaseEstimator):
+class Geary_Local(BaseEstimator):
 
     """Local Geary - Univariate"""
 
@@ -149,10 +149,6 @@ class Local_Geary(BaseEstimator):
                       (self.p_sim <= sig)] = 3
             # Non-significant
             self.labs[self.p_sim > sig] = 4
-
-        del (self.keep_simulations, self.n_jobs,
-             self.permutations, self.seed, self.rlocalG,
-             self.connectivity, self.labels)
 
         return self
 

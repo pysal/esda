@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator
 import libpysal as lp
 
 
-class losh(BaseEstimator):
+class LOSH(BaseEstimator):
     """Local spatial heteroscedasticity (LOSH)"""
 
     def __init__(self, connectivity=None, inference=None):

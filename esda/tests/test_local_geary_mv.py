@@ -1,14 +1,12 @@
 import unittest
 import libpysal
 from libpysal.common import pandas, RTOL, ATOL
-from esda import local_geary
+from esda.geary_local_mv import Geary_Local_MV
 import numpy as np
 
 PANDAS_EXTINCT = pandas is None
 
-from ..local_geary_mv import Local_Geary_MV
-
-class Local_Geary_MV_Tester(unittest.TestCase):
+class Geary_Local_MV_Tester(unittest.TestCase):
     def setUp(self):
         np.random.seed(100)
         self.w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
@@ -17,14 +15,14 @@ class Local_Geary_MV_Tester(unittest.TestCase):
         self.y2 = np.array(f.by_col['HC8488'])
 
     def test_local_geary_mv(self):
-        lG_mv = Local_Geary_MV(connectivity=self.w).fit([self.y1, self.y2])
+        lG_mv = Geary_Local_MV(connectivity=self.w).fit([self.y1, self.y2])
         print(lG_mv.p_sim[0])
         self.assertAlmostEqual(lG_mv.localG[0], 0.4096931479581422)
         self.assertAlmostEqual(lG_mv.p_sim[0], 0.211)
         
 suite = unittest.TestSuite()
 test_classes = [
-    Local_Geary_MV_Tester
+    Geary_Local_MV_Tester
 ]
 for i in test_classes:
     a = unittest.TestLoader().loadTestsFromTestCase(i)

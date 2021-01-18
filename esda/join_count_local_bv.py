@@ -15,7 +15,7 @@ from esda.crand import (
 PERMUTATIONS = 999
 
 
-class Local_Join_Count_BV(BaseEstimator):
+class Join_Count_Local_BV(BaseEstimator):
 
     """Univariate Local Join Count Statistic"""
 
@@ -158,10 +158,6 @@ class Local_Join_Count_BV(BaseEstimator):
                 raise NotImplementedError(f'The requested LJC method ({case}) \
                 is not currently supported!')
 
-        del (self.n, self.keep_simulations, self.n_jobs, 
-             self.permutations, self.seed, self.w, self.x,
-             self.z, self.connectivity, self.rjoins)
-                
         return self
 
     @staticmethod

@@ -7,7 +7,7 @@ from sklearn.base import BaseEstimator
 import libpysal as lp
 
 
-class Local_Geary_MV(BaseEstimator):
+class Geary_Local_MV(BaseEstimator):
 
     """Local Geary - Multivariate"""
 
@@ -95,9 +95,6 @@ class Local_Geary_MV(BaseEstimator):
             low_extreme = (permutations - larger) < larger
             larger[low_extreme] = permutations - larger[low_extreme]
             self.p_sim = (larger + 1.0) / (permutations + 1.0)
-
-        del (self.n, self.permutations, self.Gs,
-             self.connectivity)
 
         return self
 

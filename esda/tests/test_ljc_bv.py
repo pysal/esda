@@ -4,7 +4,7 @@ import numpy as np
 from libpysal.weights.util import lat2W
 from libpysal.common import pandas
 
-from ..local_join_count_bv import Local_Join_Count_BV
+from esda.join_count_local_bv import Join_Count_Local_BV
 
 PANDAS_EXTINCT = pandas is None
 
@@ -19,8 +19,8 @@ class Local_Join_Counts_BV_Tester(unittest.TestCase):
     def test_Local_Join_Counts_BV(self):
             """Test method"""
             np.random.seed(12345)
-            ljc_bv_case1 = Local_Join_Count_BV(connectivity=self.w).fit(self.x, self.z, case="BJC")
-            ljc_bv_case2 = Local_Join_Count_BV(connectivity=self.w).fit(self.x, self.z, case="CLC")
+            ljc_bv_case1 = Join_Count_Local_BV(connectivity=self.w).fit(self.x, self.z, case="BJC")
+            ljc_bv_case2 = Join_Count_Local_BV(connectivity=self.w).fit(self.x, self.z, case="CLC")
             assert np.array_equal(ljc_bv_case1.LJC, [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0])
             assert np.array_equal(ljc_bv_case2.LJC, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 2])
             
