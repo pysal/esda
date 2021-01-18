@@ -12,7 +12,7 @@ from esda.crand import (
 PERMUTATIONS = 999
 
 
-class Join_Count_Local(BaseEstimator):
+class Join_Counts_Local(BaseEstimator):
 
     """Univariate Local Join Count Statistic"""
 

@@ -13,14 +13,14 @@ from esda.crand import (
 PERMUTATIONS = 999
 
 
-class Join_Count_Local_MV(BaseEstimator):
+class Join_Counts_Local_MV(BaseEstimator):
 
     """Multivariate Local Join Count Statistic"""
 
     def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
                  keep_simulations=True, seed=None):
         """
-        Initialize a Local_Join_Count_MV estimator
+        Initialize a Local_Join_Counts_MV estimator
         Arguments
         ---------
         connectivity     : scipy.sparse matrix object
@@ -74,7 +74,7 @@ class Join_Count_Local_MV(BaseEstimator):
         >>> x[0:8] = 0
         >>> z = [0,1,0,1,1,1,1,1,0,0,1,1,0,0,1,1]
         >>> y = [0,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1]
-        >>> LJC_MV = Local_Join_Count_MV(connectivity=w).fit([x, y, z])
+        >>> LJC_MV = Local_Join_Counts_MV(connectivity=w).fit([x, y, z])
         >>> LJC_MV.LJC
         >>> LJC_MV.p_sim
 
@@ -90,7 +90,7 @@ class Join_Count_Local_MV(BaseEstimator):
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10973), 'donq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Suicids'] > 55564), 'suic5'] = 1
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_MV = Local_Join_Count_MV(connectivity=w).fit([guerry_ds['infq5'], guerry_ds['donq5'], guerry_ds['suic5']])
+        >>> LJC_MV = Local_Join_Counts_MV(connectivity=w).fit([guerry_ds['infq5'], guerry_ds['donq5'], guerry_ds['suic5']])
         >>> LJC_MV.LJC
         >>> LJC_MV.p_sim
         """

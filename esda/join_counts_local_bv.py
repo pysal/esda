@@ -15,14 +15,14 @@ from esda.crand import (
 PERMUTATIONS = 999
 
 
-class Join_Count_Local_BV(BaseEstimator):
+class Join_Counts_Local_BV(BaseEstimator):
 
     """Univariate Local Join Count Statistic"""
 
     def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
                  keep_simulations=True, seed=None):
         """
-        Initialize a Local_Join_Count_BV estimator
+        Initialize a Local_Join_Counts_BV estimator
         Arguments
         ---------
         connectivity     : scipy.sparse matrix object
@@ -77,8 +77,8 @@ class Join_Count_Local_BV(BaseEstimator):
         >>> x = np.ones(16)
         >>> x[0:8] = 0
         >>> z = [0,1,0,1,1,1,1,1,0,0,1,1,0,0,1,1]
-        >>> LJC_BV_C1 = Local_Join_Count_BV(connectivity=w).fit(x, z, case="BJC")
-        >>> LJC_BV_C2 = Local_Join_Count_BV(connectivity=w).fit(x, z, case="CLC")
+        >>> LJC_BV_C1 = Local_Join_Counts_BV(connectivity=w).fit(x, z, case="BJC")
+        >>> LJC_BV_C2 = Local_Join_Counts_BV(connectivity=w).fit(x, z, case="CLC")
         >>> LJC_BV_C1.LJC
         >>> LJC_BV_C1.p_sim
         >>> LJC_BV_C2.LJC
@@ -89,7 +89,7 @@ class Join_Count_Local_BV(BaseEstimator):
         >>> import geopandas as gpd
         >>> commpop = gpd.read_file("https://github.com/jeffcsauer/GSOC2020/raw/master/validation/data/commpop.gpkg")
         >>> w = libpysal.weights.Queen.from_dataframe(commpop)
-        >>> LJC_BV_Case1 = Local_Join_Count_BV(connectivity=w).fit(commpop['popneg'], commpop['popplus'], case='BJC')
+        >>> LJC_BV_Case1 = Local_Join_Counts_BV(connectivity=w).fit(commpop['popneg'], commpop['popplus'], case='BJC')
         >>> LJC_BV_Case1.LJC
         >>> LJC_BV_Case1.p_sim
 
@@ -103,7 +103,7 @@ class Join_Count_Local_BV(BaseEstimator):
         >>> guerry_ds.loc[(guerry_ds['Infants'] > 23574), 'infq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10973), 'donq5'] = 1
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_BV_Case2 = Local_Join_Count_BV(connectivity=w).fit(guerry_ds['infq5'], guerry_ds['donq5'], case='CLC')
+        >>> LJC_BV_Case2 = Local_Join_Counts_BV(connectivity=w).fit(guerry_ds['infq5'], guerry_ds['donq5'], case='CLC')
         >>> LJC_BV_Case2.LJC
         >>> LJC_BV_Case2.p_sim
         """
