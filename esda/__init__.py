@@ -4,6 +4,17 @@ __version__ = "2.3.5"
 =================================================
 
 """
+from . import adbscan
+from .gamma import Gamma
+from .geary import Geary
+from .geary_local import Geary_Local
+from .geary_local_mv import Geary_Local_MV
+from .getisord import G, G_Local
+from .join_counts import Join_Counts
+from .join_counts_local import Join_Counts_Local
+from .join_counts_local_bv import Join_Counts_Local_BV
+from .join_counts_local_mv import Join_Counts_Local_MV
+from .lee import Spatial_Pearson, Spatial_Pearson_Local
 from .moran import (
     Moran,
     Moran_BV,
@@ -13,13 +24,6 @@ from .moran import (
     Moran_Rate,
     Moran_Local_Rate,
 )
-from .getisord import G, G_Local
-from .geary import Geary
-from .join_counts import Join_Counts
-from .gamma import Gamma
-from .util import fdr
 from .smaup import Smaup
-from .lee import Spatial_Pearson, Local_Spatial_Pearson
-from .silhouettes import (path_silhouette, boundary_silhouette,
-                          silhouette_alist, nearest_label)
-from . import adbscan
+from .silhouettes import (path_silhouette, boundary_silhouette)
+from .util import fdr
