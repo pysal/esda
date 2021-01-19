@@ -1069,12 +1069,14 @@ class Moran_Local(object):
         wi2 = np.asarray(W.multiply(W).sum(axis=1)).flatten()
         # ---------------------------------------------------------
         # Conditional randomization null, Sokal 1998, Eqs. A7 & A8
+        # assume that division is as written, so that
+        # a - b / (n - 1) means a - (b / (n-1))
         # ---------------------------------------------------------
         expectation = -(z**2 * wi) / ((n-1)*m2)
         variance = ((z/m2)**2 * 
                     (n/(n-2)) * 
-                    ((wi2 - wi**2) / (n-1)) *
-                    (m2 - z**2) / (n-1))
+                    (wi2 - (wi**2 / (n-1))) *
+                    (m2 - (z**2 / (n-1))))
 
         self.EIc = expectation
         self.VIc = variance
