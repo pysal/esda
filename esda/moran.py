@@ -217,7 +217,7 @@ class Moran(object):
         self.VI_norm = v_num / v_den - (1.0 / (n - 1)) ** 2
         self.seI_norm = self.VI_norm ** (1 / 2.0)
 
-        # variance under randomization
+        # variance under total randomization
         xd4 = z ** 4
         xd2 = z ** 2
         k_num = xd4.sum() / n
@@ -1005,6 +1005,7 @@ class Moran_Local(object):
             quads = [1, 3, 2, 4]
         self.quads = quads
         self.__quads()
+        self.__moments()
         if permutations:
             self.p_sim, self.rlisas = _crand_plus(
                 z,
@@ -1056,6 +1057,43 @@ class Moran_Local(object):
             + self.quads[2] * nn
             + self.quads[3] * pn
         )
+
+    def __moments(self):
+        W = self.w.sparse
+        z = self.z
+        warnings.simplefilter('always', sparse.SparseEfficiencyWarning)
+        n = self.n
+        m2 = (z*z).sum()/n
+        wi = numpy.asarray(W.sum(axis=1)).flatten()
+        wi2 = numpy.asarray(W.multiply(W).sum(axis=1)).flatten()
+        # ---------------------------------------------------------
+        # Conditional randomization null, Sokal 1998, Eqs. A7 & A8
+        # ---------------------------------------------------------
+        expectation = -(z**2 * wi) / ((n-1)*m2)
+        variance = ((z/m2)**2 * 
+                    (n/(n-2)) * 
+                    ((wi2 - wi**2) / (n-1)) *
+                    (m2 - z**2) / (n-1))
+
+        self.EIc = expectation
+        self.VIc = variance
+        # ---------------------------------------------------------
+        # Total randomization null, Sokal 1998, Eqs. A3 & A4*
+        # ---------------------------------------------------------
+        m4 = z**4/n
+        b2 = m4/m2**2
+            
+        expectation = -wi / (n-1)
+        variance_sokal = (wi2*(n - b2)/(n-1)
+                          + (wi**2 - wi2)*(2*b2 - n)/((n-1)*(n-2))
+                          - (-wi / (n-1))**2)
+        _wikh = wikh(W, sokal_correction=sokal_correction)
+        variance_anselin = (wi2 * (n - b2)/(n-1)
+                            + 2*_wikh*(2*b2 - n) / ((n-1)*(n-2))
+                            - wi**2/(n-1)**2)
+        self.EI = expectation
+        self.VI_sokal = variance_sokal
+        self.VI_anselin = variance_anselin
 
     @property
     def _statistic(self):
@@ -1622,6 +1660,95 @@ class Moran_Local_Rate(Moran_Local):
         for col in rate_df.columns:
             df[col] = rate_df[col]
 
+# --------------------------------------------------------------
+# Conditional Randomization Moment Estimators
+# --------------------------------------------------------------
+
+def _wikh_fast(W, sokal_correction=False):
+    """
+    This computes the outer product of weights for each observation.
+
+    w_{i(kh)} = \sum_{k \neq i}^n \sum_{h \neq i}^n w_ik * w_hk
+
+    if the sokal correction is used (default), then we also have h \neq k
+    Since the sokal correction introduces a simplification in the expression
+    where this is used, the defaults should always return the version in 
+    the original :cite:`Anselin1995 paper`.  
+
+    Arguments
+    ---------
+    W   :   scipy sparse matrix
+            a sparse matrix describing the spatial relationships 
+            between observations.
+    sokal_correction: bool
+            Whether to avoid self-neighbors in the summation of weights. 
+            If False (default), then the outer product of all weights
+            for observation i are used, regardless if they are of the form
+            w_hh or w_kk. 
+    
+    Returns
+    -------
+    (n,) length numpy.ndarray containing the result.
+    """
+    return _wikh_numba(W.shape[0], *W.nonzero(), W.data, 
+                       sokal_correction=sokal_correction)
+
+@_njit(fastmath=True)
+def _wikh_numba(n, row, col, data, sokal_correction=False):
+    """
+    This is a fast implementation of the wi(kh) function from
+    :cite:`Anselin1995`. 
+
+    This uses numpy to compute the outer product of each observation's 
+    weights, after removing the w_ii entry. Then, the sum of the outer
+    product is taken. If the sokal correction is requested, the trace
+    of the outer product matrix is removed from the result. 
+    """
+    result = numpy.empty((n,), dtype=data.dtype)
+    ixs = numpy.arange(n)
+    for i in ixs:
+        # all weights that are not the self weight
+        row_no_i = data[(row == i) & (col != i)]
+        # compute the pairwise product
+        pairwise_product = numpy.outer(row_no_i, row_no_i)
+        # get the sum overall (wik*wih)
+        result[i] = pairwise_product.sum() 
+        if sokal_correction: 
+            # minus the diagonal (wik*wih when k==h)
+            result[i] -= numpy.trace(pairwise_product)
+    return result/2
+
+def _wikh_slow(W, sokal_correction=False):
+    """
+    This is a slow implementation of the wi(kh) function from
+    :cite:`Anselin1995`
+
+    This does three nested for-loops over n, doing the literal operations
+    stated by the expression. 
+    """
+    W = W.toarray()
+    (n,n) = W.shape
+    result = numpy.empty((n,))
+    # for each observation
+    for i in range(n):
+        acc = 0
+        # we need the product wik
+        for k in range(n):
+            # excluding wii * wih
+            if i == k:
+                continue
+            # and wij
+            for h in range(n):
+                # excluding wik * wii
+                if (i == h):
+                    continue
+                if sokal_correction:
+                    # excluding wih * wih
+                    if (h == k):
+                        continue
+                acc += W[i,k] * W[i,h]
+        result[i] = acc
+    return result/2
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations

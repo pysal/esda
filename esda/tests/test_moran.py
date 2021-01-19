@@ -136,6 +136,30 @@ class Moran_Local_Tester(unittest.TestCase):
         self.assertAlmostEqual(lm.z_z_sim[0], -0.6990291160835514)
         self.assertAlmostEqual(lm.z_p_z_sim[0], 0.24226691753791396)
 
+    def test_local_moments(self):
+        lm = moran.Moran_Local(
+            self.y,
+            self.w,
+            transformation="r",
+            permutations=0,
+            seed=SEED,
+        )
+        
+        wikh_fast = moran._wikh_fast(lm.w)
+        wikh_slow = moran._wikh_slow(lm.w)
+        wikh_fast_c = moran._wikh_fast(lm.w, sokal_correction=True)
+        wikh_slow_c = moran._wikh_slow(lm.w, sokal_correction=True)
+
+        numpy.testing.assert_allclose(wikh_fast, wikh_slow)
+        numpy.testing.assert_allclose(wikh_fast, wikh_slow)
+
+        assert NotImplementedError()
+        numpy.testing.assert_allclose(lm.EIc, ...)
+        numpy.testing.assert_allclose(lm.VIc, ...)
+        numpy.testing.assert_allclose(lm.EI, ...)
+        numpy.testing.assert_allclose(lm.VI_sokal, ...)
+        numpy.testing.assert_allclose(lm.VI_anselin, ...)
+
 
 class Moran_Local_BV_Tester(unittest.TestCase):
     def setUp(self):
