@@ -1673,10 +1673,10 @@ def _wikh_fast(W, sokal_correction=False):
 
     w_{i(kh)} = \sum_{k \neq i}^n \sum_{h \neq i}^n w_ik * w_hk
 
-    if the sokal correction is used (default), then we also have h \neq k
-    Since the sokal correction introduces a simplification in the expression
-    where this is used, the defaults should always return the version in 
-    the original :cite:`Anselin1995 paper`.  
+    If the :cite:`Sokal1998` version is used, then we also have h \neq k
+    Since this version introduces a simplification in the expression
+    where this function is called, the defaults should always return
+    the version in the original :cite:`Anselin1995 paper`.  
 
     Arguments
     ---------
