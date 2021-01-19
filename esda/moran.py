@@ -1087,16 +1087,16 @@ class Moran_Local(object):
         b2 = m4/m2**2
             
         expectation = -wi / (n-1)
-        variance_sokal = (wi2*(n - b2)/(n-1)
+        # assume that "avoiding identical subscripts" in :cite:`Anselin1995` 
+        # includes i==h and i==k, we can use the form due to :cite:`Sokal1998` below. 
+        # wikh = _wikh_fast(W)
+        # variance_anselin = (wi2 * (n - b2)/(n-1)
+        #        + 2*wikh*(2*b2 - n) / ((n-1)*(n-2))
+        #                    - wi**2/(n-1)**2)
+        self.EI = expectation
+        self.VI = (wi2*(n - b2)/(n-1)
                           + (wi**2 - wi2)*(2*b2 - n)/((n-1)*(n-2))
                           - (-wi / (n-1))**2)
-        wikh = _wikh_fast(W)
-        variance_anselin = (wi2 * (n - b2)/(n-1)
-                + 2*wikh*(2*b2 - n) / ((n-1)*(n-2))
-                            - wi**2/(n-1)**2)
-        self.EI = expectation
-        self.VI_sokal = variance_sokal
-        self.VI_anselin = variance_anselin
 
     @property
     def _statistic(self):
