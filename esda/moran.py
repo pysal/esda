@@ -218,7 +218,7 @@ class Moran(object):
         self.VI_norm = v_num / v_den - (1.0 / (n - 1)) ** 2
         self.seI_norm = self.VI_norm ** (1 / 2.0)
 
-        # variance under total randomization
+        # variance under randomization
         xd4 = z ** 4
         xd2 = z ** 2
         k_num = xd4.sum() / n
