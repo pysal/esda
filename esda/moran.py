@@ -14,7 +14,7 @@ from .crand import (
     _prepare_univariate,
     _prepare_bivariate,
 )
-from warnings import warn
+from warnings import warn, simplefilter
 import scipy.stats as stats
 import numpy as np
 import tempfile
@@ -1061,7 +1061,7 @@ class Moran_Local(object):
     def __moments(self):
         W = self.w.sparse
         z = self.z
-        warnings.simplefilter('always', sparse.SparseEfficiencyWarning)
+        simplefilter('always', sparse.SparseEfficiencyWarning)
         n = self.n
         m2 = (z*z).sum()/n
         wi = numpy.asarray(W.sum(axis=1)).flatten()
