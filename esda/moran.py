@@ -15,6 +15,7 @@ from .crand import (
     _prepare_bivariate,
 )
 from warnings import warn, simplefilter
+from scipy import sparse
 import scipy.stats as stats
 import numpy as np
 import tempfile
@@ -1064,8 +1065,8 @@ class Moran_Local(object):
         simplefilter('always', sparse.SparseEfficiencyWarning)
         n = self.n
         m2 = (z*z).sum()/n
-        wi = numpy.asarray(W.sum(axis=1)).flatten()
-        wi2 = numpy.asarray(W.multiply(W).sum(axis=1)).flatten()
+        wi = np.asarray(W.sum(axis=1)).flatten()
+        wi2 = np.asarray(W.multiply(W).sum(axis=1)).flatten()
         # ---------------------------------------------------------
         # Conditional randomization null, Sokal 1998, Eqs. A7 & A8
         # ---------------------------------------------------------
@@ -1087,9 +1088,9 @@ class Moran_Local(object):
         variance_sokal = (wi2*(n - b2)/(n-1)
                           + (wi**2 - wi2)*(2*b2 - n)/((n-1)*(n-2))
                           - (-wi / (n-1))**2)
-        _wikh = wikh(W, sokal_correction=sokal_correction)
+        wikh = _wikh_fast(W)
         variance_anselin = (wi2 * (n - b2)/(n-1)
-                            + 2*_wikh*(2*b2 - n) / ((n-1)*(n-2))
+                + 2*wikh*(2*b2 - n) / ((n-1)*(n-2))
                             - wi**2/(n-1)**2)
         self.EI = expectation
         self.VI_sokal = variance_sokal
@@ -1704,18 +1705,18 @@ def _wikh_numba(n, row, col, data, sokal_correction=False):
     product is taken. If the sokal correction is requested, the trace
     of the outer product matrix is removed from the result. 
     """
-    result = numpy.empty((n,), dtype=data.dtype)
-    ixs = numpy.arange(n)
+    result = np.empty((n,), dtype=data.dtype)
+    ixs = np.arange(n)
     for i in ixs:
         # all weights that are not the self weight
         row_no_i = data[(row == i) & (col != i)]
         # compute the pairwise product
-        pairwise_product = numpy.outer(row_no_i, row_no_i)
+        pairwise_product = np.outer(row_no_i, row_no_i)
         # get the sum overall (wik*wih)
         result[i] = pairwise_product.sum() 
         if sokal_correction: 
             # minus the diagonal (wik*wih when k==h)
-            result[i] -= numpy.trace(pairwise_product)
+            result[i] -= np.trace(pairwise_product)
     return result/2
 
 def _wikh_slow(W, sokal_correction=False):
