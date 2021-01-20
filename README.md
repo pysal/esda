@@ -24,6 +24,9 @@ $ pip install esda
 
 - libpysal
 
+### Optional dependencies
+
+- `numba`, version `0.50.1` or greater, is used to accelerate computational geometry and permutation-based statistical inference. Unfortunately, versions before `0.50.1` may cause some local statistical functions to break, so please ensure you have `numba>=0.50.1` installed. 
 
 ## Contribute
 
