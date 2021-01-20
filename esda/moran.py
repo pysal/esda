@@ -1731,7 +1731,7 @@ def _wikh_slow(W, sokal_correction=False):
     """
     W = W.toarray()
     (n,n) = W.shape
-    result = numpy.empty((n,))
+    result = np.empty((n,))
     # for each observation
     for i in range(n):
         acc = 0
