@@ -932,14 +932,12 @@ class Moran_Local(object):
                    analytical expectation of Is under conditional permutation, 
                    from :cite:`sokal1998local`. Varies strongly by site, since it
                    conditions on z_i. We recommend using EI_sim, not EIc, 
-                   for analysis. This EIc is only provided for reproducibility, 
-                   but may be close to EI_sim in well-behaved datasets. 
+                   for analysis. This EIc is only provided for reproducibility.
     VIc          : array
                    analytical variance of Is under conditional permutation,
                    from :cite:`sokal1998local`. Varies strongly by site, since 
                    it conditions on z_i. We recommend using VI_sim, not VIc,
-                   for analysis. This VIc is only provided for reproducibility,
-                   but may be close to VI_sim in well-behaved datasets. 
+                   for analysis. This VIc is only provided for reproducibility.
     seI_sim      : array
                    (if permutations>0)
                    standard deviations of Is under permutations.
