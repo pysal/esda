@@ -917,6 +917,29 @@ class Moran_Local(object):
     VI_sim       : array
                    (if permutations>0)
                    variance of Is from permutations
+    EI           : array
+                   analytical expectation of Is under total permutation, 
+                   from :cite:`Anselin1995`. Is the same at each site, 
+                   and equal to the expectation of I itself when 
+                   transformation='r'. We recommend using EI_sim, not EI,
+                   for analysis. This EI is only provided for reproducibility.
+    VI           : array
+                   analytical variance of Is under total permutation, 
+                   from :cite:`Anselin1995`. Varies according only to 
+                   cardinality. We recommend using VI_sim, not VI, for
+                   analysis. This VI is only provided for reproducibility.
+    EIc          : array
+                   analytical expectation of Is under conditional permutation, 
+                   from :cite:`sokal1998local`. Varies strongly by site, since it
+                   conditions on z_i. We recommend using EI_sim, not EIc, 
+                   for analysis. This EIc is only provided for reproducibility, 
+                   but may be close to EI_sim in well-behaved datasets. 
+    VIc          : array
+                   analytical variance of Is under conditional permutation,
+                   from :cite:`sokal1998local`. Varies strongly by site, since 
+                   it conditions on z_i. We recommend using VI_sim, not VIc,
+                   for analysis. This VIc is only provided for reproducibility,
+                   but may be close to VI_sim in well-behaved datasets. 
     seI_sim      : array
                    (if permutations>0)
                    standard deviations of Is under permutations.
@@ -1088,7 +1111,7 @@ class Moran_Local(object):
             
         expectation = -wi / (n-1)
         # assume that "avoiding identical subscripts" in :cite:`Anselin1995` 
-        # includes i==h and i==k, we can use the form due to :cite:`Sokal1998` below. 
+        # includes i==h and i==k, we can use the form due to :cite:`sokal1998local` below. 
         # wikh = _wikh_fast(W)
         # variance_anselin = (wi2 * (n - b2)/(n-1)
         #        + 2*wikh*(2*b2 - n) / ((n-1)*(n-2))
@@ -1673,7 +1696,7 @@ def _wikh_fast(W, sokal_correction=False):
 
     w_{i(kh)} = \sum_{k \neq i}^n \sum_{h \neq i}^n w_ik * w_hk
 
-    If the :cite:`Sokal1998` version is used, then we also have h \neq k
+    If the :cite:`sokal1998local` version is used, then we also have h \neq k
     Since this version introduces a simplification in the expression
     where this function is called, the defaults should always return
     the version in the original :cite:`Anselin1995 paper`.  
