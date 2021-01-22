@@ -14,7 +14,8 @@ from .crand import (
     _prepare_univariate,
     _prepare_bivariate,
 )
-from warnings import warn
+from warnings import warn, simplefilter
+from scipy import sparse
 import scipy.stats as stats
 import numpy as np
 import tempfile
@@ -916,6 +917,27 @@ class Moran_Local(object):
     VI_sim       : array
                    (if permutations>0)
                    variance of Is from permutations
+    EI           : array
+                   analytical expectation of Is under total permutation, 
+                   from :cite:`Anselin1995`. Is the same at each site, 
+                   and equal to the expectation of I itself when 
+                   transformation='r'. We recommend using EI_sim, not EI,
+                   for analysis. This EI is only provided for reproducibility.
+    VI           : array
+                   analytical variance of Is under total permutation, 
+                   from :cite:`Anselin1995`. Varies according only to 
+                   cardinality. We recommend using VI_sim, not VI, for
+                   analysis. This VI is only provided for reproducibility.
+    EIc          : array
+                   analytical expectation of Is under conditional permutation, 
+                   from :cite:`sokal1998local`. Varies strongly by site, since it
+                   conditions on z_i. We recommend using EI_sim, not EIc, 
+                   for analysis. This EIc is only provided for reproducibility.
+    VIc          : array
+                   analytical variance of Is under conditional permutation,
+                   from :cite:`sokal1998local`. Varies strongly by site, since 
+                   it conditions on z_i. We recommend using VI_sim, not VIc,
+                   for analysis. This VIc is only provided for reproducibility.
     seI_sim      : array
                    (if permutations>0)
                    standard deviations of Is under permutations.
@@ -1005,6 +1027,7 @@ class Moran_Local(object):
             quads = [1, 3, 2, 4]
         self.quads = quads
         self.__quads()
+        self.__moments()
         if permutations:
             self.p_sim, self.rlisas = _crand_plus(
                 z,
@@ -1056,6 +1079,45 @@ class Moran_Local(object):
             + self.quads[2] * nn
             + self.quads[3] * pn
         )
+
+    def __moments(self):
+        W = self.w.sparse
+        z = self.z
+        simplefilter('always', sparse.SparseEfficiencyWarning)
+        n = self.n
+        m2 = (z*z).sum()/n
+        wi = np.asarray(W.sum(axis=1)).flatten()
+        wi2 = np.asarray(W.multiply(W).sum(axis=1)).flatten()
+        # ---------------------------------------------------------
+        # Conditional randomization null, Sokal 1998, Eqs. A7 & A8
+        # assume that division is as written, so that
+        # a - b / (n - 1) means a - (b / (n-1))
+        # ---------------------------------------------------------
+        expectation = -(z**2 * wi) / ((n-1)*m2)
+        variance = ((z/m2)**2 * 
+                    (n/(n-2)) * 
+                    (wi2 - (wi**2 / (n-1))) *
+                    (m2 - (z**2 / (n-1))))
+
+        self.EIc = expectation
+        self.VIc = variance
+        # ---------------------------------------------------------
+        # Total randomization null, Sokal 1998, Eqs. A3 & A4*
+        # ---------------------------------------------------------
+        m4 = z**4/n
+        b2 = m4/m2**2
+            
+        expectation = -wi / (n-1)
+        # assume that "avoiding identical subscripts" in :cite:`Anselin1995` 
+        # includes i==h and i==k, we can use the form due to :cite:`sokal1998local` below. 
+        # wikh = _wikh_fast(W)
+        # variance_anselin = (wi2 * (n - b2)/(n-1)
+        #        + 2*wikh*(2*b2 - n) / ((n-1)*(n-2))
+        #                    - wi**2/(n-1)**2)
+        self.EI = expectation
+        self.VI = (wi2*(n - b2)/(n-1)
+                          + (wi**2 - wi2)*(2*b2 - n)/((n-1)*(n-2))
+                          - (-wi / (n-1))**2)
 
     @property
     def _statistic(self):
@@ -1622,6 +1684,95 @@ class Moran_Local_Rate(Moran_Local):
         for col in rate_df.columns:
             df[col] = rate_df[col]
 
+# --------------------------------------------------------------
+# Conditional Randomization Moment Estimators
+# --------------------------------------------------------------
+
+def _wikh_fast(W, sokal_correction=False):
+    """
+    This computes the outer product of weights for each observation.
+
+    w_{i(kh)} = \sum_{k \neq i}^n \sum_{h \neq i}^n w_ik * w_hk
+
+    If the :cite:`sokal1998local` version is used, then we also have h \neq k
+    Since this version introduces a simplification in the expression
+    where this function is called, the defaults should always return
+    the version in the original :cite:`Anselin1995 paper`.  
+
+    Arguments
+    ---------
+    W   :   scipy sparse matrix
+            a sparse matrix describing the spatial relationships 
+            between observations.
+    sokal_correction: bool
+            Whether to avoid self-neighbors in the summation of weights. 
+            If False (default), then the outer product of all weights
+            for observation i are used, regardless if they are of the form
+            w_hh or w_kk. 
+    
+    Returns
+    -------
+    (n,) length numpy.ndarray containing the result.
+    """
+    return _wikh_numba(W.shape[0], *W.nonzero(), W.data, 
+                       sokal_correction=sokal_correction)
+
+@_njit(fastmath=True)
+def _wikh_numba(n, row, col, data, sokal_correction=False):
+    """
+    This is a fast implementation of the wi(kh) function from
+    :cite:`Anselin1995`. 
+
+    This uses numpy to compute the outer product of each observation's 
+    weights, after removing the w_ii entry. Then, the sum of the outer
+    product is taken. If the sokal correction is requested, the trace
+    of the outer product matrix is removed from the result. 
+    """
+    result = np.empty((n,), dtype=data.dtype)
+    ixs = np.arange(n)
+    for i in ixs:
+        # all weights that are not the self weight
+        row_no_i = data[(row == i) & (col != i)]
+        # compute the pairwise product
+        pairwise_product = np.outer(row_no_i, row_no_i)
+        # get the sum overall (wik*wih)
+        result[i] = pairwise_product.sum() 
+        if sokal_correction: 
+            # minus the diagonal (wik*wih when k==h)
+            result[i] -= np.trace(pairwise_product)
+    return result/2
+
+def _wikh_slow(W, sokal_correction=False):
+    """
+    This is a slow implementation of the wi(kh) function from
+    :cite:`Anselin1995`
+
+    This does three nested for-loops over n, doing the literal operations
+    stated by the expression. 
+    """
+    W = W.toarray()
+    (n,n) = W.shape
+    result = np.empty((n,))
+    # for each observation
+    for i in range(n):
+        acc = 0
+        # we need the product wik
+        for k in range(n):
+            # excluding wii * wih
+            if i == k:
+                continue
+            # and wij
+            for h in range(n):
+                # excluding wik * wii
+                if (i == h):
+                    continue
+                if sokal_correction:
+                    # excluding wih * wih
+                    if (h == k):
+                        continue
+                acc += W[i,k] * W[i,h]
+        result[i] = acc
+    return result/2
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations
