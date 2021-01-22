@@ -1,4 +1,4 @@
-esda.boundary\_silhouette
+﻿esda.boundary\_silhouette
 =========================
 
 .. currentmodule:: esda

@@ -59,6 +59,31 @@ Join Count Statistics
 
     esda.Join_Counts
 
+Join Count Local Statistics
+---------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.Join_Counts_Local
+
+Join Count Multivariate Statistics
+-----------------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.Join_Counts_Local_MV
+
+
+LOSH Statistics
+---------------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.LOSH
+
 Modifiable Areal Unit Tests
 ---------------------------
 

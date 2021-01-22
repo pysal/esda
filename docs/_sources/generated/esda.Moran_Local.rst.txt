@@ -1,4 +1,4 @@
-esda.Moran\_Local
+﻿esda.Moran\_Local
 =================
 
 .. currentmodule:: esda

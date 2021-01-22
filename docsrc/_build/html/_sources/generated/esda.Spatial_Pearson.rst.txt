@@ -1,4 +1,4 @@
-esda.Spatial\_Pearson
+﻿esda.Spatial\_Pearson
 =====================
 
 .. currentmodule:: esda

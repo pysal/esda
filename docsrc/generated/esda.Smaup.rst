@@ -1,4 +1,4 @@
-esda.Smaup
+﻿esda.Smaup
 ==========
 
 .. currentmodule:: esda
