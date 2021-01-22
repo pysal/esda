@@ -1,4 +1,4 @@
-esda.Geary
+﻿esda.Geary
 ==========
 
 .. currentmodule:: esda

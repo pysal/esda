@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>esda.Join_Counts &#8212; esda v2.3.0 Manual</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.Join_Counts &#8212; esda v2.3.6 Manual</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="esda.Smaup" href="esda.Smaup.html" />
+    <link rel="next" title="esda.Join_Counts_Local" href="esda.Join_Counts_Local.html" />
     <link rel="prev" title="esda.G_Local" href="esda.G_Local.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -75,6 +75,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -109,6 +112,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -162,9 +168,9 @@
       
   <div class="section" id="esda-join-counts">
 <h1>esda.Join_Counts<a class="headerlink" href="#esda-join-counts" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="esda.Join_Counts">
-<em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Join_Counts</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Join_Counts" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">Join_Counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">permutations</span><span class="o">=</span><span class="default_value">999</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Join_Counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Binary Join Counts</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -173,7 +179,7 @@
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>spatial weights instance</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
 </dd>
 </dl>
 </dd>
@@ -230,15 +236,15 @@
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
 </dd>
-<dt><strong>bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-black joins</p>
+<dt><strong>bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-black joins</p>
 </dd>
-<dt><strong>ww</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of white-white joins</p>
+<dt><strong>ww</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of white-white joins</p>
 </dd>
-<dt><strong>bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-white joins</p>
+<dt><strong>bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-white joins</p>
 </dd>
-<dt><strong>J</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of joins</p>
+<dt><strong>J</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of joins</p>
 </dd>
 <dt><strong>sim_bb</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of bb values for permuted samples</p>
@@ -250,11 +256,11 @@ alternative: the observed bb is greater than under randomness</p>
 </dd>
 </dl>
 </dd>
-<dt><strong>mean_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bb values</p>
+<dt><strong>mean_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bb values</p>
 </dd>
-<dt><strong>min_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bb values</p>
+<dt><strong>min_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bb values</p>
 </dd>
-<dt><strong>max_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bb values</p>
+<dt><strong>max_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bb values</p>
 </dd>
 <dt><strong>sim_bw</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
 vector of bw values for permuted samples</p>
@@ -264,30 +270,30 @@ p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed bw is greater than under randomness</p>
 </dd>
-<dt><strong>mean_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bw values</p>
+<dt><strong>mean_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bw values</p>
 </dd>
-<dt><strong>min_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bw values</p>
+<dt><strong>min_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bw values</p>
 </dd>
-<dt><strong>max_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bw values</p>
+<dt><strong>max_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bw values</p>
 </dd>
-<dt><strong>chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Chi-square statistic on contingency table for join counts</p>
+<dt><strong>chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Chi-square statistic on contingency table for join counts</p>
 </dd>
-<dt><strong>chi2_p</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Analytical p-value for chi2</p>
+<dt><strong>chi2_p</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Analytical p-value for chi2</p>
 </dd>
-<dt><strong>chi2_dof</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Degrees of freedom for analytical chi2</p>
+<dt><strong>chi2_dof</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Degrees of freedom for analytical chi2</p>
 </dd>
 <dt><strong>crosstab</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataFrame</span></code></span></dt><dd><p>Contingency table for observed join counts</p>
 </dd>
 <dt><strong>expected</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataFrame</span></code></span></dt><dd><p>Expected contingency table for the null</p>
 </dd>
-<dt><strong>p_sim_chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value for chi2 under random spatial permutations</p>
+<dt><strong>p_sim_chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value for chi2 under random spatial permutations</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="esda.Join_Counts.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Join_Counts.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">permutations</span><span class="o">=</span><span class="default_value">999</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.Join_Counts.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -298,7 +304,7 @@ alternative: the observed bw is greater than under randomness</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.Join_Counts.__init__" title="esda.Join_Counts.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, y, w[, permutations])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#esda.Join_Counts.__init__" title="esda.Join_Counts.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(y, w[, permutations])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, cols[, w, inplace, pvalue, outvals])</p></td>
@@ -330,7 +336,7 @@ alternative: the observed bw is greater than under randomness</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.3.<br/>
     </p>
   </div>
 </footer>

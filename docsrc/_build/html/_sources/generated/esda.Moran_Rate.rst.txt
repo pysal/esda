@@ -1,4 +1,4 @@
-esda.Moran\_Rate
+﻿esda.Moran\_Rate
 ================
 
 .. currentmodule:: esda

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>esda.G_Local &#8212; esda v2.3.0 Manual</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.G_Local &#8212; esda v2.3.6 Manual</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -75,6 +75,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -109,6 +112,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -162,9 +168,9 @@
       
   <div class="section" id="esda-g-local">
 <h1>esda.G_Local<a class="headerlink" href="#esda-g-local" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="esda.G_Local">
-<em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">G_Local</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">transform='R'</em>, <em class="sig-param">permutations=999</em>, <em class="sig-param">star=False</em>, <em class="sig-param">keep_simulations=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G_Local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G_Local" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">G_Local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">'R'</span></em>, <em class="sig-param"><span class="n">permutations</span><span class="o">=</span><span class="default_value">999</span></em>, <em class="sig-param"><span class="n">star</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">keep_simulations</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G_Local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G_Local" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generalized Local G Autocorrelation</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -176,10 +182,10 @@ and is assumed to be aligned with y</p>
 </dd>
 <dt><strong>transform</strong><span class="classifier">{‘R’, ‘B’}</span></dt><dd><p>the type of w, either ‘B’ (binary) or ‘R’ (row-standardized)</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of random permutations for calculating
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of random permutations for calculating
 pseudo p values</p>
 </dd>
-<dt><strong>star</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether or not to include focal observation in sums (default: False)</p>
+<dt><strong>star</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.9)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether or not to include focal observation in sums (default: False)</p>
 </dd>
 </dl>
 </dd>
@@ -277,11 +283,11 @@ For row-standardized weights object, the weight value for self is
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DistanceBand</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original weights object</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of permutations</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of permutations</p>
 </dd>
 <dt><strong>Gs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, the value of the orginal G statistic in Getis &amp; Ord (1992)</p>
 </dd>
-<dt><strong>EGs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>expected value of Gs under normality assumption
+<dt><strong>EGs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>expected value of Gs under normality assumption
 the values is scalar, since the expectation is identical
 across all observations</p>
 </dd>
@@ -313,9 +319,9 @@ permutations (one-sided)</p>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="esda.G_Local.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">transform='R'</em>, <em class="sig-param">permutations=999</em>, <em class="sig-param">star=False</em>, <em class="sig-param">keep_simulations=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G_Local.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G_Local.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">transform</span><span class="o">=</span><span class="default_value">'R'</span></em>, <em class="sig-param"><span class="n">permutations</span><span class="o">=</span><span class="default_value">999</span></em>, <em class="sig-param"><span class="n">star</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">keep_simulations</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G_Local.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G_Local.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -326,13 +332,13 @@ permutations (one-sided)</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.G_Local.__init__" title="esda.G_Local.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, y, w[, transform, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#esda.G_Local.__init__" title="esda.G_Local.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(y, w[, transform, permutations, …])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, cols[, w, inplace, pvalue, outvals])</p></td>
 <td><p>Function to compute a G_Local statistic on a dataframe</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc</span></code>(self)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc</span></code>()</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -361,7 +367,7 @@ permutations (one-sided)</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.3.<br/>
     </p>
   </div>
 </footer>

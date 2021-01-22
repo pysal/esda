@@ -1,4 +1,4 @@
-esda.G
+﻿esda.G
 ======
 
 .. currentmodule:: esda

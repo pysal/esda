@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>esda.G &#8212; esda v2.3.0 Manual</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.G &#8212; esda v2.3.6 Manual</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -75,6 +75,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -109,6 +112,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -162,9 +168,9 @@
       
   <div class="section" id="esda-g">
 <h1>esda.G<a class="headerlink" href="#esda-g" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="esda.G">
-<em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">G</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">esda.</code><code class="sig-name descname">G</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">permutations</span><span class="o">=</span><span class="default_value">999</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global G Autocorrelation Statistic</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -173,7 +179,7 @@
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>DistanceBand W spatial weights based on distance band</p>
 </dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of random permutations for calculating pseudo p_values</p>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of random permutations for calculating pseudo p_values</p>
 </dd>
 </dl>
 </dd>
@@ -221,42 +227,42 @@
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>DistanceBand W spatial weights based on distance band</p>
 </dd>
-<dt><strong>permutation</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of permutations</p>
+<dt><strong>permutation</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of permutations</p>
 </dd>
-<dt><strong>G</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>the value of statistic</p>
+<dt><strong>G</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>the value of statistic</p>
 </dd>
-<dt><strong>EG</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>the expected value of statistic</p>
+<dt><strong>EG</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>the expected value of statistic</p>
 </dd>
-<dt><strong>VG</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>the variance of G under normality assumption</p>
+<dt><strong>VG</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>the variance of G under normality assumption</p>
 </dd>
-<dt><strong>z_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard normal test statistic</p>
+<dt><strong>z_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard normal test statistic</p>
 </dd>
-<dt><strong>p_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value under normality assumption (one-sided)</p>
+<dt><strong>p_norm</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value under normality assumption (one-sided)</p>
 </dd>
 <dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations &gt; 0)
 vector of G values for permutated samples</p>
 </dd>
-<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value based on permutations (one-sided)
+<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value based on permutations (one-sided)
 null: spatial randomness
 alternative: the observed G is extreme it is either extremely high or extremely low</p>
 </dd>
-<dt><strong>EG_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average value of G from permutations</p>
+<dt><strong>EG_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average value of G from permutations</p>
 </dd>
-<dt><strong>VG_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>variance of G from permutations</p>
+<dt><strong>VG_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>variance of G from permutations</p>
 </dd>
-<dt><strong>seG_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard deviation of G under permutations.</p>
+<dt><strong>seG_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard deviation of G under permutations.</p>
 </dd>
-<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standardized G based on permutations</p>
+<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standardized G based on permutations</p>
 </dd>
-<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value based on standard normal approximation from
+<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value based on standard normal approximation from
 permutations (one-sided)</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="esda.G.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em>, <em class="sig-param">w</em>, <em class="sig-param">permutations=999</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">permutations</span><span class="o">=</span><span class="default_value">999</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/getisord.html#G.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.G.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -267,7 +273,7 @@ permutations (one-sided)</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.G.__init__" title="esda.G.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, y, w[, permutations])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#esda.G.__init__" title="esda.G.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(y, w[, permutations])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code>(df, cols[, w, inplace, pvalue, outvals])</p></td>
@@ -299,7 +305,7 @@ permutations (one-sided)</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.3.<br/>
     </p>
   </div>
 </footer>

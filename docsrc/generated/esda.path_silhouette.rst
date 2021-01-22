@@ -1,4 +1,4 @@
-esda.path\_silhouette
+﻿esda.path\_silhouette
 =====================
 
 .. currentmodule:: esda

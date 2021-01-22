@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>esda.boundary_silhouette &#8212; esda v2.3.0 Manual</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.boundary_silhouette &#8212; esda v2.3.6 Manual</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="esda.nearest_label" href="esda.nearest_label.html" />
+    <link rel="next" title="esda.path_silhouette" href="esda.path_silhouette.html" />
     <link rel="prev" title="esda.Moran_Local_Rate" href="esda.Moran_Local_Rate.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -75,6 +75,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -109,6 +112,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -162,9 +168,9 @@
       
   <div class="section" id="esda-boundary-silhouette">
 <h1>esda.boundary_silhouette<a class="headerlink" href="#esda-boundary-silhouette" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="esda.boundary_silhouette">
-<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">boundary_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">metric=&lt;function euclidean_distances at 0x7f5bd4d609e0&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#boundary_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.boundary_silhouette" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">esda.</code><code class="sig-name descname">boundary_silhouette</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">labels</em>, <em class="sig-param">W</em>, <em class="sig-param">metric=&lt;function euclidean_distances&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/silhouettes.html#boundary_silhouette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#esda.boundary_silhouette" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the observation-level boundary silhouette score <a class="bibtex reference internal" href="../references.html#wolf2019geosilhouettes" id="id1">[WKR19]</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -217,7 +223,7 @@ an (N,N) distance matrix already.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.3.<br/>
     </p>
   </div>
 </footer>

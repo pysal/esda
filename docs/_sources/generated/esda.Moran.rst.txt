@@ -1,4 +1,4 @@
-esda.Moran
+﻿esda.Moran
 ==========
 
 .. currentmodule:: esda

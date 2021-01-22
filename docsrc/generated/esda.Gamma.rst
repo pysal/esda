@@ -1,4 +1,4 @@
-esda.Gamma
+﻿esda.Gamma
 ==========
 
 .. currentmodule:: esda

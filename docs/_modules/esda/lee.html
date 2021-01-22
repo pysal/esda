@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>esda.lee &#8212; esda v2.3.0 Manual</title>
-    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.lee &#8212; esda v2.3.6 Manual</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.3.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -73,6 +73,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -82,6 +85,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
@@ -97,6 +106,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
@@ -107,6 +122,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistic">Geary Statistic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-multivariate-statistics">Join Count Multivariate Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
@@ -265,10 +283,10 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">Z</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">ctc</span> <span class="o">@</span> <span class="n">Z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">ones</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">ctc</span> <span class="o">@</span> <span class="n">ones</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Local_Spatial_Pearson"><a class="viewcode-back" href="../../generated/esda.Local_Spatial_Pearson.html#esda.Local_Spatial_Pearson">[docs]</a><span class="k">class</span> <span class="nc">Local_Spatial_Pearson</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Spatial_Pearson_Local</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Local Spatial Pearson Statistic&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Local_Spatial_Pearson.__init__"><a class="viewcode-back" href="../../generated/esda.Local_Spatial_Pearson.html#esda.Local_Spatial_Pearson.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a spatial local pearson estimator</span>
 
@@ -305,7 +323,7 @@
 <span class="sd">        Technical details and derivations can be found in :cite:`Lee2001`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span> <span class="o">=</span> <span class="n">connectivity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
 
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -401,7 +419,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_statistic</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">Z</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">W</span> <span class="o">@</span> <span class="n">Z</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">Z</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">@</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">W</span> <span class="o">@</span> <span class="n">Z</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
 
 
 <span class="c1"># --------------------------------------------------------------</span>
@@ -429,7 +447,7 @@
     <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2478879</span><span class="p">)</span>
     <span class="n">testglobal</span> <span class="o">=</span> <span class="n">Spatial_Pearson</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2478879</span><span class="p">)</span>
-    <span class="n">testlocal</span> <span class="o">=</span> <span class="n">Local_Spatial_Pearson</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">testlocal</span> <span class="o">=</span> <span class="n">Spatial_Pearson_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -447,7 +465,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.4.3.<br/>
     </p>
   </div>
 </footer>
