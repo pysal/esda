@@ -1,7 +1,7 @@
 sphinx>=1.4.3
 sphinxcontrib-napoleon
 sphinxcontrib-bibtex<2.0.0
-sphinxcontrib-bibtex==1.0.0
+sphinxcontrib-bibtex==2.2.0
 numpydoc
 nbsphinx
 sphinx_bootstrap_theme
