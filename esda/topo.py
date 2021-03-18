@@ -4,6 +4,7 @@ from sklearn.utils import check_array
 from scipy.stats import mode as most_common_value
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from libpysal import weights
 
 
 def _resolve_metric(X, coordinates, metric):
@@ -196,6 +197,8 @@ def prominence(
     X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
 
+    connectivity = _check_connectivity(connectivity, metric)
+
     # sort the variable in ascending order
     sort_order = numpy.argsort(-X)
 
@@ -361,8 +364,34 @@ def to_elevation(X, middle="mean", metric="euclidean"):
                     'numpy has no "{}" function to compute the middle'
                     " of a point cloud.".format(middle)
                 )
-        distance_from_center = distance.cdist(X, middle_point.reshape(1, -1))
-        return distance_from_center
+        distance_from_center = distance.cdist(
+            X, middle_point.reshape(1, -1), metric=metric
+        )
+        return to_elevation(distance_from_center.squeeze())
+
+
+def _check_connectivity(connectivity_or_coordinates):
+    """
+    Check that connectivity provided is either:
+    1. a sparse graph from scipy.sparse
+    2. a weights object from libpysal that we need to cast to a scipy.sparse matrix
+    3. a set of coordinates that we need to build the delaunay triangulation
+       and then return the graph.
+    """
+    from scipy.sparse import issparse, csc_matrix
+
+    if issparse(connectivity_or_coordinates):
+        shape = connectivity_or_coordinates.shape
+        assert (
+            shape[0] == shape[1]
+        ), "Connectivity matrix must be square, but is {}".format(shape)
+        return connectivity_or_coordinates
+    if issubclass(type(connectivity_or_coordinates), weights.W):
+        return connectivity_or_coordinates.sparse
+    else:
+        from libpysal.weights import Voronoi
+
+        return _check_connectivity(Voronoi(connectivity_or_coordinates))
 
 
 if __name__ == "__main__":
