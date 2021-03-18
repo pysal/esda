@@ -73,7 +73,7 @@ def _resolve_metric(X, coordinates, metric):
 
 def isolation(X, coordinates, metric="euclidean", middle="median", return_all=False):
     X = check_array(X, ensure_2d=False)
-    X = to_elevation(X, metric=metric, middle=middle).squeeze()
+    X = to_elevation(X, middle=middle).squeeze()
     try:
         from rtree.index import Index as SpatialIndex
     except ImportError:
@@ -122,11 +122,10 @@ def prominence(
     return_dominating_peak=False,
     gdf=None,
     verbose=False,
-    middle="median",
-    metric="eucliean",
+    middle="mean",
 ):
     X = check_array(X, ensure_2d=False).squeeze()
-    X = to_elevation(X, middle=middle, metric=metric).squeeze()
+    X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
 
     # sort the variable in ascending order
@@ -245,12 +244,41 @@ def prominence(
     retval = [prominence]
     if return_saddles:
         retval.append(key_cols)
+    if return_peaks:
+        retval.append(peaks)
     if return_dominating_peak:
         retval.append(dominating_peak)
     return retval
 
 
-def to_elevation(X, middle="median", metric="euclidean"):
+def to_elevation(X, middle="mean", metric="euclidean"):
+    """
+    Compute the "elevation" of coordinates in p-dimensional space.
+
+    For 1 dimensional X, this simply sets the zero point at the minimum value
+    for the data. As an analogue to physical elevation, this means that the
+    lowest value in 1-dimensional X is considered "sea level."
+
+    For X in higher dimension, we treat X as defining a location on a (hyper)sphere.
+    The "elevation," then, is the distance from the center of mass.
+    So, this computes the distance of each point to the overall the center of mass
+    and uses this as the "elevation," setting sea level (zero) to the lowest elevation.
+
+    Arguments
+    ---------
+    X : numpy.ndarray
+        Array of values for which to compute elevation.
+    middle : callable or string
+        name of function in numpy (or function itself) used to compute the center point of X
+    metric : string
+        metric to use in `scipy.spatial.distance.cdist` to compute the distance from the center
+        of mass to the point.
+
+    Returns
+    --------
+    (N,1)-shaped numpy array containing the "elevation" of each point relative to sea level (zero).
+
+    """
     if X.ndim == 1:
         return X - X.min()
     else:
