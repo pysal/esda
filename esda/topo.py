@@ -110,14 +110,15 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
     distance_func = _resolve_metric(X, coordinates, metric)
     sort_order = numpy.argsort(-X)
     tree = SpatialIndex()
-    tree.insert(0, tuple(coordinates[sort_order][0]), obj=X[sort_order][0])
-    ix = numpy.where(sort_order == 0)[0].item()
+    ix = sort_order[0]
+    tree.insert(0, tuple(coordinates[ix]), obj=X[ix])
     precedence_tree = [[ix, numpy.nan, 0, numpy.nan, numpy.nan, numpy.nan]]
-    for i, (value, location) in enumerate(
-        zip(X[sort_order][1:], coordinates[sort_order][1:])
-    ):
-        rank = i + 1
-        ix = numpy.where(sort_order == rank)[0].item()
+    for iter_ix, ix in enumerate(sort_order[1:]):
+        rank = iter_ix + 1
+        value = X[ix]
+        location = coordinates[
+            ix,
+        ]
         (match,) = tree.nearest(tuple(location), objects=True)
         higher_rank = match.id
         higher_value = match.object
@@ -134,7 +135,7 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
     out[sort_order] = precedence_tree
     isolation = pandas.DataFrame(
         out, columns=["index", "parent_index", "rank", "parent_rank", "distance", "gap"]
-    )
+    ).sort_values(["index", "parent_index"])
     if return_all:
         return isolation
     else:
