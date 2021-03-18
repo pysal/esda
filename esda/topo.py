@@ -104,9 +104,6 @@ def prominence(
     middle="median",
     metric="eucliean",
 ):
-    raise Exception(
-        "need to preprocess the peaks so that you only call something a keycol if it joins *new* unjoined peaks!"
-    )
     X = check_array(X, ensure_2d=False).squeeze()
     X = to_elevation(X, middle=middle, metric=metric).squeeze()
     (n,) = X.shape
