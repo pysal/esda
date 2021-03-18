@@ -396,20 +396,15 @@ def _check_connectivity(connectivity_or_coordinates):
 
 if __name__ == "__main__":
     import geopandas, pandas
-    from libpysal import weights
+    from libpysal import weights, examples
 
-    data = geopandas.read_file("../cb_2015_us_county_500k_2.geojson")
-    contig = data.query('statefp not in ("02", "15", "43", "72")').reset_index()
-    coordinates = numpy.column_stack((contig.centroid.x, contig.centroid.y))
-    income = contig[["median_income"]].values.flatten()
-    contig_graph = weights.Rook.from_dataframe(contig)
-    # iso = isolation(income, coordinates, return_all=True)
-    # contig.assign(isolation = iso.distance.values).plot('isolation')
+    data = geopandas.read_file(examples.get_path("NAT.shp")).query(
+        'State_Name == "Illinois'
+    )
+    coordinates = numpy.column_stack((data.centroid.x, data.centroid.y))
+    gini = data[["GI89"]].values.flatten()
+    contig_graph = weights.Rook.from_dataframe(data)
+    iso = isolation(gini, coordinates, return_all=True)
+    contig.assign(isolation=iso.distance.values).plot("isolation")
 
-    wa = contig.query('statefp == "53"').reset_index()
-    wa_income = wa[["median_income"]].values
-    wa_graph = weights.Rook.from_dataframe(wa)
-
-    ca = contig.query('statefp == "06"').reset_index()
-    ca_income = ca[["median_income"]].values
-    ca_graph = weights.Rook.from_dataframe(ca)
+    prom = prominence(gini, connectivity)
