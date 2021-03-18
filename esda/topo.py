@@ -212,10 +212,12 @@ def prominence(
                 & mask
             ]
             rest = gdf[~mask]
+            this_geom = gdf.iloc[[this_full_ix]]
             ax = rest.plot(edgecolor="k", linewidth=0.1, facecolor="lightblue")
             ax = slopeframe.plot(edgecolor="k", linewidth=0.1, facecolor="linen", ax=ax)
             ax = keycolframe.plot(edgecolor="k", linewidth=0.1, facecolor="red", ax=ax)
             ax = peakframe.plot(edgecolor="k", linewidth=0.1, facecolor="yellow", ax=ax)
+            ax = this_geom.centroid.plot(ax=ax, color="orange", marker="*")
             plt.show()
             command = input()
             if command.strip().lower() == "stop":
