@@ -123,7 +123,7 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
         higher_rank = match.id
         higher_value = match.object
         higher_location = match.bbox[:2]
-        higher_ix = numpy.where(sort_order == higher_rank)[0].item()
+        higher_ix = sort_order[higher_rank]
         distance = distance_func(location, higher_location)
         gap = higher_value - value
         precedence_tree.append([ix, higher_ix, rank, higher_rank, distance, gap])
