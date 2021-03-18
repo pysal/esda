@@ -1,4 +1,4 @@
-import numpy
+import numpy, pandas
 from scipy.spatial import distance
 from sklearn.utils import check_array
 from scipy.stats import mode as most_common_value
