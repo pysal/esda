@@ -198,7 +198,7 @@ def prominence(
     X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
 
-    connectivity = _check_connectivity(connectivity, metric)
+    connectivity = _check_connectivity(connectivity)
 
     # sort the variable in ascending order
     sort_order = numpy.argsort(-X)
