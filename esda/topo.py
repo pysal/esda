@@ -6,7 +6,10 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 
-def _resolve_metric(metric):
+def _resolve_metric(X, coordinates, metric):
+    """
+    Provide a distance function that you can use to find the distance betwen arbitrary points.
+    """
     if callable(metric):
         distance_func = metric
     elif metric.lower() == "haversine":
@@ -19,7 +22,7 @@ def _resolve_metric(metric):
 
         @autojit
         def harcdist(p1, p2):
-            """ Compute the kernel of """
+            """ Compute the kernel of haversine"""
             x = numpy.sin(p2[1] - p1[1] / 2) ** 2
             y = (
                 numpy.cos(p2[1])
@@ -30,15 +33,33 @@ def _resolve_metric(metric):
 
         distance_func = harcdist
     elif metric.lower() == "precomputed":
+        # so, in this case, coordinates is actually distance matrix of some kind
+        # and is assumed aligned to X, such that the distance from X[a] to X[b] is
+        # coordinates[a,b], confusingly... So, we'll re-write them as "distances"
         distances = check_array(coordinates, accept_sparse=True)
         n, k = distances.shape
         assert k == n, (
-            'With metric="precomputed", distances' " must be an (n,n) matrix."
+            'With metric="precomputed", coordinates must be an (n,n) matrix'
+            " representing distances between coordinates."
         )
-        raise NotImplementedError()
-        # would need to:
-        # get index of point pairs
-        # get distance corresponding to that point pair
+
+        def lookup_distance(a, b):
+            """ Find location of points a,b in X and return precomputed distances"""
+            (aloc,) = (X == a).all(axis=1).nonzero()
+            (bloc,) = (X == b).all(axis=1).nonzero()
+            if (len(aloc) > 1) or (len(bloc) > 1):
+                raise NotImplementedError(
+                    "Precomputed distances cannot disambiguate coincident points."
+                    " Add a slight bit of noise to the input to force them"
+                    " into non-coincidence and re-compute the distance matrix."
+                )
+            elif (len(aloc) == 0) or (len(bloc) == 0):
+                raise NotImplementedError(
+                    "Precomputed distances cannot compute distances to new points."
+                )
+            return distances[aloc, bloc]
+
+        distance_func = lookup_distance
     else:
         try:
             distance_func = getattr(distance, metric)
@@ -59,7 +80,7 @@ def isolation(X, coordinates, metric="euclidean", middle="median", return_all=Fa
         raise ImportError(
             "rtree library must be installed to use " "the prominence measure"
         )
-    distance_func = _resolve_metric(metric)
+    distance_func = _resolve_metric(X, coordinates, metric)
     sort_order = numpy.argsort(-X)
     tree = SpatialIndex()
     tree.insert(0, tuple(coordinates[sort_order][0]), obj=X[sort_order][0])
