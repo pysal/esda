@@ -405,6 +405,7 @@ if __name__ == "__main__":
     gini = data[["GI89"]].values.flatten()
     contig_graph = weights.Rook.from_dataframe(data)
     iso = isolation(gini, coordinates, return_all=True)
-    contig.assign(isolation=iso.distance.values).plot("isolation")
+    data.plot(iso)
 
     prom = prominence(gini, connectivity)
+    data.plot(prom)
