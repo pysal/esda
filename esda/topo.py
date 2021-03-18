@@ -109,7 +109,7 @@ def prominence(
     )
     X = check_array(X, ensure_2d=False).squeeze()
     X = to_elevation(X, middle=middle, metric=metric).squeeze()
-    n, p = X.shape
+    (n,) = X.shape
 
     # sort the variable in ascending order
     sort_order = numpy.argsort(-X)
