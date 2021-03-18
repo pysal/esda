@@ -71,7 +71,33 @@ def _resolve_metric(X, coordinates, metric):
     return distance_func
 
 
-def isolation(X, coordinates, metric="euclidean", middle="median", return_all=False):
+def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=False):
+    """
+    Compute the isolation of each value of X by constructing the distance
+    to the nearest higher value in the data.
+
+    Arguments
+    ---------
+    X : numpy.ndarray
+        (N, p) array of data to use as input. If p > 1, the "elevation" is computed
+        using the topo.to_elevation function.
+    coordinates : numpy.ndarray
+        (N,k) array of locations for X to compute distances. If metric='precomputed', this
+        should contain the distances from each point to every other point, and k == N.
+    metric : string or callable (default: 'euclidean')
+        name of distance metric in scipy.spatial.distance, or function, that can be
+        used to compute distances between locations. If 'precomputed', ad-hoc function
+        will be defined to look up distances between points instead.
+    middle : string or callable (default: 'mean')
+        method to define the elevation of points. See to_elevation for more details.
+    return_all : bool (default: False)
+        if False, only return the isolation (distance to nearest higher value).
+
+    Returns
+    -------
+    either (N,) array of isolation values, or a pandas dataframe containing the full
+    tree of precedence for the isolation tree.
+    """
     X = check_array(X, ensure_2d=False)
     X = to_elevation(X, middle=middle).squeeze()
     try:
@@ -124,6 +150,48 @@ def prominence(
     verbose=False,
     middle="mean",
 ):
+    """
+    Return the prominence of peaks in input, given a connectivity matrix.
+
+    Arguments
+    ---------
+    X : numpy.ndarray
+        an array of shape N,p containing data to use for computing prominence. When
+        p > 1, X will be converted to an "elevation" using to_elevation.
+    connectivity : scipy.sparse matrix
+        a sparse matrix encoding the connectivity graph pertaining to rows of X. If
+        coordinates are provided, they must be (N,2), and the delaunay triangulation
+        will be computed.
+    return_saddles : bool (default: False)
+        whether or not to return the "saddle points" or key cols between peaks. These
+        are the highest "low" points between two peaks on a single massif.
+    return_peaks : bool (default: False)
+        whether or not to return the "peaks" or local maxima of the surface.
+    return_dominating_peak : bool (default: False)
+        whether or not to return the "peak" or local maxima that each observation
+        is dominated by.
+    gdf : geopandas.GeoDataFrame (default: None)
+        geodataframe containing the input geometries alined with X. Useful only if
+        intermediate plotting of the algorithm is required.
+    verbose : bool (default: None)
+        whether or not to print extra information about the progress of the algorithm.
+    middle : string or callable (default: "mean")
+        how to compute the center of mass from X, when the dimension of X > 2.
+
+    Returns
+    -------
+    the prominence of each observation in X, possibly along with the set of saddle points,
+    peaks, and/or dominating peak tree.
+
+    Notes
+    -----
+    An observation has 0 prominence when it is a saddle point.
+    An observation has positive prominence when it is a peak, and this
+    is computed as the elevation of the peak minus the elevation of the saddle point.
+
+    Observations have "NA" prominence when they are neither a saddle point nor a peak.
+
+    """
     X = check_array(X, ensure_2d=False).squeeze()
     X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
