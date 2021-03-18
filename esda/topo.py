@@ -134,22 +134,17 @@ def prominence(
         # 1. neighbors whose dominating_peak are all -1 (new peak)
         # 2. neighbors whose dominating_peak are all -1 or an integer (slope of current peak)
         # 3. neighbors whose dominating_peak include at least two integers and any -1 (key col)
-        _, neighbs = (
-            connectivity[
-                this_full_ix,
-            ]
-            .toarray()
-            .nonzero()
-        )
+        _, neighbs = connectivity[this_full_ix].toarray().nonzero()
         this_preds = predecessors[neighbs]
 
         # need to keep ordering in this sublist to preserve hierarchy
         this_unique_preds = [p for p in peaks if ((p in this_preds) & (p >= 0))]
+        joins_new_subgraph = not set(this_unique_preds).issubset(assessed_peaks)
         if tuple(this_unique_preds) in key_cols.keys():
             classification = "slope"
         elif len(this_unique_preds) == 0:
             classification = "peak"
-        elif len(this_unique_preds) >= 2:
+        elif (len(this_unique_preds) >= 2) & joins_new_subgraph:
             classification = "keycol"
         else:
             classification = "slope"
