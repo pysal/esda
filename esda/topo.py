@@ -145,9 +145,8 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
 def prominence(
     X,
     connectivity,
-    return_saddles=False,
-    return_peaks=False,
-    return_dominating_peak=False,
+    return_class=False,
+    return_dom=False,
     gdf=None,
     verbose=False,
     middle="mean",
@@ -164,17 +163,14 @@ def prominence(
         a sparse matrix encoding the connectivity graph pertaining to rows of X. If
         coordinates are provided, they must be (N,2), and the delaunay triangulation
         will be computed.
-    return_saddles : bool (default: False)
-        whether or not to return the "saddle points" or key cols between peaks. These
-        are the highest "low" points between two peaks on a single massif.
-    return_peaks : bool (default: False)
-        whether or not to return the "peaks" or local maxima of the surface.
-    return_dominating_peak : bool (default: False)
+    return_class : bool (default: False)
+        whether or not to return the "classification" of each observation, either
+        "peak", if it is a local maxima
+        "key col", if it is a saddlepoint among subgraphs
+        "slope", if it is a non-maxima
+    return_dom : bool (default: False)
         whether or not to return the "peak" or local maxima that each observation
         is dominated by.
-    gdf : geopandas.GeoDataFrame (default: None)
-        geodataframe containing the input geometries alined with X. Useful only if
-        intermediate plotting of the algorithm is required.
     verbose : bool (default: None)
         whether or not to print extra information about the progress of the algorithm.
     middle : string or callable (default: "mean")
@@ -198,6 +194,12 @@ def prominence(
     X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
 
+    if not isinstance(verbose, (bool, int)):
+        gdf = verbose
+        verbose = True
+    else:
+        gdf = None
+
     connectivity = _check_connectivity(connectivity)
 
     # sort the variable in ascending order
@@ -208,6 +210,7 @@ def prominence(
     prominence = numpy.empty_like(X) * numpy.nan
     dominating_peak = numpy.ones_like(X) * -1
     predecessors = numpy.ones_like(X) * -1
+    classification = numpy.ones_like(X) * 0
     key_cols = dict()
     for rank, value in tqdm(enumerate(X[sort_order])):
         # This is needed to break ties in the same way that argsort does. A more
@@ -237,6 +240,8 @@ def prominence(
             classification = "keycol"
         else:
             classification = "slope"
+
+        classifications[this_full_ix] = classification
 
         if (
             classification == "keycol"
@@ -287,6 +292,7 @@ def prominence(
             msg += "\n{} are on the slopes of {}".format(all_on_slope, best_peak)
             dominating_peak[this_full_ix] = best_peak
             predecessors[this_full_ix] = best_peak
+
         if verbose:
             print(
                 "--------------------------------------------\n"
@@ -311,14 +317,12 @@ def prominence(
             command = input()
             if command.strip().lower() == "stop":
                 break
-    if not any((return_saddles, return_peaks, return_dominating_peak)):
+    if not any((return_class, return_dom)):
         return prominence
     retval = [prominence]
-    if return_saddles:
-        retval.append(key_cols)
-    if return_peaks:
-        retval.append(peaks)
-    if return_dominating_peak:
+    if return_class:
+        retval.append(classifications)
+    if return_dom:
         retval.append(dominating_peak)
     return retval
 
