@@ -123,7 +123,7 @@ def isolation(
         from rtree.index import Index as SpatialIndex
     except ImportError:
         raise ImportError(
-            "rtree library must be installed to use " "the prominence measure"
+            "rtree library must be installed to use the prominence measure"
         )
     distance_func = _resolve_metric(X, coordinates, metric)
     sort_order = numpy.argsort(-X)
