@@ -174,7 +174,7 @@ def isolation(
 def prominence(
     X,
     connectivity,
-    return_all=True,
+    return_all=False,
     gdf=None,
     verbose=False,
     middle="mean",
@@ -234,7 +234,7 @@ def prominence(
     prominence = numpy.empty_like(X) * numpy.nan
     dominating_peak = numpy.ones_like(X) * -1
     predecessors = numpy.ones_like(X) * -1
-    classification = numpy.ones_like(X) * 0
+    classifications = numpy.empty((n,), dtype=numpy.character)
     key_cols = dict()
 
     if progressbar and HAS_TQDM:
