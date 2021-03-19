@@ -13,12 +13,36 @@ class TopoTester(TestCase):
         self.cxn = weights.Voronoi(self.points)
 
     def test_prominence_valid():
-        # result should be valid
-        ...
+        w = self.cxn
+        marks = self.marks
+
+        prom = prominence(marks, w, verbose=False, progressbar=False)
+
+        assert numpy.isnan(prom).sum() == 3
+        assert (prom == 0).sum() == 1
+        assert prom[-2] == 1.75
+        assert prom[-3] == 0.75
+
+        marks2 = marks.copy()
+        marks2[-2] = -3
+
+        prom = prominence(marks, w, verbose=False, progressbar=False)
+
+        assert prom.max() == 5
+        assert prom.min() == 0
+        assert numpy.isnan(prom).sum() == 3
 
     def test_prominence_options():
-        # return options should return correctly
-        ...
+        default = prominence(marks, cxn)
+        retvals = prominence(marks, cxn, return_all=True)
+        metrics = prominence(marks, cxn, metric="haversine")
+        middle = prominence(marks, cxn, middle="median")
+
+        assert isinstance(default, numpy.ndarray)
+        assert isinstance(retvals, pandas.DataFrame)
+        assert numpy.allclose(default, retvals.prominence)
+        assert not numpy.allclose(default, metrics)
+        assert not numpy.allclose(default, middle)
 
     def test_isolation_options():
         default = isolation(marks, points)
@@ -28,6 +52,7 @@ class TopoTester(TestCase):
 
         assert isinstance(default, numpy.ndarray)
         assert isinstance(retvals, pandas.DataFrame)
+        assert numpy.allclose(default, retvals.distance)
         assert not numpy.allclose(default, metrics)
         assert not numpy.allclose(default, middle)
 
@@ -69,5 +94,14 @@ class TopoTester(TestCase):
         )
 
     def test_to_elevation():
-        # middle change should work
-        ...
+        onedim = to_elevation(self.marks)
+        twodim = to_elevation(self.points)
+
+        assert onedim.ndim == 1
+        assert onedim.min() == 0
+        assert onedim.max() == 1
+        assert (onedim == self.marks + self.marks.min()).all()
+
+        assert twodim.ndim == 1
+        assert twodim.min() > 0
+        assert twodim.max() > 1

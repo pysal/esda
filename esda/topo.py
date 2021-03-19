@@ -3,8 +3,18 @@ from scipy.spatial import distance
 from sklearn.utils import check_array
 from scipy.stats import mode as most_common_value
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 from libpysal import weights
+
+try:
+    from tqdm import tqdm as _tqdm
+
+    HAS_TQDM = True
+except ImportError:
+    HAS_TQDM = False
+
+
+def _passthrough(sequence):
+    return sequence
 
 
 def _resolve_metric(X, coordinates, metric):
@@ -72,7 +82,14 @@ def _resolve_metric(X, coordinates, metric):
     return distance_func
 
 
-def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=False):
+def isolation(
+    X,
+    coordinates,
+    metric="euclidean",
+    middle="mean",
+    return_all=False,
+    progressbar=False,
+):
     """
     Compute the isolation of each value of X by constructing the distance
     to the nearest higher value in the data.
@@ -93,7 +110,8 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
         method to define the elevation of points. See to_elevation for more details.
     return_all : bool (default: False)
         if False, only return the isolation (distance to nearest higher value).
-
+    progressbar: bool (default: False)
+        if True, show a progressbar for the computation.
     Returns
     -------
     either (N,) array of isolation values, or a pandas dataframe containing the full
@@ -113,7 +131,18 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
     ix = sort_order[0]
     tree.insert(0, tuple(coordinates[ix]), obj=X[ix])
     precedence_tree = [[ix, numpy.nan, 0, numpy.nan, numpy.nan, numpy.nan]]
-    for iter_ix, ix in enumerate(sort_order[1:]):
+
+    if progressbar and HAS_TQDM:
+        pbar = tqdm
+    elif progressbar and (not HAS_TQDM):
+        try:
+            import tqdm
+        except ImportError as e:
+            raise ImportError("the tqdm module is required for progressbars")
+    else:
+        pbar = _passthrough
+
+    for iter_ix, ix in pbar(enumerate(sort_order[1:])):
         rank = iter_ix + 1
         value = X[ix]
         location = coordinates[
@@ -145,11 +174,11 @@ def isolation(X, coordinates, metric="euclidean", middle="mean", return_all=Fals
 def prominence(
     X,
     connectivity,
-    return_class=False,
-    return_dom=False,
+    return_all=True,
     gdf=None,
     verbose=False,
     middle="mean",
+    progressbar=False,
 ):
     """
     Return the prominence of peaks in input, given a connectivity matrix.
@@ -164,13 +193,8 @@ def prominence(
         coordinates are provided, they must be (N,2), and the delaunay triangulation
         will be computed.
     return_class : bool (default: False)
-        whether or not to return the "classification" of each observation, either
-        "peak", if it is a local maxima
-        "key col", if it is a saddlepoint among subgraphs
-        "slope", if it is a non-maxima
-    return_dom : bool (default: False)
-        whether or not to return the "peak" or local maxima that each observation
-        is dominated by.
+        whether or not to return additional information about the result, such as
+        the set of dominating peaks or the set of classifications for each observation.
     verbose : bool (default: None)
         whether or not to print extra information about the progress of the algorithm.
     middle : string or callable (default: "mean")
@@ -212,7 +236,18 @@ def prominence(
     predecessors = numpy.ones_like(X) * -1
     classification = numpy.ones_like(X) * 0
     key_cols = dict()
-    for rank, value in tqdm(enumerate(X[sort_order])):
+
+    if progressbar and HAS_TQDM:
+        pbar = tqdm
+    elif progressbar and (not HAS_TQDM):
+        try:
+            import tqdm
+        except ImportError as e:
+            raise ImportError("the tqdm module is required for progressbars")
+    else:
+        pbar = _passthrough
+
+    for rank, value in pbar(enumerate(X[sort_order])):
         # This is needed to break ties in the same way that argsort does. A more
         # natural way to do this is to use X >= value, but if value is tied, then
         # that would generate a mask where too many elements are selected!
@@ -317,14 +352,17 @@ def prominence(
             command = input()
             if command.strip().lower() == "stop":
                 break
-    if not any((return_class, return_dom)):
-        return prominence
-    retval = [prominence]
-    if return_class:
-        retval.append(classifications)
-    if return_dom:
-        retval.append(dominating_peak)
-    return retval
+    result = pandas.DataFrame.from_dict(
+        dict(
+            index=numpy.arange(n),
+            prominence=prominence,
+            predecessors=predecessors,
+            dominating_peak=dominating_peak,
+        )
+    )
+    if not return_all:
+        return result.prominence.values
+    return result
 
 
 def to_elevation(X, middle="mean", metric="euclidean"):
