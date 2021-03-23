@@ -27,4 +27,5 @@ from .moran import (
 )
 from .smaup import Smaup
 from .silhouettes import (path_silhouette, boundary_silhouette)
+from .topo import prominence, isolation
 from .util import fdr
