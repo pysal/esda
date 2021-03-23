@@ -226,15 +226,16 @@ def prominence(
 
     connectivity = _check_connectivity(connectivity)
 
-    # sort the variable in ascending order
+    # sort the variable in descending order
     sort_order = numpy.argsort(-X)
 
-    peaks = [sort_order[0]]
+    peaks = []
     assessed_peaks = set()
     prominence = numpy.empty_like(X) * numpy.nan
     dominating_peak = numpy.ones_like(X) * -1
     predecessors = numpy.ones_like(X) * -1
-    classifications = numpy.empty((n,), dtype=numpy.character)
+    ids = numpy.arange(n)
+    classifications = [None] * n
     key_cols = dict()
 
     if progressbar and HAS_TQDM:
@@ -254,7 +255,7 @@ def prominence(
         # e.g. mask.sum() > rank
         mask = numpy.isin(numpy.arange(n), sort_order[: rank + 1])
         (full_indices,) = mask.nonzero()
-        this_full_ix = sort_order[rank]
+        this_full_ix = (ids[sort_order])[rank]
         msg = "assessing {} (rank: {}, value: {})".format(this_full_ix, rank, value)
 
         # use the dominating_peak vector. A new obs either has:
@@ -304,7 +305,10 @@ def prominence(
         elif classification == "peak":  # this_ix is a new peak since it's disconnected
             msg += "\n{} is a peak!".format(this_full_ix)
             # its parent is the last visited peak (for precedence purposes)
-            previous_peak = peaks[-1]
+            try:
+                previous_peak = peaks[-1]
+            except IndexError:
+                previous_peak = this_full_ix
             if not (this_full_ix in peaks):
                 peaks.append(this_full_ix)
             dominating_peak[this_full_ix] = previous_peak
@@ -330,9 +334,9 @@ def prominence(
 
         if verbose:
             print(
-                "--------------------------------------------\n"
-                "at the {} iteration:\n{}\n\tpeaks\t{}\n\tprominence\t{}\n\tkey_cols\t{}\n"
-                "".format(rank, msg, peaks, prominence, key_cols)
+                "--------------------------------------------\nat the {}"
+                " iteration:\n{}\n\tpeaks\t{}\n\tprominence\t{}\n\tkey_cols\t{}\n"
+                .format(rank, msg, peaks, prominence, key_cols)
             )
         if gdf is not None:
             peakframe = gdf.iloc[peaks]
@@ -354,9 +358,10 @@ def prominence(
                 break
     result = pandas.DataFrame.from_dict(
         dict(
-            index=numpy.arange(n),
+            index=ids,
             prominence=prominence,
-            predecessors=predecessors,
+            classification=classifications,
+            predecessor=predecessors,
             dominating_peak=dominating_peak,
         )
     )
