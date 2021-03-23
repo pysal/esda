@@ -235,6 +235,7 @@ def prominence(
     prominence = numpy.empty_like(X) * numpy.nan
     dominating_peak = numpy.ones_like(X) * -1
     predecessors = numpy.ones_like(X) * -1
+    keycols = numpy.ones_like(X) * -1
     ids = numpy.arange(n)
     classifications = [None] * n
     key_cols = dict()
@@ -301,6 +302,7 @@ def prominence(
                 if peak_ix in assessed_peaks:
                     continue
                 # prominence is peak - key col
+                keycols[peak_ix] = this_full_ix
                 prominence[peak_ix] -= value
                 assessed_peaks.update((peak_ix,))
         elif classification == "peak":  # this_ix is a new peak since it's disconnected
@@ -363,6 +365,7 @@ def prominence(
             prominence=prominence,
             classification=classifications,
             predecessor=predecessors,
+            keycol=keycols,
             dominating_peak=dominating_peak,
         )
     )
