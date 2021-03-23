@@ -162,13 +162,14 @@ def isolation(
     # print(precedence_tree.shape)
     out = numpy.empty_like(precedence_tree)
     out[sort_order] = precedence_tree
-    isolation = pandas.DataFrame(
-        out, columns=["index", "parent_index", "rank", "parent_rank", "distance", "gap"]
+    result = pandas.DataFrame(
+        out,
+        columns=["index", "parent_index", "rank", "parent_rank", "isolation", "gap"],
     ).sort_values(["index", "parent_index"])
     if return_all:
-        return isolation
+        return result
     else:
-        return isolation.distance.values
+        return result.isolation.values
 
 
 def prominence(

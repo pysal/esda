@@ -55,7 +55,7 @@ class TopoTester(TestCase):
 
         assert isinstance(default, numpy.ndarray)
         assert isinstance(retvals, pandas.DataFrame)
-        numpy.testing.assert_array_equal(default, retvals.distance)
+        numpy.testing.assert_array_equal(default, retvals.isolation)
         assert not numpy.allclose(default, metrics)
         assert not numpy.allclose(default, middle)
 
@@ -74,7 +74,7 @@ class TopoTester(TestCase):
             iso.sort_values("marks", ascending=False).index
             == iso.sort_values("rank").index
         ).all()
-        assert iso.loc[3, "distance"] == 1.5
+        assert iso.loc[3, "isolation"] == 1.5
         assert iso.loc[2, "gap"] == (
             marks[iso.loc[2, "parent_index"].astype(int)] - marks[2]
         )
@@ -91,7 +91,7 @@ class TopoTester(TestCase):
             iso.sort_values("marks", ascending=False).index
             == iso.sort_values("rank").index
         ).all()
-        assert iso.loc[1, "distance"] == 1
+        assert iso.loc[1, "isolation"] == 1
         assert iso.loc[2, "gap"] == (
             marks2[iso.loc[2, "parent_index"].astype(int)] - marks2[2]
         )
