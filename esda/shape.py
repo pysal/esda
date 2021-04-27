@@ -94,7 +94,7 @@ def _get_angles(points, n_coords_per_geom, n_parts_per_geom):
     return result
 
 
-# -------------------- INTERTIAL MEASURES -------------------- #
+# -------------------- IDEAL SHAPE MEASURES -------------------- #
 
 
 def isoperimetric_quotient(collection):
@@ -228,7 +228,7 @@ def convex_hull_ratio(collection):
     return pygeos.area(collection) / pygeos.area(pygeos.convex_hull(collection))
 
 
-# -------------------- INTERTIAL MEASURES -------------------- #
+# -------------------- INERTIAL MEASURES -------------------- #
 
 
 def moment_of_inertia(collection):
