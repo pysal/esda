@@ -99,7 +99,7 @@ def _get_angles(points, n_coords_per_geom, n_parts_per_geom):
 
 def isoperimetric_quotient(collection):
     """
-    The Isoperimetric quotient, defined as the ratio of a chain's area to the
+    The Isoperimetric quotient, defined as the ratio of a polygon's area to the
     area of the equi-perimeter circle.
 
     Altman's PA_1 measure
@@ -107,13 +107,13 @@ def isoperimetric_quotient(collection):
     Construction:
     --------------
     let:
-    p_d = perimeter of district
-    a_d = area of district
+    p_d = perimeter of polygon
+    a_d = area of polygon
 
     a_c = area of the constructed circle
     r = radius of constructed circle
 
-    then the relationship between the constructed radius and the district
+    then the relationship between the constructed radius and the polygon
     perimeter is:
     p_d = 2 \pi r
     p_d / (2 \pi) = r
@@ -133,7 +133,7 @@ def isoperimetric_quotient(collection):
 
 def isoareal_quotient(collection):
     """
-    The Isoareal quotient, defined as the ratio of a chain's perimeter to the
+    The Isoareal quotient, defined as the ratio of a polygon's perimeter to the
     perimeter of the equi-areal circle
 
     Altman's PA_3 measure, and proportional to the PA_4 measure
@@ -233,7 +233,7 @@ def convex_hull_ratio(collection):
 
 def moment_of_inertia(collection):
     """
-    Computes the moment of inertia of the chain.
+    Computes the moment of inertia of the polygon.
 
     This treats each boundary point as a point-mass of 1.
 
