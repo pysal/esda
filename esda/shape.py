@@ -1,24 +1,21 @@
 import pygeos
 import geopandas, pandas
 import numpy
-from numba import njit
+from numba import njit, prange
 
 # -------------------- UTILITIES --------------------#
-def _cast(collection, regularize=False):
+def _cast(collection):
     """
     Cast a collection to a pygeos geometry array.
     """
-    if isinstance(collection, geopandas.GeoSeries):
-        return collection.values.data
-    elif isinstance(collection, numpy.ndarray):
-        if pygeos.is_geometry(collection).all():
-            return collection.values.data
-        else:
-            raise NotImplementedError()
-    return pygeos.from_shapely(collection)
+    if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+        return collection.values.data.squeeze()
+    elif pygeos.is_geometry(collection).all():
+        return collection
+    return pygeos.from_shapely(collection).squeeze()
 
 
-def get_angles(ga, return_indices=False):
+def get_angles(collection, return_indices=False):
     """
     Get the angles pertaining to each vertex of a set of polygons.
     This assumes the input are polygons.
@@ -48,6 +45,7 @@ def get_angles(ga, return_indices=False):
     Then, the output is of shape (N - K).sum()
 
     """
+    ga = _cast(collection)
     exploded = pygeos.get_parts(ga)
     coords = pygeos.get_coordinates(exploded)
     n_coords_per_geom = pygeos.get_num_coordinates(exploded)
@@ -126,9 +124,8 @@ def isoperimetric_quotient(collection):
 
     pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))
     """
-    return (4 * numpy.pi * pygeos.area(collection)) / (
-        pygeos.measurement.length(collection) ** 2
-    )
+    ga = _cast(ga)
+    return (4 * numpy.pi * pygeos.area(ga)) / (pygeos.measurement.length(ga) ** 2)
 
 
 def isoareal_quotient(collection):
@@ -138,9 +135,10 @@ def isoareal_quotient(collection):
 
     Altman's PA_3 measure, and proportional to the PA_4 measure
     """
+    ga = _cast(collection)
     return (
-        2 * numpy.pi * numpy.sqrt(pygeos.area(collection) / numpy.pi)
-    ) / pygeos.measurement.length(collection)
+        2 * numpy.pi * numpy.sqrt(pygeos.area(ga) / numpy.pi)
+    ) / pygeos.measurement.length(ga)
 
 
 def minimum_bounding_circle_ratio(collection):
@@ -151,8 +149,9 @@ def minimum_bounding_circle_ratio(collection):
     Measure A1 in Altman (1998), cited for Frolov (1974), but earlier from Reock
     (1963)
     """
-    mbc = pygeos.minimum_bounding_circle(collection)
-    return pygeos.area(collection) / pygeos.area(mbc)
+    ga = _cast(collection)
+    mbc = pygeos.minimum_bounding_circle(ga)
+    return pygeos.area(ga) / pygeos.area(mbc)
 
 
 def radii_ratio(collection):
@@ -161,8 +160,9 @@ def radii_ratio(collection):
 
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
-    r_eac = numpy.sqrt(pygeos.area(collection) / numpy.pi)
-    r_mbc = pygeos.minimum_bounding_radius(collection)
+    ga = _cast(collection)
+    r_eac = numpy.sqrt(pygeos.area(ga) / numpy.pi)
+    r_mbc = pygeos.minimum_bounding_radius(ga)
     return r_eac / r_mbc
 
 
@@ -173,13 +173,14 @@ def diameter_ratio(collection, rotated=True):
 
     It is given as the ratio between the minimum and maximum shape diameter.
     """
+    ga = _cast(collection)
     if rotated:
-        box = pygeos.minimum_rotated_rectangle(collection)
+        box = pygeos.minimum_rotated_rectangle(ga)
         a, b, c, d, _ = pygeos.get_coordinates(box)
         width = numpy.sqrt(numpy.sum((a - b) ** 2))
         height = numpy.sqrt(numpy.sum((a - d) ** 2))
     else:
-        box = pygeos.bounds(collection)
+        box = pygeos.bounds(ga)
         (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
         width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
     return numpy.minimum(width, height) / numpy.maximum(width, height)
@@ -196,7 +197,8 @@ def length_width_diff(collection):
 
     Defined as measure LW_5 in Altman (1998)
     """
-    box = pygeos.bounds(collection)
+    ga = _cast(collection)
+    box = pygeos.bounds(ga)
     (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
     width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
     return width - height
@@ -214,9 +216,10 @@ def boundary_amplitude(collection):
     This is inverted from Wang & Huang (2012) in order to provide a value
     between zero and one, like many of the other ideal shape-based indices.
     """
+    ga = _cast(collection)
     return pygeos.measurement.length(
-        pygeos.convex_hull(collection)
-    ) / pygeos.measurement.length(collection)
+        pygeos.convex_hull(ga)
+    ) / pygeos.measurement.length(ga)
 
 
 def convex_hull_ratio(collection):
@@ -225,7 +228,8 @@ def convex_hull_ratio(collection):
 
     Altman's A_3 measure, from Neimi et al 1991.
     """
-    return pygeos.area(collection) / pygeos.area(pygeos.convex_hull(collection))
+    ga = _cast(collection)
+    return pygeos.area(ga) / pygeos.area(pygeos.convex_hull(ga))
 
 
 # -------------------- INERTIAL MEASURES -------------------- #
@@ -247,18 +251,17 @@ def moment_of_inertia(collection):
     Altman's OS_1 measure, cited in Boyce and Clark (1964), also used in Weaver
     and Hess (1963).
     """
-    coords = pygeos.get_coordinates(collection)
-    geom_ixs = numpy.tile(
-        numpy.arange(len(collection)), pygeos.get_num_coordinates(collection)
-    )
-    centroids = pygeos.get_coordinates(pygeos.centroid(collection))[geom_ixs]
+    ga = _cast(collection)
+    coords = pygeos.get_coordinates(ga)
+    geom_ixs = numpy.tile(numpy.arange(len(ga)), pygeos.get_num_coordinates(ga))
+    centroids = pygeos.get_coordinates(pygeos.centroid(ga))[geom_ixs]
     squared_euclidean = numpy.sum((coords - centroids) ** 2, axis=1)
     dists = (
         pandas.DataFrame.from_dict(dict(d2=squared_euclidean, geom_ix=geom_ixs))
         .groupby("geom_ix")
         .d2.sum()
     ).values
-    return pygeos.area(collection) / numpy.sqrt(2 * dists)
+    return pygeos.area(ga) / numpy.sqrt(2 * dists)
 
 
 def moa_ratio(collection):
@@ -284,7 +287,7 @@ def second_moment_of_area(collection):
     moment of area is actually the cross-moment of area between the X and Y
     dimensions:
 
-    I_xy = (1/24)\sum^{i=N}^{i=1} (x_iy_{i+1} + 2*x_iy_i + 2*x_iy_{i+1} +
+    I_xy = (1/24)\sum^{i=N}^{i=1} (x_iy_{i+1} + 2*x_iy_i + 2*x_{i+1}y_{i+1} +
     x_{i+1}y_i)(x_iy_i - x_{i+1}y_i)
 
     where x_i, y_i is the current point and x_{i+1}, y_{i+1} is the next point,
@@ -299,7 +302,38 @@ def second_moment_of_area(collection):
     and is *not* the mass moment of inertia, a property of the distribution of
     mass around a shape.
     """
-    raise NotImplementedError()
+    ga = _cast(collection)
+    result = numpy.zeros(len(ga))
+    n_holes_per_geom = pygeos.get_num_interior_rings(ga)
+    for i, geometry in enumerate(ga):
+        n_holes = n_holes_per_geom[i]
+        for hole_ix in range(n_holes):
+            hole = pygeos.get_coordinates(pygeos.get_interior_ring(ga, hole_ix))
+            result[i] -= _second_moa_ring(hole)
+        n_parts = pygeos.get_num_geometries(geometry)
+        for part in pygeos.get_parts(geometry):
+            result[i] += _second_moa_ring(pygeos.get_coordinates(part))
+    # must divide everything by 24 and flip if polygon is clockwise.
+    signflip = numpy.array([-1, 1])[pygeos.is_ccw(ga).astype(int)]
+    return result * (1 / 24) * signflip
+
+
+@njit
+def _second_moa_ring(points):
+    """
+    implementation of the moment of area for a single ring
+    """
+    moi = 0
+    for i in prange(len(points[:-1])):
+        x_tail, y_tail = points[i]
+        x_head, y_head = points[i + 1]
+        moi += (x_tail * y_head - x_head * y_tail) * (
+            x_tail * y_head
+            + 2 * x_tail * y_tail
+            + 2 * x_head * y_head
+            + x_head * y_tail
+        )
+    return moi
 
 
 # -------------------- OTHER MEASURES -------------------- #
@@ -324,9 +358,3 @@ def reflexive_angle_ratio(collection):
 def fractal_dimension(collection):
     """"""
     raise NotImplementedError()
-
-
-if __name__ == "__main__":
-    df = geopandas.read_file(geopandas.datasets.get_path("nybb"))
-    ga = df.geometry.values.data
-    coords = pygeos.get_coordinates(ga)
