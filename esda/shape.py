@@ -162,7 +162,7 @@ def radii_ratio(collection):
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
     r_eac = numpy.sqrt(pygeos.area(collection) / numpy.pi)
-    r_mbc = pygeos.minimum_bounding_radius(pointset)
+    r_mbc = pygeos.minimum_bounding_radius(collection)
     return r_eac / r_mbc
 
 
