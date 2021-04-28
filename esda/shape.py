@@ -124,7 +124,7 @@ def isoperimetric_quotient(collection):
 
     pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))
     """
-    ga = _cast(ga)
+    ga = _cast(collection)
     return (4 * numpy.pi * pygeos.area(ga)) / (pygeos.measurement.length(ga) ** 2)
 
 
