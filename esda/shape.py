@@ -269,7 +269,9 @@ def moa_ratio(collection):
     Computes the ratio of the second moment of area (like Li et al (2013)) to
     the moment of area of a circle with the same area.
     """
-    raise NotImplementedError()
+    ga = _cast(collection)
+    r = pygeos.measurement.length(ga) / (2 * numpy.pi)
+    return (numpy.pi * 0.5 * r ** 4) / second_areal_moment(ga)
 
 
 def nmi(collection):
@@ -278,10 +280,11 @@ def nmi(collection):
     that it is the relationship between the area of a shape squared divided by
     its second moment of area.
     """
-    raise NotImplementedError()
+    ga = _cast(collection)
+    return pygeos.area(ga) ** 2 / (2 * second_areal_moment(ga) * numpy.pi)
 
 
-def second_moment_of_area(collection):
+def second_areal_moment(collection):
     """
     Using equation listed on en.wikipedia.org/Second_Moment_of_area, the second
     moment of area is actually the cross-moment of area between the X and Y
