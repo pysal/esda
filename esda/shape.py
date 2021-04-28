@@ -232,6 +232,24 @@ def convex_hull_ratio(collection):
     return pygeos.area(ga) / pygeos.area(pygeos.convex_hull(ga))
 
 
+def fractal_dimension(collection, support="hex"):
+    """
+    The fractal dimension of the boundary of a shape, assuming a given spatial support for the geometries.
+    """
+    P = pygeos.measurement.length(collection)
+    A = pygeos.area(collection)
+    if support == "hex":
+        return 2 * numpy.log(P / 6) / numpy.log(A / (3 * numpy.sin(numpy.pi / 3)))
+    elif support == "square":
+        return 2 * numpy.log(P / 4) / numpy.log(A)
+    elif support == "circle":
+        return 2 * numpy.log(P / (2 * numpy.pi)) / numpy.log(A / numpy.pi)
+    else:
+        raise ValueError(
+            f"The support argument must be one of 'hex', 'circle', or 'square', but {support} was provided."
+        )
+
+
 # -------------------- INERTIAL MEASURES -------------------- #
 
 
@@ -356,8 +374,3 @@ def reflexive_angle_ratio(collection):
         .groupby("geom_ix")
         .is_reflex.mean()
     )
-
-
-def fractal_dimension(collection):
-    """"""
-    raise NotImplementedError()
