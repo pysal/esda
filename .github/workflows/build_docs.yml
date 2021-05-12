@@ -16,7 +16,7 @@
          environment-file: [ci/38-numba.yaml]
          experimental: [false]
      steps:
-       - uses: actions/checkout@v2
+       - uses: actions/checkout@v2.3.4
        - uses: conda-incubator/setup-miniconda@v2
          with:
             miniconda-version: 'latest'
