@@ -250,6 +250,126 @@ def fractal_dimension(collection, support="hex"):
         )
 
 
+def squareness(collection):
+    """measures how different is a given shape from an equi-areal square
+
+    The index is close to 0 for highly irregular shapes and to 1.3 for circular shapes.
+    It equals 1 for squares.
+
+    .. math::
+        \frac{\sqrt{A}}{P^{2}} \times \frac{\left(4 \sqrt{\left.A\right)}^{2}\right.}{\sqrt{A}}=\frac{\left(4 \sqrt{A}\right)^{2}}{P^{2}}=\left(\frac{4 \sqrt{A}}{P}}\right)^{2}
+
+    :cite:`basaraner2017`
+
+    """
+    ga = _cast(collection)
+    return ((numpy.sqrt(pygeos.area(ga)) * 4) / pygeos.length(ga)) ** 2
+
+
+def rectangularity(collection):
+    """ratio of the area of the shape to the area of its minimum rotated rectangle
+
+    reveals a polygon’s degree of being curved inward
+
+    :cite:`basaraner2017`
+    """
+    ga = _cast(collection)
+    return pygeos.area(ga) / pygeos.area(pygeos.minimum_rotated_rectangle(ga))
+
+
+def shape_index(collection):
+    """
+    Schumm’s shape index (Schumm (1956) in MacEachren 1985)
+    """
+    ga = _cast(collection)
+    return numpy.sqrt(pygeos.area(ga) / numpy.pi) / pygeos.minimum_bounding_radius(ga)
+
+
+def equivalent_rectangular_index(collection):
+    """deviation of a polygon from an equivalent rectangle
+
+    .. math::
+        \\sqrt{{area} \\over \\textit{area of bounding rectangle}} *
+        {\\textit{perimeter of bounding rectangle} \\over {perimeter}}
+
+    Based on :cite:`basaraner2017`.
+    """
+    ga = _cast(collection)
+    box = pygeos.minimum_rotated_rectangle(ga)
+    return numpy.sqrt(pygeos.area(ga) / pygeos.area(box)) * (
+        pygeos.length(box) / pygeos.length(ga)
+    )
+
+
+def elongation(collection):
+    """
+    Calculates elongation of object seen as elongation of
+    its minimum bounding rectangle.
+
+    .. math::
+        {{p - \\sqrt{p^2 - 16a}} \\over {4}} \\over
+        {{{p} \\over {2}} - {{p - \\sqrt{p^2 - 16a}} \\over {4}}}
+
+    where `a` is the area of the object and `p` its perimeter.
+
+    Based on :cite:`gil2012`.
+    """
+    ga = _cast(collection)
+    box = pygeos.minimum_rotated_rectangle(ga)
+    A = pygeos.area(box)
+    P = pygeos.length(box)
+    cond1 = P ** 2
+    cond2 = 16 * A
+    bigger = cond1 >= cond2
+    sqrt = numpy.zeros(len(A))
+    sqrt[bigger] = cond1[bigger] - cond2[bigger]
+
+    # calculate both width/length and length/width
+    elo1 = ((P - numpy.sqrt(sqrt)) / 4) / ((P / 2) - ((P - numpy.sqrt(sqrt)) / 4))
+    elo2 = ((P + numpy.sqrt(sqrt)) / 4) / ((P / 2) - ((P + numpy.sqrt(sqrt)) / 4))
+
+    # use the smaller one (e.g. shorter/longer)
+    res = numpy.empty(len(a))
+    res[elo1 <= elo2] = elo1[elo1 <= elo2]
+    res[~(elo1 <= elo2)] = elo2[~(elo1 <= elo2)]
+
+    return res
+
+
+# -------------------- VOLMETRIC MEASURES ------------------- #
+
+
+def form_factor(collection, height):
+    """computes volumetric compactness
+
+    .. math::
+        area \\over {volume^{2 \\over 3}}
+
+    Adapted from :cite:`bourdic2012`.
+    """
+    ga = _cast(collection)
+    A = pygeos.area(ga)
+    V = A * height
+    zeros = V == 0
+    res = numpy.zeros(len(ga))
+    res[~zeros] = A[~zeros] / (V[~zeros] ** (2 / 3))
+    return res
+
+
+def volume_wall_ratio(collection, height):
+    """volumetric compacntess
+
+    In morphological literature often as volume/facade ratio.
+
+    .. math::
+        volume \\over perimeter * height
+
+    Adapted from :cite:`schirmer2015`.
+    """
+    ga = _cast(collection)
+    return (pygeos.area(ga) * height) / (pygeos.length(ga) * height)
+
+
 # -------------------- INERTIAL MEASURES -------------------- #
 
 
