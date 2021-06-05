@@ -1,10 +1,12 @@
 from shapely import geometry
-from esda.shape import *
 from numpy import testing, array
 import pytest
 
 pygeos = pytest.importorskip("pygeos")
 pytest.importorskip("numba")
+
+from esda.shape import *
+
 
 shape = array(
     [
