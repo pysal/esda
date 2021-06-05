@@ -4,6 +4,7 @@ from numpy import testing, array
 import pytest
 
 pygeos = pytest.importorskip("pygeos")
+pytest.importorskip("numba")
 
 shape = array(
     [
