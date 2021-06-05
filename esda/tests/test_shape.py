@@ -92,3 +92,33 @@ def test_fractal_dimension():
     ]
 
     testing.assert_allclose(r, [0.218144, -4.29504, 0.257882], atol=ATOL)
+
+
+def test_squareness():
+    observed = squareness(shape)
+    testing.assert_allclose(observed, 0.493094, atol=ATOL)
+
+
+def test_rectangularity():
+    observed = rectangularity(shape)
+    testing.assert_allclose(observed, 0.7, atol=ATOL)
+
+
+def test_shape_index():
+    observed = shape_index(shape)
+    testing.assert_allclose(observed, 0.659366, atol=ATOL)
+
+
+def test_equivalent_rectangular_index():
+    observed = equivalent_rectangular_index(shape)
+    testing.assert_allclose(observed, 0.706581, atol=ATOL)
+
+
+def test_form_factor():
+    observed = form_factor(shape, array([2]))
+    testing.assert_allclose(observed, 0.602535, atol=ATOL)
+
+
+def test_volume_wall_ratio():
+    observed = volume_wall_ratio(shape, array([2]))
+    testing.assert_allclose(observed, 0.164213, atol=ATOL)
