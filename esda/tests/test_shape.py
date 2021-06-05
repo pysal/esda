@@ -1,11 +1,13 @@
 from shapely import geometry
-from pygeos import from_shapely
 from esda.shape import *
 from numpy import testing, array
+import pytest
+
+pygeos = pytest.importorskip("pygeos")
 
 shape = array(
     [
-        from_shapely(
+        pygeos.from_shapely(
             geometry.Polygon(
                 [
                     (0, 0),
