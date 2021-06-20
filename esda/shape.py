@@ -395,5 +395,5 @@ def reflexive_angle_ratio(collection):
     return (
         pandas.DataFrame.from_dict(dict(is_reflex=angles < 0, geom_ix=geom_indices))
         .groupby("geom_ix")
-        .is_reflex.mean()
+        .is_reflex.mean().values
     )
