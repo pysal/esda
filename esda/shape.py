@@ -11,7 +11,10 @@ def _cast(collection):
     if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         return collection.values.data.squeeze()
     elif pygeos.is_geometry(collection).all():
-        return collection
+        if isinstance(collection, (numpy.ndarray, list)):
+            return numpy.asarray(collection)
+        else:
+            return numpy.array([collection])
     return pygeos.from_shapely(collection).squeeze()
 
 
