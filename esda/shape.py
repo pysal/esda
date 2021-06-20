@@ -255,9 +255,12 @@ def convex_hull_ratio(collection):
 def fractal_dimension(collection, support="hex"):
     """
     The fractal dimension of the boundary of a shape, assuming a given spatial support for the geometries.
+    
+    Note that this derivation assumes a specific ideal spatial support for the polygon, and is thus may not return valid results for complex or highly irregular geometries. 
     """
-    P = pygeos.measurement.length(collection)
-    A = pygeos.area(collection)
+    ga = _cast(collection)
+    P = pygeos.measurement.length(ga)
+    A = pygeos.area(ga)
     if support == "hex":
         return 2 * numpy.log(P / 6) / numpy.log(A / (3 * numpy.sin(numpy.pi / 3)))
     elif support == "square":
