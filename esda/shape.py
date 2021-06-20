@@ -195,14 +195,15 @@ def diameter_ratio(collection, rotated=True):
     ga = _cast(collection)
     if rotated:
         box = pygeos.minimum_rotated_rectangle(ga)
-        a, b, c, d, _ = pygeos.get_coordinates(box)
-        width = numpy.sqrt(numpy.sum((a - b) ** 2))
-        height = numpy.sqrt(numpy.sum((a - d) ** 2))
+        coords = pygeos.get_coordinates(box)
+        a, b, c, d = (coords[0::5], coords[1::5], coords[2::5], coords[3::5])
+        widths = numpy.sqrt(numpy.sum((a - b) ** 2, axis=1))
+        heights = numpy.sqrt(numpy.sum((a - d) ** 2, axis=1))
     else:
         box = pygeos.bounds(ga)
         (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
-        width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
-    return numpy.minimum(width, height) / numpy.maximum(width, height)
+        widths, heights = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
+    return numpy.minimum(widths, heights) / numpy.maximum(widths, heights)
 
 
 def length_width_diff(collection):
