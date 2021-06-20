@@ -53,7 +53,7 @@ def get_angles(collection, return_indices=False):
     coords = pygeos.get_coordinates(exploded)
     n_coords_per_geom = pygeos.get_num_coordinates(exploded)
     n_parts_per_geom = pygeos.get_num_geometries(exploded)
-    angles = numpy.asarray(_get_angles(coords, n_coords_per_geom, n_parts_per_geom))
+    angles = numpy.asarray(_get_angles(coords, n_coords_per_geom))
     if return_indices:
         return angles, numpy.repeat(
             numpy.arange(len(ga)),
@@ -64,7 +64,7 @@ def get_angles(collection, return_indices=False):
 
 
 @njit
-def _get_angles(points, n_coords_per_geom, n_parts_per_geom):
+def _get_angles(points, n_coords_per_geom):
     """
     Iterate over points in a set of geometries.
     This assumes that the input geometries are simple, not multi!
