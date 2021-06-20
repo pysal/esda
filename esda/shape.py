@@ -9,13 +9,17 @@ def _cast(collection):
     Cast a collection to a pygeos geometry array.
     """
     if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
-        return collection.values.data.squeeze()
+        return collection.geometry.values.data.squeeze()
     elif pygeos.is_geometry(collection).all():
         if isinstance(collection, (numpy.ndarray, list)):
             return numpy.asarray(collection)
         else:
             return numpy.array([collection])
-    return pygeos.from_shapely(collection).squeeze()
+    elif isinstance(collection, (numpy.ndarray, list)):
+        return pygeos.from_shapely(collection).squeeze()
+    else:
+        return numpy.array([pygeos.from_shapely(collection)])
+
 
 
 def get_angles(collection, return_indices=False):
