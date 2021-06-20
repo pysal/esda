@@ -294,7 +294,7 @@ def moment_of_inertia(collection):
     """
     ga = _cast(collection)
     coords = pygeos.get_coordinates(ga)
-    geom_ixs = numpy.tile(numpy.arange(len(ga)), pygeos.get_num_coordinates(ga))
+    geom_ixs = numpy.repeat(numpy.arange(len(ga)), pygeos.get_num_coordinates(ga))
     centroids = pygeos.get_coordinates(pygeos.centroid(ga))[geom_ixs]
     squared_euclidean = numpy.sum((coords - centroids) ** 2, axis=1)
     dists = (
@@ -358,7 +358,7 @@ def second_areal_moment(collection):
         for part in pygeos.get_parts(geometry):
             result[i] += _second_moa_ring(pygeos.get_coordinates(part))
     # must divide everything by 24 and flip if polygon is clockwise.
-    signflip = numpy.array([-1, 1])[pygeos.is_ccw(ga).astype(int)]
+    signflip = numpy.array([1, -1])[pygeos.is_ccw(ga).astype(int)]
     return result * (1 / 24) * signflip
 
 
