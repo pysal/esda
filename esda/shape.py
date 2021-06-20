@@ -69,6 +69,7 @@ def _get_angles(points, n_coords_per_geom):
     Iterate over points in a set of geometries.
     This assumes that the input geometries are simple, not multi!
     """
+    # Start at the first point of the first geometry
     offset = int(0)
     start = points[0]
     on_geom = 0
@@ -76,19 +77,30 @@ def _get_angles(points, n_coords_per_geom):
     result = []
     n_points = len(points)
     while True:
+        # if we're on the last point before the closure point,
         if on_coord == (n_coords_per_geom[on_geom] - 1):
-            offset += on_coord
+            # set the offset to start on the first point of the next geometry
+            offset += on_coord + 1
             on_geom += 1
             on_coord = 0
+            # if we're now done with all geometries, exit
             if on_geom == len(n_coords_per_geom):
                 break
             else:
+                # and continue to the next iteration.
                 continue
-        left = points[offset + on_coord % (n_coords_per_geom[on_geom] - 1)]
-        center = points[offset + (on_coord + 1) % (n_coords_per_geom[on_geom] - 1)]
-        right = points[offset + (on_coord + 2) % (n_coords_per_geom[on_geom] - 1)]
+        # construct the triple so that we wrap around and avoid the closure point
+        left_ix = offset + on_coord % (n_coords_per_geom[on_geom] - 1)
+        center_ix = offset + (on_coord + 1) % (n_coords_per_geom[on_geom] - 1)
+        right_ix = offset + (on_coord + 2) % (n_coords_per_geom[on_geom] - 1)
+        # grab the actual coordinates corresponding to the triple
+        left = points[left_ix]
+        center = points[center_ix]
+        right = points[right_ix]
+        # build the line segments originating at center
         a = left - center
         b = right - center
+        # compute the angle between the segments
         angle = numpy.math.atan2(a[0] * b[1] - a[1] * b[0], numpy.dot(a, b))
         result.append(angle)
         on_coord += 1
