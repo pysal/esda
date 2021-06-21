@@ -21,7 +21,6 @@ def _cast(collection):
         return numpy.array([pygeos.from_shapely(collection)])
 
 
-
 def get_angles(collection, return_indices=False):
     """
     Get the angles pertaining to each vertex of a set of polygons.
@@ -255,8 +254,8 @@ def convex_hull_ratio(collection):
 def fractal_dimension(collection, support="hex"):
     """
     The fractal dimension of the boundary of a shape, assuming a given spatial support for the geometries.
-    
-    Note that this derivation assumes a specific ideal spatial support for the polygon, and is thus may not return valid results for complex or highly irregular geometries. 
+
+    Note that this derivation assumes a specific ideal spatial support for the polygon, and is thus may not return valid results for complex or highly irregular geometries.
     """
     ga = _cast(collection)
     P = pygeos.measurement.length(ga)
@@ -497,7 +496,7 @@ def second_areal_moment(collection):
         for part in pygeos.get_parts(geometry):
             result[i] += _second_moa_ring(pygeos.get_coordinates(part))
     # must divide everything by 24 and flip if polygon is clockwise.
-    signflip = numpy.array([1, -1])[pygeos.is_ccw(ga).astype(int)]
+    signflip = numpy.array([-1, 1])[pygeos.is_ccw(ga).astype(int)]
     return result * (1 / 24) * signflip
 
 
@@ -534,5 +533,6 @@ def reflexive_angle_ratio(collection):
     return (
         pandas.DataFrame.from_dict(dict(is_reflex=angles < 0, geom_ix=geom_indices))
         .groupby("geom_ix")
-        .is_reflex.mean().values
+        .is_reflex.mean()
+        .values
     )
