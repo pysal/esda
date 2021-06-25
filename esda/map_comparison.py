@@ -17,7 +17,7 @@ def _overlay(a, b, return_indices=False):
     return overlay
 
 
-def external_entropy(a, b, balance=0, base=None):
+def external_entropy(a, b, balance=0, base=numpy.e):
     """
     The harmonic mean summarizing the overlay entropy of two
     sets of polygons: a onto b and b onto a.
@@ -41,8 +41,6 @@ def external_entropy(a, b, balance=0, base=None):
     of a's splits by partition b.
 
     """
-    if base is None:
-        base = numpy.e
     beta = numpy.exp(balance)
     aix, bix, ab = _overlay(a, b, return_indices=True)
     a_areas = pygeos.area(a)
@@ -50,10 +48,10 @@ def external_entropy(a, b, balance=0, base=None):
     ab_areas = pygeos.area(ab)
     b_onto_a = _overlay_entropy(aix, a_areas, ab_areas, base=base)  # SjZ
     # SZ, as sabre has entropy.empirical(rowSums(xtab), unit='log2')
-    b_onto_a /= areal_entropy(areas=b_areas, partial=False, base=base)
+    b_onto_a /= areal_entropy(areas=b_areas, local=False, base=base)
     a_onto_b = _overlay_entropy(bix, b_areas, ab_areas, base=base)  # SjR
     # SR, as sabre has entropy.empirical(colSums(xtab), unit='log2')
-    a_onto_b /= areal_entropy(areas=a_areas, partial=False, base=base)
+    a_onto_b /= areal_entropy(areas=a_areas, local=False, base=base)
 
     c = 1 - numpy.average(b_onto_a, weights=a_areas)
     h = 1 - numpy.average(a_onto_b, weights=b_areas)
@@ -61,7 +59,83 @@ def external_entropy(a, b, balance=0, base=None):
     return (1 + beta) * h * c / ((beta * h) + c)
 
 
-def overlay_entropy(a, b, standardize=True, partial=False, base=None):
+def completeness(a, b, local=False, scale=None, base=numpy.e):
+    """
+    The completeness of the partitions of polygons in a to those in a.
+    Closer to 1 when all polygons in a are fully contained within polygons in b.
+
+    Arguments
+    ---------
+    a : geometry array of polygons
+        array of polygons
+    b : geometry array of polygons
+        array of polygons
+    local: bool (default: False)
+        whether or not to provide local scores for each polygon. If True, the
+        completeness for polygons in a are returned.
+    scale: bool (default: None)
+        whether to scale the completeness score(s). By default, completeness is
+        is scaled for local scores so that the average of the local scores is
+        the overall map completeness. If not local, then completeness is returned
+        unscaled. You can also set local=True and scale=False to get raw components
+        of the completeness, whose sum is the completeness for the entire map.
+        Global re-scaled scores (local=False & scale=True) are not supported.
+    base: bool (default=None)
+        what base to use for the entropy calculations. The default is base e,
+        which means entropy is measured in "nats."
+    """
+    if local and (scale is None):  # set default scale for local
+        scale = True
+    elif (not local) and (scale is None):  # set default scale for global
+        scale = False
+    elif (not local) and scale:  # error on global with scaling
+        raise ValueError(
+            "Scaled values are only computed if local statistics are required."
+        )
+    ohi = overlay_entropy(a, b, standardize=True, local=True, base=base)
+    a_areas = pygeos.area(a)
+    w = a_areas / a_areas.sum()
+    ci = (w * (1 - ohi)) / w.sum()
+    if scale and local:
+        return ci * len(a)
+    elif local:
+        return ci
+    else:
+        return ci.sum()
+
+
+def homogeneity(a, b, local=False, scale=None, base=numpy.e):
+    """
+    The homogeneity of polygons from a partitioned by b.
+
+    This is equal to completeness(b,a).
+
+    It is closer to 1 when all polygons in b correspond well to polygons in a.
+
+    Arguments
+    ---------
+    a : geometry array of polygons
+        array of polygons
+    b : geometry array of polygons
+        array of polygons
+    local: bool (default: False)
+        whether or not to provide local scores for each polygon. If True, the
+        homogeneity for polygons in b are returned.
+    scale: bool (default: None)
+        whether to scale the completeness score(s). By default, completeness is
+        is scaled for local scores so that the average of the local scores is
+        the overall map completeness. If not local, then completeness is returned
+        unscaled. You can also set local=True and scale=False to get raw components
+        of the completeness, whose sum is the completeness for the entire map.
+        Global re-scaled scores (local=False & scale=True) are not supported.
+    base: bool (default=None)
+        what base to use for the entropy calculations. The default is base e,
+        which means entropy is measured in "nats."
+    """
+    return completeness(b, a, local=local, scale=scale, base=base)
+
+
+def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
     """
     The entropy of how n zones in a are split by m partitions in b,
     where n is the number of polygons in a and m is the number
@@ -85,14 +159,13 @@ def overlay_entropy(a, b, standardize=True, partial=False, base=None):
     (n,) array expressing the entropy of the areal distributions
     of a's splits by partition b.
     """
-    if base is None:
-        base = numpy.e
     aix, bix, ab = _overlay(a, b, return_indices=True)
     a_areas = pygeos.area(a)
+    b_areas = pygeos.area(b)
     h = _overlay_entropy(aix, a_areas, pygeos.area(ab), base=base)
     if standardize:
-        h /= areal_entropy(None, areas=a_areas, partial=False, base=base)
-    if partial:
+        h /= areal_entropy(None, areas=b_areas, local=False, base=base)
+    if local:
         return h
     return h.sum()
 
@@ -113,7 +186,7 @@ def _overlay_entropy(aix, a_areas, ab_areas, base):
     return mapping.groupby("a").entropy.sum().values
 
 
-def areal_entropy(polygons=None, areas=None, partial=False, base=None):
+def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     """
     Compute the entropy of the distribution of polygon areas.
 
@@ -126,17 +199,15 @@ def areal_entropy(polygons=None, areas=None, partial=False, base=None):
     areas: numpy array
         areas to use to compute entropy. SHould not be provided if
         polygons are provided.
-    partial: bool (default: False)
+    local: bool (default: False)
         whether to return the total entropy of the areal distribution
         (False), or to return the contribution to entropy made
         by each of area (True).
 
     Returns
     -------
-    Total map entropy or (n,) vector of partial entropies.
+    Total map entropy or (n,) vector of local entropies.
     """
-    if base is None:
-        base = numpy.e
     assert not (
         (polygons is None) & (areas is None)
     ), "either polygons or precomputed areas must be provided"
@@ -149,7 +220,7 @@ def areal_entropy(polygons=None, areas=None, partial=False, base=None):
         assert polygons is not None, "If areas are not provided, polygons should be."
         areas = pygeos.area(polygons)
     result = entr(areas / areas.sum()) / numpy.log(base)
-    if partial:
+    if local:
         return result
     return result.sum()
 
@@ -171,5 +242,5 @@ if __name__ == "__main__":
     test = _overlay_entropy(r1ix, r1areas, r1r2areas, base=2)
 
     print(external_entropy(r1a, r2a, base=2))
-    print(overlay_entropy(r1a, r2a, standardize=True, partial=False, base=2))
-    print(overlay_entropy(r2a, r1a, standardize=True, partial=False, base=2))
+    print(overlay_entropy(r1a, r2a, standardize=True, local=False, base=2))
+    print(overlay_entropy(r2a, r1a, standardize=True, local=False, base=2))
