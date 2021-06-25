@@ -17,7 +17,7 @@ def _overlay(a, b, return_indices=False):
     return overlay
 
 
-def external_entropy(a, b, balance=0):
+def external_entropy(a, b, balance=0, base=None):
     """
     The harmonic mean summarizing the overlay entropy of two
     sets of polygons: a onto b and b onto a.
@@ -41,15 +41,19 @@ def external_entropy(a, b, balance=0):
     of a's splits by partition b.
 
     """
+    if base is None:
+        base = numpy.e
     beta = numpy.exp(balance)
     aix, bix, ab = _overlay(a, b, return_indices=True)
     a_areas = pygeos.area(a)
     b_areas = pygeos.area(b)
     ab_areas = pygeos.area(ab)
-    b_onto_a = _overlay_entropy(aix, a_areas, ab_areas)
-    b_onto_a /= areal_entropy(areas=a_areas, partial=False)
-    a_onto_b = _overlay_entropy(bix, b_areas, ab_areas)
-    a_onto_b /= areal_entropy(areas=b_areas, partial=False)
+    b_onto_a = _overlay_entropy(aix, a_areas, ab_areas, base=base)  # SjZ
+    # SZ, as sabre has entropy.empirical(rowSums(xtab), unit='log2')
+    b_onto_a /= areal_entropy(areas=b_areas, partial=False, base=base)
+    a_onto_b = _overlay_entropy(bix, b_areas, ab_areas, base=base)  # SjR
+    # SR, as sabre has entropy.empirical(colSums(xtab), unit='log2')
+    a_onto_b /= areal_entropy(areas=a_areas, partial=False, base=base)
 
     c = 1 - numpy.average(b_onto_a, weights=a_areas)
     h = 1 - numpy.average(a_onto_b, weights=b_areas)
@@ -57,7 +61,7 @@ def external_entropy(a, b, balance=0):
     return (1 + beta) * h * c / ((beta * h) + c)
 
 
-def overlay_entropy(a, b, standardize=True, partial=False):
+def overlay_entropy(a, b, standardize=True, partial=False, base=None):
     """
     The entropy of how n zones in a are split by m partitions in b,
     where n is the number of polygons in a and m is the number
@@ -81,15 +85,19 @@ def overlay_entropy(a, b, standardize=True, partial=False):
     (n,) array expressing the entropy of the areal distributions
     of a's splits by partition b.
     """
+    if base is None:
+        base = numpy.e
     aix, bix, ab = _overlay(a, b, return_indices=True)
     a_areas = pygeos.area(a)
-    h = _overlay_entropy(aix, a_areas, pygeos.area(ab))
+    h = _overlay_entropy(aix, a_areas, pygeos.area(ab), base=base)
     if standardize:
-        h /= areal_entropy(None, areas=a_areas)
+        h /= areal_entropy(None, areas=a_areas, partial=False, base=base)
+    if partial:
+        return h
     return h.sum()
 
 
-def _overlay_entropy(aix, a_areas, ab_areas):
+def _overlay_entropy(aix, a_areas, ab_areas, base):
     """
     direct function to compute overlay entropies
     """
@@ -101,11 +109,11 @@ def _overlay_entropy(aix, a_areas, ab_areas):
         )
     )
     mapping["frac"] = mapping.area / mapping.a_area
-    mapping["entropy"] = entr(mapping.frac.values)
-    return (mapping.groupby("a").entropy.sum()).values
+    mapping["entropy"] = entr(mapping.frac.values) / numpy.log(base)
+    return mapping.groupby("a").entropy.sum().values
 
 
-def areal_entropy(polygons=None, areas=None, partial=False):
+def areal_entropy(polygons=None, areas=None, partial=False, base=None):
     """
     Compute the entropy of the distribution of polygon areas.
 
@@ -127,15 +135,20 @@ def areal_entropy(polygons=None, areas=None, partial=False):
     -------
     Total map entropy or (n,) vector of partial entropies.
     """
+    if base is None:
+        base = numpy.e
     assert not (
         (polygons is None) & (areas is None)
     ), "either polygons or precomputed areas must be provided"
+    assert not (
+        (polygons is not None) & (areas is not None)
+    ), "only one of polygons or areas should be provided."
     if polygons is None:
         assert areas is not None, "If polygons are not provided, areas should be."
     if areas is None:
         assert polygons is not None, "If areas are not provided, polygons should be."
         areas = pygeos.area(polygons)
-    result = entr(areas / areas.sum())
+    result = entr(areas / areas.sum()) / numpy.log(base)
     if partial:
         return result
     return result.sum()
@@ -149,13 +162,14 @@ if __name__ == "__main__":
     r1a = pygeos.from_shapely(r1.geometry)
     r2a = pygeos.from_shapely(r2.geometry)
     r1areas = pygeos.area(r1a)
-    r2areas = pygeos.area(r1a)
-    aix, bix, r1r2 = _overlay(r1a, r2a, return_indices=True)
+    r2areas = pygeos.area(r2a)
+    r1ix, r2ix, r1r2 = _overlay(r1a, r2a, return_indices=True)
     r1r2areas = pygeos.area(r1r2)
-    crosstab = pandas.DataFrame(dict(aix=aix, bix=bix, area=r1r2areas)).pivot(
-        index="aix", columns="bix", values="area"
+    crosstab = pandas.DataFrame(dict(r1ix=r1ix, r2ix=r2ix, area=r1r2areas)).pivot(
+        index="r1ix", columns="r2ix", values="area"
     )
+    test = _overlay_entropy(r1ix, r1areas, r1r2areas, base=2)
 
-    print(external_entropy(r1a, r2a))
-    print(overlay_entropy(r1a, r2a, standardize=True, partial=False))
-    print(overlay_entropy(r2a, r1a, standardize=True, partial=False))
+    print(external_entropy(r1a, r2a, base=2))
+    print(overlay_entropy(r1a, r2a, standardize=True, partial=False, base=2))
+    print(overlay_entropy(r2a, r1a, standardize=True, partial=False, base=2))
