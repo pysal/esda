@@ -391,26 +391,6 @@ def form_factor(collection, height):
     return res
 
 
-def volume_wall_ratio(collection, height):
-    """
-    Perimeter-based volumetric compactness
-
-    In morphological literature often as volume/facade ratio.
-
-    .. math::
-        \\frac{A \\times H}{P \\times H}
-
-    where :math:`A` is the area, :math:`P` is the perimeter and :math:`H` is polygon's
-    height.
-
-    Notes
-    -----
-    Implementation follows :cite:`schirmer2015`.
-    """
-    ga = _cast(collection)
-    return (pygeos.area(ga) * height) / (pygeos.length(ga) * height)
-
-
 # -------------------- INERTIAL MEASURES -------------------- #
 
 

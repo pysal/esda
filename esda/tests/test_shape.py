@@ -122,8 +122,3 @@ def test_equivalent_rectangular_index():
 def test_form_factor():
     observed = form_factor(shape, array([2]))
     testing.assert_allclose(observed, 0.602535, atol=ATOL)
-
-
-def test_volume_wall_ratio():
-    observed = volume_wall_ratio(shape, array([2]))
-    testing.assert_allclose(observed, 0.164213, atol=ATOL)
