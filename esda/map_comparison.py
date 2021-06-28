@@ -1,4 +1,4 @@
-import numpy, pygeos, pandas
+import numpy, pygeos, pandas, geopandas
 from scipy.special import entr
 
 # from nowosad and stepinski
@@ -17,6 +17,23 @@ def _overlay(a, b, return_indices=False):
     return overlay
 
 
+def _cast(collection):
+    """
+    Cast a collection to a pygeos geometry array.
+    """
+    if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+        return collection.geometry.values.data.squeeze()
+    elif pygeos.is_geometry(collection).all():
+        if isinstance(collection, (numpy.ndarray, list)):
+            return numpy.asarray(collection)
+        else:
+            return numpy.array([collection])
+    elif isinstance(collection, (numpy.ndarray, list)):
+        return pygeos.from_shapely(collection).squeeze()
+    else:
+        return numpy.array([pygeos.from_shapely(collection)])
+
+
 def external_entropy(a, b, balance=0, base=numpy.e):
     """
     The harmonic mean summarizing the overlay entropy of two
@@ -28,19 +45,22 @@ def external_entropy(a, b, balance=0, base=numpy.e):
         array of polygons
     b : geometry array of polygons
         array of polygons
-    balance  float
+    balance:  float
         weight that describing the relative importance of pattern a or pattern b.
         When large and positive, we weight the measure more to ensure polygons in b
         are fully contained by polygons in a. When large and negative,
         we weight the pattern to ensure polygons in A are fully contained
         by polygons in b. Corresponds to the log of beta in Nowosad and Stepinksi (2018).
-
+    base: float
+        base of logarithm to use throughout computation
     Returns
     --------
     (n,) array expressing the entropy of the areal distributions
     of a's splits by partition b.
 
     """
+    a = _cast(a)
+    b = _cast(b)
     beta = numpy.exp(balance)
     aix, bix, ab = _overlay(a, b, return_indices=True)
     a_areas = pygeos.area(a)
@@ -59,7 +79,7 @@ def external_entropy(a, b, balance=0, base=numpy.e):
     return (1 + beta) * h * c / ((beta * h) + c)
 
 
-def completeness(a, b, local=False, scale=None, base=numpy.e):
+def completeness(a, b, local=False, base=numpy.e):
     """
     The completeness of the partitions of polygons in a to those in a.
     Closer to 1 when all polygons in a are fully contained within polygons in b.
@@ -84,27 +104,18 @@ def completeness(a, b, local=False, scale=None, base=numpy.e):
         what base to use for the entropy calculations. The default is base e,
         which means entropy is measured in "nats."
     """
-    if local and (scale is None):  # set default scale for local
-        scale = True
-    elif (not local) and (scale is None):  # set default scale for global
-        scale = False
-    elif (not local) and scale:  # error on global with scaling
-        raise ValueError(
-            "Scaled values are only computed if local statistics are required."
-        )
+    a = _cast(a)
+    b = _cast(b)
     ohi = overlay_entropy(a, b, standardize=True, local=True, base=base)
     a_areas = pygeos.area(a)
     w = a_areas / a_areas.sum()
     ci = (w * (1 - ohi)) / w.sum()
-    if scale and local:
-        return ci * len(a)
-    elif local:
+    if local:
         return ci
-    else:
-        return ci.sum()
+    return ci.sum()
 
 
-def homogeneity(a, b, local=False, scale=None, base=numpy.e):
+def homogeneity(a, b, local=False, base=numpy.e):
     """
     The homogeneity of polygons from a partitioned by b.
 
@@ -132,7 +143,7 @@ def homogeneity(a, b, local=False, scale=None, base=numpy.e):
         what base to use for the entropy calculations. The default is base e,
         which means entropy is measured in "nats."
     """
-    return completeness(b, a, local=local, scale=scale, base=base)
+    return completeness(b, a, local=local, base=base)
 
 
 def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
@@ -159,6 +170,8 @@ def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
     (n,) array expressing the entropy of the areal distributions
     of a's splits by partition b.
     """
+    a = _cast(a)
+    b = _cast(b)
     aix, bix, ab = _overlay(a, b, return_indices=True)
     a_areas = pygeos.area(a)
     b_areas = pygeos.area(b)
@@ -218,6 +231,7 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
         assert areas is not None, "If polygons are not provided, areas should be."
     if areas is None:
         assert polygons is not None, "If areas are not provided, polygons should be."
+        polygons = _cast(polygons)
         areas = pygeos.area(polygons)
     result = entr(areas / areas.sum()) / numpy.log(base)
     if local:
