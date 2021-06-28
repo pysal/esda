@@ -22,4 +22,3 @@ dependencies:
   - sphinx_bootstrap_theme
   - numpydoc
   - nbsphinx
-  - pygeos
