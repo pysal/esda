@@ -62,3 +62,7 @@ def test_external_entropy():
         v2 = mc.external_entropy(r2, r1, base=base)
         numpy.testing.assert_allclose(v1, v2)
         numpy.testing.assert_allclose(v1, 0.3612313462)
+        v1_ctipped = mc.external_entropy(r1, r2, base=base, balance=100)
+        numpy.testing.assert_allclose(v1_ctipped, 0.42275150844) #value from completeness
+        v1_htipped = mc.external_entropy(r1, r2, base=base, balance=-100)
+        numpy.testing.assert_allclose(v1_htipped, 0.31534179219) #value from homogeneity
