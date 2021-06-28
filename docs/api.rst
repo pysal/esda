@@ -27,15 +27,18 @@ Gamma Statistic
 
     esda.Gamma
 
+
 .. _geary_api:
 
-Geary Statistic
+Geary Statistics
 ---------------
 
 .. autosummary::
    :toctree: generated/
 
     esda.Geary
+    esda.Geary_Local
+    esda.Geary_Local_MV
 
 
 .. _getis_api:
@@ -48,6 +51,7 @@ Getis-Ord Statistics
 
     esda.G
     esda.G_Local
+
 
 .. _join_api:
 
@@ -66,13 +70,7 @@ Join Count Local Statistics
    :toctree: generated/
 
     esda.Join_Counts_Local
-
-Join Count Multivariate Statistics
------------------------------------
-
-.. autosummary::
-   :toctree: generated/
-
+    esda.Join_Counts_Local_BV
     esda.Join_Counts_Local_MV
 
 
