@@ -37,7 +37,9 @@ def _cast(collection):
 def external_entropy(a, b, balance=0, base=numpy.e):
     """
     The harmonic mean summarizing the overlay entropy of two
-    sets of polygons: a onto b and b onto a.
+    sets of polygons: a onto b and b onto a. 
+    
+    Called the v-measure in :cite:`nowosad2018`
 
     Arguments
     ----------
@@ -50,7 +52,7 @@ def external_entropy(a, b, balance=0, base=numpy.e):
         When large and positive, we weight the measure more to ensure polygons in b
         are fully contained by polygons in a. When large and negative,
         we weight the pattern to ensure polygons in A are fully contained
-        by polygons in b. Corresponds to the log of beta in Nowosad and Stepinksi (2018).
+        by polygons in b. Corresponds to the log of beta in {cite}`Nowosad2018`.
     base: float
         base of logarithm to use throughout computation
     Returns
@@ -58,6 +60,12 @@ def external_entropy(a, b, balance=0, base=numpy.e):
     (n,) array expressing the entropy of the areal distributions
     of a's splits by partition b.
 
+    Example
+    -------
+    
+    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
+    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
+    >>> external_entropy(r1, r2)
     """
     a = _cast(a)
     b = _cast(b)
@@ -83,6 +91,7 @@ def completeness(a, b, local=False, base=numpy.e):
     """
     The completeness of the partitions of polygons in a to those in a.
     Closer to 1 when all polygons in a are fully contained within polygons in b.
+    From :cite:`nowosad2018`
 
     Arguments
     ---------
@@ -103,6 +112,13 @@ def completeness(a, b, local=False, base=numpy.e):
     base: bool (default=None)
         what base to use for the entropy calculations. The default is base e,
         which means entropy is measured in "nats."
+        
+    Example
+    -------
+    
+    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
+    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
+    >>> completeness(r1, r2)
     """
     a = _cast(a)
     b = _cast(b)
@@ -118,6 +134,8 @@ def completeness(a, b, local=False, base=numpy.e):
 def homogeneity(a, b, local=False, base=numpy.e):
     """
     The homogeneity of polygons from a partitioned by b.
+    
+    From :cite:`nowosad2018`
 
     This is equal to completeness(b,a).
 
@@ -142,6 +160,13 @@ def homogeneity(a, b, local=False, base=numpy.e):
     base: bool (default=None)
         what base to use for the entropy calculations. The default is base e,
         which means entropy is measured in "nats."
+        
+    Example
+    -------
+    
+    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
+    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
+    >>> homogeneity(r1, r2)
     """
     return completeness(b, a, local=local, base=base)
 
@@ -153,6 +178,7 @@ def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
     of partitions in b. This is the "overlay entropy", since
     the set of polygons constructed from intersection(a,b) is often
     called the "overlay" of A onto B.
+    
 
     Larger when zones in a are uniformly split into many even pieces
     by partitions in b, and small when zones in A correspond well to
@@ -169,6 +195,13 @@ def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
     --------
     (n,) array expressing the entropy of the areal distributions
     of a's splits by partition b.
+    
+    Example
+    -------
+    
+    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
+    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
+    >>> overlay_entropy(r1, r2)
     """
     a = _cast(a)
     b = _cast(b)
@@ -203,7 +236,6 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     """
     Compute the entropy of the distribution of polygon areas.
 
-
     Arguments
     ---------
     polygons: numpy array of geometries
@@ -220,6 +252,13 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     Returns
     -------
     Total map entropy or (n,) vector of local entropies.
+    
+    Example
+    -------
+    
+    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
+    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
+    >>> areal_entropy(polygons=r1)
     """
     assert not (
         (polygons is None) & (areas is None)
@@ -237,24 +276,3 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     if local:
         return result
     return result.sum()
-
-
-if __name__ == "__main__":
-    import geopandas
-
-    r1 = geopandas.read_file("./regions.gpkg", layer="regions1")
-    r2 = geopandas.read_file("./regions.gpkg", layer="regions2")
-    r1a = pygeos.from_shapely(r1.geometry)
-    r2a = pygeos.from_shapely(r2.geometry)
-    r1areas = pygeos.area(r1a)
-    r2areas = pygeos.area(r2a)
-    r1ix, r2ix, r1r2 = _overlay(r1a, r2a, return_indices=True)
-    r1r2areas = pygeos.area(r1r2)
-    crosstab = pandas.DataFrame(dict(r1ix=r1ix, r2ix=r2ix, area=r1r2areas)).pivot(
-        index="r1ix", columns="r2ix", values="area"
-    )
-    test = _overlay_entropy(r1ix, r1areas, r1r2areas, base=2)
-
-    print(external_entropy(r1a, r2a, base=2))
-    print(overlay_entropy(r1a, r2a, standardize=True, local=False, base=2))
-    print(overlay_entropy(r2a, r1a, standardize=True, local=False, base=2))
