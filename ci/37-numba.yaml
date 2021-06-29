@@ -15,4 +15,5 @@ dependencies:
   - codecov
   - matplotlib
   # optional
-  - geopandas
+  - geopandas>=0.7.0
+  - pygeos>=0.10
