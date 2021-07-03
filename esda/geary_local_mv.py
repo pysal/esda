@@ -83,7 +83,7 @@ class Geary_Local_MV(BaseEstimator):
 
         # Caclulate z-scores for input variables
         # to be used in _statistic and _crand
-        zvariables = [stats.zscore(i) for i in variables]
+        zvariables = stats.zscore(variables, axis=1)
 
         self.localG = self._statistic(variables, zvariables, w)
 
