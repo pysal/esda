@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
-import warnings
-from scipy import sparse
 from scipy import stats
 from sklearn.base import BaseEstimator
-import libpysal as lp
 
 
 class Geary_Local_MV(BaseEstimator):
@@ -134,9 +131,7 @@ class Geary_Local_MV(BaseEstimator):
 
         """
         nvars = self.variables.shape[0]
-        n = self.variables.shape[1]
         Gs = np.zeros((self.n, self.permutations))
-        n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
         nn = self.n - 1
