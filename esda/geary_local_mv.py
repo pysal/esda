@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
-import warnings
-from scipy import sparse
 from scipy import stats
 from sklearn.base import BaseEstimator
-import libpysal as lp
 
 
 class Geary_Local_MV(BaseEstimator):
@@ -83,7 +80,7 @@ class Geary_Local_MV(BaseEstimator):
 
         # Caclulate z-scores for input variables
         # to be used in _statistic and _crand
-        zvariables = [stats.zscore(i) for i in variables]
+        zvariables = stats.zscore(variables, axis=1)
 
         self.localG = self._statistic(variables, zvariables, w)
 
@@ -105,10 +102,10 @@ class Geary_Local_MV(BaseEstimator):
         # Create focal and neighbor values
         adj_list = w.to_adjlist(remove_symmetric=False)
         zseries = [pd.Series(i, index=w.id_order) for i in zvariables]
-        focal = [zseries[i].loc[adj_list.focal].values for
-                 i in range(len(variables))]
-        neighbor = [zseries[i].loc[adj_list.neighbor].values for
-                    i in range(len(variables))]
+        focal = [zseries[i].loc[adj_list.focal].values
+                 for i in range(len(variables))]
+        neighbor = [zseries[i].loc[adj_list.neighbor].values
+                    for i in range(len(variables))]
         # Carry out local Geary calculation
         gs = adj_list.weight.values * \
             (np.array(focal) - np.array(neighbor))**2
@@ -116,7 +113,7 @@ class Geary_Local_MV(BaseEstimator):
         temp = pd.DataFrame(gs).T
         temp['ID'] = adj_list.focal.values
         adj_list_gs = temp.groupby(by='ID').sum()
-        localG = np.array(adj_list_gs.sum(axis=1)/k)
+        localG = np.array(adj_list_gs.sum(axis=1) / k)
 
         return (localG)
 
@@ -134,9 +131,7 @@ class Geary_Local_MV(BaseEstimator):
 
         """
         nvars = self.variables.shape[0]
-        n = self.variables.shape[1]
         Gs = np.zeros((self.n, self.permutations))
-        n_1 = self.n - 1
         prange = list(range(self.permutations))
         k = self.w.max_neighbors + 1
         nn = self.n - 1
@@ -156,8 +151,8 @@ class Geary_Local_MV(BaseEstimator):
             # Calculate diff
             diff = []
             for z in range(nvars):
-                diff.append((np.array((zvariables[z][i]-vars_rand[z])**2
-                                      * w[i])).sum(1)/nvars)
+                diff.append((np.array((zvariables[z][i] - vars_rand[z])**2
+                                      * w[i])).sum(1) / nvars)
             # add up differences
             temp = np.array([sum(x) for x in zip(*diff)])
             # Assign to object to be returned
