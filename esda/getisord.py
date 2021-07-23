@@ -243,8 +243,12 @@ class G_Local(object):
     permutations : int
                   the number of random permutations for calculating
                   pseudo p values
-    star : boolean
+    star : boolean or float
            whether or not to include focal observation in sums (default: False)
+           if the row-transformed weight is provided, then this is the default
+           value to use within the spatial lag. Generally, weights should be
+           provided in binary form, and standardization/self-weighting will be
+           handled by the function itself.
 
     Attributes
     ----------
@@ -461,7 +465,6 @@ class G_Local(object):
         w = self.w
         W = w.sparse
 
-        # REMOVE THIS
         self.y_sum = self.y.sum()
 
         y = self.y
@@ -581,17 +584,18 @@ def _infer_star_and_structure_w(weights, star, transform):
         if transform.lower() == "b" or weights.transform.lower() == "b":
             weights = fill_diagonal(weights, 1)
         # if we know the target is row-standardized, use the row max
-        # this works successfully for effectively binar but "O"-transformed input
+        # this works successfully for effectively binary but "O"-transformed input
         elif transform.lower() == "r":
-            # This warning is probably better as a documentation instead of a warning.
-            # warnings.warn(
-            #     "Gi* requested, but no weights are on the diagonal and"
-            #     " no default value supplied to star. Assuming that the"
-            #     " self-weight is equivalent to the maximum weight in the"
-            #     " row. To use a different default (like, .5), set `star=.5`,"
-            #     " or use libpysal.weights.fill_diagonal() to set the diagonal"
-            #     " values of your weights matrix and use `star=None` in Gi_Local."
-            # )
+            # This warning is presented in the documentation as well
+            warnings.warn(
+                "Gi* requested, but (a) weights are already row-standardized,"
+                " (b) no weights are on the diagonal, and"
+                " (c) no default value supplied to star. Assuming that the"
+                " self-weight is equivalent to the maximum weight in the"
+                " row. To use a different default (like, .5), set `star=.5`,"
+                " or use libpysal.weights.fill_diagonal() to set the diagonal"
+                " values of your weights matrix and use `star=None` in Gi_Local."
+            )
             weights = fill_diagonal(
                 weights, np.asarray(adj_matrix.max(axis=1).todense()).flatten()
             )
