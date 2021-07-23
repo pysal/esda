@@ -398,7 +398,7 @@ class G_Local(object):
         self.permutations = permutations
         self.star = star
         self.calc()
-        self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
+        self.p_norm = 1 - stats.norm.cdf(np.abs(self.Zs))
         if permutations:
             self.p_sim, self.rGs = _crand_plus(
                 y,
