@@ -107,7 +107,7 @@ class Spatial_Pearson(BaseEstimator):
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
 
 
-class Local_Spatial_Pearson(BaseEstimator):
+class Spatial_Pearson_Local(BaseEstimator):
     """Local Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):
@@ -271,4 +271,4 @@ if __name__ == "__main__":
     numpy.random.seed(2478879)
     testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x, y)
     numpy.random.seed(2478879)
-    testlocal = Local_Spatial_Pearson(connectivity=w.sparse).fit(x, y)
+    testlocal = Spatial_Pearson_Local(connectivity=w.sparse).fit(x, y)

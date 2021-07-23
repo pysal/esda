@@ -16,3 +16,9 @@ dependencies:
   - matplotlib
   # optional
   - geopandas
+  - pygeos>=0.10
+  - sphinx>=1.4.3
+  - sphinxcontrib-bibtex==1.0.0
+  - sphinx_bootstrap_theme
+  - numpydoc
+  - nbsphinx

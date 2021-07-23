@@ -4,8 +4,8 @@ channels:
 dependencies:
   - python=3.8
   # required
-  - scipy
-  - pandas
+  - scipy>=1.0
+  - pandas>=1.0
   - libpysal
   - scikit-learn
   # testing
@@ -14,4 +14,5 @@ dependencies:
   - codecov
   - matplotlib
   # optional
-  - geopandas
+  - geopandas>=0.7.0
+  - pygeos>=0.10

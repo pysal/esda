@@ -1,0 +1,24 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  # required
+  - scipy
+  - pandas
+  - libpysal
+  - scikit-learn
+  - numba
+  # testing
+  - pytest
+  - pytest-cov
+  - codecov
+  - matplotlib
+  # optional
+  - geopandas
+  - pygeos>=0.10
+  - sphinx>=1.4.3
+  - sphinxcontrib-bibtex==1.0.0
+  - sphinx_bootstrap_theme
+  - numpydoc
+  - nbsphinx
