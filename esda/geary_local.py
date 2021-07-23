@@ -5,20 +5,23 @@ from scipy import sparse
 from scipy import stats
 from sklearn.base import BaseEstimator
 import libpysal as lp
-from esda.crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate
-)
+from esda.crand import crand as _crand_plus, njit as _njit, _prepare_univariate
 
 
 class Geary_Local(BaseEstimator):
 
     """Local Geary - Univariate"""
 
-    def __init__(self, connectivity=None, labels=False, sig=0.05,
-                 permutations=999, n_jobs=1, keep_simulations=True,
-                 seed=None):
+    def __init__(
+        self,
+        connectivity=None,
+        labels=False,
+        sig=0.05,
+        permutations=999,
+        n_jobs=1,
+        keep_simulations=True,
+        seed=None,
+    ):
         """
         Initialize a Local_Geary estimator
         Arguments
@@ -110,8 +113,8 @@ class Geary_Local(BaseEstimator):
         x = np.asarray(x).flatten()
 
         w = self.connectivity
-        w.transform = 'r'
-        
+        w.transform = "r"
+
         permutations = self.permutations
         sig = self.sig
         keep_simulations = self.keep_simulations
@@ -122,13 +125,13 @@ class Geary_Local(BaseEstimator):
 
         if permutations:
             self.p_sim, self.rlocalG = _crand_plus(
-                z=(x - np.mean(x))/np.std(x),
+                z=(x - np.mean(x)) / np.std(x),
                 w=w,
                 observed=self.localG,
                 permutations=permutations,
                 keep=keep_simulations,
                 n_jobs=n_jobs,
-                stat_func=_local_geary
+                stat_func=_local_geary,
             )
 
         if self.labels:
@@ -137,16 +140,11 @@ class Geary_Local(BaseEstimator):
             # Create empty vector to fill
             self.labs = np.empty(len(x)) * np.nan
             # Outliers
-            self.labs[(self.localG < Eij_mean) &
-                      (x > x_mean) &
-                      (self.p_sim <= sig)] = 1
+            self.labs[(self.localG < Eij_mean) & (x > x_mean) & (self.p_sim <= sig)] = 1
             # Clusters
-            self.labs[(self.localG < Eij_mean) &
-                      (x < x_mean) &
-                      (self.p_sim <= sig)] = 2
+            self.labs[(self.localG < Eij_mean) & (x < x_mean) & (self.p_sim <= sig)] = 2
             # Other
-            self.labs[(self.localG > Eij_mean) &
-                      (self.p_sim <= sig)] = 3
+            self.labs[(self.localG > Eij_mean) & (self.p_sim <= sig)] = 3
             # Non-significant
             self.labs[self.p_sim > sig] = 4
 
@@ -155,22 +153,23 @@ class Geary_Local(BaseEstimator):
     @staticmethod
     def _statistic(x, w):
         # Caclulate z-scores for x
-        zscore_x = (x - np.mean(x))/np.std(x)
+        zscore_x = (x - np.mean(x)) / np.std(x)
         # Create focal (xi) and neighbor (zi) values
         adj_list = w.to_adjlist(remove_symmetric=False)
         zseries = pd.Series(zscore_x, index=w.id_order)
         zi = zseries.loc[adj_list.focal].values
         zj = zseries.loc[adj_list.neighbor].values
         # Carry out local Geary calculation
-        gs = adj_list.weight.values * (zi-zj)**2
+        gs = adj_list.weight.values * (zi - zj) ** 2
         # Reorganize data
         adj_list_gs = pd.DataFrame(adj_list.focal.values, gs).reset_index()
-        adj_list_gs.columns = ['gs', 'ID']
-        adj_list_gs = adj_list_gs.groupby(by='ID').sum()
+        adj_list_gs.columns = ["gs", "ID"]
+        adj_list_gs = adj_list_gs.groupby(by="ID").sum()
 
         localG = adj_list_gs.gs.values
 
-        return (localG)
+        return localG
+
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations

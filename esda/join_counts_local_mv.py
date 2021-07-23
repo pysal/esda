@@ -3,11 +3,7 @@ import pandas as pd
 from scipy import sparse
 from sklearn.base import BaseEstimator
 from libpysal import weights
-from esda.crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate
-)
+from esda.crand import crand as _crand_plus, njit as _njit, _prepare_univariate
 
 
 PERMUTATIONS = 999
@@ -17,8 +13,14 @@ class Join_Counts_Local_MV(BaseEstimator):
 
     """Multivariate Local Join Count Statistic"""
 
-    def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
-                 keep_simulations=True, seed=None):
+    def __init__(
+        self,
+        connectivity=None,
+        permutations=PERMUTATIONS,
+        n_jobs=1,
+        keep_simulations=True,
+        seed=None,
+    ):
         """
         Initialize a Local_Join_Counts_MV estimator
         Arguments
@@ -32,18 +34,18 @@ class Join_Counts_Local_MV(BaseEstimator):
                            p_values
         n_jobs           : int
                            Number of cores to be used in the conditional randomisation. If -1,
-                           all available cores are used.    
+                           all available cores are used.
         keep_simulations : Boolean
                            (default=True)
-                           If True, the entire matrix of replications under the null 
-                           is stored in memory and accessible; otherwise, replications 
+                           If True, the entire matrix of replications under the null
+                           is stored in memory and accessible; otherwise, replications
                            are not saved
         seed             : None/int
-                           Seed to ensure reproducibility of conditional randomizations. 
-                           Must be set here, and not outside of the function, since numba 
-                           does not correctly interpret external seeds 
-                           nor numpy.random.RandomState instances.              
-                           
+                           Seed to ensure reproducibility of conditional randomizations.
+                           Must be set here, and not outside of the function, since numba
+                           does not correctly interpret external seeds
+                           nor numpy.random.RandomState instances.
+
         """
 
         self.connectivity = connectivity
@@ -98,37 +100,36 @@ class Join_Counts_Local_MV(BaseEstimator):
         w = self.connectivity
         # Fill the diagonal with 0s
         w = weights.util.fill_diagonal(w, val=0)
-        w.transform = 'b'
+        w.transform = "b"
 
         self.n = len(variables[0])
         self.w = w
 
-        self.variables = np.array(variables, dtype='float')
-        
+        self.variables = np.array(variables, dtype="float")
+
         keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
         seed = self.seed
 
-        # Need to ensure that the product is an 
+        # Need to ensure that the product is an
         # np.array() of dtype='float' for numba
-        self.ext = np.array(np.prod(np.vstack(variables), axis=0), 
-                            dtype='float')
+        self.ext = np.array(np.prod(np.vstack(variables), axis=0), dtype="float")
 
         self.LJC = self._statistic(variables, w)
 
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
-                z=self.ext, 
-                w=self.w, 
+                z=self.ext,
+                w=self.w,
                 observed=self.LJC,
-                permutations=permutations, 
-                keep=True, 
+                permutations=permutations,
+                keep=True,
                 n_jobs=n_jobs,
-                stat_func=_ljc_mv
+                stat_func=_ljc_mv,
             )
             # Set p-values for those with LJC of 0 to NaN
-            self.p_sim[self.LJC == 0] = 'NaN'
-        
+            self.p_sim[self.LJC == 0] = "NaN"
+
         return self
 
     @staticmethod
@@ -140,32 +141,30 @@ class Join_Counts_Local_MV(BaseEstimator):
         # The zseries
         zseries = [pd.Series(i, index=w.id_order) for i in variables]
         # The focal values
-        focal = [zseries[i].loc[adj_list.focal].values for
-                 i in range(len(variables))]
+        focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
         # The neighbor values
-        neighbor = [zseries[i].loc[adj_list.neighbor].values for
-                    i in range(len(variables))]
+        neighbor = [
+            zseries[i].loc[adj_list.neighbor].values for i in range(len(variables))
+        ]
 
         # Find instances where all surrounding
         # focal and neighbor values == 1
-        focal_all = np.array(np.all(np.dstack(focal) == 1,
-                                    axis=2))
-        neighbor_all = np.array(np.all(np.dstack(neighbor) == 1,
-                                       axis=2))
+        focal_all = np.array(np.all(np.dstack(focal) == 1, axis=2))
+        neighbor_all = np.array(np.all(np.dstack(neighbor) == 1, axis=2))
         MCLC = (focal_all == True) & (neighbor_all == True)
-        # Convert list of True/False to boolean array 
+        # Convert list of True/False to boolean array
         # and unlist (necessary for building pd.DF)
-        MCLC = list(MCLC*1)
+        MCLC = list(MCLC * 1)
 
         # Create a df that uses the adjacency list
         # focal values and the BBs counts
-        adj_list_MCLC = pd.DataFrame(adj_list.focal.values,
-                                     MCLC).reset_index()
+        adj_list_MCLC = pd.DataFrame(adj_list.focal.values, MCLC).reset_index()
         # Temporarily rename the columns
-        adj_list_MCLC.columns = ['MCLC', 'ID']
-        adj_list_MCLC = adj_list_MCLC.groupby(by='ID').sum()
+        adj_list_MCLC.columns = ["MCLC", "ID"]
+        adj_list_MCLC = adj_list_MCLC.groupby(by="ID").sum()
 
-        return (np.array(adj_list_MCLC.MCLC.values, dtype='float'))
+        return np.array(adj_list_MCLC.MCLC.values, dtype="float")
+
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations
