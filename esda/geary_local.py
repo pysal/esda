@@ -178,7 +178,9 @@ class Geary_Local(BaseEstimator):
 
 # Note: does not using the scaling parameter
 
+
 @_njit(fastmath=True)
 def _local_geary(i, z, permuted_ids, weights_i, scaling):
+    _, *weights_i = weights_i  # remove self-weight
     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return (zi-zrand)**2 @ weights_i
+    return (zi - zrand) ** 2 @ weights_i
