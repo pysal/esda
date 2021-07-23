@@ -225,17 +225,18 @@ class Join_Counts_Local_BV(BaseEstimator):
 def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
     zx = z[:, 0]
     zy = z[:, 1]
-    _, *weights_i = weights_i  # remove self-weight
-    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, weights_i)
-    return zx[i] * (zyrand @ weights_i)
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
+    zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, other_weights)
+    return zx[i] * (zyrand @ other_weights)
 
 
 @_njit(fastmath=True)
 def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):
     zx = z[:, 0]
     zy = z[:, 1]
-    _, *weights_i = weights_i  # remove self-weight
-
-    zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
+    zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, other_weights)
     zf = zxrand * zyrand
-    return zy[i] * (zf @ weights_i)
+    return zy[i] * (zf @ other_weights)
