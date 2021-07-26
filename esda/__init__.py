@@ -1,4 +1,4 @@
-__version__ = "2.3.6"
+__version__ = "2.4.0"
 """
 :mod:`esda` --- Exploratory Spatial Data Analysis
 =================================================
@@ -26,5 +26,5 @@ from .moran import (
     Moran_Local_Rate,
 )
 from .smaup import Smaup
-from .silhouettes import (path_silhouette, boundary_silhouette)
+from .silhouettes import path_silhouette, boundary_silhouette
 from .util import fdr
