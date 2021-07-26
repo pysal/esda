@@ -16,6 +16,13 @@ from .join_counts_local_bv import Join_Counts_Local_BV
 from .join_counts_local_mv import Join_Counts_Local_MV
 from .lee import Spatial_Pearson, Spatial_Pearson_Local
 from .losh import LOSH
+from .map_comparison import (
+    external_entropy,
+    completeness,
+    homogeneity,
+    overlay_entropy,
+    areal_entropy,
+)
 from .moran import (
     Moran,
     Moran_BV,
@@ -27,4 +34,5 @@ from .moran import (
 )
 from .smaup import Smaup
 from .silhouettes import path_silhouette, boundary_silhouette
+from . import shape
 from .util import fdr
