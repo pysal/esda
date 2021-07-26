@@ -559,7 +559,7 @@ class G_Local(object):
 def _infer_star_and_structure_w(weights, star, transform):
     assert transform.lower() in ("r", "b"), (
         f'Transforms must be binary "b" or row-standardized "r".'
-        f"Recieved: {transform.upper()}"
+        f"Recieved: {transform}"
     )
     adj_matrix = weights.sparse
     diagonal = adj_matrix.diagonal()
