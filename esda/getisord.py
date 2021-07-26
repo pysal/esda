@@ -4,9 +4,12 @@ Getis and Ord G statistic for spatial autocorrelation
 __author__ = "Sergio J. Rey <srey@asu.edu>, Myunghwa Hwang <mhwang4@gmail.com> "
 __all__ = ["G", "G_Local"]
 
+import warnings
 from libpysal.common import np, stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
+from libpysal.weights.util import fill_diagonal
 from .tabular import _univariate_handler
+from .crand import njit as _njit, crand as _crand_plus, _prepare_univariate
 
 PERMUTATIONS = 999
 
@@ -220,7 +223,7 @@ class G(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
 
 
@@ -240,8 +243,12 @@ class G_Local(object):
     permutations : int
                   the number of random permutations for calculating
                   pseudo p values
-    star : boolean
+    star : boolean or float
            whether or not to include focal observation in sums (default: False)
+           if the row-transformed weight is provided, then this is the default
+           value to use within the spatial lag. Generally, weights should be
+           provided in binary form, and standardization/self-weighting will be
+           handled by the function itself.
 
     Attributes
     ----------
@@ -382,19 +389,32 @@ class G_Local(object):
         permutations=PERMUTATIONS,
         star=False,
         keep_simulations=True,
+        n_jobs=-1,
+        seed=None,
     ):
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
+        w, star = _infer_star_and_structure_w(w, star, transform)
+        w.transform = transform
+        self.w_transform = transform
         self.w = w
-        self.w_original = w.transform
-        self.w.transform = self.w_transform = transform.lower()
         self.permutations = permutations
         self.star = star
         self.calc()
-        self.p_norm = np.array([1 - stats.norm.cdf(np.abs(i)) for i in self.Zs])
+        self.p_norm = 1 - stats.norm.cdf(np.abs(self.Zs))
         if permutations:
-            self.__crand(keep_simulations)
+            self.p_sim, self.rGs = _crand_plus(
+                y,
+                w,
+                self.Gs,
+                permutations,
+                keep_simulations,
+                n_jobs=n_jobs,
+                stat_func=_g_local_star_crand if star else _g_local_crand,
+                scaling=y.sum(),
+                seed=seed,
+            )
             if keep_simulations:
                 self.sim = sim = self.rGs.T
                 self.EG_sim = sim.mean(axis=0)
@@ -442,41 +462,43 @@ class G_Local(object):
         return self.wc
 
     def calc(self):
+        w = self.w
+        W = w.sparse
+
+        self.y_sum = self.y.sum()
+
         y = self.y
-        y2 = y * y
-        self.y_sum = y_sum = sum(y)
-        y2_sum = sum(y2)
+        remove_self = not self.star
+        N = self.w.n - remove_self
 
-        if not self.star:
-            yl = 1.0 * slag(self.w, y)
-            ydi = y_sum - y
-            self.Gs = yl / ydi
-            N = self.n - 1
-            yl_mean = ydi / N
-            s2 = (y2_sum - y2) / N - (yl_mean) ** 2
-        else:
-            self.w.transform = "B"
-            yl = 1.0 * slag(self.w, y)
-            yl += y
-            if self.w_transform == "r":
-                yl = yl / (self.__getCardinalities() + 1.0)
-            self.Gs = yl / y_sum
-            N = self.n
-            yl_mean = y.mean()
-            s2 = y.var()
+        statistic = (W @ y) / (y.sum() - y * remove_self)
 
-        EGs_num, VGs_num = 1.0, 1.0
-        if self.w_transform == "b":
-            W = self.__getCardinalities()
-            W += self.star
-            EGs_num = W * 1.0
-            VGs_num = (W * (1.0 * N - W)) / (1.0 * N - 1)
+        # ----------------------------------------------------#
+        # compute moments necessary for analytical inference  #
+        # ----------------------------------------------------#
 
-        self.EGs = (EGs_num * 1.0) / N
-        self.VGs = (VGs_num) * (1.0 / (N ** 2)) * ((s2 * 1.0) / (yl_mean ** 2))
-        self.Zs = (self.Gs - self.EGs) / np.sqrt(self.VGs)
+        empirical_mean = (y.sum() - y * remove_self) / N
+        # variance looks complex, yes, but it obtains from E[x^2] - E[x]^2.
+        # So, break it down to allow subtraction of the self-neighbor.
+        mean_of_squares = ((y ** 2).sum() - (y ** 2) * remove_self) / N
+        empirical_variance = mean_of_squares - empirical_mean ** 2
 
-        self.w.transform = self.w_original
+        # Since we have corrected the diagonal, this should work
+        cardinality = np.asarray(W.sum(axis=1)).squeeze()
+        expected_value = cardinality / N
+        expected_variance = (
+            cardinality
+            * (N - cardinality)
+            / (N - 1)
+            * (1 / N ** 2)
+            * (empirical_variance / (empirical_mean ** 2))
+        )
+        z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
+
+        self.Gs = statistic
+        self.EGs = expected_value
+        self.VGs = expected_variance
+        self.Zs = z_scores
 
     @property
     def _statistic(self):
@@ -530,22 +552,115 @@ class G_Local(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
+
+
+def _infer_star_and_structure_w(weights, star, transform):
+    assert transform.lower() in ("r", "b"), (
+        f'Transforms must be binary "b" or row-standardized "r".'
+        f"Recieved: {transform}"
+    )
+    adj_matrix = weights.sparse
+    diagonal = adj_matrix.diagonal()
+    zero_diagonal = (diagonal == 0).all()
+
+    # Gi has a zero diagonal, Gi* has a nonzero diagonal
+    star = (not zero_diagonal) if star is None else star
+
+    # Want zero diagonal but do not have it
+    if (not zero_diagonal) & (star is False):
+        weights = fill_diagonal(weights, 0)
+    # Want nonzero diagonal and have it
+    elif (not zero_diagonal) & (star is True):
+        weights = weights
+    # Want zero diagonal and have it
+    elif zero_diagonal & (star is False):
+        weights = weights
+    # Want nonzero diagonal and do not have it
+    elif zero_diagonal & (star is True):
+        # if the input is binary or requested transform is binary,
+        # set the diagonal to 1.
+        if transform.lower() == "b" or weights.transform.lower() == "b":
+            weights = fill_diagonal(weights, 1)
+        # if we know the target is row-standardized, use the row max
+        # this works successfully for effectively binary but "O"-transformed input
+        elif transform.lower() == "r":
+            # This warning is presented in the documentation as well
+            warnings.warn(
+                "Gi* requested, but (a) weights are already row-standardized,"
+                " (b) no weights are on the diagonal, and"
+                " (c) no default value supplied to star. Assuming that the"
+                " self-weight is equivalent to the maximum weight in the"
+                " row. To use a different default (like, .5), set `star=.5`,"
+                " or use libpysal.weights.fill_diagonal() to set the diagonal"
+                " values of your weights matrix and use `star=None` in Gi_Local."
+            )
+            weights = fill_diagonal(
+                weights, np.asarray(adj_matrix.max(axis=1).todense()).flatten()
+            )
+    else:  # star was something else, so try to fill the weights with it
+        try:
+            weights = fill_diagonal(weights, star)
+        except:
+            raise TypeError(
+                f"Type of star ({type(star)}) not understood."
+                f" Must be an integer, boolean, float, or numpy.ndarray."
+            )
+    star = (weights.sparse.diagonal() > 0).any()
+    weights.transform = transform
+
+    return weights, star
 
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations
 # --------------------------------------------------------------
 
-# TODO: Flesh these out correctly and implement for Gi stats
-# @_njit(fastmath=True)
-# def _gi_crand(i, z, permuted_ids, weights_i, scaling):
-#     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-#     return (zrand * weights_i).sum(axis=1) / (scaling - zi)
+
+@_njit(fastmath=True)
+def _g_local_crand(i, z, permuted_ids, weights_i, scaling):
+    other_weights = weights_i[1:]
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
+    return (zrand @ other_weights) / (scaling - zi)
 
 
-# @_njit(fastmath=True)
-# def _gistar_crand(i, z, permuted_ids, weights_i, scaling):
-#     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-#     return ((zrand * weights_i).sum(axis=1)) / scaling
+@_njit(fastmath=True)
+def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
+    return (zrand @ other_weights + self_weight * zi) / scaling
+
+
+if __name__ is "__main__":
+    import geopandas, numpy, esda, importlib
+    import matplotlib.pyplot as plt
+    from libpysal import weights, examples
+
+    df = geopandas.read_file(examples.get_path("NAT.shp"))
+
+    w = weights.Rook.from_dataframe(df)
+
+    for transform in ("r", "b"):
+        for star in (True, False):
+            test = esda.getisord.G_Local(df.GI89, w, transform=transform, star=star)
+            out = test._calc2()
+            (
+                statistic,
+                expected_value,
+                expected_variance,
+                z_scores,
+                empirical_mean,
+                empirical_variance,
+            ) = out
+
+            numpy.testing.assert_allclose(statistic, test.Gs)
+            numpy.testing.assert_allclose(expected_value, test.EGs)
+            numpy.testing.assert_allclose(expected_variance, test.VGs)
+            numpy.testing.assert_allclose(z_scores, test.Zs)
+            numpy.testing.assert_allclose(empirical_mean, test.yl_mean)
+            numpy.testing.assert_allclose(empirical_variance, test.s2)
+
+    # Also check that the None configuration works
+    test = esda.getisord.G_Local(df.GI89, w, star=None)
