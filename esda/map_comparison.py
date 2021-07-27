@@ -3,7 +3,7 @@ from scipy.special import entr
 
 try:
     import pygeos
-except:
+except (ImportError, ModuleNotFoundError):
     pass  # gets handled in the _cast function.
 
 # from nowosad and stepinski

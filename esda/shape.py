@@ -1,5 +1,11 @@
 import numpy
 import pandas
+
+try:
+    import pygeos
+except (ImportError, ModuleNotFoundError):
+    pass  # gets handled at the _cast level.
+
 from .crand import njit, prange
 
 
