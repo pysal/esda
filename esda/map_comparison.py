@@ -1,5 +1,10 @@
-import numpy, pygeos, pandas, geopandas
+import numpy, pandas
 from scipy.special import entr
+
+try:
+    import pygeos
+except:
+    pass  # gets handled in the _cast function.
 
 # from nowosad and stepinski
 # https://doi.org/10.1080/13658816.2018.1511794
@@ -21,6 +26,13 @@ def _cast(collection):
     """
     Cast a collection to a pygeos geometry array.
     """
+    try:
+        import pygeos, geopandas
+    except (ImportError, ModuleNotFoundError) as exception:
+        raise type(exception)(
+            "pygeos and geopandas are required for map comparison statistics."
+        )
+
     if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         return collection.geometry.values.data.squeeze()
     elif pygeos.is_geometry(collection).all():
