@@ -1,13 +1,24 @@
-import pygeos
-import geopandas, pandas
 import numpy
-from numba import njit, prange
+import pandas
+
+try:
+    import pygeos
+except (ImportError, ModuleNotFoundError):
+    pass  # gets handled at the _cast level.
+
+from .crand import njit, prange
+
 
 # -------------------- UTILITIES --------------------#
 def _cast(collection):
     """
     Cast a collection to a pygeos geometry array.
     """
+    try:
+        import pygeos, geopandas
+    except (ImportError, ModuleNotFoundError) as exception:
+        raise type(exception)("pygeos and geopandas are required for shape statistics.")
+
     if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         return collection.geometry.values.data.squeeze()
     elif pygeos.is_geometry(collection).all():
