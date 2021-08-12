@@ -133,7 +133,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         n_jobs = self.n_jobs
         seed = self.seed
 
-        self.LJC = self._statistic(x, z, w, case=case)
+        self.LJC = self._stat_func(x, z, w, case=case)
 
         if permutations:
             if case == "BJC":
@@ -168,8 +168,12 @@ class Join_Counts_Local_BV(BaseEstimator):
 
         return self
 
+    @property
+    def _statistic(self):
+        return self.LJC
+
     @staticmethod
-    def _statistic(x, z, w, case):
+    def _stat_func(x, z, w, case):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
         adj_list = w.to_adjlist(remove_symmetric=False)

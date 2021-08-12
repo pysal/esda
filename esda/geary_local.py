@@ -121,7 +121,7 @@ class Geary_Local(BaseEstimator):
         n_jobs = self.n_jobs
         seed = self.seed
 
-        self.localG = self._statistic(x, w)
+        self.localG = self._stat_func(x, w)
 
         if permutations:
             self.p_sim, self.rlocalG = _crand_plus(
@@ -150,8 +150,12 @@ class Geary_Local(BaseEstimator):
 
         return self
 
+    @property
+    def _statistic(self):
+        return self.localG
+
     @staticmethod
-    def _statistic(x, w):
+    def _stat_func(x, w):
         # Caclulate z-scores for x
         zscore_x = (x - np.mean(x)) / np.std(x)
         # Create focal (xi) and neighbor (zi) values

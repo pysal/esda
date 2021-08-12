@@ -22,10 +22,10 @@ class Spatial_Pearson(BaseEstimator):
         ---------
         connectivity:   scipy.sparse matrix object
                         the connectivity structure describing the relationships
-                        between observed units. Will be row-standardized. 
+                        between observed units. Will be row-standardized.
         permutations:   int
                         the number of permutations to conduct for inference.
-                        if < 1, no permutational inference will be conducted. 
+                        if < 1, no permutational inference will be conducted.
 
         Attributes
         ----------
@@ -36,10 +36,10 @@ class Spatial_Pearson(BaseEstimator):
                       smoothing factor"
         reference_distribution_: numpy.ndarray (n_permutations, 2,2)
                       distribution of correlation matrices for randomly-shuffled
-                      maps. 
+                      maps.
         significance_: numpy.ndarray (2,2)
                        permutation-based p-values for the fraction of times the
-                       observed correlation was more extreme than the simulated 
+                       observed correlation was more extreme than the simulated
                        correlations.
         """
         self.connectivity = connectivity
@@ -77,7 +77,7 @@ class Spatial_Pearson(BaseEstimator):
         )
         if self.connectivity is None:
             self.connectivity = sparse.eye(Z.shape[0])
-        self.association_ = self._statistic(Z, self.connectivity)
+        self.association_ = self._stat_func(Z, self.connectivity)
 
         standard_connectivity = sparse.csc_matrix(
             self.connectivity / self.connectivity.sum(axis=1)
@@ -100,8 +100,12 @@ class Spatial_Pearson(BaseEstimator):
             self.significance_ = (extreme + 1.0) / (self.permutations + 1.0)
         return self
 
+    @property
+    def _statistic(self):
+        return self.association_
+
     @staticmethod
-    def _statistic(Z, W):
+    def _stat_func(Z, W):
         ctc = W.T @ W
         ones = numpy.ones(ctc.shape[0])
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
@@ -118,13 +122,13 @@ class Spatial_Pearson_Local(BaseEstimator):
         ---------
         connectivity:   scipy.sparse matrix object
                         the connectivity structure describing the relationships
-                        between observed units. Will be row-standardized. 
+                        between observed units. Will be row-standardized.
         permutations:   int
                         the number of permutations to conduct for inference.
-                        if < 1, no permutational inference will be conducted. 
+                        if < 1, no permutational inference will be conducted.
         significance_: numpy.ndarray (2,2)
                        permutation-based p-values for the fraction of times the
-                       observed correlation was more extreme than the simulated 
+                       observed correlation was more extreme than the simulated
                        correlations.
         Attributes
         ----------
@@ -135,10 +139,10 @@ class Spatial_Pearson_Local(BaseEstimator):
                       smoothing factor"
         reference_distribution_: numpy.ndarray (n_permutations, n_samples)
                       distribution of correlation matrices for randomly-shuffled
-                      maps. 
+                      maps.
         significance_: numpy.ndarray (n_samples,)
                        permutation-based p-values for the fraction of times the
-                       observed correlation was more extreme than the simulated 
+                       observed correlation was more extreme than the simulated
                        correlations.
 
 
@@ -151,14 +155,14 @@ class Spatial_Pearson_Local(BaseEstimator):
 
     def fit(self, x, y):
         """
-        bivariate local pearson's R based on Eq. 22 in Lee (2001), using 
+        bivariate local pearson's R based on Eq. 22 in Lee (2001), using
         site-wise conditional randomization from Moran_Local_BV.
-        
+
         L_i = \dfrac{
                      n \cdot
                        \Big[\big(\sum_i w_{ij}(x_j - \bar{x})\big)
                             \big(\sum_i w_{ij}(y_j - \bar{y})\big) \Big]
-                     } 
+                     }
                     {
                      \sqrt{\sum_i (x_i - \bar{x})^2}
                      \sqrt{\sum_i (y_i - \bar{y})^2}}
@@ -166,13 +170,13 @@ class Spatial_Pearson_Local(BaseEstimator):
                      n \cdot
                        (\tilde{x}_j - \bar{x})
                        (\tilde{y}_j - \bar{y})
-                     } 
+                     }
                     {
                      \sqrt{\sum_i (x_i - \bar{x})^2}
                      \sqrt{\sum_i (y_i - \bar{y})^2}}
 
-        Lee, Sang Il. (2001), "Developing a bivariate spatial 
-        association measure: An integration of Pearson's r and 
+        Lee, Sang Il. (2001), "Developing a bivariate spatial
+        association measure: An integration of Pearson's r and
         Moran's I." Journal of Geographical Systems, 3(4):369-385.
 
         Arguments
