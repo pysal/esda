@@ -239,16 +239,20 @@ class G_Local(object):
         DistanceBand, weights instance that is based on threshold distance
         and is assumed to be aligned with y
     transform : {'R', 'B'}
-                the type of w, either 'B' (binary) or 'R' (row-standardized)
+        the type of w, either 'B' (binary) or 'R' (row-standardized)
     permutations : int
-                  the number of random permutations for calculating
-                  pseudo p values
+        the number of random permutations for calculating
+        pseudo p values
     star : boolean or float
-           whether or not to include focal observation in sums (default: False)
-           if the row-transformed weight is provided, then this is the default
-           value to use within the spatial lag. Generally, weights should be
-           provided in binary form, and standardization/self-weighting will be
-           handled by the function itself.
+        whether or not to include focal observation in sums (default: False)
+        if the row-transformed weight is provided, then this is the default
+        value to use within the spatial lag. Generally, weights should be
+        provided in binary form, and standardization/self-weighting will be
+        handled by the function itself.
+    island_weight:
+        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+        will propagate to the final local statistic depending on the `stat_func`. If 0, then
+        the lag is always zero for islands.
 
     Attributes
     ----------
@@ -391,6 +395,7 @@ class G_Local(object):
         keep_simulations=True,
         n_jobs=-1,
         seed=None,
+        island_weight=0,
     ):
         y = np.asarray(y).flatten()
         self.n = len(y)
@@ -414,6 +419,7 @@ class G_Local(object):
                 stat_func=_g_local_star_crand if star else _g_local_crand,
                 scaling=y.sum(),
                 seed=seed,
+                island_weight=island_weight,
             )
             if keep_simulations:
                 self.sim = sim = self.rGs.T

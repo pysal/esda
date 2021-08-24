@@ -65,7 +65,16 @@ def vec_permutations(max_card: int, n: int, k_replications: int, seed: int):
 
 
 def crand(
-    z, w, observed, permutations, keep, n_jobs, stat_func, scaling=None, seed=None
+    z,
+    w,
+    observed,
+    permutations,
+    keep,
+    n_jobs,
+    stat_func,
+    scaling=None,
+    seed=None,
+    island_weight=0,
 ):
     """
     Conduct conditional randomization of a given input using the provided
@@ -188,6 +197,7 @@ def crand(
             scaling,  # scaling applied to all statistics
             keep,  # whether or not to keep the local statistics
             stat_func,
+            island_weight,
         )
     else:
         if n_jobs == -1:
@@ -206,6 +216,7 @@ def crand(
             n_jobs,
             keep,
             stat_func,
+            island_weight,
         )
 
     low_extreme = (permutations - larger) < larger
@@ -228,6 +239,7 @@ def compute_chunk(
     scaling: np.float64,
     keep: bool,
     stat_func,
+    island_weight: float,
 ):
     """
     Compute conditional randomisation for a single chunk
@@ -260,6 +272,25 @@ def compute_chunk(
         Scaling value to apply to every local statistic
     keep : bool
         If True, store simulation; else do not return randomised statistics
+    stat_func : callable
+        Method implementing the spatial statistic to be evaluated under
+        conditional randomisation. The method needs to have the following
+        signature:
+            i : int
+                Position of observation to be evaluated in the sample
+            z : ndarray
+                2D array with N rows with standardised observed values
+            permuted_ids : ndarray
+                (permutations, max_cardinality) array with indices of permuted
+                IDs
+            weights_i : ndarray
+                Weights for neighbors in i
+            scaling : float
+                Scaling value to apply to every local statistic
+    island_weight:
+        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+        will propagate to the final local statistic depending on the `stat_func`. If 0, then
+        the lag is always zero for islands.
 
     Returns
     -------
@@ -283,11 +314,17 @@ def compute_chunk(
 
     for i in range(chunk_n):
         cardinality = cardinalities[i]
-        # we need to fix the self-weight to the first position
-        weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
-        weights_i[0] = self_weights[i]
-        ### this chomps the next `cardinality` weights off of `weights`
-        weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
+        if cardinality == 0:  # deal with islands
+            effective_cardinality = 1
+            weights_i = np.zeros(2, dtype=other_weights.dtype)
+            weights_i[1] = island_weight
+        else:
+            effective_cardinality = cardinality
+            # we need to fix the self-weight to the first position
+            weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
+            weights_i[0] = self_weights[i]
+            ### this chomps the next `cardinality` weights off of `weights`
+            weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
         wloc += cardinality
         z_chunk_i = z_chunk[i]
         mask[chunk_start + i] = False
@@ -422,6 +459,7 @@ def parallel_crand(
     n_jobs: int,
     keep: bool,
     stat_func,
+    island_weight,
 ):
     """
     Conduct conditional randomization in parallel using numba
@@ -468,7 +506,10 @@ def parallel_crand(
                 Weights for neighbors in i
             scaling : float
                 Scaling value to apply to every local statistic
-
+    island_weight:
+        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+        will propagate to the final local statistic depending on the `stat_func`. If 0, then
+        the lag is always zero for islands.
     Returns
     -------
     larger : ndarray
@@ -508,7 +549,9 @@ def parallel_crand(
 
     with parallel_backend("loky", inner_max_num_threads=1):
         worker_out = Parallel(n_jobs=n_jobs)(
-            delayed(compute_chunk)(*pars, permuted_ids, scaling, keep, stat_func)
+            delayed(compute_chunk)(
+                *pars, permuted_ids, scaling, keep, stat_func, island_weight
+            )
             for pars in chunks
         )
     larger, rlocals = zip(*worker_out)
