@@ -1,4 +1,4 @@
-__version__ = "2.3.6"
+__version__ = "2.4.1"
 """
 :mod:`esda` --- Exploratory Spatial Data Analysis
 =================================================
@@ -16,6 +16,13 @@ from .join_counts_local_bv import Join_Counts_Local_BV
 from .join_counts_local_mv import Join_Counts_Local_MV
 from .lee import Spatial_Pearson, Spatial_Pearson_Local
 from .losh import LOSH
+from .map_comparison import (
+    external_entropy,
+    completeness,
+    homogeneity,
+    overlay_entropy,
+    areal_entropy,
+)
 from .moran import (
     Moran,
     Moran_BV,
@@ -25,7 +32,8 @@ from .moran import (
     Moran_Rate,
     Moran_Local_Rate,
 )
-from .smaup import Smaup
 from .silhouettes import (path_silhouette, boundary_silhouette)
+from . import shape
+from .smaup import Smaup
 from .topo import prominence, isolation
 from .util import fdr

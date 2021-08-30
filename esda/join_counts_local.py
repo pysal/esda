@@ -2,11 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
 from libpysal import weights
-from esda.crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate
-)
+from esda.crand import crand as _crand_plus, njit as _njit, _prepare_univariate
 
 
 PERMUTATIONS = 999
@@ -16,8 +12,14 @@ class Join_Counts_Local(BaseEstimator):
 
     """Univariate Local Join Count Statistic"""
 
-    def __init__(self, connectivity=None, permutations=PERMUTATIONS, n_jobs=1, 
-                 keep_simulations=True, seed=None):
+    def __init__(
+        self,
+        connectivity=None,
+        permutations=PERMUTATIONS,
+        n_jobs=1,
+        keep_simulations=True,
+        seed=None,
+    ):
         """
         Initialize a Local_Join_Count estimator
         Arguments
@@ -31,18 +33,18 @@ class Join_Counts_Local(BaseEstimator):
                            p_values
         n_jobs           : int
                            Number of cores to be used in the conditional randomisation. If -1,
-                           all available cores are used.    
+                           all available cores are used.
         keep_simulations : Boolean
                            (default=True)
-                           If True, the entire matrix of replications under the null 
-                           is stored in memory and accessible; otherwise, replications 
+                           If True, the entire matrix of replications under the null
+                           is stored in memory and accessible; otherwise, replications
                            are not saved
         seed             : None/int
-                           Seed to ensure reproducibility of conditional randomizations. 
-                           Must be set here, and not outside of the function, since numba 
-                           does not correctly interpret external seeds 
-                           nor numpy.random.RandomState instances.              
-                           
+                           Seed to ensure reproducibility of conditional randomizations.
+                           Must be set here, and not outside of the function, since numba
+                           does not correctly interpret external seeds
+                           nor numpy.random.RandomState instances.
+
         Attributes
         ----------
         LJC             : numpy array
@@ -98,36 +100,36 @@ class Join_Counts_Local(BaseEstimator):
         """
         # Need to ensure that the np.array() are of
         # dtype='float' for numba
-        y = np.array(y, dtype='float')
+        y = np.array(y, dtype="float")
 
         w = self.connectivity
         # Fill the diagonal with 0s
         w = weights.util.fill_diagonal(w, val=0)
-        w.transform = 'b'
-        
+        w.transform = "b"
+
         keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
         seed = self.seed
-        
+
         self.y = y
         self.n = len(y)
         self.w = w
 
         self.LJC = self._statistic(y, w)
-        
+
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
-                z=self.y, 
-                w=self.w, 
+                z=self.y,
+                w=self.w,
                 observed=self.LJC,
-                permutations=permutations, 
-                keep=keep_simulations, 
+                permutations=permutations,
+                keep=keep_simulations,
                 n_jobs=n_jobs,
-                stat_func=_ljc_uni
+                stat_func=_ljc_uni,
             )
             # Set p-values for those with LJC of 0 to NaN
-            self.p_sim[self.LJC == 0] = 'NaN'
-        
+            self.p_sim[self.LJC == 0] = "NaN"
+
         return self
 
     @staticmethod
@@ -139,12 +141,14 @@ class Join_Counts_Local(BaseEstimator):
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values
         LJC = (focal == 1) & (neighbor == 1)
-        adj_list_LJC = pd.DataFrame(adj_list.focal.values,
-                                    LJC.astype('uint8')).reset_index()
-        adj_list_LJC.columns = ['LJC', 'ID']
-        adj_list_LJC = adj_list_LJC.groupby(by='ID').sum()
-        LJC = np.array(adj_list_LJC.LJC.values, dtype='float')
-        return (LJC)
+        adj_list_LJC = pd.DataFrame(
+            adj_list.focal.values, LJC.astype("uint8")
+        ).reset_index()
+        adj_list_LJC.columns = ["LJC", "ID"]
+        adj_list_LJC = adj_list_LJC.groupby(by="ID").sum()
+        LJC = np.array(adj_list_LJC.LJC.values, dtype="float")
+        return LJC
+
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations
@@ -152,7 +156,10 @@ class Join_Counts_Local(BaseEstimator):
 
 # Note: scaling not used
 
+
 @_njit(fastmath=True)
 def _ljc_uni(i, z, permuted_ids, weights_i, scaling):
-    zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
-    return zi * (zrand @ weights_i)
+    self_weight = weights_i[0]
+    other_weights = weights_i[1:]
+    zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
+    return zi * (zrand @ other_weights)

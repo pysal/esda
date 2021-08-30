@@ -10,4 +10,6 @@ Tutorial
     notebooks/LOSH.ipynb
     notebooks/geosilhouettes.ipynb
     notebooks/adbscan_berlin_example.ipynb
+    notebooks/shape-measures.ipynb
+    notebooks/Spatial Autocorrelation for Areal Unit Data.ipynb
 
