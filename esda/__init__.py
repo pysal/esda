@@ -32,7 +32,8 @@ from .moran import (
     Moran_Rate,
     Moran_Local_Rate,
 )
-from .smaup import Smaup
-from .silhouettes import path_silhouette, boundary_silhouette
+from .silhouettes import (path_silhouette, boundary_silhouette)
 from . import shape
+from .smaup import Smaup
+from .topo import prominence, isolation
 from .util import fdr
