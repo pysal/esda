@@ -2,6 +2,7 @@
 from setuptools import setup, find_packages
 from distutils.command.build_py import build_py
 import os
+import versioneer
 
 package = "esda"
 
@@ -9,11 +10,6 @@ package = "esda"
 # update it when the contents of directories change.
 if os.path.exists("MANIFEST"):
     os.remove("MANIFEST")
-
-# Get __version__ from PACKAGE_NAME/__init__.py without importing the package
-# __version__ has to be defined in the first line
-with open("esda/__init__.py", "r") as f:
-    exec(f.readline())
 
 with open("README.md", "r", encoding="utf8") as file:
     long_description = file.read()
@@ -46,7 +42,8 @@ def setup_package():
 
     setup(
         name=package,
-        version=__version__,
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass({"build_py": build_py}),
         description="Exploratory Spatial Data Analysis.",
         long_description=long_description,
         long_description_content_type="text/markdown",
@@ -73,7 +70,6 @@ def setup_package():
         install_requires=install_reqs,
         extras_require=extras_reqs,
         zip_safe=False,
-        cmdclass={"build.py": build_py},
     )
 
 
