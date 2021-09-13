@@ -115,7 +115,7 @@ class Join_Counts_Local(BaseEstimator):
         self.n = len(y)
         self.w = w
 
-        self.LJC = self._statistic(y, w)
+        self.LJC = self._stat_func(y, w)
 
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
@@ -132,8 +132,12 @@ class Join_Counts_Local(BaseEstimator):
 
         return self
 
+    @property
+    def _statistic(self):
+        return self.LJC
+
     @staticmethod
-    def _statistic(y, w):
+    def _stat_func(y, w):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
         adj_list = w.to_adjlist(remove_symmetric=False)

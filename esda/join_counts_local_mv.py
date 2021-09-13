@@ -115,7 +115,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         # np.array() of dtype='float' for numba
         self.ext = np.array(np.prod(np.vstack(variables), axis=0), dtype="float")
 
-        self.LJC = self._statistic(variables, w)
+        self.LJC = self._stat_func(variables, w)
 
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
@@ -132,8 +132,12 @@ class Join_Counts_Local_MV(BaseEstimator):
 
         return self
 
+    @property
+    def _statistic(self):
+        return self.LJC
+
     @staticmethod
-    def _statistic(variables, w):
+    def _stat_func(variables, w):
         # Create adjacency list. Note that remove_symmetric=False -
         # different from the esda.Join_Counts() function.
         adj_list = w.to_adjlist(remove_symmetric=False)
