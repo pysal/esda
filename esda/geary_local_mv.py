@@ -113,6 +113,9 @@ class Geary_Local_MV(BaseEstimator):
         temp = pd.DataFrame(gs).T
         temp['ID'] = adj_list.focal.values
         adj_list_gs = temp.groupby(by='ID').sum()
+         # Rearrange data based on w id order
+        adj_list_gs['w_order'] = w.id_order
+        adj_list_gs.sort_values(by='w_order', inplace=True)
         localG = np.array(adj_list_gs.sum(axis=1) / k)
 
         return (localG)
