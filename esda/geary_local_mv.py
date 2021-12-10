@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from sklearn.base import BaseEstimator
+from sklearn.utils import check_array
 
 
 class Geary_Local_MV(BaseEstimator):
@@ -68,7 +69,7 @@ class Geary_Local_MV(BaseEstimator):
         >>> lG_mv.localG[0:5]
         >>> lG_mv.p_sim[0:5]
         """
-        self.variables = np.array(variables, dtype='float')
+        self.variables = check_array(variables, accept_sparse=False, dtype='float', force_all_finite=True, estimator=self)
 
         w = self.connectivity
         w.transform = 'r'
