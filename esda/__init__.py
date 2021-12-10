@@ -1,4 +1,3 @@
-__version__ = "2.4.2dev"
 """
 :mod:`esda` --- Exploratory Spatial Data Analysis
 =================================================
@@ -32,7 +31,12 @@ from .moran import (
     Moran_Rate,
     Moran_Local_Rate,
 )
-from .smaup import Smaup
 from .silhouettes import path_silhouette, boundary_silhouette
 from . import shape
+from .smaup import Smaup
+from .topo import prominence, isolation
 from .util import fdr
+
+from . import _version
+
+__version__ = _version.get_versions()["version"]
