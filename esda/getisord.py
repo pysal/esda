@@ -639,7 +639,7 @@ def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
     return (zrand @ other_weights + self_weight * zi) / scaling
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     import geopandas, numpy, esda, importlib
     import matplotlib.pyplot as plt
     from libpysal import weights, examples
