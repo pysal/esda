@@ -860,108 +860,110 @@ class Moran_Local(object):
     w : W
         weight instance assumed to be aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
-                     weights transformation,  default is row-standardized "r".
-                     Other options include
-                     "B": binary,
-                     "D": doubly-standardized,
-                     "U": untransformed (general weights),
-                     "V": variance-stabilizing.
-    permutations   : int
-                     number of random permutations for calculation of pseudo
-                     p_values
-    geoda_quads    : boolean
-                     (default=False)
-                     If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
-                     If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    n_jobs : int
-             Number of cores to be used in the conditional randomisation. If -1,
-             all available cores are used.    
-    keep_simulations : Boolean
-                       (default=True)
-                       If True, the entire matrix of replications under the null 
-                       is stored in memory and accessible; otherwise, replications 
-                       are not saved
-    seed : None/int
-           Seed to ensure reproducibility of conditional randomizations. 
-           Must be set here, and not outside of the function, since numba 
-           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
-        
-    Attributes
-    ----------
-
-    y            : array
-                   original variable
-    w            : W
-                   original w object
+         weights transformation,  default is row-standardized "r".
+         Other options include
+         "B": binary,
+         "D": doubly-standardized,
+         "U": untransformed (general weights),
+         "V": variance-stabilizing.
     permutations : int
-                   number of random permutations for calculation of pseudo
-                   p_values
-    Is           : array
-                   local Moran's I values
-    q            : array
-                   (if permutations>0)
-                   values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
-    sim          : array (permutations by n)
-                   (if permutations>0)
-                   I values for permuted samples
-    p_sim        : array
-                   (if permutations>0)
-                   p-values based on permutations (one-sided)
-                   null: spatial randomness
-                   alternative: the observed Ii is further away or extreme
-                   from the median of simulated values. It is either extremely
-                   high or extremely low in the distribution of simulated Is.
-    EI_sim       : array
-                   (if permutations>0)
-                   average values of local Is from permutations
-    VI_sim       : array
-                   (if permutations>0)
-                   variance of Is from permutations
-    EI           : array
-                   analytical expectation of Is under total permutation, 
-                   from :cite:`Anselin1995`. Is the same at each site, 
-                   and equal to the expectation of I itself when 
-                   transformation='r'. We recommend using EI_sim, not EI,
-                   for analysis. This EI is only provided for reproducibility.
-    VI           : array
-                   analytical variance of Is under total permutation, 
-                   from :cite:`Anselin1995`. Varies according only to 
-                   cardinality. We recommend using VI_sim, not VI, for
-                   analysis. This VI is only provided for reproducibility.
-    EIc          : array
-                   analytical expectation of Is under conditional permutation, 
-                   from :cite:`sokal1998local`. Varies strongly by site, since it
-                   conditions on z_i. We recommend using EI_sim, not EIc, 
-                   for analysis. This EIc is only provided for reproducibility.
-    VIc          : array
-                   analytical variance of Is under conditional permutation,
-                   from :cite:`sokal1998local`. Varies strongly by site, since 
-                   it conditions on z_i. We recommend using VI_sim, not VIc,
-                   for analysis. This VIc is only provided for reproducibility.
-    seI_sim      : array
-                   (if permutations>0)
-                   standard deviations of Is under permutations.
-    z_sim        : arrray
-                   (if permutations>0)
-                   standardized Is based on permutations
-    p_z_sim      : array
-                   (if permutations>0)
-                   p-values based on standard normal approximation from
-                   permutations (one-sided)
-                   for two-sided tests, these values should be multiplied by 2
+        number of random permutations for calculation of pseudo
+        p_values
+    geoda_quads : boolean
+        (default=False)
+        If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
+        If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     n_jobs : int
         Number of cores to be used in the conditional randomisation. If -1,
         all available cores are used.    
     keep_simulations : Boolean
-                      (default=True)
-                      If True, the entire matrix of replications under the null 
-                      is stored in memory and accessible; otherwise, replications 
-                      are not saved   
+        (default=True)
+        If True, the entire matrix of replications under the null 
+        is stored in memory and accessible; otherwise, replications 
+        are not saved
     seed : None/int
            Seed to ensure reproducibility of conditional randomizations. 
-           Must be set here, and not outside of the function, since numba does 
-           not correctly interpret external seeds nor numpy.random.RandomState instances.               
-           
+           Must be set here, and not outside of the function, since numba 
+           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
+    island_weight:
+        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+        will propagate to the final local statistic depending on the `stat_func`. If 0, then
+        the lag is always zero for islands.
+
+    Attributes
+    ----------
+
+    y : array
+        original variable
+    w : W
+        original w object
+    permutations : int
+        number of random permutations for calculation of pseudo p_values
+    Is : array
+        local Moran's I values
+    q : array
+        (if permutations>0)
+        values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
+    sim : array (permutations by n)
+        (if permutations>0)
+        I values for permuted samples
+    p_sim : array
+        (if permutations>0)
+        p-values based on permutations (one-sided)
+        null: spatial randomness
+        alternative: the observed Ii is further away or extreme
+        from the median of simulated values. It is either extremely
+        high or extremely low in the distribution of simulated Is.
+    EI_sim : array
+        (if permutations>0)
+        average values of local Is from permutations
+    VI_sim : array
+        (if permutations>0)
+        variance of Is from permutations
+    EI : array
+        analytical expectation of Is under total permutation, 
+        from :cite:`Anselin1995`. Is the same at each site, 
+        and equal to the expectation of I itself when 
+        transformation='r'. We recommend using EI_sim, not EI,
+        for analysis. This EI is only provided for reproducibility.
+    VI : array
+        analytical variance of Is under total permutation, 
+        from :cite:`Anselin1995`. Varies according only to 
+        cardinality. We recommend using VI_sim, not VI, for
+        analysis. This VI is only provided for reproducibility.
+    EIc : array
+        analytical expectation of Is under conditional permutation, 
+        from :cite:`sokal1998local`. Varies strongly by site, since it
+        conditions on z_i. We recommend using EI_sim, not EIc, 
+        for analysis. This EIc is only provided for reproducibility.
+    VIc : array
+        analytical variance of Is under conditional permutation,
+        from :cite:`sokal1998local`. Varies strongly by site, since 
+        it conditions on z_i. We recommend using VI_sim, not VIc,
+        for analysis. This VIc is only provided for reproducibility.
+    seI_sim : array
+        (if permutations>0)
+        standard deviations of Is under permutations.
+    z_sim : arrray
+        (if permutations>0)
+        standardized Is based on permutations
+    p_z_sim : array
+        (if permutations>0)
+        p-values based on standard normal approximation from
+        permutations (one-sided)
+        for two-sided tests, these values should be multiplied by 2
+    n_jobs : int
+        Number of cores to be used in the conditional randomisation. If -1,
+        all available cores are used.    
+    keep_simulations : Boolean
+        (default=True)
+        If True, the entire matrix of replications under the null 
+        is stored in memory and accessible; otherwise, replications 
+        are not saved   
+    seed : None/int
+        Seed to ensure reproducibility of conditional randomizations. 
+        Must be set here, and not outside of the function, since numba does 
+        not correctly interpret external seeds nor numpy.random.RandomState instances.                 
     Notes
     -----
 
@@ -1002,6 +1004,7 @@ class Moran_Local(object):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
+        island_weight=0,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1083,9 +1086,9 @@ class Moran_Local(object):
     def __moments(self):
         W = self.w.sparse
         z = self.z
-        simplefilter('always', sparse.SparseEfficiencyWarning)
+        simplefilter("always", sparse.SparseEfficiencyWarning)
         n = self.n
-        m2 = (z*z).sum()/n
+        m2 = (z * z).sum() / n
         wi = np.asarray(W.sum(axis=1)).flatten()
         wi2 = np.asarray(W.multiply(W).sum(axis=1)).flatten()
         # ---------------------------------------------------------
@@ -1093,31 +1096,35 @@ class Moran_Local(object):
         # assume that division is as written, so that
         # a - b / (n - 1) means a - (b / (n-1))
         # ---------------------------------------------------------
-        expectation = -(z**2 * wi) / ((n-1)*m2)
-        variance = ((z/m2)**2 * 
-                    (n/(n-2)) * 
-                    (wi2 - (wi**2 / (n-1))) *
-                    (m2 - (z**2 / (n-1))))
+        expectation = -(z ** 2 * wi) / ((n - 1) * m2)
+        variance = (
+            (z / m2) ** 2
+            * (n / (n - 2))
+            * (wi2 - (wi ** 2 / (n - 1)))
+            * (m2 - (z ** 2 / (n - 1)))
+        )
 
         self.EIc = expectation
         self.VIc = variance
         # ---------------------------------------------------------
         # Total randomization null, Sokal 1998, Eqs. A3 & A4*
         # ---------------------------------------------------------
-        m4 = z**4/n
-        b2 = m4/m2**2
-            
-        expectation = -wi / (n-1)
-        # assume that "avoiding identical subscripts" in :cite:`Anselin1995` 
-        # includes i==h and i==k, we can use the form due to :cite:`sokal1998local` below. 
+        m4 = z ** 4 / n
+        b2 = m4 / m2 ** 2
+
+        expectation = -wi / (n - 1)
+        # assume that "avoiding identical subscripts" in :cite:`Anselin1995`
+        # includes i==h and i==k, we can use the form due to :cite:`sokal1998local` below.
         # wikh = _wikh_fast(W)
         # variance_anselin = (wi2 * (n - b2)/(n-1)
         #        + 2*wikh*(2*b2 - n) / ((n-1)*(n-2))
         #                    - wi**2/(n-1)**2)
         self.EI = expectation
-        self.VI = (wi2*(n - b2)/(n-1)
-                          + (wi**2 - wi2)*(2*b2 - n)/((n-1)*(n-2))
-                          - (-wi / (n-1))**2)
+        self.VI = (
+            wi2 * (n - b2) / (n - 1)
+            + (wi ** 2 - wi2) * (2 * b2 - n) / ((n - 1) * (n - 2))
+            - (-wi / (n - 1)) ** 2
+        )
 
     @property
     def _statistic(self):
@@ -1187,74 +1194,77 @@ class Moran_Local_BV(object):
     w : W
         weight instance assumed to be aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
-                     weights transformation,  default is row-standardized "r".
-                     Other options include
-                     "B": binary,
-                     "D": doubly-standardized,
-                     "U": untransformed (general weights),
-                     "V": variance-stabilizing.
+        weights transformation,  default is row-standardized "r".
+        Other options include
+        "B": binary,
+        "D": doubly-standardized,
+        "U": untransformed (general weights),
+        "V": variance-stabilizing.
     permutations   : int
-                     number of random permutations for calculation of pseudo
-                     p_values
+        number of random permutations for calculation of pseudo
+        p_values
     geoda_quads    : boolean
-                     (default=False)
-                     If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
-                     If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    njobs
+        (default=False)
+        If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
+        If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
+    njobs : int
+        number of workers to use to compute the local statistic. 
     keep_simulations : Boolean
-                      (default=True)
-                      If True, the entire matrix of replications under the null 
-                      is stored in memory and accessible; otherwise, replications 
-                      are not saved      
+        (default=True)
+        If True, the entire matrix of replications under the null 
+        is stored in memory and accessible; otherwise, replications 
+        are not saved      
     seed : None/int
-           Seed to ensure reproducibility of conditional randomizations. 
-           Must be set here, and not outside of the function, since numba 
-           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
-           
+        Seed to ensure reproducibility of conditional randomizations. 
+        Must be set here, and not outside of the function, since numba 
+        does not correctly interpret external seeds nor numpy.random.RandomState instances.               
+    island_weight:
+        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+        will propagate to the final local statistic depending on the `stat_func`. If 0, then
+        the lag is always zero for islands.
+
     Attributes
     ----------
 
-    zx           : array
-                   original x variable standardized by mean and std
-    zy           : array
-                   original y variable standardized by mean and std
-    w            : W
-                   original w object
+    zx : array
+        original x variable standardized by mean and std
+    zy : array
+        original y variable standardized by mean and std
+    w : W
+        original w object
     permutations : int
-                   number of random permutations for calculation of pseudo
-                   p_values
-    Is           : float
-                   value of Moran's I
-    q            : array
-                   (if permutations>0)
-                   values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
-    sim          : array
-                   (if permutations>0)
-                   vector of I values for permuted samples
-    p_sim        : array
-                   (if permutations>0)
-                   p-value based on permutations (one-sided)
-                   null: spatial randomness
-                   alternative: the observed Ii is further away or extreme
-                   from the median of simulated values. It is either extremelyi
-                   high or extremely low in the distribution of simulated Is.
-    EI_sim       : array
-                   (if permutations>0)
-                   average values of local Is from permutations
-    VI_sim       : array
-                   (if permutations>0)
-                   variance of Is from permutations
-    seI_sim      : array
-                   (if permutations>0)
-                   standard deviations of Is under permutations.
-    z_sim        : arrray
-                   (if permutations>0)
-                   standardized Is based on permutations
-    p_z_sim      : array
-                   (if permutations>0)
-                   p-values based on standard normal approximation from
-                   permutations (one-sided)
-                   for two-sided tests, these values should be multiplied by 2
+        number of random permutations for calculation of pseudo p_values
+    Is : float
+        value of Moran's I
+    q : array
+        (if permutations>0)
+        values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
+    sim : array
+        (if permutations>0) vector of I values for permuted samples
+    p_sim : array
+        (if permutations>0)
+        p-value based on permutations (one-sided)
+        null: spatial randomness
+        alternative: the observed Ii is further away or extreme
+        from the median of simulated values. It is either extremelyi
+        high or extremely low in the distribution of simulated Is.
+    EI_sim : array
+        (if permutations>0)
+        average values of local Is from permutations
+    VI_sim : array
+        (if permutations>0)
+        variance of Is from permutations
+    seI_sim: array
+        (if permutations>0)
+        standard deviations of Is under permutations.
+    z_sim  : arrray
+        (if permutations>0)
+        standardized Is based on permutations
+    p_z_sim: array
+        (if permutations>0)
+        p-values based on standard normal approximation from
+        permutations (one-sided)
+        for two-sided tests, these values should be multiplied by 2
 
 
     Examples
@@ -1292,6 +1302,7 @@ class Moran_Local_BV(object):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
+        island_weight=0,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1453,76 +1464,81 @@ class Moran_Local_Rate(Moran_Local):
     w : W
         weight instance assumed to be aligned with y
     adjusted : boolean
-              whether or not local Moran statistics need to be adjusted for
-              rate variable
+        whether or not local Moran statistics need to be adjusted for
+        rate variable
     transformation : {'R', 'B', 'D', 'U', 'V'}
-                     weights transformation,  default is row-standardized "r".
-                     Other options include
-                     "B": binary,
-                     "D": doubly-standardized,
-                     "U": untransformed (general weights),
-                     "V": variance-stabilizing.
-    permutations   : int
-                     number of random permutations for calculation of pseudo
-                     p_values
-    geoda_quads    : boolean
-                     (default=False)
-                     If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
-                     If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    njobs
+        weights transformation,  default is row-standardized "r".
+        Other options include
+        "B": binary,
+        "D": doubly-standardized,
+        "U": untransformed (general weights),
+        "V": variance-stabilizing.
+    permutations : int
+        number of random permutations for calculation of pseudo
+        p_values
+    geoda_quads : boolean
+         (default=False)
+         If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
+         If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
+    njobs : int
+        number of workers to use to compute the local statistic.
     keep_simulations : Boolean
-                      (default=True)
-                      If True, the entire matrix of replications under the null 
-                      is stored in memory and accessible; otherwise, replications 
-                      are not saved         
+        (default=True)
+        If True, the entire matrix of replications under the null
+        is stored in memory and accessible; otherwise, replications
+        are not saved
     seed : None/int
-           Seed to ensure reproducibility of conditional randomizations. 
-           Must be set here, and not outside of the function, since numba does not 
-           correctly interpret external seeds nor numpy.random.RandomState instances.                
-           
+        Seed to ensure reproducibility of conditional randomizations.
+        Must be set here, and not outside of the function, since numba does not
+        correctly interpret external seeds nor numpy.random.RandomState instances.
+    island_weight: float
+        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+        will propagate to the final local statistic depending on the `stat_func`. If 0, then
+        the lag is always zero for islands.
+
     Attributes
     ----------
-    y            : array
-                   rate variables computed from parameters e and b
-                   if adjusted is True, y is standardized rates
-                   otherwise, y is raw rates
-    w            : W
-                   original w object
+    y : array
+        rate variables computed from parameters e and b
+        if adjusted is True, y is standardized rates
+        otherwise, y is raw rates
+    w : W
+        original w object
     permutations : int
-                   number of random permutations for calculation of pseudo
-                   p_values
-    I            : float
-                   value of Moran's I
-    q            : array
-                   (if permutations>0)
-                   values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
-    sim          : array
-                   (if permutations>0)
-                   vector of I values for permuted samples
-    p_sim        : array
-                   (if permutations>0)
-                   p-value based on permutations (one-sided)
-                   null: spatial randomness
-                   alternative: the observed Ii is further away or extreme
-                   from the median of simulated Iis. It is either extremely
-                   high or extremely low in the distribution of simulated Is
-    EI_sim       : float
-                   (if permutations>0)
-                   average value of I from permutations
-    VI_sim       : float
-                   (if permutations>0)
-                   variance of I from permutations
-    seI_sim      : float
-                   (if permutations>0)
-                   standard deviation of I under permutations.
-    z_sim        : float
-                   (if permutations>0)
-                   standardized I based on permutations
-    p_z_sim      : float
-                   (if permutations>0)
-                   p-value based on standard normal approximation from
-                   permutations (one-sided)
-                   for two-sided tests, these values should be multiplied by 2
+        number of random permutations for calculation of pseudo
+        p_values
+    Is : float
+        value of Local Moran's Ii
+    q : array
+        (if permutations>0)
+        values indicate quandrant location 1 HH,  2 LH,  3 LL,  4 HL
+    sim : array
+        (if permutations>0)
+        vector of I values for permuted samples
+    p_sim : array
+        (if permutations>0)
+        p-value based on permutations (one-sided)
+        null: spatial randomness
+        alternative: the observed Ii is further away or extreme
+        from the median of simulated Iis. It is either extremely
+        high or extremely low in the distribution of simulated Is
+    EI_sim : float
+        (if permutations>0)
+        average value of I from permutations
+    VI_sim : float
+        (if permutations>0)
+        variance of I from permutations
+    seI_sim : float
+        (if permutations>0)
+        standard deviation of I under permutations.
+    z_sim : float
+        (if permutations>0)
+        standardized I based on permutations
+    p_z_sim : float
+        (if permutations>0)
+        p-value based on standard normal approximation from
+        permutations (one-sided)
+        for two-sided tests, these values should be multiplied by 2
 
     Examples
     --------
@@ -1558,6 +1574,7 @@ class Moran_Local_Rate(Moran_Local):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
+        island_weight=0,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1684,9 +1701,11 @@ class Moran_Local_Rate(Moran_Local):
         for col in rate_df.columns:
             df[col] = rate_df[col]
 
+
 # --------------------------------------------------------------
 # Conditional Randomization Moment Estimators
 # --------------------------------------------------------------
+
 
 def _wikh_fast(W, sokal_correction=False):
     """
@@ -1697,36 +1716,38 @@ def _wikh_fast(W, sokal_correction=False):
     If the :cite:`sokal1998local` version is used, then we also have h \neq k
     Since this version introduces a simplification in the expression
     where this function is called, the defaults should always return
-    the version in the original :cite:`Anselin1995 paper`.  
+    the version in the original :cite:`Anselin1995 paper`.
 
     Arguments
     ---------
     W   :   scipy sparse matrix
-            a sparse matrix describing the spatial relationships 
+            a sparse matrix describing the spatial relationships
             between observations.
     sokal_correction: bool
-            Whether to avoid self-neighbors in the summation of weights. 
+            Whether to avoid self-neighbors in the summation of weights.
             If False (default), then the outer product of all weights
             for observation i are used, regardless if they are of the form
-            w_hh or w_kk. 
-    
+            w_hh or w_kk.
+
     Returns
     -------
     (n,) length numpy.ndarray containing the result.
     """
-    return _wikh_numba(W.shape[0], *W.nonzero(), W.data, 
-                       sokal_correction=sokal_correction)
+    return _wikh_numba(
+        W.shape[0], *W.nonzero(), W.data, sokal_correction=sokal_correction
+    )
+
 
 @_njit(fastmath=True)
 def _wikh_numba(n, row, col, data, sokal_correction=False):
     """
     This is a fast implementation of the wi(kh) function from
-    :cite:`Anselin1995`. 
+    :cite:`Anselin1995`.
 
-    This uses numpy to compute the outer product of each observation's 
+    This uses numpy to compute the outer product of each observation's
     weights, after removing the w_ii entry. Then, the sum of the outer
     product is taken. If the sokal correction is requested, the trace
-    of the outer product matrix is removed from the result. 
+    of the outer product matrix is removed from the result.
     """
     result = np.empty((n,), dtype=data.dtype)
     ixs = np.arange(n)
@@ -1736,11 +1757,12 @@ def _wikh_numba(n, row, col, data, sokal_correction=False):
         # compute the pairwise product
         pairwise_product = np.outer(row_no_i, row_no_i)
         # get the sum overall (wik*wih)
-        result[i] = pairwise_product.sum() 
-        if sokal_correction: 
+        result[i] = pairwise_product.sum()
+        if sokal_correction:
             # minus the diagonal (wik*wih when k==h)
             result[i] -= np.trace(pairwise_product)
-    return result/2
+    return result / 2
+
 
 def _wikh_slow(W, sokal_correction=False):
     """
@@ -1748,10 +1770,10 @@ def _wikh_slow(W, sokal_correction=False):
     :cite:`Anselin1995`
 
     This does three nested for-loops over n, doing the literal operations
-    stated by the expression. 
+    stated by the expression.
     """
     W = W.toarray()
-    (n,n) = W.shape
+    (n, n) = W.shape
     result = np.empty((n,))
     # for each observation
     for i in range(n):
@@ -1764,15 +1786,16 @@ def _wikh_slow(W, sokal_correction=False):
             # and wij
             for h in range(n):
                 # excluding wik * wii
-                if (i == h):
+                if i == h:
                     continue
                 if sokal_correction:
                     # excluding wih * wih
-                    if (h == k):
+                    if h == k:
                         continue
-                acc += W[i,k] * W[i,h]
+                acc += W[i, k] * W[i, h]
         result[i] = acc
-    return result/2
+    return result / 2
+
 
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations

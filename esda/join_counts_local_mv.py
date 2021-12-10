@@ -20,6 +20,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
+        island_weight=0,
     ):
         """
         Initialize a Local_Join_Counts_MV estimator
@@ -45,6 +46,10 @@ class Join_Counts_Local_MV(BaseEstimator):
                            Must be set here, and not outside of the function, since numba
                            does not correctly interpret external seeds
                            nor numpy.random.RandomState instances.
+        island_weight:
+            value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
+            will propagate to the final local statistic depending on the `stat_func`. If 0, then
+            the lag is always zero for islands.
 
         """
 
@@ -53,6 +58,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         self.n_jobs = n_jobs
         self.keep_simulations = keep_simulations
         self.seed = seed
+        self.island_weight = island_weight
 
     def fit(self, variables, n_jobs=1, permutations=999):
         """
@@ -126,6 +132,7 @@ class Join_Counts_Local_MV(BaseEstimator):
                 keep=True,
                 n_jobs=n_jobs,
                 stat_func=_ljc_mv,
+                island_weight=self.island_weight,
             )
             # Set p-values for those with LJC of 0 to NaN
             self.p_sim[self.LJC == 0] = "NaN"
