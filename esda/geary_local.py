@@ -171,7 +171,10 @@ class Geary_Local(BaseEstimator):
         adj_list_gs = pd.DataFrame(adj_list.focal.values, gs).reset_index()
         adj_list_gs.columns = ["gs", "ID"]
         adj_list_gs = adj_list_gs.groupby(by="ID").sum()
-
+        # Rearrange data based on w id order
+        adj_list_gs['w_order'] = w.id_order
+        adj_list_gs.sort_values(by='w_order', inplace=True)
+        
         localG = adj_list_gs.gs.values
 
         return localG
