@@ -12,8 +12,9 @@ class Geary_Local_MV(BaseEstimator):
     def __init__(self, connectivity=None, permutations=999):
         """
         Initialize a Local_Geary_MV estimator
-        Arguments
-        ---------
+
+        Parameters
+        ----------
         connectivity     : scipy.sparse matrix object
                            the connectivity structure describing
                            the relationships between observed units.
@@ -22,6 +23,7 @@ class Geary_Local_MV(BaseEstimator):
                            (default=999)
                            number of random permutations for calculation
                            of pseudo p_values
+
         Attributes
         ----------
         localG          : numpy array
@@ -37,8 +39,8 @@ class Geary_Local_MV(BaseEstimator):
 
     def fit(self, variables):
         """
-        Arguments
-        ---------
+        Parameters
+        ----------
         variables        : numpy.ndarray
                            array containing continuous data
 
@@ -69,14 +71,20 @@ class Geary_Local_MV(BaseEstimator):
         >>> lG_mv.localG[0:5]
         >>> lG_mv.p_sim[0:5]
         """
-        self.variables = check_array(variables, accept_sparse=False, dtype='float', force_all_finite=True, estimator=self)
+        self.variables = check_array(
+            variables,
+            accept_sparse=False,
+            dtype="float",
+            force_all_finite=True,
+            estimator=self,
+        )
 
         w = self.connectivity
-        w.transform = 'r'
+        w.transform = "r"
 
         self.n = len(variables[0])
         self.w = w
-        
+
         permutations = self.permutations
 
         # Caclulate z-scores for input variables
@@ -103,23 +111,22 @@ class Geary_Local_MV(BaseEstimator):
         # Create focal and neighbor values
         adj_list = w.to_adjlist(remove_symmetric=False)
         zseries = [pd.Series(i, index=w.id_order) for i in zvariables]
-        focal = [zseries[i].loc[adj_list.focal].values
-                 for i in range(len(variables))]
-        neighbor = [zseries[i].loc[adj_list.neighbor].values
-                    for i in range(len(variables))]
+        focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
+        neighbor = [
+            zseries[i].loc[adj_list.neighbor].values for i in range(len(variables))
+        ]
         # Carry out local Geary calculation
-        gs = adj_list.weight.values * \
-            (np.array(focal) - np.array(neighbor))**2
+        gs = adj_list.weight.values * (np.array(focal) - np.array(neighbor)) ** 2
         # Reorganize data
         temp = pd.DataFrame(gs).T
-        temp['ID'] = adj_list.focal.values
-        adj_list_gs = temp.groupby(by='ID').sum()
-         # Rearrange data based on w id order
-        adj_list_gs['w_order'] = w.id_order
-        adj_list_gs.sort_values(by='w_order', inplace=True)
+        temp["ID"] = adj_list.focal.values
+        adj_list_gs = temp.groupby(by="ID").sum()
+        # Rearrange data based on w id order
+        adj_list_gs["w_order"] = w.id_order
+        adj_list_gs.sort_values(by="w_order", inplace=True)
         localG = np.array(adj_list_gs.sum(axis=1) / k)
 
-        return (localG)
+        return localG
 
     def _crand(self, zvariables):
         """
@@ -150,13 +157,15 @@ class Geary_Local_MV(BaseEstimator):
             np.random.shuffle(idsi)
             vars_rand = []
             for j in range(nvars):
-                vars_rand.append(zvariables[j][idsi[rids[:, 0:wc[i]]]])
+                vars_rand.append(zvariables[j][idsi[rids[:, 0 : wc[i]]]])
             # vars rand as tmp
             # Calculate diff
             diff = []
             for z in range(nvars):
-                diff.append((np.array((zvariables[z][i] - vars_rand[z])**2
-                                      * w[i])).sum(1) / nvars)
+                diff.append(
+                    (np.array((zvariables[z][i] - vars_rand[z]) ** 2 * w[i])).sum(1)
+                    / nvars
+                )
             # add up differences
             temp = np.array([sum(x) for x in zip(*diff)])
             # Assign to object to be returned

@@ -30,8 +30,9 @@ class Join_Counts_Local_BV(BaseEstimator):
     ):
         """
         Initialize a Local_Join_Counts_BV estimator
-        Arguments
-        ---------
+
+        Parameters
+        ----------
         connectivity     : scipy.sparse matrix object
                            the connectivity structure describing
                            the relationships between observed units.
@@ -67,8 +68,8 @@ class Join_Counts_Local_BV(BaseEstimator):
 
     def fit(self, x, z, case="CLC", n_jobs=1, permutations=999):
         """
-        Arguments
-        ---------
+        Parameters
+        ----------
         x                : numpy.ndarray
                            array containing binary (0/1) data
         z                : numpy.ndarray

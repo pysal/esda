@@ -37,8 +37,8 @@ def get_angles(collection, return_indices=False):
     Get the angles pertaining to each vertex of a set of polygons.
     This assumes the input are polygons.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     ga  :   pygeos geometry array
         array of polygons/multipolygons
     return_indices  :   bool (Default: False)
@@ -132,7 +132,7 @@ def isoperimetric_quotient(collection):
     Altman's PA_1 measure
 
     Construction:
-    --------------
+
     let:
     p_d = perimeter of polygon
     a_d = area of polygon

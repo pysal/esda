@@ -94,8 +94,8 @@ def isolation(
     Compute the isolation of each value of X by constructing the distance
     to the nearest higher value in the data.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     X : numpy.ndarray
         (N, p) array of data to use as input. If p > 1, the "elevation" is computed
         using the topo.to_elevation function.
@@ -184,8 +184,8 @@ def prominence(
     """
     Return the prominence of peaks in input, given a connectivity matrix.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     X : numpy.ndarray
         an array of shape N,p containing data to use for computing prominence. When
         p > 1, X will be converted to an "elevation" using to_elevation.
@@ -387,8 +387,8 @@ def to_elevation(X, middle="mean", metric="euclidean"):
     So, this computes the distance of each point to the overall the center of mass
     and uses this as the "elevation," setting sea level (zero) to the lowest elevation.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     X : numpy.ndarray
         Array of values for which to compute elevation.
     middle : callable or string

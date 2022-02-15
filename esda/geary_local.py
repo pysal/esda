@@ -25,8 +25,9 @@ class Geary_Local(BaseEstimator):
     ):
         """
         Initialize a Local_Geary estimator
-        Arguments
-        ---------
+
+        Parameters
+        ----------
         connectivity     : scipy.sparse matrix object
                            the connectivity structure describing
                            the relationships between observed units.
@@ -66,6 +67,7 @@ class Geary_Local(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
             will propagate to the final local statistic depending on the `stat_func`. If 0, then
             the lag is always zero for islands.
+
         Attributes
         ----------
         localG          : numpy array
@@ -89,8 +91,8 @@ class Geary_Local(BaseEstimator):
 
     def fit(self, x):
         """
-        Arguments
-        ---------
+        Parameters
+        ----------
         x                : numpy.ndarray
                            array containing continuous data
 
@@ -172,9 +174,9 @@ class Geary_Local(BaseEstimator):
         adj_list_gs.columns = ["gs", "ID"]
         adj_list_gs = adj_list_gs.groupby(by="ID").sum()
         # Rearrange data based on w id order
-        adj_list_gs['w_order'] = w.id_order
-        adj_list_gs.sort_values(by='w_order', inplace=True)
-        
+        adj_list_gs["w_order"] = w.id_order
+        adj_list_gs.sort_values(by="w_order", inplace=True)
+
         localG = adj_list_gs.gs.values
 
         return localG

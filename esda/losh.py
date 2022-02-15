@@ -13,8 +13,8 @@ class LOSH(BaseEstimator):
         """
         Initialize a losh estimator
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         connectivity     : scipy.sparse matrix object
                            the connectivity structure describing the
                            relationships between observed units.
@@ -42,8 +42,8 @@ class LOSH(BaseEstimator):
 
     def fit(self, y, a=2):
         """
-        Arguments
-        ---------
+        Parameters
+        ----------
         y                : numpy.ndarray
                            array containing continuous data
         a                : int

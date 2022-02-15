@@ -53,7 +53,7 @@ def external_entropy(a, b, balance=0, base=numpy.e):
 
     Called the v-measure in :cite:`nowosad2018`
 
-    Arguments
+    Parameters
     ----------
     a : geometry array of polygons
         array of polygons
@@ -105,8 +105,8 @@ def completeness(a, b, local=False, base=numpy.e):
     Closer to 1 when all polygons in a are fully contained within polygons in b.
     From :cite:`nowosad2018`
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     a : geometry array of polygons
         array of polygons
     b : geometry array of polygons
@@ -153,8 +153,8 @@ def homogeneity(a, b, local=False, base=numpy.e):
 
     It is closer to 1 when all polygons in b correspond well to polygons in a.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     a : geometry array of polygons
         array of polygons
     b : geometry array of polygons
@@ -196,8 +196,8 @@ def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
     by partitions in b, and small when zones in A correspond well to
     zones in B.
 
-    Arguments
-    ----------
+    Parameters
+    -----------
     a : geometry array of polygons
         a set of polygons (the "target") for whom the areal entropy is calculated
     b : geometry array of polygons
@@ -250,8 +250,8 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     """
     Compute the entropy of the distribution of polygon areas.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     polygons: numpy array of geometries
         polygons whose distribution of entropies needs to be computed.
         Should not be provided if areas is provided.

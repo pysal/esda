@@ -1,4 +1,4 @@
-#from ...common import requires as _requires
+# from ...common import requires as _requires
 
 import itertools as _it
 from libpysal.weights import W
@@ -6,9 +6,18 @@ from libpysal.weights import W
 # I would like to define it like this, so that you could make a call like:
 # Geary(df, 'HOVAL', 'INC', w=W), but this only works in Python3. So, I have to
 # use a workaround
-#def _statistic(df, *cols, stat=None, w=None, inplace=True,
-def _univariate_handler(df, cols, stat=None, w=None, inplace=True,
-                        pvalue = 'sim', outvals = None, swapname='', **kwargs):
+# def _statistic(df, *cols, stat=None, w=None, inplace=True,
+def _univariate_handler(
+    df,
+    cols,
+    stat=None,
+    w=None,
+    inplace=True,
+    pvalue="sim",
+    outvals=None,
+    swapname="",
+    **kwargs
+):
     """
     Compute a univariate descriptive statistic `stat` over columns `cols` in
     `df`.
@@ -45,9 +54,17 @@ def _univariate_handler(df, cols, stat=None, w=None, inplace=True,
     ### Preprocess
     if not inplace:
         new_df = df.copy()
-        _univariate_handler(new_df, cols, stat=stat, w=w, pvalue=pvalue,
-                                   inplace=True, outvals=outvals,
-                                   swapname=swapname, **kwargs)
+        _univariate_handler(
+            new_df,
+            cols,
+            stat=stat,
+            w=w,
+            pvalue=pvalue,
+            inplace=True,
+            outvals=outvals,
+            swapname=swapname,
+            **kwargs
+        )
         return new_df
     if w is None:
         for name in df._metadata:
@@ -55,18 +72,22 @@ def _univariate_handler(df, cols, stat=None, w=None, inplace=True,
             if isinstance(this_obj, W):
                 w = this_obj
     if w is None:
-        raise Exception('Weights not provided and no weights attached to frame!'
-                            ' Please provide a weight or attach a weight to the'
-                            ' dataframe')
+        raise Exception(
+            "Weights not provided and no weights attached to frame!"
+            " Please provide a weight or attach a weight to the"
+            " dataframe"
+        )
     ### Prep indexes
     if outvals is None:
         outvals = []
-    outvals.insert(0,'_statistic')
-    if pvalue.lower() in ['all', 'both', '*']:
-        raise NotImplementedError("If you want more than one type of PValue,add"
-                                  " the targeted pvalue type to outvals. For example:"
-                                  " Geary(df, cols=['HOVAL'], w=w, outvals=['p_z_sim', "
-                                  "'p_rand']")
+    outvals.insert(0, "_statistic")
+    if pvalue.lower() in ["all", "both", "*"]:
+        raise NotImplementedError(
+            "If you want more than one type of PValue,add"
+            " the targeted pvalue type to outvals. For example:"
+            " Geary(df, cols=['HOVAL'], w=w, outvals=['p_z_sim', "
+            "'p_rand']"
+        )
     # this is nontrivial, since we
     # can't know which p_value types are on the object without computing it.
     # This is because we don't flag them with @properties, so they're just
@@ -74,31 +95,36 @@ def _univariate_handler(df, cols, stat=None, w=None, inplace=True,
     # objects, determine which pvalue types are available, and then grab them
     # all if needed.
 
-    if pvalue != '':
-        outvals.append('p_'+pvalue.lower())
+    if pvalue != "":
+        outvals.append("p_" + pvalue.lower())
     if isinstance(cols, str):
         cols = [cols]
 
     ### Make closure around weights & apply columnwise
     def column_stat(column):
         return stat(column.values, w=w, **kwargs)
+
     stat_objs = df[cols].apply(column_stat)
 
     ### Assign into dataframe
     for col in cols:
         stat_obj = stat_objs[col]
-        y = kwargs.get('y')
+        y = kwargs.get("y")
         if y is not None:
-            col += '-' + y.name
-        outcols = ['_'.join((col, val)) for val in outvals]
+            col += "-" + y.name
+        outcols = ["_".join((col, val)) for val in outvals]
         for colname, attname in zip(outcols, outvals):
             df[colname] = stat_obj.__getattribute__(attname)
-    if swapname != '':
-        df.columns = [_swap_ending(col, swapname) if col.endswith('_statistic') else col
-                      for col in df.columns]
+    if swapname != "":
+        df.columns = [
+            _swap_ending(col, swapname) if col.endswith("_statistic") else col
+            for col in df.columns
+        ]
 
-def _bivariate_handler(df, x, y=None, w=None, inplace=True, pvalue='sim',
-                       outvals=None, **kwargs):
+
+def _bivariate_handler(
+    df, x, y=None, w=None, inplace=True, pvalue="sim", outvals=None, **kwargs
+):
     """
     Compute a descriptive bivariate statistic over two sets of columns, `x` and
     `y`, contained in `df`.
@@ -130,31 +156,50 @@ def _bivariate_handler(df, x, y=None, w=None, inplace=True, pvalue='sim',
     **kwargs    : optional keyword arguments
                   options that are passed directly to the statistic
     """
-    real_swapname = kwargs.pop('swapname', '')
+    real_swapname = kwargs.pop("swapname", "")
     if isinstance(y, str):
         y = [y]
     if isinstance(x, str):
         x = [x]
     if not inplace:
         new_df = df.copy()
-        _bivariate_handler(new_df, x, y=y, w=w, inplace=True,
-                           swapname=real_swapname,
-                           pvalue=pvalue, outvals=outvals, **kwargs)
+        _bivariate_handler(
+            new_df,
+            x,
+            y=y,
+            w=w,
+            inplace=True,
+            swapname=real_swapname,
+            pvalue=pvalue,
+            outvals=outvals,
+            **kwargs
+        )
         return new_df
     if y is None:
         y = x
-    for xi,yi in _it.product(x,y):
+    for xi, yi in _it.product(x, y):
         if xi == yi:
             continue
-        _univariate_handler(df, cols=xi, w=w, y=df[yi], inplace=True,
-                            pvalue=pvalue, outvals=outvals, swapname='', **kwargs)
-    if real_swapname != '':
+        _univariate_handler(
+            df,
+            cols=xi,
+            w=w,
+            y=df[yi],
+            inplace=True,
+            pvalue=pvalue,
+            outvals=outvals,
+            swapname="",
+            **kwargs
+        )
+    if real_swapname != "":
 
-        df.columns = [_swap_ending(col, real_swapname)
-                      if col.endswith('_statistic')
-                      else col for col in df.columns]
+        df.columns = [
+            _swap_ending(col, real_swapname) if col.endswith("_statistic") else col
+            for col in df.columns
+        ]
 
-def _swap_ending(s, ending, delim='_'):
+
+def _swap_ending(s, ending, delim="_"):
     """
     Replace the ending of a string, delimited into an arbitrary
     number of chunks by `delim`, with the ending provided
@@ -173,20 +218,20 @@ def _swap_ending(s, ending, delim='_'):
     new string where the final chunk of `s`, delimited by `delim`, is replaced
     with `ending`.
     """
-    parts = [x for x in s.split(delim)[:-1] if x != '']
+    parts = [x for x in s.split(delim)[:-1] if x != ""]
     parts.append(ending)
     return delim.join(parts)
+
 
 ##############
 # DOCSTRINGS #
 ##############
 
-_univ_doc_template =\
-"""
+_univ_doc_template = """
 Function to compute a {n} statistic on a dataframe
 
-Arguments
----------
+Parameters
+----------
 df          :   pandas.DataFrame
                 a pandas dataframe with a geometry column
 cols        :   string or list of string
@@ -218,12 +263,11 @@ See Also
 For further documentation, refer to the {n} class in pysal.esda
 """
 
-_bv_doc_template =\
-"""
+_bv_doc_template = """
 Function to compute a {n} statistic on a dataframe
 
-Arguments
----------
+Parameters
+----------
 df          :   pandas.DataFrame
                 a pandas dataframe with a geometry column
 X           :   list of strings
@@ -263,12 +307,11 @@ See Also
 For further documentation, refer to the {n} class in pysal.esda
 """
 
-_rate_doc_template =\
-"""
+_rate_doc_template = """
 Function to compute a {n} statistic on a dataframe
 
-Arguments
----------
+Parameters
+----------
 df          :   pandas.DataFrame
                 a pandas dataframe with a geometry column
 events      :   string or  list of strings

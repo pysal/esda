@@ -31,7 +31,7 @@ Gamma Statistic
 .. _geary_api:
 
 Geary Statistics
----------------
+----------------
 
 .. autosummary::
    :toctree: generated/
