@@ -245,8 +245,8 @@ def compute_chunk(
     Compute conditional randomisation for a single chunk
     ...
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     chunk_start : int
         Starting index for the chunk of input. Should be zero if z_chunk == z.
     z_chunk : numpy.ndarray

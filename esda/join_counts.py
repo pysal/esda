@@ -89,7 +89,7 @@ class Join_Counts(object):
     crosstab     : DataFrame
                    Contingency table for observed join counts
     expected     : DataFrame
-                   Expected contingency table for the null 
+                   Expected contingency table for the null
     p_sim_chi2   : float
                    p-value for chi2 under random spatial permutations
 
@@ -199,12 +199,13 @@ class Join_Counts(object):
             self.sim_autocurr_neg = sim_jc[:, 2]
             self.sim_chi2 = sim_jc[:, 3]
 
-            stat = (
-                (self.autocorr_pos - np.mean(self.sim_autocurr_pos)) ** 2
-                / np.mean(self.sim_autocurr_pos) ** 2
-                + (self.autocorr_neg - np.mean(self.sim_autocurr_neg)) ** 2
-                / np.mean(self.sim_autocurr_pos) ** 2
-            )
+            stat = (self.autocorr_pos - np.mean(self.sim_autocurr_pos)) ** 2 / np.mean(
+                self.sim_autocurr_pos
+            ) ** 2 + (
+                self.autocorr_neg - np.mean(self.sim_autocurr_neg)
+            ) ** 2 / np.mean(
+                self.sim_autocurr_pos
+            ) ** 2
             self.sim_autocorr_chi2 = 1 - chi2.cdf(stat, 1)
 
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
@@ -230,11 +231,10 @@ class Join_Counts(object):
         sim = focal == neighbor
         dif = 1 - sim
         bb = (focal * sim).sum() / 2
-        ww = ((1-focal) * sim).sum() / 2
+        ww = ((1 - focal) * sim).sum() / 2
         bw = (focal * dif).sum() / 2
-        wb = ((1-focal) * dif).sum() /2
-        table = [[ww, wb],
-                [bw, bb]]
+        wb = ((1 - focal) * dif).sum() / 2
+        table = [[ww, wb], [bw, bb]]
         chi2 = chi2_contingency(table)
         stat, pvalue, dof, expected = chi2
         return (bb, ww, bw + wb, stat, pvalue, dof, expected, np.array(table))
@@ -256,8 +256,8 @@ class Join_Counts(object):
         """
         Function to compute a Join_Count statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string

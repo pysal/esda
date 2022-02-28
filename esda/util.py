@@ -10,8 +10,8 @@ def fdr(pvalues, alpha=0.05):
     are rejected, the conservative Bonferroni bound (alpha/n)
     is returned instead.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     pvalues     : array
                   (n, ), p values for n multiple tests.
     alpha       : float, optional
@@ -57,6 +57,6 @@ def fdr(pvalues, alpha=0.05):
     search = p_sort < p_fdr
     sig_all = np.where(search)[0]
     if len(sig_all) == 0:
-        return alpha/n
+        return alpha / n
     else:
         return p_fdr[sig_all[0]]

@@ -248,8 +248,8 @@ class Moran(object):
         """
         Function to compute a Moran statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -455,8 +455,8 @@ class Moran_BV(object):
         """
         Function to compute a Moran_BV statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         X           :   list of strings
@@ -751,8 +751,8 @@ class Moran_Rate(Moran):
         """
         Function to compute a Moran_Rate statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         events      :   string or  list of strings
@@ -875,16 +875,16 @@ class Moran_Local(object):
         If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     n_jobs : int
         Number of cores to be used in the conditional randomisation. If -1,
-        all available cores are used.    
+        all available cores are used.
     keep_simulations : Boolean
         (default=True)
-        If True, the entire matrix of replications under the null 
-        is stored in memory and accessible; otherwise, replications 
+        If True, the entire matrix of replications under the null
+        is stored in memory and accessible; otherwise, replications
         are not saved
     seed : None/int
-           Seed to ensure reproducibility of conditional randomizations. 
-           Must be set here, and not outside of the function, since numba 
-           does not correctly interpret external seeds nor numpy.random.RandomState instances.               
+           Seed to ensure reproducibility of conditional randomizations.
+           Must be set here, and not outside of the function, since numba
+           does not correctly interpret external seeds nor numpy.random.RandomState instances.
     island_weight:
         value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
         will propagate to the final local statistic depending on the `stat_func`. If 0, then
@@ -921,24 +921,24 @@ class Moran_Local(object):
         (if permutations>0)
         variance of Is from permutations
     EI : array
-        analytical expectation of Is under total permutation, 
-        from :cite:`Anselin1995`. Is the same at each site, 
-        and equal to the expectation of I itself when 
+        analytical expectation of Is under total permutation,
+        from :cite:`Anselin1995`. Is the same at each site,
+        and equal to the expectation of I itself when
         transformation='r'. We recommend using EI_sim, not EI,
         for analysis. This EI is only provided for reproducibility.
     VI : array
-        analytical variance of Is under total permutation, 
-        from :cite:`Anselin1995`. Varies according only to 
+        analytical variance of Is under total permutation,
+        from :cite:`Anselin1995`. Varies according only to
         cardinality. We recommend using VI_sim, not VI, for
         analysis. This VI is only provided for reproducibility.
     EIc : array
-        analytical expectation of Is under conditional permutation, 
+        analytical expectation of Is under conditional permutation,
         from :cite:`sokal1998local`. Varies strongly by site, since it
-        conditions on z_i. We recommend using EI_sim, not EIc, 
+        conditions on z_i. We recommend using EI_sim, not EIc,
         for analysis. This EIc is only provided for reproducibility.
     VIc : array
         analytical variance of Is under conditional permutation,
-        from :cite:`sokal1998local`. Varies strongly by site, since 
+        from :cite:`sokal1998local`. Varies strongly by site, since
         it conditions on z_i. We recommend using VI_sim, not VIc,
         for analysis. This VIc is only provided for reproducibility.
     seI_sim : array
@@ -954,16 +954,16 @@ class Moran_Local(object):
         for two-sided tests, these values should be multiplied by 2
     n_jobs : int
         Number of cores to be used in the conditional randomisation. If -1,
-        all available cores are used.    
+        all available cores are used.
     keep_simulations : Boolean
         (default=True)
-        If True, the entire matrix of replications under the null 
-        is stored in memory and accessible; otherwise, replications 
-        are not saved   
+        If True, the entire matrix of replications under the null
+        is stored in memory and accessible; otherwise, replications
+        are not saved
     seed : None/int
-        Seed to ensure reproducibility of conditional randomizations. 
-        Must be set here, and not outside of the function, since numba does 
-        not correctly interpret external seeds nor numpy.random.RandomState instances.                 
+        Seed to ensure reproducibility of conditional randomizations.
+        Must be set here, and not outside of the function, since numba does
+        not correctly interpret external seeds nor numpy.random.RandomState instances.
     Notes
     -----
 
@@ -1138,8 +1138,8 @@ class Moran_Local(object):
         """
         Function to compute a Moran_Local statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         cols        :   string or list of string
@@ -1208,16 +1208,16 @@ class Moran_Local_BV(object):
         If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
         If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
     njobs : int
-        number of workers to use to compute the local statistic. 
+        number of workers to use to compute the local statistic.
     keep_simulations : Boolean
         (default=True)
-        If True, the entire matrix of replications under the null 
-        is stored in memory and accessible; otherwise, replications 
-        are not saved      
+        If True, the entire matrix of replications under the null
+        is stored in memory and accessible; otherwise, replications
+        are not saved
     seed : None/int
-        Seed to ensure reproducibility of conditional randomizations. 
-        Must be set here, and not outside of the function, since numba 
-        does not correctly interpret external seeds nor numpy.random.RandomState instances.               
+        Seed to ensure reproducibility of conditional randomizations.
+        Must be set here, and not outside of the function, since numba
+        does not correctly interpret external seeds nor numpy.random.RandomState instances.
     island_weight:
         value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
         will propagate to the final local statistic depending on the `stat_func`. If 0, then
@@ -1400,8 +1400,8 @@ class Moran_Local_BV(object):
         """
         Function to compute a Moran_Local_BV statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         X           :   list of strings
@@ -1610,8 +1610,8 @@ class Moran_Local_Rate(Moran_Local):
         """
         Function to compute a Moran_Local_Rate statistic on a dataframe
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df          :   pandas.DataFrame
                         a pandas dataframe with a geometry column
         events      :   string or  list of strings

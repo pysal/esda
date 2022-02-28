@@ -58,20 +58,20 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
                       `solus_relabelled` objects are kept, else it is deleted to
                       save memory
     pct_thr         : float
-                      [Optional. Default=0.9] Minimum proportion of replications that a non-noise 
+                      [Optional. Default=0.9] Minimum proportion of replications that a non-noise
                       label need to be assigned to an observation for that observation to be labelled
                       as such
-    
+
     Attributes
     ----------
     labels_         : array
-                      [Only available after `fit`] Cluster labels for each point in the 
+                      [Only available after `fit`] Cluster labels for each point in the
                       dataset given to fit().
-                      Noisy (if the proportion of the most common label is < pct_thr) 
+                      Noisy (if the proportion of the most common label is < pct_thr)
                       samples are given the label -1.
     votes           : DataFrame
-                      [Only available after `fit`] Table indexed on `X.index` with 
-                      `labels_` under the `lbls` column, and the frequency across draws of 
+                      [Only available after `fit`] Table indexed on `X.index` with
+                      `labels_` under the `lbls` column, and the frequency across draws of
                       that label under `pct`
     solus           : DataFrame, shape = [n, reps]
                       [Only available after `fit`] Each solution of labels for every draw
@@ -98,7 +98,7 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
     array(['-1', '-1', '-1', '0', '-1', '-1', '-1', '0', '-1', '-1', '-1',
            '-1', '-1', '-1', '0', '0', '0', '-1', '0', '-1', '0', '-1', '-1',
            '-1', '-1'], dtype=object)
-    
+
     We can inspect the winning label for each observation, as well as the
     proportion of votes:
 
@@ -167,7 +167,7 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
                           Features
         sample_weight   : Series, shape (n_samples,)
                           [Optional. Default=None] Weight of each sample, such
-                          that a sample with a weight of at least ``min_samples`` 
+                          that a sample with a weight of at least ``min_samples``
                           is by itself a core sample; a sample with negative
                           weight may inhibit its eps-neighbor from being core.
                           Note that weights are absolute, and default to 1.
@@ -270,8 +270,8 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
     for same cluster)
     ...
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     solus       : DataFrame
                   Table with labels for each point (row) and solution (column)
     xys         : DataFrame
@@ -283,7 +283,7 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
                   [Optional. Default=1] The number of parallel jobs to run. If
                   -1, then the number of jobs is set to the number of CPU
                   cores.
- 
+
     Returns
     -------
     onel_solus  : DataFrame
@@ -381,8 +381,8 @@ def ensemble(solus_relabelled):
     Generate unique class prediction based on majority/hard voting
     ...
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     solus_relabelled  : DataFrame
                         Table with labels for each point (row) and solution
                         (column). Labels are assumed to be consistent across
@@ -431,8 +431,8 @@ def _setup_pool(n_jobs):
     Set pool for multiprocessing
     ...
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     n_jobs      : int
                   The number of parallel jobs to run. If -1, then the number
                   of jobs is set to the number of CPU cores.
@@ -453,10 +453,10 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     (`libpysal.cg.alpha_shapes.alpha_shape_auto`)
     ...
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     labels      : Series
-                  Cluster labels for each point in the dataset (noise 
+                  Cluster labels for each point in the dataset (noise
                   samples expressed as -1), indexed as `xys`
     xys         : DataFrame
                   Table including coordinates
