@@ -506,7 +506,7 @@ class Moran_BV(object):
         )
 
 
-class Moran_BV_Matrix:
+class Moran_BV_matrix:
     """
     Bivariate Moran Matrix Class
 
