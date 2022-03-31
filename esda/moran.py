@@ -506,9 +506,9 @@ class Moran_BV(object):
         )
 
 
-def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
+class Moran_BV_Matrix:
     """
-    Bivariate Moran Matrix
+    Bivariate Moran Matrix Class
 
     Calculates bivariate Moran between all pairs of a set of variables.
 
@@ -531,7 +531,6 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     results      : dictionary
                    (i,  j) is the key for the pair of variables, values are
                    the Moran_BV objects.
-
     Examples
     --------
 
@@ -556,32 +555,36 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     check values
 
-    >>> round(res[(0,  1)].I,7)
+    >>> round(res.matrix[(0,  1)].I,7)
     0.1936261
-    >>> round(res[(3,  0)].I,7)
+    >>> round(res.matrix[(3,  0)].I,7)
     0.3770138
 
     """
-    try:
-        # check if pandas is installed
-        import pandas
+    def __init__(self,variables, w, permutations=0, varnames=None):
+        self.variables = variables
+        self.w = w
+        self.permutations = permutations
+        self.varnames = varnames
+        try:
+            # check if pandas is installed
+            import pandas
 
-        if isinstance(variables, pandas.DataFrame):
-            # if yes use variables as df and convert to numpy_array
-            varnames = pandas.Index.tolist(variables.columns)
-            variables_n = []
-            for var in varnames:
-                variables_n.append(variables[str(var)].values)
-        else:
+            if isinstance(variables, pandas.DataFrame):
+                # if yes use variables as df and convert to numpy_array
+                varnames = pandas.Index.tolist(variables.columns)
+                variables_n = []
+                for var in varnames:
+                    variables_n.append(variables[str(var)].values)
+            else:
+                variables_n = variables
+        except ImportError:
             variables_n = variables
-    except ImportError:
-        variables_n = variables
-
-    results = _Moran_BV_Matrix_array(
-        variables=variables_n, w=w, permutations=permutations, varnames=varnames
-    )
-    return results
-
+        
+        self.matrix = _Moran_BV_Matrix_array(
+        variables=variables_n, w=self.w, permutations=self.permutations, varnames=self.varnames
+        )
+   
 
 def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     """
