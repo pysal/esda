@@ -506,12 +506,10 @@ class Moran_BV(object):
         )
 
 
-class Moran_BV_matrix:
+def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     """
-    Bivariate Moran Matrix Class
-
+    Bivariate Moran Matrix
     Calculates bivariate Moran between all pairs of a set of variables.
-
     Parameters
     ----------
     variables    : array or pandas.DataFrame
@@ -533,58 +531,43 @@ class Moran_BV_matrix:
                    the Moran_BV objects.
     Examples
     --------
-
     open dbf
-
     >>> import libpysal
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
-
     pull of selected variables from dbf and create numpy arrays for each
-
     >>> varnames = ['SIDR74',  'SIDR79',  'NWR74',  'NWR79']
     >>> vars = [np.array(f.by_col[var]) for var in varnames]
-
     create a contiguity matrix from an external gal file
-
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
-
     create an instance of Moran_BV_matrix
-
     >>> from esda.moran import Moran_BV_matrix
     >>> res = Moran_BV_matrix(vars,  w,  varnames = varnames)
-
     check values
-
-    >>> round(res.matrix[(0,  1)].I,7)
+    >>> round(res[(0,  1)].I,7)
     0.1936261
-    >>> round(res.matrix[(3,  0)].I,7)
+    >>> round(res[(3,  0)].I,7)
     0.3770138
-
     """
-    def __init__(self,variables, w, permutations=0, varnames=None):
-        self.variables = variables
-        self.w = w
-        self.permutations = permutations
-        self.varnames = varnames
-        try:
-            # check if pandas is installed
-            import pandas
+    try:
+        # check if pandas is installed
+        import pandas
 
-            if isinstance(variables, pandas.DataFrame):
-                # if yes use variables as df and convert to numpy_array
-                varnames = pandas.Index.tolist(variables.columns)
-                variables_n = []
-                for var in varnames:
-                    variables_n.append(variables[str(var)].values)
-            else:
-                variables_n = variables
-        except ImportError:
+        if isinstance(variables, pandas.DataFrame):
+            # if yes use variables as df and convert to numpy_array
+            varnames = pandas.Index.tolist(variables.columns)
+            variables_n = []
+            for var in varnames:
+                variables_n.append(variables[str(var)].values)
+        else:
             variables_n = variables
-        
-        self.matrix = _Moran_BV_Matrix_array(
-        variables=variables_n, w=self.w, permutations=self.permutations, varnames=self.varnames
-        )
-   
+    except ImportError:
+        variables_n = variables
+
+    results = _Moran_BV_Matrix_array(
+        variables=variables_n, w=w, permutations=permutations, varnames=varnames
+    )
+    return results
+
 
 def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     """

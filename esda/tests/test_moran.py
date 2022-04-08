@@ -96,8 +96,8 @@ class Moran_BV_matrix_Tester(unittest.TestCase):
 
     def test_Moran_BV_matrix(self):
         res = moran.Moran_BV_matrix(self.vars, self.w, varnames=self.names)
-        self.assertAlmostEqual(res.matrix[(0, 1)].I, 0.19362610652874668)
-        self.assertAlmostEqual(res.matrix[(3, 0)].I, 0.37701382542927858)
+        self.assertAlmostEqual(res[(0, 1)].I, 0.19362610652874668)
+        self.assertAlmostEqual(res[(3, 0)].I, 0.37701382542927858)
 
 
 class Moran_Local_Tester(unittest.TestCase):
