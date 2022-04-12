@@ -509,7 +509,9 @@ class Moran_BV(object):
 def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     """
     Bivariate Moran Matrix
+
     Calculates bivariate Moran between all pairs of a set of variables.
+
     Parameters
     ----------
     variables    : array or pandas.DataFrame
@@ -529,24 +531,36 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     results      : dictionary
                    (i,  j) is the key for the pair of variables, values are
                    the Moran_BV objects.
+
     Examples
     --------
+
     open dbf
+
     >>> import libpysal
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
+
     pull of selected variables from dbf and create numpy arrays for each
+
     >>> varnames = ['SIDR74',  'SIDR79',  'NWR74',  'NWR79']
     >>> vars = [np.array(f.by_col[var]) for var in varnames]
+
     create a contiguity matrix from an external gal file
+
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+
     create an instance of Moran_BV_matrix
+
     >>> from esda.moran import Moran_BV_matrix
     >>> res = Moran_BV_matrix(vars,  w,  varnames = varnames)
+
     check values
+
     >>> round(res[(0,  1)].I,7)
     0.1936261
     >>> round(res[(3,  0)].I,7)
     0.3770138
+
     """
     try:
         # check if pandas is installed
@@ -875,9 +889,10 @@ class Moran_Local(object):
         value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
         will propagate to the final local statistic depending on the `stat_func`. If 0, then
         the lag is always zero for islands.
-    alternative: string
-        possible values -> "one-tailed"/ "two-tailed"
-        default value ->"two-tailed" 
+    alternative: {"two-tailed", "one-tailed"}
+        default="two-tailed") 
+        "two-tailed"  test for the possibility of the relationship in both directions
+        "one-tailed"  to detect an effect in one direction by not testing the effect in the other direction
 
     Attributes
     ----------
