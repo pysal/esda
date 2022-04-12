@@ -169,7 +169,7 @@ class Moran_Local_Tester(unittest.TestCase):
             alternative="one-tailed",
         )
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
-        self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.4845338350758279)
 
     def test_Moran_Local_one_tailed_parallel(self):
         lm = moran.Moran_Local(
@@ -183,7 +183,7 @@ class Moran_Local_Tester(unittest.TestCase):
             alternative="one-tailed"
         )
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
-        self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.4845338350758279)
 
 
     @unittest.skip("This function is being deprecated in the next release.")
