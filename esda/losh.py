@@ -21,7 +21,7 @@ class LOSH(BaseEstimator):
                            relationships between observed units.
         inference        : str
                            describes type of inference to be used. options are
-                           "chi-square" or "permutation" methods.
+                           "chi-square" or "permutation" or "bootstrap" methods.
 
         Attributes
         ----------
