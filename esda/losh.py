@@ -4,6 +4,7 @@ from scipy import sparse
 from scipy import stats
 from sklearn.base import BaseEstimator
 import libpysal as lp
+from random import choices
 
 
 class LOSH(BaseEstimator):
@@ -96,6 +97,16 @@ class LOSH(BaseEstimator):
                 dof = 2/self.VarHi
                 Zi = (2*self.Hi)/self.VarHi
                 self.pval = 1 - stats.chi2.cdf(Zi, dof)
+        elif self.inference == "bootstrap":
+            m = 10
+            Hi_star = self._statistic_bootstrap(y,w,a, m)
+            temp = []
+            for i in range(m):
+                if(Hi_star[i]>self.Hi):
+                    temp.append(1)
+                pass
+            self.pval = len(set(temp))/m
+
         else:
             raise NotImplementedError(f'The requested inference method \
             ({self.inference}) is not currently supported!')
@@ -132,3 +143,19 @@ class LOSH(BaseEstimator):
                 ((n*squared_rowsum) - (rowsum**2))
 
         return (Hi, ylag, yresid, VarHi)
+    def _statistic_bootstrap(y,w,a,m):
+        hi_star = []
+        for _ in range(m):
+            y_sample =  choices(y, k=len(y))
+            if a is None:
+                a = 2
+            else:
+                a = a
+            rowsum = np.array(w.sparse.sum(axis=1)).flatten()
+            ylag = lp.weights.lag_spatial(w, y_sample)/rowsum
+            yresid = abs(y_sample-ylag)**a
+            denom = np.mean(yresid) * np.array(rowsum)
+            Hi = lp.weights.lag_spatial(w, yresid) / denom
+            hi_star.append(Hi)
+        return hi_star
+        
