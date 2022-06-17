@@ -4,6 +4,7 @@ from scipy import sparse
 from scipy import stats
 from sklearn.base import BaseEstimator
 import libpysal as lp
+from random import choices
 
 
 class LOSH(BaseEstimator):
@@ -20,7 +21,7 @@ class LOSH(BaseEstimator):
                            relationships between observed units.
         inference        : str
                            describes type of inference to be used. options are
-                           "chi-square" or "permutation" methods.
+                           "chi-square" or "permutation" or "bootstrap" methods.
 
         Attributes
         ----------
@@ -88,17 +89,31 @@ class LOSH(BaseEstimator):
 
         if self.inference is None:
             return self
-        elif self.inference == 'chi-square':
+        elif self.inference == "chi-square":
             if a != 2:
-                warnings.warn(f'Chi-square inference assumes that a=2, but \
-                a={a}. This means the inference will be invalid!')
+                warnings.warn(
+                    f"Chi-square inference assumes that a=2, but \
+                a={a}. This means the inference will be invalid!"
+                )
             else:
-                dof = 2/self.VarHi
-                Zi = (2*self.Hi)/self.VarHi
+                dof = 2 / self.VarHi
+                Zi = (2 * self.Hi) / self.VarHi
                 self.pval = 1 - stats.chi2.cdf(Zi, dof)
+        elif self.inference == "bootstrap":
+            m = 10
+            Hi_star = self._statistic_bootstrap(y, w, a, m)
+            temp = []
+            for i in range(m):
+                if Hi_star[i] > self.Hi:
+                    temp.append(1)
+                pass
+            self.pval = len(set(temp)) / m
+
         else:
-            raise NotImplementedError(f'The requested inference method \
-            ({self.inference}) is not currently supported!')
+            raise NotImplementedError(
+                f"The requested inference method \
+            ({self.inference}) is not currently supported!"
+            )
 
         return self
 
@@ -113,9 +128,9 @@ class LOSH(BaseEstimator):
         rowsum = np.array(w.sparse.sum(axis=1)).flatten()
 
         # Calculate spatial mean
-        ylag = lp.weights.lag_spatial(w, y)/rowsum
+        ylag = lp.weights.lag_spatial(w, y) / rowsum
         # Calculate and adjust residuals based on multiplier
-        yresid = abs(y-ylag)**a
+        yresid = abs(y - ylag) ** a
         # Calculate denominator of Hi equation
         denom = np.mean(yresid) * np.array(rowsum)
         # Carry out final Hi calculation
@@ -126,9 +141,27 @@ class LOSH(BaseEstimator):
         n = len(y)
         squared_rowsum = np.asarray(w.sparse.multiply(w.sparse).sum(axis=1)).flatten()
 
-        VarHi = ((n-1)**-1) * \
-                (denom**-2) * \
-                ((np.sum(yresid**2)/n) - yresid_mean**2) * \
-                ((n*squared_rowsum) - (rowsum**2))
+        VarHi = (
+            ((n - 1) ** -1)
+            * (denom**-2)
+            * ((np.sum(yresid**2) / n) - yresid_mean**2)
+            * ((n * squared_rowsum) - (rowsum**2))
+        )
 
         return (Hi, ylag, yresid, VarHi)
+
+    def _statistic_bootstrap(y, w, a, m):
+        hi_star = []
+        for _ in range(m):
+            y_sample = choices(y, k=len(y))
+            if a is None:
+                a = 2
+            else:
+                a = a
+            rowsum = np.array(w.sparse.sum(axis=1)).flatten()
+            ylag = lp.weights.lag_spatial(w, y_sample) / rowsum
+            yresid = abs(y_sample - ylag) ** a
+            denom = np.mean(yresid) * np.array(rowsum)
+            Hi = lp.weights.lag_spatial(w, yresid) / denom
+            hi_star.append(Hi)
+        return hi_star
