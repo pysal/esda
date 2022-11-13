@@ -1,0 +1,20 @@
+name: test
+channels:
+  - conda-forge
+  - conda-forge/label/shapely_dev
+dependencies:
+  - python=3.10
+  # required
+  - numba
+  - pandas>=1.0
+  - scikit-learn
+  - scipy>=1.0
+  # testing
+  - codecov
+  - matplotlib
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  # optional
+  - geopandas>=0.12.0
+  - shapely>=2.0b1

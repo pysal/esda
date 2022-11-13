@@ -19,7 +19,7 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [ci/39-numba.yaml]
+         environment-file: [ci/310-numba.yaml]
          experimental: [false]
      defaults:
        run:
