@@ -9,5 +9,5 @@ dependencies:
   - matplotlib
   - numba
   - pandas
-  - scikit-learns<1.1
+  - scikit-learn<1.1
   - scipy>=0.11
