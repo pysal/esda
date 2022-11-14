@@ -1,4 +1,4 @@
 libpysal
 pandas
-scikit-learn<1.1
+scikit-learn
 scipy>=0.11
