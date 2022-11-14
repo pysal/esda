@@ -1,10 +1,10 @@
 name: test
 channels:
   - conda-forge
+  - conda-forge/label/shapely_dev
 dependencies:
-  - python=3.9
+  - python=3.10
   # required
-  - libpysal
   - numba
   - pandas>=1.0
   - scikit-learn
@@ -16,5 +16,5 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas>=0.7.0
-  - pygeos>=0.10
+  - geopandas>=0.12.0
+  - shapely>=2.0b1

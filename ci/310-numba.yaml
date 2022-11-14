@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
+  - python=3.10
   # required
   - libpysal
   - numba
@@ -18,3 +18,10 @@ dependencies:
   # optional
   - geopandas>=0.7.0
   - pygeos>=0.10
+  # doc build
+  - nbsphinx
+  - numpydoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinxcontrib-napoleon
+  - sphinx_bootstrap_theme

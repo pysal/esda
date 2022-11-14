@@ -4,21 +4,17 @@ channels:
 dependencies:
   - python=3.8
   # required
-  - scipy
-  - pandas
   - libpysal
-  - scikit-learn
   - numba
+  - pandas>=1.0
+  - scikit-learn
+  - scipy>=1.0
   # testing
-  - pytest
-  - pytest-cov
   - codecov
   - matplotlib
+  - pytest
+  - pytest-cov
+  - pytest-xdist
   # optional
-  - geopandas
+  - geopandas>=0.7.0
   - pygeos>=0.10
-  - sphinx>=1.4.3
-  - sphinxcontrib-bibtex==1.0.0
-  - sphinx_bootstrap_theme
-  - numpydoc
-  - nbsphinx
