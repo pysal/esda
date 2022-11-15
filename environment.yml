@@ -3,11 +3,11 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - scipy>=0.11
-  - pandas
-  - libpysal
-  - scikit-learn
-  - mapclassify
   - geopandas
-  - numba
+  - libpysal
+  - mapclassify
   - matplotlib
+  - numba
+  - pandas
+  - scikit-learn
+  - scipy>=0.11
