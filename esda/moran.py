@@ -889,6 +889,10 @@ class Moran_Local(object):
         value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
         will propagate to the final local statistic depending on the `stat_func`. If 0, then
         the lag is always zero for islands.
+    alternative: {"two-tailed", "one-tailed"}
+        default="two-tailed") 
+        "two-tailed"  test for the possibility of the relationship in both directions
+        "one-tailed"  to detect an effect in one direction by not testing the effect in the other direction
 
     Attributes
     ----------
@@ -1005,6 +1009,7 @@ class Moran_Local(object):
         keep_simulations=True,
         seed=None,
         island_weight=0,
+        alternative = "two-tailed"
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1063,6 +1068,12 @@ class Moran_Local(object):
                 self.VI_sim = np.nan
                 self.z_sim = np.nan
                 self.p_z_sim = np.nan
+            if alternative=="one-tailed":
+                self.p_z_sim= self.p_z_sim*2
+                folded_replicates = np.abs(self.rlisas - np.median(self.rlisas, axis=1, keepdims=True))
+                self.p_sim = (folded_replicates >= np.abs(self.Is[:,None])).mean(axis=1)
+
+
 
     def __calc(self, w, z):
         zl = slag(w, z)
@@ -1575,6 +1586,7 @@ class Moran_Local_Rate(Moran_Local):
         keep_simulations=True,
         seed=None,
         island_weight=0,
+        alternative="two-tailed"
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1592,6 +1604,7 @@ class Moran_Local_Rate(Moran_Local):
             n_jobs=n_jobs,
             keep_simulations=keep_simulations,
             seed=seed,
+            alternative=alternative
         )
 
     @classmethod

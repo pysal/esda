@@ -118,6 +118,19 @@ class Moran_Local_Tester(unittest.TestCase):
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
         self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
 
+    def test_Moran_Local_two_tailed(self):
+        lm = moran.Moran_Local(
+            self.y,
+            self.w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+            alternative="two-tailed"
+        )
+        self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+
     def test_Moran_Local_parallel(self):
         lm = moran.Moran_Local(
             self.y,
@@ -130,6 +143,47 @@ class Moran_Local_Tester(unittest.TestCase):
         )
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
         self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+
+    def test_Moran_Local_two_tailed_parallel(self):
+        lm = moran.Moran_Local(
+            self.y,
+            self.w,
+            transformation="r",
+            n_jobs=-1,
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+            alternative="two-tailed"
+        )
+        self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+    
+    def test_Moran_Local_one_tailed(self):
+        lm = moran.Moran_Local(
+            self.y,
+            self.w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+            alternative="one-tailed",
+        )
+        self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.4845338350758279)
+
+    def test_Moran_Local_one_tailed_parallel(self):
+        lm = moran.Moran_Local(
+            self.y,
+            self.w,
+            transformation="r",
+            n_jobs=-1,
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+            alternative="one-tailed"
+        )
+        self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
+        self.assertAlmostEqual(lm.p_z_sim[0], 0.4845338350758279)
 
 
     @unittest.skip("This function is being deprecated in the next release.")
