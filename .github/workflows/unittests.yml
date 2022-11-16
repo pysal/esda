@@ -11,7 +11,7 @@
  jobs:
    unittests:
      env:
-       FETCH_DATA: python -c 'import libpysal; libpysal.examples.fetch_all()'
+       FETCH_DATA: python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "sids2", "stl"]]'
        RUN_TEST: pytest esda -v -r a -n auto --cov esda --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
      name: CI (${{ matrix.os }}, ${{ matrix.environment-file }})
      runs-on: ${{ matrix.os }}
