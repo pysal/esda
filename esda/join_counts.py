@@ -4,18 +4,12 @@ Spatial autocorrelation for binary attributes
 """
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
-from libpysal.weights.spatial_lag import lag_spatial
-from .tabular import _univariate_handler
-from scipy.stats import chi2_contingency
-from scipy.stats import chi2
 import numpy as np
 import pandas as pd
-from .crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate,
-    _prepare_bivariate,
-)
+from scipy.stats import chi2, chi2_contingency
+
+from .crand import njit as _njit
+from .tabular import _univariate_handler
 
 __all__ = ["Join_Counts"]
 
@@ -258,32 +252,33 @@ class Join_Counts(object):
 
         Parameters
         ----------
-        df          :   pandas.DataFrame
-                        a pandas dataframe with a geometry column
-        cols        :   string or list of string
-                        name or list of names of columns to use to compute the statistic
-        w           :   pysal weights object
-                        a weights object aligned with the dataframe. If not provided, this
-                        is searched for in the dataframe's metadata
-        inplace     :   bool
-                        a boolean denoting whether to operate on the dataframe inplace or to
-                        return a series contaning the results of the computation. If
-                        operating inplace, the derived columns will be named
-                        'column_join_count'
-        pvalue      :   string
-                        a string denoting which pvalue should be returned. Refer to the
-                        the Join_Count statistic's documentation for available p-values
-        outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the
-                        Join_Count statistic
-        **stat_kws  :   keyword arguments
-                        options to pass to the underlying statistic. For this, see the
-                        documentation for the Join_Count statistic.
+        df : pandas.DataFrame
+            a pandas dataframe with a geometry column
+        cols : string or list of string
+            name or list of names of columns to use to compute the statistic
+        w : pysal weights object
+            a weights object aligned with the dataframe. If not provided, this
+            is searched for in the dataframe's metadata
+        inplace : bool
+            a boolean denoting whether to operate on the dataframe inplace or to
+            return a series contaning the results of the computation. If
+            operating inplace, the derived columns will be named
+            'column_join_count'
+        pvalue : string
+            a string denoting which pvalue should be returned. Refer to the
+            the Join_Count statistic's documentation for available p-values
+        outvals : list of strings
+            list of arbitrary attributes to return as columns from the
+            Join_Count statistic
+        **stat_k : dict
+            options to pass to the underlying statistic. For this, see the
+            documentation for the Join_Count statistic.
 
         Returns
         --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
+        If inplace, None, and operation is conducted on
+        dataframe in memory. Otherwise, returns a copy of the
+        dataframe with the relevant columns attached.
 
         """
         if outvals is None:

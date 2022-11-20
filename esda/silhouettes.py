@@ -1,26 +1,28 @@
+import warnings
+
 import numpy as np
-from scipy.sparse import csgraph as cg
 from scipy import sparse as sp
+from scipy.sparse import csgraph as cg
 
 try:
+    import pandas as pd
     import sklearn.metrics as sk
     import sklearn.metrics.pairwise as skp
-    from sklearn.preprocessing import LabelEncoder
-    import pandas as pd
+    from sklearn.preprocessing import LabelEncoder  # noqa F401
 
     HAS_REQUIREMENTS = True
-except ImportError as e:
+except ImportError:
     HAS_REQUIREMENTS = False
 
 
 def _raise_initial_error():
     missing = []
     try:
-        import sklearn
+        import sklearn  # noqa F401
     except ImportError:
         missing.append("scikit-learn")
     try:
-        import pandas
+        import pandas  # noqa F401
     except ImportError:
         missing.append("pandas")
     raise ImportError(
@@ -50,7 +52,8 @@ def path_silhouette(
     directed=False,
 ):
     """
-    Compute a path silhouette for all observations  :cite:`wolf2019geosilhouettes,Rousseeuw1987`.
+    Compute a path silhouette for all observations
+    :cite:`wolf2019geosilhouettes,Rousseeuw1987`.
 
 
     Parameters
@@ -250,7 +253,8 @@ def path_silhouette(
 
 def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     """
-    Compute the observation-level boundary silhouette score :cite:`wolf2019geosilhouettes`.
+    Compute the observation-level boundary silhouette
+    score :cite:`wolf2019geosilhouettes`.
 
     Parameters
     ----------
@@ -280,8 +284,8 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     So, instead of considering *all* clusters when finding the next-best-fit cluster,
     only clusters that `i` borders are considered.
     This is supposed to model the fact that, in spatially-constrained clustering,
-    observation i can only be reassigned from cluster c to cluster k if some observation
-    j neighbors i and also resides in k.
+    observation i can only be reassigned from cluster c to cluster k if
+    some observation j neighbors i and also resides in k.
 
     If an observation only neighbors its own cluster, i.e. is not on the boundary
      of a cluster, this value is zero.
@@ -383,7 +387,10 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
     containing `focal` id, `neighbor` id, and `label_focal`, and `label_neighbor`,
     this computes:
 
-    `d(i,label_neighbor) - d(i,label_focal) / (max(d(i,label_neighbor), d(i,label_focal)))`
+    .. math::
+
+        d(i,label_neighbor) - d(i,label_focal)
+        / (max(d(i,label_neighbor), d(i,label_focal)))
 
     Parameters
     ----------
@@ -465,17 +472,17 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
         neighbor_mask = np.nonzero(neighbor_mask.values)[0]
         if len(neighbor_mask) == 0:
             sils.append(0)
-            warn(
-                "A link ({},{}) has been found to have an empty set of neighbors. "
-                " This may happen when a label assignment is missing for the neighbor unit."
-                " Check that no labels are missing.".format(row.focal, row.neighbor)
+            warnings.warn(
+                f"A link ({row.focal},{row.neighbor}) has been found to have "
+                "an empty set of neighbors. This may happen when a label "
+                "assignment is missing for the neighbor unit. "
+                "Check that no labels are missing."
             )
             continue
         outer_distance = full_distances[i_Xc, neighbor_mask].mean()
-        sils.append(
-            (outer_distance - within_cluster)
-            / np.maximum(outer_distance, within_cluster)
-        )
+        dist_diff = outer_distance - within_cluster
+        dist_max = np.maximum(outer_distance, within_cluster)
+        sils.append(dist_diff / dist_max)
     result["silhouette"] = sils
     return result.sort_values("focal").reset_index(drop=True)
 
@@ -492,22 +499,22 @@ def nearest_label(
     Parameters
     ----------
     data : (N,P) array to cluster on or DataFrame indexed on the same values as
-           that in alist.focal/alist.neighbor
-    labels: (N,) array containing classifications, indexed on the same values
-                 as that in alist.focal/alist.neighbor
-    metric  :   callable, array,
-                a function that takes an argument (data) and returns the all-pairs
-                distances/dissimilarity between observations.
+        that in alist.focal/alist.neighbor
+    labels : (N,) array containing classifications, indexed on the same values
+        as that in alist.focal/alist.neighbor
+    metric : callable, array,
+        a function that takes an argument (data) and returns the all-pairs
+        distances/dissimilarity between observations.
     return_distance: bool
-                     Whether to return the distance from the observation to its nearest
-                     cluster in feature space. If True, the tuple of (nearest_label, dissim)
-                     is returned. If False, only the nearest_label array is returned.
+        Whether to return the distance from the observation to its nearest
+        cluster in feature space. If True, the tuple of (nearest_label, dissim)
+        is returned. If False, only the nearest_label array is returned.
     keep_self:  bool
-                whether to allow observations to use their current cluster as their
-                nearest label. If True, an observation's existing cluster assignment can
-                also be the cluster it is closest to. If False, an observation's existing
-                cluster assignment cannot be the cluster it is closest to. This would mean
-                the function computes the nearest *alternative* cluster.
+        whether to allow observations to use their current cluster as their
+        nearest label. If True, an observation's existing cluster assignment can
+        also be the cluster it is closest to. If False, an observation's existing
+        cluster assignment cannot be the cluster it is closest to. This would mean
+        the function computes the nearest *alternative* cluster.
 
     Returns
     -------
@@ -539,7 +546,6 @@ def nearest_label(
     nearest_label_dissim = np.empty(labels.shape)
     for label in unique_labels:
         this_label_mask = labels == label
-        n_in_label = this_label_mask.sum()
         this_label_mask = np.nonzero(this_label_mask)[0]
         next_best_fit = np.ones(this_label_mask.shape) * np.inf
         next_best_label = np.empty(this_label_mask.shape, dtype=labels.dtype)

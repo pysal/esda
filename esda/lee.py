@@ -1,14 +1,10 @@
 import numpy
 from scipy import sparse
+from sklearn import preprocessing, utils
 from sklearn.base import BaseEstimator
-from sklearn import preprocessing
-from sklearn import utils
-from .crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate,
-    _prepare_bivariate,
-)
+
+from .crand import _prepare_bivariate
+from .crand import njit as _njit
 
 
 class Spatial_Pearson(BaseEstimator):
@@ -49,7 +45,7 @@ class Spatial_Pearson(BaseEstimator):
         """
         bivariate spatial pearson's R based on Eq. 18 of :cite:`Lee2001`.
 
-        L = \dfrac{Z^T (V^TV) Z}{1^T (V^TV) 1}
+        L = \\dfrac{Z^T (V^TV) Z}{1^T (V^TV) 1}
 
         Parameters
         ----------
@@ -78,10 +74,6 @@ class Spatial_Pearson(BaseEstimator):
         if self.connectivity is None:
             self.connectivity = sparse.eye(Z.shape[0])
         self.association_ = self._statistic(Z, self.connectivity)
-
-        standard_connectivity = sparse.csc_matrix(
-            self.connectivity / self.connectivity.sum(axis=1)
-        )
 
         if self.permutations is None:
             return self
@@ -154,22 +146,24 @@ class Spatial_Pearson_Local(BaseEstimator):
         bivariate local pearson's R based on Eq. 22 in Lee (2001), using
         site-wise conditional randomization from Moran_Local_BV.
 
-        L_i = \dfrac{
-                     n \cdot
-                       \Big[\big(\sum_i w_{ij}(x_j - \bar{x})\big)
-                            \big(\sum_i w_{ij}(y_j - \bar{y})\big) \Big]
-                     }
-                    {
-                     \sqrt{\sum_i (x_i - \bar{x})^2}
-                     \sqrt{\sum_i (y_i - \bar{y})^2}}
-            = \dfrac{
-                     n \cdot
-                       (\tilde{x}_j - \bar{x})
-                       (\tilde{y}_j - \bar{y})
-                     }
-                    {
-                     \sqrt{\sum_i (x_i - \bar{x})^2}
-                     \sqrt{\sum_i (y_i - \bar{y})^2}}
+        .. math::
+
+            L_i = \\dfrac{
+                         n \\cdot
+                           \\Big[\big(\\sum_i w_{ij}(x_j - \bar{x})\big)
+                                 \big(\\sum_i w_{ij}(y_j - \bar{y})\big) \\Big]
+                         }
+                        {
+                         \\sqrt{\\sum_i (x_i - \bar{x})^2}
+                         \\sqrt{\\sum_i (y_i - \bar{y})^2}}
+                = \\dfrac{
+                         n \\cdot
+                           (\tilde{x}_j - \bar{x})
+                           (\tilde{y}_j - \bar{y})
+                         }
+                        {
+                         \\sqrt{\\sum_i (x_i - \bar{x})^2}
+                         \\sqrt{\\sum_i (y_i - \bar{y})^2}}
 
         Lee, Sang Il. (2001), "Developing a bivariate spatial
         association measure: An integration of Pearson's r and
@@ -207,7 +201,7 @@ class Spatial_Pearson_Local(BaseEstimator):
             max_neighbors = (standard_connectivity != 0).sum(axis=1).max()
             random_ids = numpy.array(
                 [
-                    numpy.random.permutation(n - 1)[0 : max_neighbors + 1]
+                    numpy.random.permutation(n - 1)[0 : max_neighbors + 1]  # noqa 208
                     for i in range(self.permutations)
                 ]
             )

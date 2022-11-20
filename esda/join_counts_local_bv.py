@@ -1,16 +1,11 @@
 import numpy as np
 import pandas as pd
-import warnings
-from scipy import sparse
-from sklearn.base import BaseEstimator
 from libpysal import weights
-from esda.crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate,
-    _prepare_bivariate,
-)
+from sklearn.base import BaseEstimator
 
+from esda.crand import _prepare_bivariate, _prepare_univariate
+from esda.crand import crand as _crand_plus
+from esda.crand import njit as _njit
 
 PERMUTATIONS = 999
 
@@ -33,30 +28,28 @@ class Join_Counts_Local_BV(BaseEstimator):
 
         Parameters
         ----------
-        connectivity     : scipy.sparse matrix object
-                           the connectivity structure describing
-                           the relationships between observed units.
-                           Need not be row-standardized.
-        permutations     : int
-                           number of random permutations for calculation of pseudo
-                           p_values
-        n_jobs           : int
-                           Number of cores to be used in the conditional randomisation. If -1,
-                           all available cores are used.
-        keep_simulations : Boolean
-                           (default=True)
-                           If True, the entire matrix of replications under the null
-                           is stored in memory and accessible; otherwise, replications
-                           are not saved
-        seed             : None/int
-                           Seed to ensure reproducibility of conditional randomizations.
-                           Must be set here, and not outside of the function, since numba
-                           does not correctly interpret external seeds
-                           nor numpy.random.RandomState instances.
+        connectivity : scipy.sparse matrix object
+            the connectivity structure describing
+            the relationships between observed units.
+            Need not be row-standardized.
+        permutations : int
+            number of random permutations for calculation of pseudo p_values
+        n_jobs : int
+            Number of cores to be used in the conditional randomisation.
+            If -1, all available cores are used.
+        keep_simulations : bool (default True)
+            If True, the entire matrix of replications under the null
+            is stored in memory and accessible; otherwise, replications
+            are not saved
+        seed : None/int
+            Seed to ensure reproducibility of conditional randomizations.
+            Must be set here, and not outside of the function, since numba
+            does not correctly interpret external seeds
+            nor numpy.random.RandomState instances.
         island_weight:
-            value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
-            will propagate to the final local statistic depending on the `stat_func`. If 0, then
-            the lag is always zero for islands.
+            value to use as a weight for the "fake" neighbor for every island.
+            If numpy.nan, will propagate to the final local statistic depending
+            on the `stat_func`. If 0, then the lag is always zero for islands.
         """
 
         self.connectivity = connectivity
@@ -99,9 +92,14 @@ class Join_Counts_Local_BV(BaseEstimator):
         Commpop data replicating GeoDa tutorial (Case 1)
         >>> import libpysal
         >>> import geopandas as gpd
-        >>> commpop = gpd.read_file("https://github.com/jeffcsauer/GSOC2020/raw/master/validation/data/commpop.gpkg")
+        >>> commpop = gpd.read_file(
+        ...     "https://github.com/jeffcsauer/GSOC2020/raw/master/"
+        ...     "validation/data/commpop.gpkg"
+        ... )
         >>> w = libpysal.weights.Queen.from_dataframe(commpop)
-        >>> LJC_BV_Case1 = Local_Join_Counts_BV(connectivity=w).fit(commpop['popneg'], commpop['popplus'], case='BJC')
+        >>> LJC_BV_Case1 = Local_Join_Counts_BV(
+        ...     connectivity=w
+        ... ).fit(commpop['popneg'], commpop['popplus'], case='BJC')
         >>> LJC_BV_Case1.LJC
         >>> LJC_BV_Case1.p_sim
 
@@ -115,12 +113,13 @@ class Join_Counts_Local_BV(BaseEstimator):
         >>> guerry_ds.loc[(guerry_ds['Infants'] > 23574), 'infq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10973), 'donq5'] = 1
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_BV_Case2 = Local_Join_Counts_BV(connectivity=w).fit(guerry_ds['infq5'], guerry_ds['donq5'], case='CLC')
+        >>> LJC_BV_Case2 = Local_Join_Counts_BV(
+        ...     connectivity=w
+        ... ).fit(guerry_ds['infq5'], guerry_ds['donq5'], case='CLC')
         >>> LJC_BV_Case2.LJC
         >>> LJC_BV_Case2.p_sim
         """
-        # Need to ensure that the np.array() are of
-        # dtype='float' for numba
+        # Need to ensure that the np.array() are of dtype='float' for numba
         x = np.array(x, dtype="float")
         z = np.array(z, dtype="float")
 
@@ -135,9 +134,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         self.w = w
         self.case = case
 
-        keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
-        seed = self.seed
 
         self.LJC = self._statistic(x, z, w, case=case)
 
@@ -182,8 +179,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         # different from the esda.Join_Counts() function.
         adj_list = w.to_adjlist(remove_symmetric=False)
 
-        # First, set up a series that maps the values
-        # to the weights table
+        # First, set up a series that maps the values to the weights table
         zseries_x = pd.Series(x, index=w.id_order)
         zseries_z = pd.Series(z, index=w.id_order)
 
@@ -233,7 +229,6 @@ class Join_Counts_Local_BV(BaseEstimator):
 def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
     zx = z[:, 0]
     zy = z[:, 1]
-    self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zyi, zyrand = _prepare_univariate(i, zy, permuted_ids, other_weights)
     return zx[i] * (zyrand @ other_weights)
@@ -241,9 +236,7 @@ def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
 
 @_njit(fastmath=True)
 def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):
-    zx = z[:, 0]
     zy = z[:, 1]
-    self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, other_weights)
     zf = zxrand * zyrand

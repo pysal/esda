@@ -15,7 +15,8 @@ def _cast(collection):
     Cast a collection to a pygeos geometry array.
     """
     try:
-        import pygeos, geopandas
+        import geopandas
+        import pygeos
     except (ImportError, ModuleNotFoundError) as exception:
         raise type(exception)("pygeos and geopandas are required for shape statistics.")
 
@@ -66,7 +67,6 @@ def get_angles(collection, return_indices=False):
     exploded = pygeos.get_parts(ga)
     coords = pygeos.get_coordinates(exploded)
     n_coords_per_geom = pygeos.get_num_coordinates(exploded)
-    n_parts_per_geom = pygeos.get_num_geometries(exploded)
     angles = numpy.asarray(_get_angles(coords, n_coords_per_geom))
     if return_indices:
         return angles, numpy.repeat(
@@ -85,11 +85,9 @@ def _get_angles(points, n_coords_per_geom):
     """
     # Start at the first point of the first geometry
     offset = int(0)
-    start = points[0]
     on_geom = 0
     on_coord = 0
     result = []
-    n_points = len(points)
     while True:
         # if we're on the last point before the closure point,
         if on_coord == (n_coords_per_geom[on_geom] - 1):
@@ -125,7 +123,7 @@ def _get_angles(points, n_coords_per_geom):
 
 
 def isoperimetric_quotient(collection):
-    """
+    r"""
     The Isoperimetric quotient, defined as the ratio of a polygon's area to the
     area of the equi-perimeter circle.
 
@@ -206,7 +204,7 @@ def diameter_ratio(collection, rotated=True):
     if rotated:
         box = pygeos.minimum_rotated_rectangle(ga)
         coords = pygeos.get_coordinates(box)
-        a, b, c, d = (coords[0::5], coords[1::5], coords[2::5], coords[3::5])
+        a, b, _, d = (coords[0::5], coords[1::5], coords[2::5], coords[3::5])
         widths = numpy.sqrt(numpy.sum((a - b) ** 2, axis=1))
         heights = numpy.sqrt(numpy.sum((a - d) ** 2, axis=1))
     else:
@@ -264,9 +262,12 @@ def convex_hull_ratio(collection):
 
 def fractal_dimension(collection, support="hex"):
     """
-    The fractal dimension of the boundary of a shape, assuming a given spatial support for the geometries.
+    The fractal dimension of the boundary of a shape, assuming a given
+    spatial support for the geometries.
 
-    Note that this derivation assumes a specific ideal spatial support for the polygon, and is thus may not return valid results for complex or highly irregular geometries.
+    Note that this derivation assumes a specific ideal spatial support
+    for the polygon, and is thus may not return valid results for
+    complex or highly irregular geometries.
     """
     ga = _cast(collection)
     P = pygeos.measurement.length(ga)
@@ -279,7 +280,8 @@ def fractal_dimension(collection, support="hex"):
         return 2 * numpy.log(P / (2 * numpy.pi)) / numpy.log(A / numpy.pi)
     else:
         raise ValueError(
-            f"The support argument must be one of 'hex', 'circle', or 'square', but {support} was provided."
+            "The support argument must be one of 'hex', 'circle', or 'square', "
+            f"but {support} was provided."
         )
 
 
@@ -315,14 +317,16 @@ def squareness(collection):
 
 def rectangularity(collection):
     """
-    Ratio of the area of the shape to the area of its minimum bounding rotated rectangle
+    Ratio of the area of the shape to the area
+    of its minimum bounding rotated rectangle
 
     Reveals a polygon’s degree of being curved inward.
 
     .. math::
         \\frac{A}{A_{MBR}}
 
-    where :math:`A` is the area and :math:`A_{MBR}` is the area of minimum bounding
+    where :math:`A` is the area and :math:`A_{MBR}`
+    is the area of minimum bounding
     rotated rectangle.
 
     Notes
@@ -414,7 +418,8 @@ def moment_of_inertia(collection):
     Thus, for constant unit mass at each boundary point,
     the MoI of this pointcloud is
 
-    \sum_i d_{i,c}^2
+    .. math::
+        \\sum_i d_{i,c}^2
 
     where c is the centroid of the polygon
 
@@ -441,7 +446,7 @@ def moa_ratio(collection):
     """
     ga = _cast(collection)
     r = pygeos.measurement.length(ga) / (2 * numpy.pi)
-    return (numpy.pi * 0.5 * r ** 4) / second_areal_moment(ga)
+    return (numpy.pi * 0.5 * r**4) / second_areal_moment(ga)
 
 
 def nmi(collection):
@@ -460,8 +465,9 @@ def second_areal_moment(collection):
     moment of area is actually the cross-moment of area between the X and Y
     dimensions:
 
-    I_xy = (1/24)\sum^{i=N}^{i=1} (x_iy_{i+1} + 2*x_iy_i + 2*x_{i+1}y_{i+1} +
-    x_{i+1}y_i)(x_iy_i - x_{i+1}y_i)
+    .. math::
+        I_xy = (1/24)\\sum^{i=N}^{i=1} (x_iy_{i+1} + 2*x_iy_i + 2*x_{i+1}y_{i+1} +
+        x_{i+1}y_i)(x_iy_i - x_{i+1}y_i)
 
     where x_i, y_i is the current point and x_{i+1}, y_{i+1} is the next point,
     and where x_{n+1} = x_1, y_{n+1} = 1.
@@ -483,7 +489,6 @@ def second_areal_moment(collection):
         for hole_ix in range(n_holes):
             hole = pygeos.get_coordinates(pygeos.get_interior_ring(ga, hole_ix))
             result[i] -= _second_moa_ring(hole)
-        n_parts = pygeos.get_num_geometries(geometry)
         for part in pygeos.get_parts(geometry):
             result[i] += _second_moa_ring(pygeos.get_coordinates(part))
     # must divide everything by 24 and flip if polygon is clockwise.
@@ -500,12 +505,11 @@ def _second_moa_ring(points):
     for i in prange(len(points[:-1])):
         x_tail, y_tail = points[i]
         x_head, y_head = points[i + 1]
-        moi += (x_tail * y_head - x_head * y_tail) * (
-            x_tail * y_head
-            + 2 * x_tail * y_tail
-            + 2 * x_head * y_head
-            + x_head * y_tail
-        )
+        xtyh = x_tail * y_head
+        xhyt = x_head * y_tail
+        xtyt = x_tail * y_tail
+        xhyh = x_head * y_head
+        moi += (xtyh - xhyt) * (xtyh + 2 * xtyt + 2 * xhyh + xhyt)
     return moi
 
 

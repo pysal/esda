@@ -1,9 +1,9 @@
-import numpy as np
 import warnings
-from scipy import sparse
+
+import libpysal as lp
+import numpy as np
 from scipy import stats
 from sklearn.base import BaseEstimator
-import libpysal as lp
 
 
 class LOSH(BaseEstimator):
@@ -88,17 +88,21 @@ class LOSH(BaseEstimator):
 
         if self.inference is None:
             return self
-        elif self.inference == 'chi-square':
+        elif self.inference == "chi-square":
             if a != 2:
-                warnings.warn(f'Chi-square inference assumes that a=2, but \
-                a={a}. This means the inference will be invalid!')
+                warnings.warn(
+                    f"Chi-square inference assumes that a=2, but \
+                a={a}. This means the inference will be invalid!"
+                )
             else:
-                dof = 2/self.VarHi
-                Zi = (2*self.Hi)/self.VarHi
+                dof = 2 / self.VarHi
+                Zi = (2 * self.Hi) / self.VarHi
                 self.pval = 1 - stats.chi2.cdf(Zi, dof)
         else:
-            raise NotImplementedError(f'The requested inference method \
-            ({self.inference}) is not currently supported!')
+            raise NotImplementedError(
+                f"The requested inference method \
+            ({self.inference}) is not currently supported!"
+            )
 
         return self
 
@@ -113,22 +117,23 @@ class LOSH(BaseEstimator):
         rowsum = np.array(w.sparse.sum(axis=1)).flatten()
 
         # Calculate spatial mean
-        ylag = lp.weights.lag_spatial(w, y)/rowsum
+        ylag = lp.weights.lag_spatial(w, y) / rowsum
         # Calculate and adjust residuals based on multiplier
-        yresid = abs(y-ylag)**a
+        yresid = abs(y - ylag) ** a
         # Calculate denominator of Hi equation
         denom = np.mean(yresid) * np.array(rowsum)
         # Carry out final Hi calculation
         Hi = lp.weights.lag_spatial(w, yresid) / denom
         # Calculate average of residuals
         yresid_mean = np.mean(yresid)
+
         # Calculate VarHi
         n = len(y)
         squared_rowsum = np.asarray(w.sparse.multiply(w.sparse).sum(axis=1)).flatten()
-
-        VarHi = ((n-1)**-1) * \
-                (denom**-2) * \
-                ((np.sum(yresid**2)/n) - yresid_mean**2) * \
-                ((n*squared_rowsum) - (rowsum**2))
+        term1 = ((n - 1) ** -1)
+        term2 = (denom**-2)
+        term3 = ((np.sum(yresid**2) / n) - yresid_mean**2)
+        term4 = ((n * squared_rowsum) - (rowsum**2))
+        VarHi = term1 * term2 * term3 * term4
 
         return (Hi, ylag, yresid, VarHi)

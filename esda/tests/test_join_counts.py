@@ -1,14 +1,17 @@
 import unittest
+
 import numpy as np
+from libpysal.common import pandas
+from libpysal.weights.util import lat2W
 
 from ..join_counts import Join_Counts
-from libpysal.weights.util import lat2W
-from libpysal.common import pandas
 
 PANDAS_EXTINCT = pandas is None
 
+
 class Join_Counts_Tester(unittest.TestCase):
     """Unit test for Join Counts"""
+
     def setUp(self):
         self.w = lat2W(4, 4)
         self.y = np.ones(16)
@@ -41,12 +44,15 @@ class Join_Counts_Tester(unittest.TestCase):
         self.assertAlmostEqual(0.001, jc.p_sim_autocorr_pos)
         self.assertAlmostEqual(0.2653504320039377, jc.sim_autocorr_chi2)
 
-    @unittest.skipIf(PANDAS_EXTINCT, 'missing pandas')
+    @unittest.skipIf(PANDAS_EXTINCT, "missing pandas")
     def test_by_col(self):
         import pandas as pd
-        df = pd.DataFrame(self.y, columns=['y'])
+
+        df = pd.DataFrame(self.y, columns=["y"])
         np.random.seed(12345)
-        r1 = Join_Counts.by_col(df, ['y'], w=self.w, permutations=999)  # outvals = ['bb', 'bw', 'ww', 'p_sim_bw', 'p_sim_bb']
+        r1 = Join_Counts.by_col(
+            df, ["y"], w=self.w, permutations=999
+        )  # outvals = ['bb', 'bw', 'ww', 'p_sim_bw', 'p_sim_bb']
 
         bb = np.unique(r1.y_bb.values)
         bw = np.unique(r1.y_bw.values)
@@ -59,12 +65,13 @@ class Join_Counts_Tester(unittest.TestCase):
         self.assertAlmostEqual(bb_p, c.p_sim_bb)
         self.assertAlmostEqual(bw_p, c.p_sim_bw)
 
+
 suite = unittest.TestSuite()
 test_classes = [Join_Counts_Tester]
 for i in test_classes:
     a = unittest.TestLoader().loadTestsFromTestCase(i)
     suite.addTest(a)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner()
     runner.run(suite)

@@ -1,11 +1,11 @@
 import unittest
+
 import libpysal
-from libpysal.common import pandas, RTOL, ATOL
-from .. import moran
 import numpy as np
+from libpysal.common import ATOL, RTOL
 
+from .. import moran
 
-PANDAS_EXTINCT = pandas is None
 SEED = 12345
 
 
@@ -131,7 +131,6 @@ class Moran_Local_Tester(unittest.TestCase):
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
         self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
 
-
     @unittest.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         import pandas as pd
@@ -158,28 +157,58 @@ class Moran_Local_Tester(unittest.TestCase):
             permutations=0,
             seed=SEED,
         )
-        
+
         wikh_fast = moran._wikh_fast(lm.w.sparse)
         wikh_slow = moran._wikh_slow(lm.w.sparse)
-        wikh_fast_c = moran._wikh_fast(lm.w.sparse, sokal_correction=True)
-        wikh_slow_c = moran._wikh_slow(lm.w.sparse, sokal_correction=True)
+        # wikh_fast_c = moran._wikh_fast(lm.w.sparse, sokal_correction=True)
+        # wikh_slow_c = moran._wikh_slow(lm.w.sparse, sokal_correction=True)
 
         np.testing.assert_allclose(wikh_fast, wikh_slow, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(wikh_fast, wikh_slow, rtol=RTOL, atol=ATOL)
-        EIc = np.array([-0.00838113, -0.0243949 , -0.07031778, 
-                           -0.21520869, -0.16547163, -0.00178435, 
-                           -0.11531888, -0.36138555, -0.05471258, -0.09413562])
-        VIc = np.array([0.03636013, 0.10412408, 0.28600769, 
-                           0.26389674, 0.21576683, 0.00779261, 
-                           0.44633942, 0.57696508, 0.12929777, 0.3730742 ])
-        
-        EI = -np.ones((10,))/9
-        VI = np.array([0.47374172, 0.47356458, 0.47209663, 
-                       0.15866023, 0.15972526, 0.47376436, 
-                       0.46927721, 0.24584217, 0.26498308, 0.47077467])
+        EIc = np.array(
+            [
+                -0.00838113,
+                -0.0243949,
+                -0.07031778,
+                -0.21520869,
+                -0.16547163,
+                -0.00178435,
+                -0.11531888,
+                -0.36138555,
+                -0.05471258,
+                -0.09413562,
+            ]
+        )
+        VIc = np.array(
+            [
+                0.03636013,
+                0.10412408,
+                0.28600769,
+                0.26389674,
+                0.21576683,
+                0.00779261,
+                0.44633942,
+                0.57696508,
+                0.12929777,
+                0.3730742,
+            ]
+        )
 
-        
-
+        EI = -np.ones((10,)) / 9
+        VI = np.array(
+            [
+                0.47374172,
+                0.47356458,
+                0.47209663,
+                0.15866023,
+                0.15972526,
+                0.47376436,
+                0.46927721,
+                0.24584217,
+                0.26498308,
+                0.47077467,
+            ]
+        )
 
         np.testing.assert_allclose(lm.EIc, EIc, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lm.VIc, VIc, rtol=RTOL, atol=ATOL)

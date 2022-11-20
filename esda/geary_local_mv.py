@@ -157,15 +157,13 @@ class Geary_Local_MV(BaseEstimator):
             np.random.shuffle(idsi)
             vars_rand = []
             for j in range(nvars):
-                vars_rand.append(zvariables[j][idsi[rids[:, 0 : wc[i]]]])
+                vars_rand.append(zvariables[j][idsi[rids[:, 0 : wc[i]]]])  # noqa E203
             # vars rand as tmp
             # Calculate diff
             diff = []
             for z in range(nvars):
-                diff.append(
-                    (np.array((zvariables[z][i] - vars_rand[z]) ** 2 * w[i])).sum(1)
-                    / nvars
-                )
+                _diff = (np.array((zvariables[z][i] - vars_rand[z]) ** 2 * w[i]))
+                diff.append(_diff.sum(1) / nvars)
             # add up differences
             temp = np.array([sum(x) for x in zip(*diff)])
             # Assign to object to be returned

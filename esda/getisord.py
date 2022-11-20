@@ -5,11 +5,15 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Myunghwa Hwang <mhwang4@gmail.com> "
 __all__ = ["G", "G_Local"]
 
 import warnings
+
 from libpysal.common import np, stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from libpysal.weights.util import fill_diagonal
+
+from .crand import _prepare_univariate
+from .crand import crand as _crand_plus
+from .crand import njit as _njit
 from .tabular import _univariate_handler
-from .crand import njit as _njit, crand as _crand_plus, _prepare_univariate
 
 PERMUTATIONS = 999
 
@@ -29,40 +33,40 @@ class G(object):
 
     Attributes
     ----------
-    y             : array
-                    original variable
-    w             : W
-                    DistanceBand W spatial weights based on distance band
-    permutation   : int
-                    the number of permutations
-    G             : float
-                    the value of statistic
-    EG            : float
-                    the expected value of statistic
-    VG            : float
-                    the variance of G under normality assumption
-    z_norm        : float
-                    standard normal test statistic
-    p_norm        : float
-                    p-value under normality assumption (one-sided)
-    sim           : array
-                    (if permutations > 0)
-                    vector of G values for permutated samples
-    p_sim         : float
-                    p-value based on permutations (one-sided)
-                    null: spatial randomness
-                    alternative: the observed G is extreme it is either extremely high or extremely low
-    EG_sim        : float
-                    average value of G from permutations
-    VG_sim        : float
-                    variance of G from permutations
-    seG_sim       : float
-                    standard deviation of G under permutations.
-    z_sim         : float
-                    standardized G based on permutations
-    p_z_sim       : float
-                    p-value based on standard normal approximation from
-                    permutations (one-sided)
+    y : array
+        original variable
+    w : W
+        DistanceBand W spatial weights based on distance band
+    permutation : int
+        the number of permutations
+    G : float
+        the value of statistic
+    EG : float
+        the expected value of statistic
+    VG : float
+        the variance of G under normality assumption
+    z_norm : float
+        standard normal test statistic
+    p_norm : float
+        p-value under normality assumption (one-sided)
+    sim : array
+        (if permutations > 0)
+        vector of G values for permutated samples
+    p_sim : float
+        p-value based on permutations (one-sided)
+        null: spatial randomness
+        alternative: the observed G is extreme it is either
+        extremely high or extremely low
+    EG_sim : float
+        average value of G from permutations
+    VG_sim : float
+        variance of G from permutations
+    seG_sim : float
+        standard deviation of G under permutations.
+    z_sim : float
+        standardized G based on permutations
+    p_z_sim : float
+        p-value based on standard normal approximation from permutations (one-sided)
 
     Notes
     -----
@@ -134,7 +138,7 @@ class G(object):
             self.p_sim = (larger + 1.0) / (permutations + 1.0)
             self.EG_sim = sum(sim) / permutations
             self.seG_sim = sim.std()
-            self.VG_sim = self.seG_sim ** 2
+            self.VG_sim = self.seG_sim**2
             self.z_sim = (self.G - self.EG_sim) / self.seG_sim
             self.p_z_sim = 1.0 - stats.norm.cdf(np.abs(self.z_sim))
 
@@ -166,7 +170,7 @@ class G(object):
         EG2NUM = EG2
         EG2DEN = ((sum(y) ** 2 - sum(y2)) ** 2) * n * (n - 1) * (n - 2) * (n - 3)
         self.EG2 = EG2NUM / EG2DEN
-        self.VG = self.EG2 - self.EG ** 2
+        self.VG = self.EG2 - self.EG**2
 
     def __calc(self, y):
         yl = slag(self.w, y)
@@ -175,7 +179,7 @@ class G(object):
 
     @property
     def _statistic(self):
-        """ Standardized accessor for esda statistics"""
+        """Standardized accessor for esda statistics"""
         return self.G
 
     @classmethod
@@ -187,31 +191,31 @@ class G(object):
 
         Parameters
         ----------
-        df          :   pandas.DataFrame
-                        a pandas dataframe with a geometry column
-        cols        :   string or list of string
-                        name or list of names of columns to use to compute the statistic
-        w           :   pysal weights object
-                        a weights object aligned with the dataframe. If not provided, this
-                        is searched for in the dataframe's metadata
-        inplace     :   bool
-                        a boolean denoting whether to operate on the dataframe inplace or to
-                        return a series contaning the results of the computation. If
-                        operating inplace, the derived columns will be named 'column_g'
-        pvalue      :   string
-                        a string denoting which pvalue should be returned. Refer to the
-                        the G statistic's documentation for available p-values
-        outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the
-                        G statistic
-        **stat_kws  :   keyword arguments
-                        options to pass to the underlying statistic. For this, see the
-                        documentation for the G statistic.
+        df : pandas.DataFrame
+            a pandas dataframe with a geometry column
+        cols : string or list of string
+            name or list of names of columns to use to compute the statistic
+        w : pysal weights object
+            a weights object aligned with the dataframe. If not provided, this
+            is searched for in the dataframe's metadata
+        inplace : bool
+            a boolean denoting whether to operate on the dataframe inplace or to
+            return a series contaning the results of the computation. If
+            operating inplace, the derived columns will be named 'column_g'
+        pvalue : string
+            a string denoting which pvalue should be returned. Refer to the
+            the G statistic's documentation for available p-values
+        outvals : list of strings
+            list of arbitrary attributes to return as columns from the G statistic
+        **stat_kws : dict
+            options to pass to the underlying statistic. For this, see the
+            documentation for the G statistic.
 
         Returns
         --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
+        If inplace, None, and operation is conducted on dataframe
+        in memory. Otherwise, returns a copy of the dataframe with
+        the relevant columns attached.
 
         """
         return _univariate_handler(
@@ -250,9 +254,9 @@ class G_Local(object):
         provided in binary form, and standardization/self-weighting will be
         handled by the function itself.
     island_weight:
-        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
-        will propagate to the final local statistic depending on the `stat_func`. If 0, then
-        the lag is always zero for islands.
+        value to use as a weight for the "fake" neighbor for every island.
+        If numpy.nan, will propagate to the final local statistic depending
+        on the `stat_func`. If 0, then the lag is always zero for islands.
 
     Attributes
     ----------
@@ -279,9 +283,10 @@ class G_Local(object):
          of arrays of floats (if permutations>0), vector of I values
          for permutated samples
     p_sim : array
-           of floats, p-value based on permutations (one-sided)
-           null - spatial randomness
-           alternative - the observed G is extreme it is either extremely high or extremely low
+        of floats, p-value based on permutations (one-sided)
+        null - spatial randomness
+        alternative - the observed G is extreme
+            (it is either extremely high or extremely low)
     EG_sim : array
             of floats, average value of G from permutations
     VG_sim : array
@@ -440,7 +445,6 @@ class G_Local(object):
         k = self.w.max_neighbors + 1
         rids = np.array([np.random.permutation(rid)[0:k] for i in prange])
         ids = np.arange(self.w.n)
-        ido = self.w.id_order
         wc = self.__getCardinalities()
         if self.w_transform == "r":
             den = np.array(wc) + self.star
@@ -486,19 +490,18 @@ class G_Local(object):
         empirical_mean = (y.sum() - y * remove_self) / N
         # variance looks complex, yes, but it obtains from E[x^2] - E[x]^2.
         # So, break it down to allow subtraction of the self-neighbor.
-        mean_of_squares = ((y ** 2).sum() - (y ** 2) * remove_self) / N
-        empirical_variance = mean_of_squares - empirical_mean ** 2
+        mean_of_squares = ((y**2).sum() - (y**2) * remove_self) / N
+        empirical_variance = mean_of_squares - empirical_mean**2
 
         # Since we have corrected the diagonal, this should work
         cardinality = np.asarray(W.sum(axis=1)).squeeze()
         expected_value = cardinality / N
-        expected_variance = (
-            cardinality
-            * (N - cardinality)
-            / (N - 1)
-            * (1 / N ** 2)
-            * (empirical_variance / (empirical_mean ** 2))
-        )
+
+        expected_variance = cardinality * (N - cardinality)
+        expected_variance /= (N - 1)
+        expected_variance *= (1 / N**2)
+        expected_variance *= (empirical_variance / (empirical_mean**2))
+
         z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
 
         self.Gs = statistic
@@ -520,26 +523,26 @@ class G_Local(object):
 
         Parameters
         ----------
-        df          :   pandas.DataFrame
-                        a pandas dataframe with a geometry column
-        cols        :   string or list of string
-                        name or list of names of columns to use to compute the statistic
-        w           :   pysal weights object
-                        a weights object aligned with the dataframe. If not provided, this
-                        is searched for in the dataframe's metadata
-        inplace     :   bool
-                        a boolean denoting whether to operate on the dataframe inplace or to
-                        return a series contaning the results of the computation. If
-                        operating inplace, the derived columns will be named 'column_g_local'
-        pvalue      :   string
-                        a string denoting which pvalue should be returned. Refer to the
-                        the G_Local statistic's documentation for available p-values
-        outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the
-                        G_Local statistic
-        **stat_kws  :   keyword arguments
-                        options to pass to the underlying statistic. For this, see the
-                        documentation for the G_Local statistic.
+        df : pandas.DataFrame
+            a pandas dataframe with a geometry column
+        cols : string or list of string
+            name or list of names of columns to use to compute the statistic
+        w : pysal weights object
+            a weights object aligned with the dataframe. If not provided, this
+            is searched for in the dataframe's metadata
+        inplace : bool
+            a boolean denoting whether to operate on the dataframe inplace or to
+            return a series contaning the results of the computation. If
+            operating inplace, the derived columns will be named 'column_g_local'
+        pvalue : string
+            a string denoting which pvalue should be returned. Refer to the
+            the G_Local statistic's documentation for available p-values
+        outvals : list of strings
+            list of arbitrary attributes to return as columns from the
+            G_Local statistic
+        **stat_kws : dict
+            options to pass to the underlying statistic. For this, see the
+            documentation for the G_Local statistic.
 
         Returns
         -------
@@ -608,7 +611,7 @@ def _infer_star_and_structure_w(weights, star, transform):
     else:  # star was something else, so try to fill the weights with it
         try:
             weights = fill_diagonal(weights, star)
-        except:
+        except TypeError:
             raise TypeError(
                 f"Type of star ({type(star)}) not understood."
                 f" Must be an integer, boolean, float, or numpy.ndarray."
@@ -640,9 +643,12 @@ def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
 
 
 if __name__ == "__main__":
-    import geopandas, numpy, esda, importlib
-    import matplotlib.pyplot as plt
-    from libpysal import weights, examples
+
+    import geopandas
+    import numpy
+    from libpysal import examples, weights
+
+    import esda
 
     df = geopandas.read_file(examples.get_path("NAT.shp"))
 
