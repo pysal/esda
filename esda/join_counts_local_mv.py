@@ -31,25 +31,22 @@ class Join_Counts_Local_MV(BaseEstimator):
             the relationships between observed units.
             Need not be row-standardized.
         permutations : int
-            number of random permutations for calculation of pseudo
-            p_values
+            number of random permutations for calculation of pseudo p_values
         n_jobs : int
             Number of cores to be used in the conditional randomisation. If -1,
             all available cores are used.
-        keep_simulations : boll
-           (default=True)
-           If True, the entire matrix of replications under the null
-           is stored in memory and accessible; otherwise, replications
-           are not saved
-        seed : None/int
+        keep_simulations : bool (default True)
+           If ``True``, the entire matrix of replications under the null is stored
+           in memory and accessible; otherwise, replications are not saved
+        seed : int (default None)
             Seed to ensure reproducibility of conditional randomizations.
             Must be set here, and not outside of the function, since numba
             does not correctly interpret external seeds
             nor numpy.random.RandomState instances.
-        island_weight:
+        island_weight : int or float (default 0)
             value to use as a weight for the "fake" neighbor for every island.
-            If numpy.nan, will propagate to the final local statistic depending
-            on the `stat_func`. If 0, then the lag is always zero for islands.
+            If ``numpy.nan``, will propagate to the final local statistic depending
+            on the ``stat_func``. If ``0``, then the lag is always zero for islands.
 
         """
 

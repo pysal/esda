@@ -65,7 +65,7 @@ class Geary_Local(BaseEstimator):
         island_weight :
             value to use as a weight for the "fake" neighbor for every island.
             If numpy.nan, will propagate to the final local statistic depending
-            on the `stat_func`. If 0, thenthe lag is always zero for islands.
+            on the `stat_func`. If 0, then the lag is always zero for islands.
 
         Attributes
         ----------
