@@ -1,14 +1,13 @@
 """Geary Unittest."""
 import unittest
 
-from libpysal.io import open as popen
+import numpy as np
 from libpysal import examples
 from libpysal.common import pandas
-from libpysal.weights import W
+from libpysal.io import open as popen
 from libpysal.weights import Rook
 
 from .. import geary
-import numpy as np
 
 PANDAS_EXTINCT = pandas is None
 

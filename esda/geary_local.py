@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
-import warnings
-from scipy import sparse
-from scipy import stats
 from sklearn.base import BaseEstimator
-import libpysal as lp
-from esda.crand import crand as _crand_plus, njit as _njit, _prepare_univariate
+
+from esda.crand import _prepare_univariate
+from esda.crand import crand as _crand_plus
+from esda.crand import njit as _njit
 
 
 class Geary_Local(BaseEstimator):
@@ -63,10 +62,10 @@ class Geary_Local(BaseEstimator):
                            of the function, since numba does not correctly
                            interpret external seeds nor
                            numpy.random.RandomState instances.
-        island_weight:
-            value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
-            will propagate to the final local statistic depending on the `stat_func`. If 0, then
-            the lag is always zero for islands.
+        island_weight :
+            value to use as a weight for the "fake" neighbor for every island.
+            If numpy.nan, will propagate to the final local statistic depending
+            on the `stat_func`. If 0, then the lag is always zero for islands.
 
         Attributes
         ----------
@@ -126,7 +125,6 @@ class Geary_Local(BaseEstimator):
         sig = self.sig
         keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
-        seed = self.seed
 
         self.localG = self._statistic(x, w)
 
@@ -148,11 +146,13 @@ class Geary_Local(BaseEstimator):
             # Create empty vector to fill
             self.labs = np.empty(len(x)) * np.nan
             # Outliers
-            self.labs[(self.localG < Eij_mean) & (x > x_mean) & (self.p_sim <= sig)] = 1
+            locg_lt_eij = self.localG < Eij_mean
+            p_leq_sig = self.p_sim <= sig
+            self.labs[locg_lt_eij & (x > x_mean) & p_leq_sig] = 1
             # Clusters
-            self.labs[(self.localG < Eij_mean) & (x < x_mean) & (self.p_sim <= sig)] = 2
+            self.labs[locg_lt_eij & (x < x_mean) & p_leq_sig] = 2
             # Other
-            self.labs[(self.localG > Eij_mean) & (self.p_sim <= sig)] = 3
+            self.labs[(self.localG > Eij_mean) & p_leq_sig] = 3
             # Non-significant
             self.labs[self.p_sim > sig] = 4
 
@@ -191,7 +191,6 @@ class Geary_Local(BaseEstimator):
 
 @_njit(fastmath=True)
 def _local_geary(i, z, permuted_ids, weights_i, scaling):
-    self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zi - zrand) ** 2 @ other_weights

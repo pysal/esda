@@ -13,7 +13,8 @@ __all__ = ["Smaup"]
 
 
 class Smaup(object):
-    """S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem
+    """S-maup: Statistical Test to Measure the Sensitivity
+    to the Modifiable Areal Unit Problem
 
     Parameters
     ----------

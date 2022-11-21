@@ -1,4 +1,5 @@
-import numpy, pandas
+import numpy
+import pandas
 from scipy.special import entr
 
 try:
@@ -27,7 +28,8 @@ def _cast(collection):
     Cast a collection to a pygeos geometry array.
     """
     try:
-        import pygeos, geopandas
+        import geopandas
+        import pygeos
     except (ImportError, ModuleNotFoundError) as exception:
         raise type(exception)(
             "pygeos and geopandas are required for map comparison statistics."

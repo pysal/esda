@@ -5,16 +5,14 @@ Gamma index for spatial autocorrelation
 """
 __author__ = "Luc Anselin <luc.anselin@asu.edu> Serge Rey <sjsrey@gmail.com>"
 
+import warnings
+
 import numpy as np
 from libpysal.weights.spatial_lag import lag_spatial
+
+from .crand import _prepare_univariate
+from .crand import njit as _njit
 from .tabular import _univariate_handler
-import warnings
-from .crand import (
-    crand as _crand_plus,
-    njit as _njit,
-    _prepare_univariate,
-    _prepare_bivariate,
-)
 
 __all__ = ["Gamma"]
 
@@ -215,7 +213,7 @@ class Gamma(object):
             g = (z * zl).sum()
         elif op == "s":  # squared difference
             zs = np.zeros(z.shape)
-            z2 = z ** 2
+            z2 = z**2
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]

@@ -1,11 +1,12 @@
-import numpy, pandas
-from scipy.spatial import distance
-from sklearn.utils import check_array
-from scipy.stats import mode as most_common_value
+import numpy
+import pandas
 from libpysal import weights
+from scipy.spatial import distance
+from scipy.stats import mode as most_common_value
+from sklearn.utils import check_array
 
 try:
-    from tqdm import tqdm as _tqdm
+    from tqdm import tqdm
 
     HAS_TQDM = True
 except ImportError:
@@ -18,27 +19,25 @@ def _passthrough(sequence):
 
 def _resolve_metric(X, coordinates, metric):
     """
-    Provide a distance function that you can use to find the distance betwen arbitrary points.
+    Provide a distance function that you can use
+    to find the distance betwen arbitrary points.
     """
     if callable(metric):
         distance_func = metric
     elif metric.lower() == "haversine":
         try:
             from numba import autojit
-        except:
+        except ImportError:
 
             def autojit(func):
                 return func
 
         @autojit
         def harcdist(p1, p2):
-            """ Compute the kernel of haversine"""
+            """Compute the kernel of haversine"""
             x = numpy.sin(p2[1] - p1[1] / 2) ** 2
-            y = (
-                numpy.cos(p2[1])
-                * numpy.cos(p1[1])
-                * numpy.sin((p2[0] - p1[0]) / 2) ** 2
-            )
+            cosp1, cosp2 = numpy.cos(p1[1]), numpy.cos(p2[1])
+            y = cosp2 * cosp1 * numpy.sin((p2[0] - p1[0]) / 2) ** 2
             return 2 * numpy.arcsin(numpy.sqrt(x + y))
 
         distance_func = harcdist
@@ -54,7 +53,7 @@ def _resolve_metric(X, coordinates, metric):
         )
 
         def lookup_distance(a, b):
-            """ Find location of points a,b in X and return precomputed distances"""
+            """Find location of points a,b in X and return precomputed distances"""
             (aloc,) = (X == a).all(axis=1).nonzero()
             (bloc,) = (X == b).all(axis=1).nonzero()
             if (len(aloc) > 1) or (len(bloc) > 1):
@@ -99,8 +98,9 @@ def isolation(
         (N, p) array of data to use as input. If p > 1, the "elevation" is computed
         using the topo.to_elevation function.
     coordinates : numpy.ndarray
-        (N,k) array of locations for X to compute distances. If metric='precomputed', this
-        should contain the distances from each point to every other point, and k == N.
+        (N,k) array of locations for X to compute distances. If
+        metric='precomputed', this should contain the distances from
+        each point to every other point, and k == N.
     metric : string or callable (default: 'euclidean')
         name of distance metric in scipy.spatial.distance, or function, that can be
         used to compute distances between locations. If 'precomputed', ad-hoc function
@@ -134,10 +134,7 @@ def isolation(
     if progressbar and HAS_TQDM:
         pbar = tqdm
     elif progressbar and (not HAS_TQDM):
-        try:
-            import tqdm
-        except ImportError as e:
-            raise ImportError("the tqdm module is required for progressbars")
+        raise ImportError("The `tqdm` module is required for progressbars.")
     else:
         pbar = _passthrough
 
@@ -202,8 +199,8 @@ def prominence(
 
     Returns
     -------
-    the prominence of each observation in X, possibly along with the set of saddle points,
-    peaks, and/or dominating peak tree.
+    the prominence of each observation in X, possibly along with the
+    set of saddle points, peaks, and/or dominating peak tree.
 
     Notes
     -----
@@ -242,10 +239,7 @@ def prominence(
     if progressbar and HAS_TQDM:
         pbar = tqdm
     elif progressbar and (not HAS_TQDM):
-        try:
-            import tqdm
-        except ImportError as e:
-            raise ImportError("the tqdm module is required for progressbars")
+        raise ImportError("The `tqdm` module is required for progressbars.")
     else:
         pbar = _passthrough
 
@@ -260,9 +254,10 @@ def prominence(
         msg = "assessing {} (rank: {}, value: {})".format(this_full_ix, rank, value)
 
         # use the dominating_peak vector. A new obs either has:
-        # 1. neighbors whose dominating_peak are all -1 (new peak)
-        # 2. neighbors whose dominating_peak are all -1 or an integer (slope of current peak)
-        # 3. neighbors whose dominating_peak include at least two integers and any -1 (key col)
+        #   Neighbors whose dominating_peak...
+        #       1. ... are all -1 (new peak)
+        #       2. ... are all -1 or an integer (slope of current peak)
+        #       3. ... include at least two integers and any -1 (key col)
         _, neighbs = connectivity[this_full_ix].toarray().nonzero()
         this_preds = predecessors[neighbs]
 
@@ -336,23 +331,24 @@ def prominence(
 
         if verbose:
             print(
-                "--------------------------------------------\nat the {}"
-                " iteration:\n{}\n\tpeaks\t{}\n\tprominence\t{}\n\tkey_cols\t{}\n"
-                .format(rank, msg, peaks, prominence, key_cols)
+                (
+                    "--------------------------------------------\n"
+                    "at the {rank} iteration:\n{msg}\n\tpeaks\t{peaks}\n"
+                    "\tprominence\t{prominence}\n\tkey_cols\t{key_cols}\n"
+                )
             )
         if gdf is not None:
             peakframe = gdf.iloc[peaks]
             keycolframe = gdf.iloc[list(key_cols.values())]
-            slopeframe = gdf[
-                (~(gdf.index.isin(peakframe.index) | gdf.index.isin(keycolframe.index)))
-                & mask
-            ]
+            _isin_peak = gdf.index.isin(peakframe.index)
+            _isin_keycol = gdf.index.isin(keycolframe.index)
+            slopeframe = gdf[~(_isin_peak | _isin_keycol) & mask]
             rest = gdf[~mask]
             this_geom = gdf.iloc[[this_full_ix]]
-            ax = rest.plot(edgecolor="k", linewidth=0.1, facecolor="lightblue")
-            ax = slopeframe.plot(edgecolor="k", linewidth=0.1, facecolor="linen", ax=ax)
-            ax = keycolframe.plot(edgecolor="k", linewidth=0.1, facecolor="red", ax=ax)
-            ax = peakframe.plot(edgecolor="k", linewidth=0.1, facecolor="yellow", ax=ax)
+            ax = rest.plot(edgecolor="k", lw=0.1, fc="lightblue")
+            ax = slopeframe.plot(ec="k", lw=0.1, fc="linen", ax=ax)
+            ax = keycolframe.plot(ec="k", lw=0.1, fc="red", ax=ax)
+            ax = peakframe.plot(ec="k", lw=0.1, fc="yellow", ax=ax)
             ax = this_geom.centroid.plot(ax=ax, color="orange", marker="*")
             plt.show()
             command = input()
@@ -391,14 +387,16 @@ def to_elevation(X, middle="mean", metric="euclidean"):
     X : numpy.ndarray
         Array of values for which to compute elevation.
     middle : callable or string
-        name of function in numpy (or function itself) used to compute the center point of X
+        name of function in numpy (or function itself)
+        used to compute the center point of X
     metric : string
-        metric to use in `scipy.spatial.distance.cdist` to compute the distance from the center
-        of mass to the point.
+        metric to use in `scipy.spatial.distance.cdist` to
+        compute the distance from the center of mass to the point.
 
     Returns
     --------
-    (N,1)-shaped numpy array containing the "elevation" of each point relative to sea level (zero).
+    (N,1)-shaped numpy array containing the "elevation" of
+    each point relative to sea level (zero).
 
     """
     if X.ndim == 1:
@@ -429,7 +427,7 @@ def _check_connectivity(connectivity_or_coordinates):
     3. a set of coordinates that we need to build the delaunay triangulation
        and then return the graph.
     """
-    from scipy.sparse import issparse, csc_matrix
+    from scipy.sparse import issparse
 
     if issparse(connectivity_or_coordinates):
         shape = connectivity_or_coordinates.shape
@@ -446,9 +444,10 @@ def _check_connectivity(connectivity_or_coordinates):
 
 
 if __name__ == "__main__":
-    import geopandas, pandas
-    from libpysal import weights, examples
+    import geopandas
     import matplotlib.pyplot as plt
+    import pandas  # noqa F811
+    from libpysal import examples, weights  # noqa F811
     from matplotlib import cm
 
     current_cmap = cm.get_cmap()

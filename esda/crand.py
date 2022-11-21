@@ -3,11 +3,12 @@ Centralised conditional randomisation engine. Numba accelerated.
 """
 
 import os
-import numpy as np
 import warnings
 
+import numpy as np
+
 try:
-    from numba import njit, jit, prange, boolean
+    from numba import boolean, jit, njit, prange
 except (ImportError, ModuleNotFoundError):
 
     def jit(*dec_args, **dec_kwargs):
@@ -25,7 +26,6 @@ except (ImportError, ModuleNotFoundError):
     prange = range
     boolean = bool
 
-import tempfile
 
 __all__ = ["crand"]
 
@@ -119,8 +119,8 @@ def crand(
     p_sim : ndarray
         (N,) array with pseudo p-values from conditional permutation
     rlocals : ndarray
-        If keep=True, (N, permutations) array with simulated values of stat_func under the
-        null of spatial randomness; else, empty (1, 1) array
+        If keep=True, (N, permutations) array with simulated values
+        of stat_func under the null of spatial randomness; else, empty (1, 1) array
     """
     adj_matrix = w.sparse
 
@@ -153,28 +153,28 @@ def crand(
 
     # we need to be careful to shuffle only *other* sites, not
     # the self-site. This means we need to
-    ### extract the self-weight, if any
+    # extract the self-weight, if any
     self_weights = adj_matrix.diagonal()
-    ### force the self-site weight to zero
+    # force the self-site weight to zero
     with warnings.catch_warnings():
         # massive changes to sparsity incur a cost, but it's not
         # large for simply changing the diag
         warnings.simplefilter("ignore")
         adj_matrix.setdiag(0)
         adj_matrix.eliminate_zeros()
-    ### extract the weights from a now no-self-weighted adj_matrix
+    # extract the weights from a now no-self-weighted adj_matrix
     other_weights = adj_matrix.data
-    ### use the non-self weight as the cardinality, since
-    ### this is the set we have to randomize.
-    ### if there is a self-neighbor, we need to *not* shuffle the
-    ### self neighbor, since conditional randomization conditions on site i.
+    # use the non-self weight as the cardinality, since
+    # this is the set we have to randomize.
+    # if there is a self-neighbor, we need to *not* shuffle the
+    # self neighbor, since conditional randomization conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
     max_card = cardinalities.max()
     permuted_ids = vec_permutations(max_card, n, permutations, seed)
 
     if n_jobs != 1:
         try:
-            import joblib
+            import joblib  # noqa F401
         except (ModuleNotFoundError, ImportError):
             warnings.warn(
                 f"Parallel processing is requested (n_jobs={n_jobs}),"
@@ -288,9 +288,9 @@ def compute_chunk(
             scaling : float
                 Scaling value to apply to every local statistic
     island_weight:
-        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
-        will propagate to the final local statistic depending on the `stat_func`. If 0, then
-        the lag is always zero for islands.
+        value to use as a weight for the "fake" neighbor for every island.
+        If numpy.nan, will propagate to the final local statistic depending
+        on the `stat_func`. If 0, then the lag is always zero for islands.
 
     Returns
     -------
@@ -315,27 +315,19 @@ def compute_chunk(
     for i in range(chunk_n):
         cardinality = cardinalities[i]
         if cardinality == 0:  # deal with islands
-            effective_cardinality = 1
             weights_i = np.zeros(2, dtype=other_weights.dtype)
             weights_i[1] = island_weight
         else:
-            effective_cardinality = cardinality
             # we need to fix the self-weight to the first position
             weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
             weights_i[0] = self_weights[i]
-            ### this chomps the next `cardinality` weights off of `weights`
-            weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
+            # this chomps the next `cardinality` weights off of `weights`
+            weights_i[1:] = other_weights[wloc : (wloc + cardinality)]  # noqa E203
         wloc += cardinality
-        z_chunk_i = z_chunk[i]
         mask[chunk_start + i] = False
-        z_no_i = z[
-            mask,
-        ]
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
         if keep:
-            rlocals[
-                i,
-            ] = rstats
+            rlocals[i] = rstats
         larger[i] = np.sum(rstats >= observed[i])
     return larger, rlocals
 
@@ -370,7 +362,7 @@ def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int):
     chunk_size = np.int64(n / n_chunks) + 1
     start = 0
     for i in range(n_chunks):
-        advance = cardinalities[start : start + chunk_size].sum()
+        advance = cardinalities[start : start + chunk_size].sum()  # noqa E203
         boundary_points[i + 1] = boundary_points[i] + advance
         start += chunk_size
     return boundary_points
@@ -432,11 +424,13 @@ def chunk_generator(
     chunk_size = starts[1] - starts[0]
     for i in range(n_jobs):
         start = starts[i]
-        z_chunk = z[start : (start + chunk_size)]
-        self_weights_chunk = self_weights[start : (start + chunk_size)]
-        observed_chunk = observed[start : (start + chunk_size)]
-        cardinalities_chunk = cardinalities[start : (start + chunk_size)]
-        w_chunk = other_weights[w_boundary_points[i] : w_boundary_points[i + 1]]
+        z_chunk = z[start : (start + chunk_size)]  # noqa E203
+        self_weights_chunk = self_weights[start : (start + chunk_size)]  # noqa E203
+        observed_chunk = observed[start : (start + chunk_size)]  # noqa E203
+        cardinalities_chunk = cardinalities[start : (start + chunk_size)]  # noqa E203
+        w_chunk = other_weights[
+            w_boundary_points[i] : w_boundary_points[i + 1]  # noqa E203
+        ]
         yield (
             start,
             z_chunk,
@@ -507,9 +501,9 @@ def parallel_crand(
             scaling : float
                 Scaling value to apply to every local statistic
     island_weight:
-        value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
-        will propagate to the final local statistic depending on the `stat_func`. If 0, then
-        the lag is always zero for islands.
+        value to use as a weight for the "fake" neighbor for every island.
+        If numpy.nan, will propagate to the final local statistic depending
+        on the `stat_func`. If 0, then the lag is always zero for islands.
     Returns
     -------
     larger : ndarray

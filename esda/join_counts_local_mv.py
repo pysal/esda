@@ -1,18 +1,17 @@
 import numpy as np
 import pandas as pd
-from scipy import sparse
-from sklearn.base import BaseEstimator
 from libpysal import weights
-from esda.crand import crand as _crand_plus, njit as _njit, _prepare_univariate
+from sklearn.base import BaseEstimator
 
+from esda.crand import _prepare_univariate
+from esda.crand import crand as _crand_plus
+from esda.crand import njit as _njit
 
 PERMUTATIONS = 999
 
 
 class Join_Counts_Local_MV(BaseEstimator):
-
     """Multivariate Local Join Count Statistic"""
-
     def __init__(
         self,
         connectivity=None,
@@ -27,30 +26,27 @@ class Join_Counts_Local_MV(BaseEstimator):
 
         Parameters
         ----------
-        connectivity     : scipy.sparse matrix object
-                           the connectivity structure describing
-                           the relationships between observed units.
-                           Need not be row-standardized.
-        permutations     : int
-                           number of random permutations for calculation of pseudo
-                           p_values
-        n_jobs           : int
-                           Number of cores to be used in the conditional randomisation. If -1,
-                           all available cores are used.
-        keep_simulations : Boolean
-                           (default=True)
-                           If True, the entire matrix of replications under the null
-                           is stored in memory and accessible; otherwise, replications
-                           are not saved
-        seed             : None/int
-                           Seed to ensure reproducibility of conditional randomizations.
-                           Must be set here, and not outside of the function, since numba
-                           does not correctly interpret external seeds
-                           nor numpy.random.RandomState instances.
-        island_weight:
-            value to use as a weight for the "fake" neighbor for every island. If numpy.nan,
-            will propagate to the final local statistic depending on the `stat_func`. If 0, then
-            the lag is always zero for islands.
+        connectivity : scipy.sparse matrix object
+            the connectivity structure describing
+            the relationships between observed units.
+            Need not be row-standardized.
+        permutations : int
+            number of random permutations for calculation of pseudo p_values
+        n_jobs : int
+            Number of cores to be used in the conditional randomisation. If -1,
+            all available cores are used.
+        keep_simulations : bool (default True)
+           If ``True``, the entire matrix of replications under the null is stored
+           in memory and accessible; otherwise, replications are not saved
+        seed : int (default None)
+            Seed to ensure reproducibility of conditional randomizations.
+            Must be set here, and not outside of the function, since numba
+            does not correctly interpret external seeds
+            nor numpy.random.RandomState instances.
+        island_weight : int or float (default 0)
+            value to use as a weight for the "fake" neighbor for every island.
+            If ``numpy.nan``, will propagate to the final local statistic depending
+            on the ``stat_func``. If ``0``, then the lag is always zero for islands.
 
         """
 
@@ -99,7 +95,9 @@ class Join_Counts_Local_MV(BaseEstimator):
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10973), 'donq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Suicids'] > 55564), 'suic5'] = 1
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_MV = Local_Join_Counts_MV(connectivity=w).fit([guerry_ds['infq5'], guerry_ds['donq5'], guerry_ds['suic5']])
+        >>> LJC_MV = Local_Join_Counts_MV(
+        ...     connectivity=w
+        ... ).fit([guerry_ds['infq5'], guerry_ds['donq5'], guerry_ds['suic5']])
         >>> LJC_MV.LJC
         >>> LJC_MV.p_sim
         """
@@ -113,10 +111,6 @@ class Join_Counts_Local_MV(BaseEstimator):
         self.w = w
 
         self.variables = np.array(variables, dtype="float")
-
-        keep_simulations = self.keep_simulations
-        n_jobs = self.n_jobs
-        seed = self.seed
 
         # Need to ensure that the product is an
         # np.array() of dtype='float' for numba
@@ -159,7 +153,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         # focal and neighbor values == 1
         focal_all = np.array(np.all(np.dstack(focal) == 1, axis=2))
         neighbor_all = np.array(np.all(np.dstack(neighbor) == 1, axis=2))
-        MCLC = (focal_all == True) & (neighbor_all == True)
+        MCLC = (focal_all) & (neighbor_all)
         # Convert list of True/False to boolean array
         # and unlist (necessary for building pd.DF)
         MCLC = list(MCLC * 1)
@@ -183,7 +177,6 @@ class Join_Counts_Local_MV(BaseEstimator):
 
 @_njit(fastmath=True)
 def _ljc_mv(i, z, permuted_ids, weights_i, scaling):
-    self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return zi * (zrand @ other_weights)

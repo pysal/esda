@@ -1,9 +1,10 @@
 import unittest
+
 import numpy as np
+from libpysal.common import ATOL, RTOL, pandas
+from libpysal.weights.distance import DistanceBand
 
 from .. import getisord
-from libpysal.weights.distance import DistanceBand
-from libpysal.common import pandas, RTOL, ATOL
 
 POINTS = np.array([(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)])
 W = DistanceBand(POINTS, threshold=15)

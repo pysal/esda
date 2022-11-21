@@ -1,7 +1,9 @@
 # coding: utf-8
-from setuptools import setup, find_packages
-from distutils.command.build_py import build_py
 import os
+from distutils.command.build_py import build_py
+
+from setuptools import find_packages, setup
+
 import versioneer
 
 package = "esda"

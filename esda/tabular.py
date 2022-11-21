@@ -1,7 +1,9 @@
 # from ...common import requires as _requires
 
 import itertools as _it
+
 from libpysal.weights import W
+
 
 # I would like to define it like this, so that you could make a call like:
 # Geary(df, 'HOVAL', 'INC', w=W), but this only works in Python3. So, I have to
@@ -51,7 +53,7 @@ def _univariate_handler(
     **kwargs    : optional keyword arguments
                   options that are passed directly to the statistic
     """
-    ### Preprocess
+    # Preprocess
     if not inplace:
         new_df = df.copy()
         _univariate_handler(
@@ -77,7 +79,7 @@ def _univariate_handler(
             " Please provide a weight or attach a weight to the"
             " dataframe"
         )
-    ### Prep indexes
+    # Prep indexes
     if outvals is None:
         outvals = []
     outvals.insert(0, "_statistic")
@@ -100,13 +102,13 @@ def _univariate_handler(
     if isinstance(cols, str):
         cols = [cols]
 
-    ### Make closure around weights & apply columnwise
+    # Make closure around weights & apply columnwise
     def column_stat(column):
         return stat(column.values, w=w, **kwargs)
 
     stat_objs = df[cols].apply(column_stat)
 
-    ### Assign into dataframe
+    # Assign into dataframe
     for col in cols:
         stat_obj = stat_objs[col]
         y = kwargs.get("y")

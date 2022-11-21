@@ -6,6 +6,7 @@ __author__ = "Serge Rey <sjsrey@gmail.com> "
 import numpy as np
 import scipy.stats as stats
 from libpysal import weights
+
 from .tabular import _univariate_handler
 
 __all__ = ["Geary"]
@@ -144,13 +145,13 @@ class Geary(object):
             self.p_sim = (larger + 1.0) / (permutations + 1.0)
             self.EC_sim = sum(sim) / permutations
             self.seC_sim = np.array(sim).std()
-            self.VC_sim = self.seC_sim ** 2
+            self.VC_sim = self.seC_sim**2
             self.z_sim = (self.C - self.EC_sim) / self.seC_sim
             self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
 
     @property
     def _statistic(self):
-        """ a standardized accessor for esda statistics"""
+        """a standardized accessor for esda statistics"""
         return self.C
 
     def __moments(self):
@@ -162,8 +163,8 @@ class Geary(object):
         s2 = w.s2
         s02 = s0 * s0
         yd = y - y.mean()
-        yd4 = yd ** 4
-        yd2 = yd ** 2
+        yd4 = yd**4
+        yd2 = yd**2
         n2 = n * n
         k = (yd4.sum() / n) / ((yd2.sum() / n) ** 2)
         A = (n - 1) * s1 * (n2 - 3 * n + 3 - (n - 1) * k)
@@ -191,27 +192,27 @@ class Geary(object):
 
         Parameters
         ----------
-        df          :   pandas.DataFrame
-                        a pandas dataframe with a geometry column
-        cols        :   string or list of string
-                        name or list of names of columns to use to compute the statistic
-        w           :   pysal weights object
-                        a weights object aligned with the dataframe. If not provided, this
-                        is searched for in the dataframe's metadata
-        inplace     :   bool
-                        a boolean denoting whether to operate on the dataframe inplace or to
-                        return a series contaning the results of the computation. If
-                        operating inplace, with default configurations,
-                        the derived columns will be named like 'column_geary' and 'column_p_sim'
-        pvalue      :   string
-                        a string denoting which pvalue should be returned. Refer to the
-                        the Geary statistic's documentation for available p-values
-        outvals     :   list of strings
-                        list of arbitrary attributes to return as columns from the
-                        Geary statistic
-        **stat_kws  :   keyword arguments
-                        options to pass to the underlying statistic. For this, see the
-                        documentation for the Geary statistic.
+        df : pandas.DataFrame
+            a pandas dataframe with a geometry column
+        cols : string or list of string
+            name or list of names of columns to use to compute the statistic
+        w : pysal weights object
+            a weights object aligned with the dataframe. If not provided, this
+            is searched for in the dataframe's metadata
+        inplace : bool
+            a boolean denoting whether to operate on the dataframe inplace or to
+            return a series contaning the results of the computation. If
+            operating inplace, with default configurations,
+            the derived columns will be named like 'column_geary' and 'column_p_sim'
+        pvalue  : string
+            a string denoting which pvalue should be returned. Refer to the
+            the Geary statistic's documentation for available p-values
+        outvals : list of strings
+            list of arbitrary attributes to return as columns from the
+            Geary statistic
+        **stat_kws : dict
+            options to pass to the underlying statistic. For this, see the
+            documentation for the Geary statistic.
 
         Returns
         --------

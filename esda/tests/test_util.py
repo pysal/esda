@@ -1,8 +1,9 @@
 import unittest
+
 import libpysal
-from .. import util
-from .. import moran
 import numpy as np
+
+from .. import moran, util
 
 
 class Fdr_Tester(unittest.TestCase):
