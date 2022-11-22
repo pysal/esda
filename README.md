@@ -1,9 +1,10 @@
 # Exploratory Spatial Data Analysis in PySAL
-[![unittests](https://github.com/pysal/esda/workflows/.github/workflows/unittests.yml/badge.svg)](https://github.com/pysal/esda/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml)
+
+[![Continuous Integration](https://github.com/pysal/esda/actions/workflows/testing.yml/badge.svg)](https://github.com/pysal/esda/actions/workflows/testing.yml) 
 [![codecov](https://codecov.io/gh/pysal/esda/branch/master/graph/badge.svg)](https://codecov.io/gh/pysal/esda)
 [![DOI](https://zenodo.org/badge/81873636.svg)](https://zenodo.org/badge/latestdoi/81873636)
 
-Methods for  testing for global and local autocorrelation in areal unit data.
+Methods for testing for global and local autocorrelation in areal unit data.
 
 ## Documentation
 - [Home](https://pysal.org/esda)
@@ -47,4 +48,4 @@ The project is licensed under the [BSD 3-Clause license](https://github.com/pysa
 
 ## Funding
 
-[<img align="middle" src="figs/nsf_logo.jpg" width="100">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1421935: [New Approaches to Spatial Distribution Dynamics](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1421935)
+[<img align="middle" src="/Users/the-gaboardi/esda/docs/_static/images/nsf_logo.jpg" width="100">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1421935: [New Approaches to Spatial Distribution Dynamics](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1421935)
