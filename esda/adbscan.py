@@ -343,7 +343,7 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
         remapped_solus.loc[:, ref] = solus.loc[:, ref]
         return remapped_solus.fillna(lbl_type(-1)).astype(lbl_type)
     else:
-        print("WARNING: No clusters identified")
+        warnings.warn("No clusters identified.")
         return solus
 
 

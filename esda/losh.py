@@ -91,8 +91,8 @@ class LOSH(BaseEstimator):
         elif self.inference == "chi-square":
             if a != 2:
                 warnings.warn(
-                    f"Chi-square inference assumes that a=2, but \
-                a={a}. This means the inference will be invalid!"
+                    "Chi-square inference assumes that a=2, but "
+                    f"a={a}. This means the inference will be invalid!"
                 )
             else:
                 dof = 2 / self.VarHi
@@ -100,8 +100,8 @@ class LOSH(BaseEstimator):
                 self.pval = 1 - stats.chi2.cdf(Zi, dof)
         else:
             raise NotImplementedError(
-                f"The requested inference method \
-            ({self.inference}) is not currently supported!"
+                "The requested inference method "
+                f"({self.inference}) is not currently supported!"
             )
 
         return self

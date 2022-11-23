@@ -75,9 +75,8 @@ def _univariate_handler(
                 w = this_obj
     if w is None:
         raise Exception(
-            "Weights not provided and no weights attached to frame!"
-            " Please provide a weight or attach a weight to the"
-            " dataframe"
+            "Weights not provided and no weights attached to frame! "
+            "Please provide a weight or attach a weight to the dataframe."
         )
     # Prep indexes
     if outvals is None:
@@ -85,10 +84,9 @@ def _univariate_handler(
     outvals.insert(0, "_statistic")
     if pvalue.lower() in ["all", "both", "*"]:
         raise NotImplementedError(
-            "If you want more than one type of PValue,add"
-            " the targeted pvalue type to outvals. For example:"
-            " Geary(df, cols=['HOVAL'], w=w, outvals=['p_z_sim', "
-            "'p_rand']"
+            "If you want more than one type of PValue, add the "
+            "targeted pvalue type to outvals. For example:\n"
+            "\tGeary(df, cols=['HOVAL'], w=w, outvals=['p_z_sim', 'p_rand']"
         )
     # this is nontrivial, since we
     # can't know which p_value types are on the object without computing it.

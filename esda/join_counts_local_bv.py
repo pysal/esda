@@ -167,8 +167,7 @@ class Join_Counts_Local_BV(BaseEstimator):
                 self.p_sim[self.LJC == 0] = "NaN"
             else:
                 raise NotImplementedError(
-                    f"The requested LJC method ({case}) \
-                is not currently supported!"
+                    f"The requested LJC method ({case}) is not currently supported!"
                 )
 
         return self
@@ -213,8 +212,7 @@ class Join_Counts_Local_BV(BaseEstimator):
             return np.array(adj_list_CLC.CLC.values, dtype="float")
         else:
             raise NotImplementedError(
-                f"The requested LJC method ({case}) \
-            is not currently supported!"
+                f"The requested LJC method ({case}) is not currently supported!"
             )
 
 
