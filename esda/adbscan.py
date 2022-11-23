@@ -247,9 +247,12 @@ def _one_draw(pars):
     if sample_weight is not None:
         thin_sample_weight = sample_weight.iloc[rids]
 
+    min_samples = min_samples * pct_exact
+    min_samples = 1 if min_samples < 1 else int(np.floor(min_samples))
+
     dbs = DBSCAN(
         eps=eps,
-        min_samples=int(np.round(min_samples * pct_exact)),
+        min_samples=min_samples,
         algorithm=algorithm,
         n_jobs=n_jobs,
     ).fit(X_thin[xy], sample_weight=thin_sample_weight)
