@@ -21,6 +21,7 @@ class Geary_Local(BaseEstimator):
         keep_simulations=True,
         seed=None,
         island_weight=0,
+        drop_islands=True,
     ):
         """
         Initialize a Local_Geary estimator
@@ -66,6 +67,11 @@ class Geary_Local(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island.
             If numpy.nan, will propagate to the final local statistic depending
             on the `stat_func`. If 0, then the lag is always zero for islands.
+        drop_islands : bool (default True)
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
         Attributes
         ----------
@@ -87,6 +93,7 @@ class Geary_Local(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
         self.island_weight = island_weight
+        self.drop_islands = drop_islands
 
     def fit(self, x):
         """
@@ -126,7 +133,7 @@ class Geary_Local(BaseEstimator):
         keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
 
-        self.localG = self._statistic(x, w)
+        self.localG = self._statistic(x, w, self.drop_islands)
 
         if permutations:
             self.p_sim, self.rlocalG = _crand_plus(
@@ -159,11 +166,11 @@ class Geary_Local(BaseEstimator):
         return self
 
     @staticmethod
-    def _statistic(x, w):
+    def _statistic(x, w, drop_islands):
         # Caclulate z-scores for x
         zscore_x = (x - np.mean(x)) / np.std(x)
         # Create focal (xi) and neighbor (zi) values
-        adj_list = w.to_adjlist(remove_symmetric=False)
+        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
         zseries = pd.Series(zscore_x, index=w.id_order)
         zi = zseries.loc[adj_list.focal].values
         zj = zseries.loc[adj_list.neighbor].values

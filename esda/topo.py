@@ -321,9 +321,11 @@ def prominence(
                 best_peak = this_peak[0]
             else:  # otherwise, if there are multiple peaks
                 # pick the one that most of its neighbors are assigned to
-                best_peak = most_common_value(this_unique_preds).mode.item()
+                best_peak = most_common_value(
+                    this_unique_preds, keepdims=False
+                ).mode.item()
             all_on_slope = numpy.arange(n)[dominating_peak == best_peak]
-            msg += f"\n{all_on_slope} are on the slopes of {best_peak}"
+            msg += f"\n{all_on_slope} are on the slopes of {best_peak}."
             dominating_peak[this_full_ix] = best_peak
             predecessors[this_full_ix] = best_peak
 

@@ -22,6 +22,7 @@ class Join_Counts_Local(BaseEstimator):
         keep_simulations=True,
         seed=None,
         island_weight=0,
+        drop_islands=True,
     ):
         """
         Initialize a Local_Join_Count estimator
@@ -51,6 +52,11 @@ class Join_Counts_Local(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island.
             If numpy.nan, will propagate to the final local statistic depending
             on the `stat_func`. If 0, then the lag is always zero for islands.
+        drop_islands : bool (default True)
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
         Attributes
         ----------
@@ -69,6 +75,7 @@ class Join_Counts_Local(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
         self.island_weight = island_weight
+        self.drop_islands = drop_islands
 
     def fit(self, y, n_jobs=1, permutations=999):
         """
@@ -123,7 +130,7 @@ class Join_Counts_Local(BaseEstimator):
         self.n = len(y)
         self.w = w
 
-        self.LJC = self._statistic(y, w)
+        self.LJC = self._statistic(y, w, self.drop_islands)
 
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
@@ -142,10 +149,10 @@ class Join_Counts_Local(BaseEstimator):
         return self
 
     @staticmethod
-    def _statistic(y, w):
+    def _statistic(y, w, drop_islands):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
-        adj_list = w.to_adjlist(remove_symmetric=False)
+        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
         zseries = pd.Series(y, index=w.id_order)
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values

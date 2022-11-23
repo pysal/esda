@@ -251,7 +251,9 @@ def path_silhouette(
     return out
 
 
-def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
+def boundary_silhouette(
+    data, labels, W, metric=skp.euclidean_distances, drop_islands=True
+):
     """
     Compute the observation-level boundary silhouette
     score :cite:`wolf2019geosilhouettes`.
@@ -269,6 +271,11 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     metric  :   callable, array,
                 a function that takes an argument (data) and returns the all-pairs
                 distances/dissimilarity between observations.
+    drop_islands : bool (default True)
+        Whether or not to preserve islands as entries in the adjacency
+        list. By default, observations with no neighbors do not appear
+        in the adjacency list. If islands are kept, they are coded as
+        self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
     Returns
     -------
@@ -301,7 +308,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
 
-    alist = W.to_adjlist()
+    alist = W.to_adjlist(drop_islands=drop_islands)
     labels = np.asarray(labels)
     if callable(metric):
         full_distances = metric(data)
@@ -338,7 +345,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     bmask = focals.boundary.any()
     result = []
     np.seterr(all="raise")
-    for i, (ix, bnd) in enumerate(bmask.iteritems()):
+    for i, (ix, bnd) in enumerate(bmask.items()):
         if not bnd:
             result.append(np.array([0]))
             continue
