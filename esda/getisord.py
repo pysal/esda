@@ -218,6 +218,13 @@ class G(object):
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_cols()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,
@@ -498,9 +505,9 @@ class G_Local(object):
         expected_value = cardinality / N
 
         expected_variance = cardinality * (N - cardinality)
-        expected_variance /= (N - 1)
-        expected_variance *= (1 / N**2)
-        expected_variance *= (empirical_variance / (empirical_mean**2))
+        expected_variance /= N - 1
+        expected_variance *= 1 / N**2
+        expected_variance *= empirical_variance / (empirical_mean**2)
 
         z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
 
@@ -552,6 +559,13 @@ class G_Local(object):
                         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,
