@@ -3,7 +3,7 @@
 Installation
 ============
 
-esda supports Python `>=3.6`. Please make sure that you are
+esda supports Python ``>=3.8``. Please make sure that you are
 operating in a Python 3 environment.
 
 Installing released version

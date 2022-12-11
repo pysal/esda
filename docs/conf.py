@@ -99,7 +99,7 @@ todo_include_todos = False
 # html_theme = 'alabaster'
 html_theme = "bootstrap"
 html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
-html_title = "%s v%s Manual" % (project, version)
+html_title = f"{project} v{version} Manual"
 
 # (Optional) Logo of your package.
 # Should be small enough to fit the navbar (ideally 24x24).
@@ -116,7 +116,7 @@ html_favicon = "_static/images/pysal_favicon.ico"
 #
 html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
-    "navbar_title": "esda",  # string of your project name, for example, 'giddy'
+    "navbar_title": project,  # string of your project name, for example, 'giddy'
     # Render the next and previous page links in navbar. (Default: true)
     "navbar_sidebarrel": False,
     # Render the current pages TOC in the navbar. (Default: true)
@@ -175,7 +175,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "esda" + "doc"
+htmlhelp_basename = project + "doc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -199,7 +199,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "esda.tex", "esda Documentation", "pysal developers", "manual"),
+    (
+        master_doc,
+        f"{project}doc.tex",
+        f"{project} Documentation",
+        "pysal developers",
+        "manual",
+    ),
 ]
 
 
@@ -207,7 +213,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "esda", "esda Documentation", [author], 1)]
+man_pages = [(master_doc, project, f"{project} Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -218,11 +224,11 @@ man_pages = [(master_doc, "esda", "esda Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "esda",
-        "esda Documentation",
+        project,
+        f"{project} Documentation",
         author,
-        "esda developers",
-        "One line description of project.",
+        f"{project} developers",
+        "Exploratory Spatial Data Analysis",
         "Miscellaneous",
     ),
 ]
@@ -235,11 +241,17 @@ texinfo_documents = [
 
 # Generate the API documentation when building
 autosummary_generate = True
+
+# Avoid showing members twice
 numpydoc_show_class_members = False
+numpydoc_use_plots = True
 class_members_toctree = True
 numpydoc_show_inherited_class_members = True
-numpydoc_use_plots = True
 numpydoc_xref_param_type = True
+
+# automatically document class members
+autodoc_default_options = {"members": True, "undoc-members": True}
+
 # display the source code for Plot directive
 plot_include_source = True
 
@@ -250,16 +262,17 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
-    "numpy": ("https://docs.scipy.org/doc/numpy", None),
-    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
-    "sklearn": ("https://scikit-learn.org/stable/", None),
+    project: (f"https://pysal.org/{project}/", None),
+    "geopandas": ("https://geopandas.org/en/latest/", None),
     "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
-    "libpysal": ("https://pysal.org/libpysal/", None),
-    "esda": ("https://esda.readthedocs.io/en/latest/", None),
-    "region": ("https://region.readthedocs.io/en/latest/", None),
     "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
+    "libpysal": ("https://pysal.org/libpysal/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "region": ("https://region.readthedocs.io/en/latest/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
+    "spopt": ("https://pysal.org/spopt/", None),
 }
 
 numpydoc_xref_ignore = {
@@ -283,7 +296,6 @@ numpydoc_xref_ignore = {
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
 {% set docname = env.doc2path(env.docname, base='docsrc/') %}
-{% set fullpath = env.doc2path(env.docname, base='tree/master/docsrc/') %}
 
 .. only:: html
 
@@ -296,7 +308,7 @@ nbsphinx_prolog = r"""
         Interactive online version:
         :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
 
-    __ https://github.com/pysal/esda/{{ fullpath }}
+    __ https://github.com/pysal/esda/{{ docname }}
 
 
 .. raw:: latex

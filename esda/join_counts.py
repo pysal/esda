@@ -86,6 +86,11 @@ class Join_Counts(object):
                    Expected contingency table for the null
     p_sim_chi2   : float
                    p-value for chi2 under random spatial permutations
+    drop_islands : bool (default True)
+        Whether or not to preserve islands as entries in the adjacency
+        list. By default, observations with no neighbors do not appear
+        in the adjacency list. If islands are kept, they are coded as
+        self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
 
 
@@ -139,11 +144,13 @@ class Join_Counts(object):
 
     """
 
-    def __init__(self, y, w, permutations=PERMUTATIONS):
+    def __init__(self, y, w, permutations=PERMUTATIONS, drop_islands=True):
         y = np.asarray(y).flatten()
         w.transformation = "b"  # ensure we have binary weights
         self.w = w
-        self.adj_list = self.w.to_adjlist(remove_symmetric=False)
+        self.adj_list = self.w.to_adjlist(
+            remove_symmetric=False, drop_islands=drop_islands
+        )
         self.y = y
         self.permutations = permutations
         self.J = w.s0 / 2.0

@@ -48,8 +48,8 @@ def _resolve_metric(X, coordinates, metric):
         distances = check_array(coordinates, accept_sparse=True)
         n, k = distances.shape
         assert k == n, (
-            'With metric="precomputed", coordinates must be an (n,n) matrix'
-            " representing distances between coordinates."
+            "With metric='precomputed', coordinates must be an (n,n)"
+            " matrix representing distances between coordinates."
         )
 
         def lookup_distance(a, b):
@@ -74,8 +74,8 @@ def _resolve_metric(X, coordinates, metric):
             distance_func = getattr(distance, metric)
         except AttributeError:
             raise KeyError(
-                "Metric {} not understood. Choose "
-                "something available in scipy.spatial.distance".format(metric)
+                f"Metric '{metric}' not understood. Choose "
+                "something available in scipy.spatial.distance."
             )
     return distance_func
 
@@ -251,7 +251,7 @@ def prominence(
         mask = numpy.isin(numpy.arange(n), sort_order[: rank + 1])
         (full_indices,) = mask.nonzero()
         this_full_ix = (ids[sort_order])[rank]
-        msg = "assessing {} (rank: {}, value: {})".format(this_full_ix, rank, value)
+        msg = f"assessing {this_full_ix} (rank: {rank}, value: {value})"
 
         # use the dominating_peak vector. A new obs either has:
         #   Neighbors whose dominating_peak...
@@ -282,9 +282,7 @@ def prominence(
             now_joined_peaks = this_unique_preds
             # add them as keys for the key_col lut
             key_cols.update({tuple(now_joined_peaks): this_full_ix})
-            msg += "\n{} is a key col between {}!".format(
-                this_full_ix, now_joined_peaks
-            )
+            msg += f"\n{this_full_ix} is a key col between {now_joined_peaks}!"
             dominating_peak[this_full_ix] = now_joined_peaks[
                 -1
             ]  # lowest now-joined peak
@@ -300,7 +298,7 @@ def prominence(
                 prominence[peak_ix] -= value
                 assessed_peaks.update((peak_ix,))
         elif classification == "peak":  # this_ix is a new peak since it's disconnected
-            msg += "\n{} is a peak!".format(this_full_ix)
+            msg += f"\n{this_full_ix} is a peak!"
             # its parent is the last visited peak (for precedence purposes)
             try:
                 previous_peak = peaks[-1]
@@ -315,7 +313,7 @@ def prominence(
             # should have prominence "value - 0", since it has no key cols
             prominence[this_full_ix] = X[this_full_ix]
         else:  # this_ix is connected to an existing peak, but doesn't bridge peaks.
-            msg += "\n{} is a slope!".format(this_full_ix)
+            msg += f"\n{this_full_ix} is a slope!"
             # get all the peaks that are linked to this slope
             this_peak = this_unique_preds
             if len(this_peak) == 1:  # if there's only one peak the slope is related to
@@ -323,9 +321,11 @@ def prominence(
                 best_peak = this_peak[0]
             else:  # otherwise, if there are multiple peaks
                 # pick the one that most of its neighbors are assigned to
-                best_peak = most_common_value(this_unique_preds).mode.item()
+                best_peak = most_common_value(
+                    this_unique_preds, keepdims=False
+                ).mode.item()
             all_on_slope = numpy.arange(n)[dominating_peak == best_peak]
-            msg += "\n{} are on the slopes of {}".format(all_on_slope, best_peak)
+            msg += f"\n{all_on_slope} are on the slopes of {best_peak}."
             dominating_peak[this_full_ix] = best_peak
             predecessors[this_full_ix] = best_peak
 
@@ -333,8 +333,8 @@ def prominence(
             print(
                 (
                     "--------------------------------------------\n"
-                    "at the {rank} iteration:\n{msg}\n\tpeaks\t{peaks}\n"
-                    "\tprominence\t{prominence}\n\tkey_cols\t{key_cols}\n"
+                    f"at the {rank} iteration:\n{msg}\n\tpeaks\t{peaks}\n"
+                    f"\tprominence\t{prominence}\n\tkey_cols\t{key_cols}\n"
                 )
             )
         if gdf is not None:
@@ -410,8 +410,8 @@ def to_elevation(X, middle="mean", metric="euclidean"):
                 return to_elevation(X, middle=middle)
             except AttributeError:
                 raise KeyError(
-                    'numpy has no "{}" function to compute the middle'
-                    " of a point cloud.".format(middle)
+                    f"numpy has no '{middle}' function to "
+                    "compute the middle of a point cloud."
                 )
         distance_from_center = distance.cdist(
             X, middle_point.reshape(1, -1), metric=metric
@@ -433,7 +433,7 @@ def _check_connectivity(connectivity_or_coordinates):
         shape = connectivity_or_coordinates.shape
         assert (
             shape[0] == shape[1]
-        ), "Connectivity matrix must be square, but is {}".format(shape)
+        ), f"Connectivity matrix must be square, but is {shape}."
         return connectivity_or_coordinates
     if issubclass(type(connectivity_or_coordinates), weights.W):
         return connectivity_or_coordinates.sparse

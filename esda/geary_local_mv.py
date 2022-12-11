@@ -9,7 +9,7 @@ class Geary_Local_MV(BaseEstimator):
 
     """Local Geary - Multivariate"""
 
-    def __init__(self, connectivity=None, permutations=999):
+    def __init__(self, connectivity=None, permutations=999, drop_islands=True):
         """
         Initialize a Local_Geary_MV estimator
 
@@ -23,6 +23,11 @@ class Geary_Local_MV(BaseEstimator):
                            (default=999)
                            number of random permutations for calculation
                            of pseudo p_values
+        drop_islands : bool (default True)
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
         Attributes
         ----------
@@ -36,6 +41,7 @@ class Geary_Local_MV(BaseEstimator):
 
         self.connectivity = connectivity
         self.permutations = permutations
+        self.drop_islands = drop_islands
 
     def fit(self, variables):
         """
@@ -91,7 +97,7 @@ class Geary_Local_MV(BaseEstimator):
         # to be used in _statistic and _crand
         zvariables = stats.zscore(variables, axis=1)
 
-        self.localG = self._statistic(variables, zvariables, w)
+        self.localG = self._statistic(variables, zvariables, w, self.drop_islands)
 
         if permutations:
             self._crand(zvariables)
@@ -105,11 +111,11 @@ class Geary_Local_MV(BaseEstimator):
         return self
 
     @staticmethod
-    def _statistic(variables, zvariables, w):
+    def _statistic(variables, zvariables, w, drop_islands):
         # Define denominator adjustment
         k = len(variables)
         # Create focal and neighbor values
-        adj_list = w.to_adjlist(remove_symmetric=False)
+        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
         zseries = [pd.Series(i, index=w.id_order) for i in zvariables]
         focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
         neighbor = [
@@ -124,7 +130,7 @@ class Geary_Local_MV(BaseEstimator):
         # Rearrange data based on w id order
         adj_list_gs["w_order"] = w.id_order
         adj_list_gs.sort_values(by="w_order", inplace=True)
-        localG = np.array(adj_list_gs.sum(axis=1) / k)
+        localG = np.array(adj_list_gs.sum(axis=1, numeric_only=True) / k)
 
         return localG
 

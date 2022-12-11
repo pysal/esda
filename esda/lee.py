@@ -133,17 +133,17 @@ class Spatial_Pearson_Local(BaseEstimator):
                        observed correlation was more extreme than the simulated
                        correlations.
 
-
         Notes
         -----
         Technical details and derivations can be found in :cite:`Lee2001`.
+
         """
         self.connectivity = connectivity
         self.permutations = permutations
 
     def fit(self, x, y):
         """
-        bivariate local pearson's R based on Eq. 22 in Lee (2001), using
+        Bivariate local pearson's R based on Eq. 22 in Lee (2001), using
         site-wise conditional randomization from Moran_Local_BV.
 
         .. math::

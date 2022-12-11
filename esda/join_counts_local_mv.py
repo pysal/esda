@@ -20,6 +20,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         keep_simulations=True,
         seed=None,
         island_weight=0,
+        drop_islands=True,
     ):
         """
         Initialize a Local_Join_Counts_MV estimator
@@ -47,7 +48,11 @@ class Join_Counts_Local_MV(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island.
             If ``numpy.nan``, will propagate to the final local statistic depending
             on the ``stat_func``. If ``0``, then the lag is always zero for islands.
-
+        drop_islands : bool (default True)
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
         """
 
         self.connectivity = connectivity
@@ -56,6 +61,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
         self.island_weight = island_weight
+        self.drop_islands = drop_islands
 
     def fit(self, variables, n_jobs=1, permutations=999):
         """
@@ -116,7 +122,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         # np.array() of dtype='float' for numba
         self.ext = np.array(np.prod(np.vstack(variables), axis=0), dtype="float")
 
-        self.LJC = self._statistic(variables, w)
+        self.LJC = self._statistic(variables, w, self.drop_islands)
 
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
@@ -135,10 +141,10 @@ class Join_Counts_Local_MV(BaseEstimator):
         return self
 
     @staticmethod
-    def _statistic(variables, w):
+    def _statistic(variables, w, drop_islands):
         # Create adjacency list. Note that remove_symmetric=False -
         # different from the esda.Join_Counts() function.
-        adj_list = w.to_adjlist(remove_symmetric=False)
+        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
 
         # The zseries
         zseries = [pd.Series(i, index=w.id_order) for i in variables]

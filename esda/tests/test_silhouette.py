@@ -187,5 +187,7 @@ class Silhouette_Tester(unittest.TestCase):
             ]
         )
 
-        test = silhouettes.silhouette_alist(self.X, self.groups, self.w.to_adjlist())
+        test = silhouettes.silhouette_alist(
+            self.X, self.groups, self.w.to_adjlist(drop_islands=True)
+        )
         numpy.testing.assert_allclose(known, test.silhouette, rtol=RTOL, atol=ATOL)
