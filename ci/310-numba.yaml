@@ -18,10 +18,3 @@ dependencies:
   # optional
   - geopandas>=0.7.0
   - pygeos>=0.10
-  # doc build
-  - nbsphinx
-  - numpydoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinxcontrib-napoleon
-  - sphinx_bootstrap_theme

@@ -105,7 +105,7 @@ class Geary(object):
     def __init__(self, y, w, transformation="r", permutations=999):
         if not isinstance(w, weights.W):
             raise TypeError(
-                "w must be a pysal weights object, got {}" " instead".format(type(w))
+                f"w must be a pysal weights object, got {type(w)} instead."
             )
         y = np.asarray(y).flatten()
         self.n = len(y)

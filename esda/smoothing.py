@@ -607,7 +607,9 @@ def assuncao_rate(e, b):
     ebi_b = e_sum * 1.0 / b_sum
     s2 = sum(b * ((y - ebi_b) ** 2)) / b_sum
     ebi_a = s2 - ebi_b / (float(b_sum) / len(e))
-    ebi_v = ebi_a + ebi_b / b
+    ebi_v_raw = ebi_a + ebi_b / b
+    ebi_v = np.where(ebi_v_raw < 0, ebi_b / b, ebi_v_raw)
+
     return (y - ebi_b) / np.sqrt(ebi_v)
 
 
@@ -673,8 +675,8 @@ class _Smoother(object):
             assert len(e) == len(b)
         except AssertionError:
             raise ValueError(
-                "There is no one-to-one mapping between event"
-                " variable and population at risk variable!"
+                "There is no one-to-one mapping between event "
+                "variable and population at risk variable!"
             )
         for ei, bi in zip(e, b):
             ename = ei
@@ -876,10 +878,9 @@ class _Spatial_Smoother(_Smoother):
                 if isinstance(w, W):
                     found = True
             if not found:
-                raise Exception(
-                    "Weights not provided and no weights attached to frame!"
-                    " Please provide a weight or attach a weight to the"
-                    " dataframe"
+                raise ValueError(
+                    "Weights not provided and no weights attached to frame! "
+                    "Please provide a weight or attach a weight to the dataframe."
                 )
         if isinstance(w, W):
             w = [w] * len(e)
@@ -889,8 +890,8 @@ class _Spatial_Smoother(_Smoother):
             assert len(e) == len(b)
         except AssertionError:
             raise ValueError(
-                "There is no one-to-one mapping between event"
-                " variable and population at risk variable!"
+                "There is no one-to-one mapping between event "
+                "variable and population at risk variable!"
             )
         for ei, bi, wi in zip(e, b, w):
             ename = ei
@@ -967,7 +968,7 @@ class Spatial_Empirical_Bayes(_Spatial_Smoother):
         if not w.id_order_set:
             raise ValueError(
                 "The `id_order` of `w` must be set to "
-                "align with the order of `e` and `b`"
+                "align with the order of `e` and `b`."
             )
         e = np.asarray(e).reshape(-1, 1)
         b = np.asarray(b).reshape(-1, 1)
@@ -1053,7 +1054,7 @@ class Spatial_Rate(_Spatial_Smoother):
     def __init__(self, e, b, w):
         if not w.id_order_set:
             raise ValueError(
-                "w id_order must be set to align with the order of e and b"
+                "w id_order must be set to align with the order of e and b."
             )
         else:
             e = np.asarray(e).reshape(-1, 1)
@@ -1122,10 +1123,10 @@ class Kernel_Smoother(_Spatial_Smoother):
 
     def __init__(self, e, b, w):
         if type(w) != Kernel:
-            raise ValueError("w must be an instance of Kernel weights")
+            raise TypeError("w must be an instance of Kernel weights.")
         if not w.id_order_set:
             raise ValueError(
-                "w id_order must be set to align with the order of e and b"
+                "w id_order must be set to align with the order of e and b."
             )
         else:
             e = np.asarray(e).reshape(-1, 1)
@@ -1262,7 +1263,7 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
         warnings.warn(msg, FutureWarning)
 
         if s is None:
-            raise Exception('Standard population variable "s" must be supplied.')
+            raise ValueError("Standard population variable 's' must be supplied.")
         import pandas as pd
 
         if isinstance(e, str):
@@ -1279,16 +1280,15 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
                     found = True
                     break
             if not found:
-                raise Exception(
+                raise ValueError(
                     "Weights not provided and no weights attached to frame!"
-                    " Please provide a weight or attach a weight to the"
-                    " dataframe."
+                    " Please provide a weight or attach a weight to the dataframe."
                 )
         if isinstance(w, W):
             w = [w] * len(e)
         if not all(isinstance(wi, W) for wi in w):
-            raise Exception(
-                "Weights object must be an instance of " " libpysal.weights.W!"
+            raise TypeError(
+                "Weights object must be an instance of libpysal.weights.W!"
             )
         b = b * len(e) if len(b) == 1 and len(e) > 1 else b
         s = s * len(e) if len(s) == 1 and len(e) > 1 else s
@@ -1298,10 +1298,9 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
             assert len(e) == len(w)
         except AssertionError:
             raise ValueError(
-                "There is no one-to-one mapping between event"
-                " variable and population at risk variable, and "
-                " standard population variable, and spatial "
-                " weights!"
+                "There is no one-to-one mapping between event variable and "
+                "population variable and population at risk variable, and "
+                " standard population variable, and spatial weights!"
             )
         rdf = []
         max_len = 0
@@ -1383,7 +1382,7 @@ class Disk_Smoother(_Spatial_Smoother):
     def __init__(self, e, b, w):
         if not w.id_order_set:
             raise ValueError(
-                "w id_order must be set to align with the order of e and b"
+                "w id_order must be set to align with the order of e and b."
             )
         else:
             e = np.asarray(e).reshape(-1, 1)
@@ -1498,7 +1497,7 @@ class Spatial_Median_Rate(_Spatial_Smoother):
     def __init__(self, e, b, w, aw=None, iteration=1):
         if not w.id_order_set:
             raise ValueError(
-                "w id_order must be set to align with the order of e and b"
+                "w id_order must be set to align with the order of e and b."
             )
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1632,7 +1631,7 @@ class Spatial_Filtering(_Smoother):
         self.grid = list(zip(x.ravel(), y.ravel()))
         self.r = []
         if r is None and pop is None:
-            raise ValueError("Either r or pop should not be None")
+            raise ValueError("Either r or pop should not be None.")
         if r is not None:
             pnts_in_disk = data_tree.query_ball_point(self.grid, r=r)
             for i in pnts_in_disk:
@@ -1862,11 +1861,11 @@ class Headbanging_Triples(object):
         raise DeprecationWarning("Deprecated")
         if k < 3:
             raise ValueError(
-                "`w` should be a `NeareastNeighbors` instance & the number "
-                "of neighbors should be more than 3."
+                "`w` should be a `NeareastNeighbors` instance & "
+                "the number of neighbors should be more than 3."
             )
         if not w.id_order_set:
-            raise ValueError("w id_order must be set to align with the order of data")
+            raise ValueError("w id_order must be set to align with the order of data.")
         self.triples, points = {}, {}
         for i, pnt in enumerate(data):
             ng = w.neighbor_offsets[i]
@@ -2185,10 +2184,9 @@ class Headbanging_Median_Rate(object):
                 if isinstance(w, W):
                     found = True
             if not found:
-                raise Exception(
-                    "Weights not provided and no weights attached to frame!"
-                    " Please provide a weight or attach a weight to the"
-                    " dataframe"
+                raise ValueError(
+                    "Weights not provided and no weights attached to frame! "
+                    "Please provide a weight or attach a weight to the dataframe."
                 )
 
         k = kwargs.pop("k", 5)

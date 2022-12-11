@@ -1,10 +1,14 @@
 """
-S-maup: Statistical Test to Measure the Sensitivity to the Modifiable Areal Unit Problem
+S-maup: Statistical Test to Measure the Sensitivity
+to the Modifiable Areal Unit Problem.
 
 """
-__author__ = "Juan C. Duque <jduquec1@eafit.edu.co>, \
-        Henry Laniado <hlaniado@eafit.edu.co>, \
-        Adriano Polo <apolol@unal.edu.co>"
+
+__author__ = (
+    "Juan C. Duque <jduquec1@eafit.edu.co>, "
+    "Henry Laniado <hlaniado@eafit.edu.co>, "
+    "Adriano Polo <apolol@unal.edu.co>"
+)
 
 import numpy as np
 from scipy.interpolate import interp1d
@@ -14,7 +18,7 @@ __all__ = ["Smaup"]
 
 class Smaup(object):
     """S-maup: Statistical Test to Measure the Sensitivity
-    to the Modifiable Areal Unit Problem
+    to the Modifiable Areal Unit Problem.
 
     Parameters
     ----------
