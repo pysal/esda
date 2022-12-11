@@ -359,9 +359,6 @@ class Moran_BV(object):
     Inference is only based on permutations as analytical results are not too
     reliable.
 
-
-
-
     Examples
     --------
     >>> import libpysal
@@ -591,7 +588,7 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
 
     k = len(variables)
     if varnames is None:
-        varnames = ["x{}".format(i) for i in range(k)]
+        varnames = [f"x{i}" for i in range(k)]
 
     rk = list(range(0, k - 1))
     results = {}
@@ -812,9 +809,8 @@ class Moran_Rate(Moran):
             populations = populations * len(events)
         if len(events) != len(populations):
             raise ValueError(
-                "There is not a one-to-one matching between events and "
-                "populations!\nEvents: {}\n\nPopulations:"
-                " {}".format(events, populations)
+                "There is not a one-to-one matching between events and populations!"
+                f"\nEvents: {events}\nPopulations: {populations}"
             )
         adjusted = stat_kws.pop("adjusted", True)
 
@@ -853,7 +849,7 @@ class Moran_Rate(Moran):
 
 
 class Moran_Local(object):
-    """Local Moran Statistics
+    """Local Moran Statistics.
 
 
     Parameters
@@ -968,6 +964,7 @@ class Moran_Local(object):
         Seed to ensure reproducibility of conditional randomizations.
         Must be set here, and not outside of the function, since numba does
         not correctly interpret external seeds nor numpy.random.RandomState instances.
+
     Notes
     -----
 
@@ -995,7 +992,7 @@ class Moran_Local(object):
 
     Note random components result is slightly different values across
     architectures so the results have been removed from doctests and will be
-    moved into unittests that are conditional on architectures
+    moved into unittests that are conditional on architectures.
     """
 
     def __init__(
@@ -1132,7 +1129,7 @@ class Moran_Local(object):
 
     @property
     def _statistic(self):
-        """More consistent hidden attribute to access ESDA statistics"""
+        """More consistent hidden attribute to access ESDA statistics."""
         return self.Is
 
     @classmethod
@@ -1140,7 +1137,7 @@ class Moran_Local(object):
         cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
     ):
         """
-        Function to compute a Moran_Local statistic on a dataframe
+        Function to compute a Moran_Local statistic on a dataframe.
 
         Parameters
         ----------
@@ -1187,7 +1184,7 @@ class Moran_Local(object):
 
 
 class Moran_Local_BV(object):
-    """Bivariate Local Moran Statistics
+    """Bivariate Local Moran Statistics.
 
 
     Parameters
@@ -1272,7 +1269,6 @@ class Moran_Local_BV(object):
         permutations (one-sided)
         for two-sided tests, these values should be multiplied by 2
 
-
     Examples
     --------
     >>> import libpysal
@@ -1294,7 +1290,7 @@ class Moran_Local_BV(object):
 
     Note random components result is slightly different values across
     architectures so the results have been removed from doctests and will be
-    moved into unittests that are conditional on architectures
+    moved into unittests that are conditional on architectures.
     """
 
     def __init__(
@@ -1385,7 +1381,7 @@ class Moran_Local_BV(object):
 
     @property
     def _statistic(self):
-        """More consistent hidden attribute to access ESDA statistics"""
+        """More consistent hidden attribute to access ESDA statistics."""
         return self.Is
 
     @classmethod
@@ -1494,7 +1490,7 @@ class Moran_Local_Rate(Moran_Local):
         Seed to ensure reproducibility of conditional randomizations.
         Must be set here, and not outside of the function, since numba does not
         correctly interpret external seeds nor numpy.random.RandomState instances.
-    island_weight: float
+    island_weight : float
         value to use as a weight for the "fake" neighbor for every island.
         If numpy.nan, will propagate to the final local statistic depending
         on the `stat_func`. If 0, then the lag is always zero for islands.
@@ -1675,9 +1671,8 @@ class Moran_Local_Rate(Moran_Local):
             populations = populations * len(events)
         if len(events) != len(populations):
             raise ValueError(
-                "There is not a one-to-one matching between events and "
-                "populations!\nEvents: {}\n\nPopulations:"
-                " {}".format(events, populations)
+                "There is not a one-to-one matching between events and populations!"
+                f"\nEvents: {events}\nPopulations: {populations}"
             )
         adjusted = stat_kws.pop("adjusted", True)
 

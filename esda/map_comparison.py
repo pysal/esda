@@ -278,10 +278,10 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     """
     assert not (
         (polygons is None) & (areas is None)
-    ), "either polygons or precomputed areas must be provided"
+    ), "Either polygons or precomputed areas must be provided."
     assert not (
         (polygons is not None) & (areas is not None)
-    ), "only one of polygons or areas should be provided."
+    ), "Only one of polygons or areas should be provided."
     if polygons is None:
         assert areas is not None, "If polygons are not provided, areas should be."
     if areas is None:

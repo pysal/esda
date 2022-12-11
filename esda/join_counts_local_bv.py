@@ -22,6 +22,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         keep_simulations=True,
         seed=None,
         island_weight=0,
+        drop_islands=True,
     ):
         """
         Initialize a Local_Join_Counts_BV estimator
@@ -50,6 +51,11 @@ class Join_Counts_Local_BV(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island.
             If numpy.nan, will propagate to the final local statistic depending
             on the `stat_func`. If 0, then the lag is always zero for islands.
+        drop_islands : bool (default True)
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
         """
 
         self.connectivity = connectivity
@@ -58,6 +64,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         self.keep_simulations = keep_simulations
         self.seed = seed
         self.island_weight = island_weight
+        self.drop_islands = drop_islands
 
     def fit(self, x, z, case="CLC", n_jobs=1, permutations=999):
         """
@@ -136,7 +143,7 @@ class Join_Counts_Local_BV(BaseEstimator):
 
         n_jobs = self.n_jobs
 
-        self.LJC = self._statistic(x, z, w, case=case)
+        self.LJC = self._statistic(x, z, w, case, self.drop_islands)
 
         if permutations:
             if case == "BJC":
@@ -167,17 +174,16 @@ class Join_Counts_Local_BV(BaseEstimator):
                 self.p_sim[self.LJC == 0] = "NaN"
             else:
                 raise NotImplementedError(
-                    f"The requested LJC method ({case}) \
-                is not currently supported!"
+                    f"The requested LJC method ({case}) is not currently supported!"
                 )
 
         return self
 
     @staticmethod
-    def _statistic(x, z, w, case):
+    def _statistic(x, z, w, case, drop_islands):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
-        adj_list = w.to_adjlist(remove_symmetric=False)
+        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
 
         # First, set up a series that maps the values to the weights table
         zseries_x = pd.Series(x, index=w.id_order)
@@ -213,8 +219,7 @@ class Join_Counts_Local_BV(BaseEstimator):
             return np.array(adj_list_CLC.CLC.values, dtype="float")
         else:
             raise NotImplementedError(
-                f"The requested LJC method ({case}) \
-            is not currently supported!"
+                f"The requested LJC method ({case}) is not currently supported!"
             )
 
 

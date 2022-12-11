@@ -26,8 +26,8 @@ def _raise_initial_error():
     except ImportError:
         missing.append("pandas")
     raise ImportError(
-        "this function requires scikit-learn and "
-        "pandas to be installed. Missing {}".format(",".join(missing))
+        "This function requires scikit-learn and "
+        "pandas to be installed. Missing {','.join(missing)}."
     )
 
 
@@ -104,7 +104,7 @@ def path_silhouette(
     # polymorphic for sparse & dense input
     assert (
         0 == (D < 0).sum()
-    ), "Distance metric has negative values, which is not supported"
+    ), "Distance metric has negative values, which is not supported."
     off_diag_zeros = (D + np.eye(D.shape[0])) == 0
     D[off_diag_zeros] = -1
     Wm = sp.csr_matrix(W.sparse)
@@ -251,7 +251,9 @@ def path_silhouette(
     return out
 
 
-def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
+def boundary_silhouette(
+    data, labels, W, metric=skp.euclidean_distances, drop_islands=True
+):
     """
     Compute the observation-level boundary silhouette
     score :cite:`wolf2019geosilhouettes`.
@@ -269,6 +271,11 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     metric  :   callable, array,
                 a function that takes an argument (data) and returns the all-pairs
                 distances/dissimilarity between observations.
+    drop_islands : bool (default True)
+        Whether or not to preserve islands as entries in the adjacency
+        list. By default, observations with no neighbors do not appear
+        in the adjacency list. If islands are kept, they are coded as
+        self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
     Returns
     -------
@@ -301,7 +308,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
 
-    alist = W.to_adjlist()
+    alist = W.to_adjlist(drop_islands=drop_islands)
     labels = np.asarray(labels)
     if callable(metric):
         full_distances = metric(data)
@@ -312,8 +319,8 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
         else:
             raise ValueError(
                 "Precomputed metric is supplied, but is not the right shape."
-                " The dissimilarity matrix should be of shape ({},{}), but was"
-                " of shape ({},{})".format(W.n, W.n, *metric.shape)
+                f" The dissimilarity matrix should be of shape ({W.n},{W.n}), "
+                f" but was of shape ({metric.shape})."
             )
     else:
         raise ValueError(
@@ -338,7 +345,7 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
     bmask = focals.boundary.any()
     result = []
     np.seterr(all="raise")
-    for i, (ix, bnd) in enumerate(bmask.iteritems()):
+    for i, (ix, bnd) in enumerate(bmask.items()):
         if not bnd:
             result.append(np.array([0]))
             continue
@@ -352,9 +359,9 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
         mean_dissim = full_distances[i, focal_mask].sum() / (len(focal_mask) - 1)
         if not np.isfinite(mean_dissim).all():
             raise ValueError(
-                "A non-finite mean dissimilarity between groups"
-                " and the boundary observation occurred. Please ensure"
-                " the data & labels are formatted and shaped correctly."
+                "A non-finite mean dissimilarity between groups "
+                "and the boundary observation occurred. Please ensure "
+                "the data & labels are formatted and shaped correctly."
             )
         neighbor_score = np.array([np.inf])
         for neighbor in set(neighbors).difference([label]):
@@ -363,8 +370,8 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
             neighbor_score = np.minimum(neighbor_score, other_score, neighbor_score)
             if neighbor_score < 0:
                 raise ValueError(
-                    "A negative neighborhood similarity value occurred. "
-                    "This should not happen. Please create a bug report on"
+                    "A negative neighborhood similarity value occurred. This should "
+                    "not happen. Please create a bug report on "
                     "https://github.com/pysal/esda/issues"
                 )
         sil_score = (neighbor_score - mean_dissim) / np.maximum(
@@ -373,9 +380,8 @@ def boundary_silhouette(data, labels, W, metric=skp.euclidean_distances):
         result.append(sil_score)
     if len(result) != len(labels):
         raise ValueError(
-            "The number of boundary silhouettes does not match the number of"
-            " observations."
-            "This should not happen. Please create a bug report on"
+            "The number of boundary silhouettes does not match the number of "
+            "observations. This should not happen. Please create a bug report on "
             "https://github.com/pysal/esda/issues"
         )
     return np.asarray(result).squeeze()
@@ -473,10 +479,9 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
         if len(neighbor_mask) == 0:
             sils.append(0)
             warnings.warn(
-                f"A link ({row.focal},{row.neighbor}) has been found to have "
-                "an empty set of neighbors. This may happen when a label "
-                "assignment is missing for the neighbor unit. "
-                "Check that no labels are missing."
+                f"A link ({row.focal},{row.neighbor}) has been found to have an empty "
+                "set of neighbors. This may happen when a label assignment is "
+                "missing for the neighbor unit. Check that no labels are missing."
             )
             continue
         outer_distance = full_distances[i_Xc, neighbor_mask].mean()
@@ -533,13 +538,13 @@ def nearest_label(
         assert data.shape == (
             labels.shape[0],
             labels.shape[0],
-        ), "dissimilarity matrix is malformed!"
+        ), "Dissimilarity matrix is malformed!"
         dissim = data
     elif isinstance(metric, np.ndarray):
         assert metric.shape == (
             labels.shape[0],
             labels.shape[0],
-        ), "dissimilarity matrix is malformed!"
+        ), "Dissimilarity matrix is malformed!"
         dissim = metric
     unique_labels = np.unique(labels)
     nearest_label = np.empty(labels.shape, dtype=labels.dtype)
