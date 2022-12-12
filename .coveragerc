@@ -1,0 +1,16 @@
+# .coveragerc to control coverage.py
+[run]
+branch = True
+source = esda
+disable_warnings=include-ignored
+
+[report]
+omit = 
+    docs/conf.py
+    setup.py
+    */tests/*
+    versioneer.py
+    *_version.py
+
+[html]
+directory = coverage_html_report
