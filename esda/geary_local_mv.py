@@ -130,6 +130,7 @@ class Geary_Local_MV(BaseEstimator):
         # Rearrange data based on w id order
         adj_list_gs["w_order"] = w.id_order
         adj_list_gs.sort_values(by="w_order", inplace=True)
+        adj_list_gs.drop(columns=['w_order'], inplace=True)
         localG = np.array(adj_list_gs.sum(axis=1, numeric_only=True) / k)
 
         return localG
