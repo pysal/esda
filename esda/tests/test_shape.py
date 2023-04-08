@@ -4,25 +4,22 @@ from shapely import geometry
 
 import esda
 
-pygeos = pytest.importorskip("pygeos")
 pytest.importorskip("numba")
 
 
 shape = array(
     [
-        pygeos.from_shapely(
-            geometry.Polygon(
-                [
-                    (0, 0),
-                    (0.25, 0.25),
-                    (0, 0.5),
-                    (0.25, 0.75),
-                    (0, 1),
-                    (1.25, 1),
-                    (0.75, 0.5),
-                    (1.25, 0),
-                ]
-            )
+        geometry.Polygon(
+            [
+                (0, 0),
+                (0.25, 0.25),
+                (0, 0.5),
+                (0.25, 0.75),
+                (0, 1),
+                (1.25, 1),
+                (0.75, 0.5),
+                (1.25, 0),
+            ]
         )
     ]
 )

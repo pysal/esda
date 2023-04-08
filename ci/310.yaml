@@ -16,4 +16,4 @@ dependencies:
   - pytest-xdist
   # optional
   - geopandas>=0.7.0
-  - pygeos>=0.10
+  - shapely>=2

@@ -1,8 +1,9 @@
 import numpy
 import pandas
+from packaging.version import Version
 
 try:
-    import pygeos
+    import shapely
 except (ImportError, ModuleNotFoundError):
     pass  # gets handled at the _cast level.
 
@@ -12,25 +13,26 @@ from .crand import njit, prange
 # -------------------- UTILITIES --------------------#
 def _cast(collection):
     """
-    Cast a collection to a pygeos geometry array.
+    Cast a collection to a shapely geometry array.
     """
     try:
         import geopandas
-        import pygeos
+        import shapely
     except (ImportError, ModuleNotFoundError) as exception:
-        raise type(exception)("pygeos and geopandas are required for shape statistics.")
+        raise type(exception)(
+            "shapely and geopandas are required for shape statistics."
+        )
+
+    if Version(shapely.__version__) < Version("2"):
+        raise ImportError("Shapely 2.0 or newer is required.")
 
     if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
-        return collection.geometry.values.data.squeeze()
-    elif pygeos.is_geometry(collection).all():
+        return numpy.asarray(collection.geometry.array)
+    else:
         if isinstance(collection, (numpy.ndarray, list)):
             return numpy.asarray(collection)
         else:
             return numpy.array([collection])
-    elif isinstance(collection, (numpy.ndarray, list)):
-        return pygeos.from_shapely(collection).squeeze()
-    else:
-        return numpy.array([pygeos.from_shapely(collection)])
 
 
 def get_angles(collection, return_indices=False):
@@ -40,7 +42,7 @@ def get_angles(collection, return_indices=False):
 
     Parameters
     ----------
-    ga  :   pygeos geometry array
+    ga  :   shapely geometry array
         array of polygons/multipolygons
     return_indices  :   bool (Default: False)
         whether to return the indices relating each geometry to a polygon
@@ -56,22 +58,22 @@ def get_angles(collection, return_indices=False):
     -------
     If a geometry has n coordinates and k parts, the array will be n - k.
     If each geometry has n_i coordinates, then let N be a vector storing
-    those counts (computed, for example, using pygeos.get_num_coordinates(ga)).
+    those counts (computed, for example, using shapely.get_num_coordinates(ga)).
     Likewise, let K be a vector storing the number of parts each geometry has, k_i
-    (computed, for example, using pygeos.get_num_geometries(ga))
+    (computed, for example, using shapely.get_num_geometries(ga))
 
     Then, the output is of shape (N - K).sum()
 
     """
     ga = _cast(collection)
-    exploded = pygeos.get_parts(ga)
-    coords = pygeos.get_coordinates(exploded)
-    n_coords_per_geom = pygeos.get_num_coordinates(exploded)
+    exploded = shapely.get_parts(ga)
+    coords = shapely.get_coordinates(exploded)
+    n_coords_per_geom = shapely.get_num_coordinates(exploded)
     angles = numpy.asarray(_get_angles(coords, n_coords_per_geom))
     if return_indices:
         return angles, numpy.repeat(
             numpy.arange(len(ga)),
-            pygeos.get_num_coordinates(ga) - pygeos.get_num_geometries(ga),
+            shapely.get_num_coordinates(ga) - shapely.get_num_geometries(ga),
         )
     else:
         return angles
@@ -152,7 +154,7 @@ def isoperimetric_quotient(collection):
     pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))
     """
     ga = _cast(collection)
-    return (4 * numpy.pi * pygeos.area(ga)) / (pygeos.measurement.length(ga) ** 2)
+    return (4 * numpy.pi * shapely.area(ga)) / (shapely.measurement.length(ga) ** 2)
 
 
 def isoareal_quotient(collection):
@@ -164,8 +166,8 @@ def isoareal_quotient(collection):
     """
     ga = _cast(collection)
     return (
-        2 * numpy.pi * numpy.sqrt(pygeos.area(ga) / numpy.pi)
-    ) / pygeos.measurement.length(ga)
+        2 * numpy.pi * numpy.sqrt(shapely.area(ga) / numpy.pi)
+    ) / shapely.measurement.length(ga)
 
 
 def minimum_bounding_circle_ratio(collection):
@@ -177,8 +179,8 @@ def minimum_bounding_circle_ratio(collection):
     (1963)
     """
     ga = _cast(collection)
-    mbc = pygeos.minimum_bounding_circle(ga)
-    return pygeos.area(ga) / pygeos.area(mbc)
+    mbc = shapely.minimum_bounding_circle(ga)
+    return shapely.area(ga) / shapely.area(mbc)
 
 
 def radii_ratio(collection):
@@ -188,8 +190,8 @@ def radii_ratio(collection):
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
     ga = _cast(collection)
-    r_eac = numpy.sqrt(pygeos.area(ga) / numpy.pi)
-    r_mbc = pygeos.minimum_bounding_radius(ga)
+    r_eac = numpy.sqrt(shapely.area(ga) / numpy.pi)
+    r_mbc = shapely.minimum_bounding_radius(ga)
     return r_eac / r_mbc
 
 
@@ -202,13 +204,13 @@ def diameter_ratio(collection, rotated=True):
     """
     ga = _cast(collection)
     if rotated:
-        box = pygeos.minimum_rotated_rectangle(ga)
-        coords = pygeos.get_coordinates(box)
+        box = shapely.minimum_rotated_rectangle(ga)
+        coords = shapely.get_coordinates(box)
         a, b, _, d = (coords[0::5], coords[1::5], coords[2::5], coords[3::5])
         widths = numpy.sqrt(numpy.sum((a - b) ** 2, axis=1))
         heights = numpy.sqrt(numpy.sum((a - d) ** 2, axis=1))
     else:
-        box = pygeos.bounds(ga)
+        box = shapely.bounds(ga)
         (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
         widths, heights = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
     return numpy.minimum(widths, heights) / numpy.maximum(widths, heights)
@@ -226,7 +228,7 @@ def length_width_diff(collection):
     Defined as measure LW_5 in Altman (1998)
     """
     ga = _cast(collection)
-    box = pygeos.bounds(ga)
+    box = shapely.bounds(ga)
     (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
     width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
     return width - height
@@ -245,9 +247,7 @@ def boundary_amplitude(collection):
     between zero and one, like many of the other ideal shape-based indices.
     """
     ga = _cast(collection)
-    return pygeos.measurement.length(
-        pygeos.convex_hull(ga)
-    ) / pygeos.measurement.length(ga)
+    return shapely.length(shapely.convex_hull(ga)) / shapely.length(ga)
 
 
 def convex_hull_ratio(collection):
@@ -257,7 +257,7 @@ def convex_hull_ratio(collection):
     Altman's A_3 measure, from Neimi et al 1991.
     """
     ga = _cast(collection)
-    return pygeos.area(ga) / pygeos.area(pygeos.convex_hull(ga))
+    return shapely.area(ga) / shapely.area(shapely.convex_hull(ga))
 
 
 def fractal_dimension(collection, support="hex"):
@@ -270,8 +270,8 @@ def fractal_dimension(collection, support="hex"):
     complex or highly irregular geometries.
     """
     ga = _cast(collection)
-    P = pygeos.measurement.length(ga)
-    A = pygeos.area(ga)
+    P = shapely.length(ga)
+    A = shapely.area(ga)
     if support == "hex":
         return 2 * numpy.log(P / 6) / numpy.log(A / (3 * numpy.sin(numpy.pi / 3)))
     elif support == "square":
@@ -312,7 +312,7 @@ def squareness(collection):
 
     """
     ga = _cast(collection)
-    return ((numpy.sqrt(pygeos.area(ga)) * 4) / pygeos.length(ga)) ** 2
+    return ((numpy.sqrt(shapely.area(ga)) * 4) / shapely.length(ga)) ** 2
 
 
 def rectangularity(collection):
@@ -334,7 +334,7 @@ def rectangularity(collection):
     Implementation follows :cite:`basaraner2017`.
     """
     ga = _cast(collection)
-    return pygeos.area(ga) / pygeos.area(pygeos.minimum_rotated_rectangle(ga))
+    return shapely.area(ga) / shapely.area(shapely.minimum_rotated_rectangle(ga))
 
 
 def shape_index(collection):
@@ -353,7 +353,7 @@ def shape_index(collection):
 
     """
     ga = _cast(collection)
-    return numpy.sqrt(pygeos.area(ga) / numpy.pi) / pygeos.minimum_bounding_radius(ga)
+    return numpy.sqrt(shapely.area(ga) / numpy.pi) / shapely.minimum_bounding_radius(ga)
 
 
 def equivalent_rectangular_index(collection):
@@ -374,9 +374,9 @@ def equivalent_rectangular_index(collection):
     Implementation follows :cite:`basaraner2017`.
     """
     ga = _cast(collection)
-    box = pygeos.minimum_rotated_rectangle(ga)
-    return numpy.sqrt(pygeos.area(ga) / pygeos.area(box)) * (
-        pygeos.length(box) / pygeos.length(ga)
+    box = shapely.minimum_rotated_rectangle(ga)
+    return numpy.sqrt(shapely.area(ga) / shapely.area(box)) * (
+        shapely.length(box) / shapely.length(ga)
     )
 
 
@@ -398,7 +398,7 @@ def form_factor(collection, height):
     Implementation follows :cite:`bourdic2012`.
     """
     ga = _cast(collection)
-    A = pygeos.area(ga)
+    A = shapely.area(ga)
     V = A * height
     zeros = V == 0
     res = numpy.zeros(len(ga))
@@ -427,16 +427,16 @@ def moment_of_inertia(collection):
     and Hess (1963).
     """
     ga = _cast(collection)
-    coords = pygeos.get_coordinates(ga)
-    geom_ixs = numpy.repeat(numpy.arange(len(ga)), pygeos.get_num_coordinates(ga))
-    centroids = pygeos.get_coordinates(pygeos.centroid(ga))[geom_ixs]
+    coords = shapely.get_coordinates(ga)
+    geom_ixs = numpy.repeat(numpy.arange(len(ga)), shapely.get_num_coordinates(ga))
+    centroids = shapely.get_coordinates(shapely.centroid(ga))[geom_ixs]
     squared_euclidean = numpy.sum((coords - centroids) ** 2, axis=1)
     dists = (
         pandas.DataFrame.from_dict(dict(d2=squared_euclidean, geom_ix=geom_ixs))
         .groupby("geom_ix")
         .d2.sum()
     ).values
-    return pygeos.area(ga) / numpy.sqrt(2 * dists)
+    return shapely.area(ga) / numpy.sqrt(2 * dists)
 
 
 def moa_ratio(collection):
@@ -445,7 +445,7 @@ def moa_ratio(collection):
     the moment of area of a circle with the same area.
     """
     ga = _cast(collection)
-    r = pygeos.measurement.length(ga) / (2 * numpy.pi)
+    r = shapely.length(ga) / (2 * numpy.pi)
     return (numpy.pi * 0.5 * r**4) / second_areal_moment(ga)
 
 
@@ -456,7 +456,7 @@ def nmi(collection):
     its second moment of area.
     """
     ga = _cast(collection)
-    return pygeos.area(ga) ** 2 / (2 * second_areal_moment(ga) * numpy.pi)
+    return shapely.area(ga) ** 2 / (2 * second_areal_moment(ga) * numpy.pi)
 
 
 def second_areal_moment(collection):
@@ -483,16 +483,16 @@ def second_areal_moment(collection):
     """
     ga = _cast(collection)
     result = numpy.zeros(len(ga))
-    n_holes_per_geom = pygeos.get_num_interior_rings(ga)
+    n_holes_per_geom = shapely.get_num_interior_rings(ga)
     for i, geometry in enumerate(ga):
         n_holes = n_holes_per_geom[i]
         for hole_ix in range(n_holes):
-            hole = pygeos.get_coordinates(pygeos.get_interior_ring(ga, hole_ix))
+            hole = shapely.get_coordinates(shapely.get_interior_ring(ga, hole_ix))
             result[i] -= _second_moa_ring(hole)
-        for part in pygeos.get_parts(geometry):
-            result[i] += _second_moa_ring(pygeos.get_coordinates(part))
+        for part in shapely.get_parts(geometry):
+            result[i] += _second_moa_ring(shapely.get_coordinates(part))
     # must divide everything by 24 and flip if polygon is clockwise.
-    signflip = numpy.array([-1, 1])[pygeos.is_ccw(ga).astype(int)]
+    signflip = numpy.array([-1, 1])[shapely.is_ccw(ga).astype(int)]
     return result * (1 / 24) * signflip
 
 
