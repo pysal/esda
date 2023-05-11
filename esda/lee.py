@@ -189,7 +189,7 @@ class Spatial_Pearson_Local(BaseEstimator):
         Z = numpy.column_stack((x, y))
 
         standard_connectivity = sparse.csc_matrix(
-            self.connectivity / self.connectivity.sum(axis=1)
+            self.connectivity / self.connectivity.sum(axis=1, keepdims=True)
         )
 
         n, _ = x.shape
