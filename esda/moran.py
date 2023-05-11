@@ -168,8 +168,8 @@ class Moran(object):
         self.z_rand = (self.I - self.EI) / self.seI_rand
 
         if self.z_norm > 0:
-            self.p_norm = 1 - stats.norm.cdf(self.z_norm)
-            self.p_rand = 1 - stats.norm.cdf(self.z_rand)
+            self.p_norm = stats.norm.sf(self.z_norm)
+            self.p_rand = stats.norm.sf(self.z_rand)
         else:
             self.p_norm = stats.norm.cdf(self.z_norm)
             self.p_rand = stats.norm.cdf(self.z_rand)
@@ -193,7 +193,7 @@ class Moran(object):
             self.VI_sim = self.seI_sim**2
             self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
-                self.p_z_sim = 1 - stats.norm.cdf(self.z_sim)
+                self.p_z_sim = stats.norm.sf(self.z_sim)
             else:
                 self.p_z_sim = stats.norm.cdf(self.z_sim)
 
@@ -424,7 +424,7 @@ class Moran_BV(object):
             self.VI_sim = self.seI_sim**2
             self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
-                self.p_z_sim = 1 - stats.norm.cdf(self.z_sim)
+                self.p_z_sim = stats.norm.sf(self.z_sim)
             else:
                 self.p_z_sim = stats.norm.cdf(self.z_sim)
 
@@ -1056,7 +1056,7 @@ class Moran_Local(object):
                 self.seI_sim = self.sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
-                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+                self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
             else:
                 self.sim = self.rlisas = None
                 self.EI_sim = np.nan
@@ -1361,7 +1361,7 @@ class Moran_Local_BV(object):
                 self.seI_sim = sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
-                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+                self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     def __calc(self, w, zx, zy):
         zly = slag(w, zy)
