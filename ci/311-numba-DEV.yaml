@@ -23,7 +23,7 @@ dependencies:
   - sphinxcontrib-bibtex
   - sphinxcontrib-napoleon
   - sphinx_bootstrap_theme
-  - pip
+  - pip:
     - git+https://github.com/pysal/libpysal@main
     - git+https://github.com/geopandas/geopandas@main
     - git+https://github.com/toblerity/shapely@main
