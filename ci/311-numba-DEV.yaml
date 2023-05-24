@@ -15,6 +15,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  - rtree
   # optional
   # doc build
   - nbsphinx
