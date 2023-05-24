@@ -6,7 +6,7 @@ import pytest
 
 from .. import map_comparison as mc
 
-pygeos = pytest.importorskip("pygeos")
+shapely = pytest.importorskip("shapely")
 
 filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "regions.zip")
 
@@ -23,7 +23,7 @@ def test_areal_entropy():
     numpy.testing.assert_allclose(ae1e, 1.38629436111)
     ae1l = mc.areal_entropy(r1, base=2, local=True)
     numpy.testing.assert_allclose(ae1l, numpy.ones((4,)) * 0.5)
-    ae1_from_areas = mc.areal_entropy(areas=pygeos.area(r1a), base=2)
+    ae1_from_areas = mc.areal_entropy(areas=shapely.area(r1a), base=2)
     numpy.testing.assert_equal(ae1, ae1_from_areas)
 
 

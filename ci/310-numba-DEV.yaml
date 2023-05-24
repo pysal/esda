@@ -1,7 +1,6 @@
 name: test
 channels:
   - conda-forge
-  - conda-forge/label/shapely_dev
 dependencies:
   - python=3.10
   # required
@@ -17,4 +16,4 @@ dependencies:
   - pytest-xdist
   # optional
   - geopandas>=0.12.0
-  - shapely>=2.0b1
+  - shapely>=2
