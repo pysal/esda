@@ -412,7 +412,7 @@ class G_Local(object):
         self.permutations = permutations
         self.star = star
         self.calc()
-        self.p_norm = 1 - stats.norm.cdf(np.abs(self.Zs))
+        self.p_norm = stats.norm.sf(np.abs(self.Zs))
         if permutations:
             self.p_sim, self.rGs = _crand_plus(
                 y,
@@ -432,7 +432,7 @@ class G_Local(object):
                 self.seG_sim = sim.std(axis=0)
                 self.VG_sim = self.seG_sim * self.seG_sim
                 self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
-                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+                self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     def __crand(self, keep_simulations):
         y = self.y

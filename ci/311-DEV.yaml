@@ -4,7 +4,7 @@ channels:
 dependencies:
   - python=3.11
   # required
-  - libpysal
+  - geos
   - pandas>=1.0
   - scikit-learn
   - scipy>=1.0
@@ -15,9 +15,6 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   - rtree
-  # optional
-  - geopandas>=0.7.0
-  - shapely>=2
   # doc build
   - nbsphinx
   - numpydoc
@@ -25,3 +22,7 @@ dependencies:
   - sphinxcontrib-bibtex
   - sphinxcontrib-napoleon
   - sphinx_bootstrap_theme
+  - pip:
+    - git+https://github.com/pysal/libpysal@main
+    - git+https://github.com/geopandas/geopandas@main
+    - git+https://github.com/toblerity/shapely@main
