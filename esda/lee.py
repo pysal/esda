@@ -189,7 +189,7 @@ class Spatial_Pearson_Local(BaseEstimator):
         Z = numpy.column_stack((x, y))
 
         standard_connectivity = sparse.csc_matrix(
-            self.connectivity / self.connectivity.sum(axis=1)
+            self.connectivity / self.connectivity.sum(axis=1).reshape(-1, 1)
         )
 
         n, _ = x.shape
@@ -221,11 +221,11 @@ class Spatial_Pearson_Local(BaseEstimator):
                 random_neighbor_y = y[random_neighbors]
 
                 self.reference_distribution_[i] = (
-                    (weight * random_neighbor_y - y.mean()).sum(axis=1).squeeze()
-                )
+                    (weight * random_neighbor_y).sum(axis=1) - y.mean()
+                ).squeeze()
                 self.reference_distribution_[i] *= (
-                    (weight * random_neighbor_x - x.mean()).sum(axis=1).squeeze()
-                )
+                    (weight * random_neighbor_x).sum(axis=1) - x.mean()
+                ).squeeze()
             above = self.reference_distribution_ >= self.associations_.reshape(-1, 1)
             larger = above.sum(axis=1)
             extreme = numpy.minimum(larger, self.permutations - larger)

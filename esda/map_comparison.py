@@ -1,9 +1,10 @@
 import numpy
 import pandas
 from scipy.special import entr
+from packaging.version import Version
 
 try:
-    import pygeos
+    import shapely
 except (ImportError, ModuleNotFoundError):
     pass  # gets handled in the _cast function.
 
@@ -15,9 +16,9 @@ def _overlay(a, b, return_indices=False):
     """
     Compute geometries from overlaying a onto b
     """
-    tree = pygeos.STRtree(a)
-    bix, aix = tree.query_bulk(b)
-    overlay = pygeos.intersection(a[aix], b[bix])
+    tree = shapely.STRtree(a)
+    bix, aix = tree.query(b)
+    overlay = shapely.intersection(a[aix], b[bix])
     if return_indices:
         return aix, bix, overlay
     return overlay
@@ -25,27 +26,25 @@ def _overlay(a, b, return_indices=False):
 
 def _cast(collection):
     """
-    Cast a collection to a pygeos geometry array.
+    Cast a collection to a shapely geometry array.
     """
     try:
         import geopandas
-        import pygeos
     except (ImportError, ModuleNotFoundError) as exception:
         raise type(exception)(
-            "pygeos and geopandas are required for map comparison statistics."
+            "shapely and geopandas are required for map comparison statistics."
         )
 
+    if Version(shapely.__version__) < Version("2"):
+        raise ImportError("Shapely 2.0 or newer is required.")
+
     if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
-        return collection.geometry.values.data.squeeze()
-    elif pygeos.is_geometry(collection).all():
+        return numpy.asarray(collection.geometry.array)
+    else:
         if isinstance(collection, (numpy.ndarray, list)):
             return numpy.asarray(collection)
         else:
             return numpy.array([collection])
-    elif isinstance(collection, (numpy.ndarray, list)):
-        return pygeos.from_shapely(collection).squeeze()
-    else:
-        return numpy.array([pygeos.from_shapely(collection)])
 
 
 def external_entropy(a, b, balance=0, base=numpy.e):
@@ -85,9 +84,9 @@ def external_entropy(a, b, balance=0, base=numpy.e):
     b = _cast(b)
     beta = numpy.exp(balance)
     aix, bix, ab = _overlay(a, b, return_indices=True)
-    a_areas = pygeos.area(a)
-    b_areas = pygeos.area(b)
-    ab_areas = pygeos.area(ab)
+    a_areas = shapely.area(a)
+    b_areas = shapely.area(b)
+    ab_areas = shapely.area(ab)
     b_onto_a = _overlay_entropy(aix, a_areas, ab_areas, base=base)  # SjZ
     # SZ, as sabre has entropy.empirical(rowSums(xtab), unit='log2')
     b_onto_a /= areal_entropy(areas=b_areas, local=False, base=base)
@@ -137,7 +136,7 @@ def completeness(a, b, local=False, base=numpy.e):
     a = _cast(a)
     b = _cast(b)
     ohi = overlay_entropy(a, b, standardize=True, local=True, base=base)
-    a_areas = pygeos.area(a)
+    a_areas = shapely.area(a)
     w = a_areas / a_areas.sum()
     ci = (w * (1 - ohi)) / w.sum()
     if local:
@@ -220,9 +219,9 @@ def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
     a = _cast(a)
     b = _cast(b)
     aix, bix, ab = _overlay(a, b, return_indices=True)
-    a_areas = pygeos.area(a)
-    b_areas = pygeos.area(b)
-    h = _overlay_entropy(aix, a_areas, pygeos.area(ab), base=base)
+    a_areas = shapely.area(a)
+    b_areas = shapely.area(b)
+    h = _overlay_entropy(aix, a_areas, shapely.area(ab), base=base)
     if standardize:
         h /= areal_entropy(None, areas=b_areas, local=False, base=base)
     if local:
@@ -287,7 +286,7 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     if areas is None:
         assert polygons is not None, "If areas are not provided, polygons should be."
         polygons = _cast(polygons)
-        areas = pygeos.area(polygons)
+        areas = shapely.area(polygons)
     result = entr(areas / areas.sum()) / numpy.log(base)
     result[result < 0] = 0
     if local:
