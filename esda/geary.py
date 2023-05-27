@@ -3,6 +3,8 @@ Geary's C statistic for spatial autocorrelation
 """
 __author__ = "Serge Rey <sjsrey@gmail.com> "
 
+import warnings
+
 import numpy as np
 import scipy.stats as stats
 from libpysal import weights
@@ -224,6 +226,13 @@ class Geary(object):
         Technical details and derivations can be found in :cite:`cliff81`.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,

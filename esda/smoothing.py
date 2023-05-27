@@ -20,6 +20,7 @@ __author__ = (
     "Serge Rey <srey@asu.edu"
 )
 
+import warnings
 from functools import reduce
 
 from libpysal.cg import (
@@ -653,6 +654,13 @@ class _Smoother(object):
         a copy of `df` containing the columns. Or, if `inplace`, this returns
         None, but implicitly adds columns to `df`.
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         if not inplace:
             new = df.copy()
             cls.by_col(new, e, b, inplace=True, **kwargs)
@@ -848,6 +856,13 @@ class _Spatial_Smoother(_Smoother):
         a copy of `df` containing the columns. Or, if `inplace`, this returns
         None, but implicitly adds columns to `df`.
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         if not inplace:
             new = df.copy()
             cls.by_col(new, e, b, w=w, inplace=True, **kwargs)
@@ -1240,6 +1255,13 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
         a copy of `df` containing the columns. Or, if `inplace`, this returns
         None, but implicitly adds columns to `df`.
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         if s is None:
             raise ValueError("Standard population variable 's' must be supplied.")
         import pandas as pd
@@ -1660,6 +1682,13 @@ class Spatial_Filtering(_Smoother):
         coordinates of the grid cells and the rates associated with those grid
         cells.
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         import pandas as pd
 
         # prep for application over multiple event/population pairs
@@ -2122,6 +2151,12 @@ class Headbanging_Median_Rate(object):
         event/population pairs. If done inplace, there is no return value and
         `df` is modified in place.
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
 
         if not inplace:
             new = df.copy()
