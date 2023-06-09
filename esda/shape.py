@@ -129,7 +129,7 @@ def isoperimetric_quotient(collection):
     The Isoperimetric quotient, defined as the ratio of a polygon's area to the
     area of the equi-perimeter circle.
 
-    Altman's PA_1 measure
+    Altman's PA_1 measure :cite:`altman1998Districting`
 
     Construction:
 
@@ -163,6 +163,7 @@ def isoareal_quotient(collection):
     perimeter of the equi-areal circle
 
     Altman's PA_3 measure, and proportional to the PA_4 measure
+    :cite:`altman1998Districting`
     """
     ga = _cast(collection)
     return (
@@ -175,7 +176,8 @@ def minimum_bounding_circle_ratio(collection):
     The Reock compactness measure, defined by the ratio of areas between the
     minimum bounding/containing circle of a shape and the shape itself.
 
-    Measure A1 in Altman (1998), cited for Frolov (1974), but earlier from Reock
+    Measure A1 in :cite:`altman1998Districting`,
+    cited for Frolov (1974), but earlier from Reock
     (1963)
     """
     ga = _cast(collection)
@@ -185,7 +187,7 @@ def minimum_bounding_circle_ratio(collection):
 
 def radii_ratio(collection):
     """
-    The Flaherty & Crumplin (1992) index, OS_3 in Altman (1998).
+    The Flaherty & Crumplin (1992) index, OS_3 in :cite:`altman1998Districting`.
 
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
@@ -198,7 +200,7 @@ def radii_ratio(collection):
 def diameter_ratio(collection, rotated=True):
     """
     The Flaherty & Crumplin (1992) length-width measure, stated as measure LW_7
-    in Altman (1998).
+    in :cite:`altman1998Districting`.
 
     It is given as the ratio between the minimum and maximum shape diameter.
     """
@@ -225,7 +227,7 @@ def length_width_diff(collection):
     Where L is the maximal east-west extent and W is the maximal north-south
     extent.
 
-    Defined as measure LW_5 in Altman (1998)
+    Defined as measure LW_5 in :cite:`altman1998Districting`
     """
     ga = _cast(collection)
     box = shapely.bounds(ga)
@@ -423,8 +425,8 @@ def moment_of_inertia(collection):
 
     where c is the centroid of the polygon
 
-    Altman's OS_1 measure, cited in Boyce and Clark (1964), also used in Weaver
-    and Hess (1963).
+    Altman's OS_1 measure :cite:`altman1998Districting`, cited in Boyce and Clark
+    (1964), also used in Weaver and Hess (1963).
     """
     ga = _cast(collection)
     coords = shapely.get_coordinates(ga)
@@ -518,7 +520,7 @@ def _second_moa_ring(points):
 
 def reflexive_angle_ratio(collection):
     """
-    The Taylor reflexive angle index, measure OS_4 in Altman (1998)
+    The Taylor reflexive angle index, measure OS_4 in :cite:`altman1998Districting`
 
     (N-R)/(N+R), the difference in number between non-reflexive angles and
     reflexive angles in a polygon, divided by the number of angles in the
