@@ -4,6 +4,8 @@ Spatial autocorrelation for binary attributes
 """
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
+import warnings
+
 import numpy as np
 import pandas as pd
 from scipy.stats import chi2, chi2_contingency
@@ -288,6 +290,13 @@ class Join_Counts(object):
         dataframe with the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         if outvals is None:
             outvals = []
             outvals.extend(["bb", "p_sim_bw", "p_sim_bb"])

@@ -3,6 +3,8 @@ Geary's C statistic for spatial autocorrelation
 """
 __author__ = "Serge Rey <sjsrey@gmail.com> "
 
+import warnings
+
 import numpy as np
 import scipy.stats as stats
 from libpysal import weights
@@ -127,8 +129,8 @@ class Geary(object):
         self.z_norm = de / self.seC_norm
         self.z_rand = de / self.seC_rand
         if de > 0:
-            self.p_norm = 1 - stats.norm.cdf(self.z_norm)
-            self.p_rand = 1 - stats.norm.cdf(self.z_rand)
+            self.p_norm = stats.norm.sf(self.z_norm)
+            self.p_rand = stats.norm.sf(self.z_rand)
         else:
             self.p_norm = stats.norm.cdf(self.z_norm)
             self.p_rand = stats.norm.cdf(self.z_rand)
@@ -147,7 +149,7 @@ class Geary(object):
             self.seC_sim = np.array(sim).std()
             self.VC_sim = self.seC_sim**2
             self.z_sim = (self.C - self.EC_sim) / self.seC_sim
-            self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+            self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     @property
     def _statistic(self):
@@ -224,6 +226,13 @@ class Geary(object):
         Technical details and derivations can be found in :cite:`cliff81`.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,

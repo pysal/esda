@@ -218,6 +218,13 @@ class G(object):
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_cols()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,
@@ -412,7 +419,7 @@ class G_Local(object):
         self.permutations = permutations
         self.star = star
         self.calc()
-        self.p_norm = 1 - stats.norm.cdf(np.abs(self.Zs))
+        self.p_norm = stats.norm.sf(np.abs(self.Zs))
         if permutations:
             self.p_sim, self.rGs = _crand_plus(
                 y,
@@ -432,7 +439,7 @@ class G_Local(object):
                 self.seG_sim = sim.std(axis=0)
                 self.VG_sim = self.seG_sim * self.seG_sim
                 self.z_sim = (self.Gs - self.EG_sim) / self.seG_sim
-                self.p_z_sim = 1 - stats.norm.cdf(np.abs(self.z_sim))
+                self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     def __crand(self, keep_simulations):
         y = self.y
@@ -498,9 +505,9 @@ class G_Local(object):
         expected_value = cardinality / N
 
         expected_variance = cardinality * (N - cardinality)
-        expected_variance /= (N - 1)
-        expected_variance *= (1 / N**2)
-        expected_variance *= (empirical_variance / (empirical_mean**2))
+        expected_variance /= N - 1
+        expected_variance *= 1 / N**2
+        expected_variance *= empirical_variance / (empirical_mean**2)
 
         z_scores = (statistic - expected_value) / np.sqrt(expected_variance)
 
@@ -552,6 +559,13 @@ class G_Local(object):
                         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,

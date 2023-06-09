@@ -252,6 +252,13 @@ class Gamma(object):
     def by_col(
         cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
     ):
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warnings.warn(msg, FutureWarning)
+
         return _univariate_handler(
             df,
             cols,

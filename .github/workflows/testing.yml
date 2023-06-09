@@ -37,6 +37,9 @@
            - ci/310-DEV.yaml
            - ci/310-numba-DEV.yaml
            - ci/311.yaml
+           - ci/311-numba.yaml
+           - ci/311-DEV.yaml
+           - ci/311-numba-DEV.yaml
          include:
            - environment-file: ci/310-numba.yaml
              os: macos-latest
@@ -47,47 +50,47 @@
            - environment-file: ci/311.yaml
              os: windows-latest
        fail-fast: false
-       
+
      steps:
        - name: checkout repo
          uses: actions/checkout@v3
        - name: setup micromamba
-         uses: mamba-org/provision-with-micromamba@main 
+         uses: mamba-org/provision-with-micromamba@main
          with:
             micromamba-version: 'latest'
             environment-file: ${{ matrix.environment-file }}
             channel-priority: 'flexible'
-       
+
        - name: install bleeding edge libpysal (Ubuntu / Python 3.10)
          shell: bash -l {0}
          run: |
-           pip install git+https://github.com/pysal/libpysal.git@master
+           pip install git+https://github.com/pysal/libpysal.git@main
          if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV')
-       
+
        - name: environment info
          shell: bash -l {0}
          run: |
            micromamba info
            micromamba list
-       
+
        - name: spatial versions
          shell: bash -l {0}
          run: 'python -c "import geopandas; geopandas.show_versions();"'
-       
+
        - name: run tests - bash
          shell: bash -l {0}
          run: |
            ${{ env.FETCH_DATA }}
            ${{ env.RUN_TEST }}
          if: matrix.os != 'windows-latest'
-       
+
        - name: run tests - powershell
          shell: powershell
          run:  |
            ${{ env.FETCH_DATA }}
            ${{ env.RUN_TEST }}
          if: matrix.os == 'windows-latest'
-      
+
        - name: ${{ matrix.os }}, ${{ matrix.environment-file }}
          uses: codecov/codecov-action@v3
          with:
