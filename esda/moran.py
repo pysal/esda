@@ -380,6 +380,7 @@ class Moran_BV(object):
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
 
     Create an instance of Moran_BV
+    
     >>> from esda.moran import Moran_BV
     >>> mbi = Moran_BV(SIDR79,  SIDR74,  w)
 
