@@ -1,4 +1,0 @@
-libpysal
-pandas
-scikit-learn
-scipy>=0.11

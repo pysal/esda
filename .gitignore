@@ -1,6 +1,7 @@
 *.pyc
 .ipynb_checkpoints/
 .DS_Store
+.vscode/
 
 # Packages
 *.egg

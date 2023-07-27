@@ -1,6 +1,0 @@
-nbsphinx
-numpydoc
-sphinx
-sphinxcontrib-bibtex
-sphinxcontrib-napoleon
-sphinx_bootstrap_theme
