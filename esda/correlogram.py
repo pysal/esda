@@ -142,3 +142,9 @@ def correlogram(
         .select_dtypes(["number"])
         .drop(columns=["permutations", "n"])
     )
+
+
+## Note: To be implemented: 
+
+## non-parametric version used in geoda https://geodacenter.github.io/workbook/5a_global_auto/lab5a.html#spatial-correlogram
+## as given in https://link.springer.com/article/10.1023/A:1009601932481'
