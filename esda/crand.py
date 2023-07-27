@@ -559,7 +559,7 @@ def parallel_crand(
 #######################################################################
 
 
-@njit(fastmath=False)
+@njit(fastmath=False, nopython=True)
 def _prepare_univariate(i, z, permuted_ids, weights_i):
     mask = np.ones_like(z, dtype=boolean)
     mask[i] = False
@@ -570,7 +570,7 @@ def _prepare_univariate(i, z, permuted_ids, weights_i):
     return z[i], zrand
 
 
-@njit(fastmath=False)
+@njit(fastmath=False, nopython=True)
 def _prepare_bivariate(i, z, permuted_ids, weights_i):
     zx = z[:, 0]
     zy = z[:, 1]

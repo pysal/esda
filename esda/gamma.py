@@ -275,7 +275,7 @@ class Gamma(object):
 # --------------------------------------------------------------
 # Conditional Randomization Function Implementations
 # --------------------------------------------------------------
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _local_gamma_crand(i, z, permuted_ids, weights_i, scaling):
     zi, zrand = _prepare_univariate(i, z, permuted_ids, weights_i)
     return (zi * zrand) @ weights_i * scaling

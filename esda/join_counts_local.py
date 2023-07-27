@@ -173,7 +173,7 @@ class Join_Counts_Local(BaseEstimator):
 # Note: scaling not used
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _ljc_uni(i, z, permuted_ids, weights_i, scaling):
     # self_weight = weights_i[0]
     other_weights = weights_i[1:]

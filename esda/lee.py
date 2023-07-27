@@ -245,7 +245,7 @@ class Spatial_Pearson_Local(BaseEstimator):
 # --------------------------------------------------------------
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _local_spatial_pearson_crand(i, z, permuted_ids, weights_i, scaling):
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
     return (zyrand @ weights_i) * (zxrand @ weights_i) * scaling

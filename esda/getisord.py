@@ -641,14 +641,14 @@ def _infer_star_and_structure_w(weights, star, transform):
 # --------------------------------------------------------------
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _g_local_crand(i, z, permuted_ids, weights_i, scaling):
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zrand @ other_weights) / (scaling - zi)
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
     self_weight = weights_i[0]
     other_weights = weights_i[1:]

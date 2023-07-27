@@ -181,7 +181,7 @@ class Join_Counts_Local_MV(BaseEstimator):
 # Note: scaling not used
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _ljc_mv(i, z, permuted_ids, weights_i, scaling):
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)

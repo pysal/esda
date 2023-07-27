@@ -230,7 +230,7 @@ class Join_Counts_Local_BV(BaseEstimator):
 # Note: scaling not used
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
     zx = z[:, 0]
     zy = z[:, 1]
@@ -239,7 +239,7 @@ def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
     return zx[i] * (zyrand @ other_weights)
 
 
-@_njit(fastmath=True)
+@_njit(fastmath=True, nopython=False)
 def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):
     zy = z[:, 1]
     other_weights = weights_i[1:]
