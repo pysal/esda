@@ -181,8 +181,8 @@ def minimum_bounding_circle_ratio(collection):
     (1963)
     """
     ga = _cast(collection)
-    mbc = shapely.minimum_bounding_circle(ga)
-    return shapely.area(ga) / shapely.area(mbc)
+    mbca = (shapely.minimum_bounding_radius(ga) ** 2) * numpy.pi
+    return shapely.area(ga) / mbca
 
 
 def radii_ratio(collection):
