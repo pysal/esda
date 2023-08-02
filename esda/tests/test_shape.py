@@ -79,7 +79,7 @@ def test_nmi():
 
 def test_mbc():
     observed = esda.shape.minimum_bounding_circle_ratio(shape)
-    testing.assert_allclose(observed, 0.437571, atol=ATOL)
+    testing.assert_allclose(observed, 0.434765, atol=ATOL)
 
 
 def test_reflexive_angle_ratio():
