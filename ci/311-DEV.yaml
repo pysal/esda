@@ -20,7 +20,7 @@ dependencies:
   - sphinxcontrib-napoleon
   - sphinx_bootstrap_theme
   - pip:
-      - --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple
+      - --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
       - scikit-learn
       - scipy
       - pandas
