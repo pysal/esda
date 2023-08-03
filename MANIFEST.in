@@ -1,3 +1,0 @@
-include MANIFEST.in LICENSE.txt requirements.txt requirements_docs.txt requirements_plus.txt requirements_tests.txt
-include versioneer.py
-include esda/_version.py
