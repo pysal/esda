@@ -57,6 +57,10 @@ def correlogram(
 ):
     """Generate a spatial correlogram
 
+    A spatial correlogram is a set of spatial autocorrelation statistics calculated for
+    a set of increasing distances. It is a useful exploratory tool for examining
+    how the relationship between spatial units changes over different notions of scale.
+
     Parameters
     ----------
     gdf : gpd.GeoDataFrame
