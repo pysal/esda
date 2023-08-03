@@ -2,7 +2,6 @@
 
 import geopandas as gpd
 import pandas as pd
-import numpy as np
 from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
@@ -75,12 +74,12 @@ def correlogram(
         additional keyword arguments passed to the libpysal.weights.W class
     stat_kwargs : dict
         additional keyword arguments passed to the `esda` autocorrelation statistic class.
-        For example for faster results with no statistical inference, set the nuumber
+        For example for faster results with no statistical inference, set the number
         of permutations to zero with {permutations: 0}
     n_jobs : int
         number of jobs to pass to joblib. If -1 (default), all cores will be used
     backend : str
-        backend parameter passed to joblb
+        backend parameter passed to joblib
 
     Returns
     -------
@@ -144,7 +143,7 @@ def correlogram(
     )
 
 
-## Note: To be implemented: 
+## Note: To be implemented:
 
 ## non-parametric version used in geoda https://geodacenter.github.io/workbook/5a_global_auto/lab5a.html#spatial-correlogram
 ## as given in https://link.springer.com/article/10.1023/A:1009601932481'
