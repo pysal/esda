@@ -56,7 +56,6 @@ notebooks/splot.ipynb
 notebooks/test.ipynb
 pysal_data/
 spdep-geary.ipynb
-tests/
 tools/changelog.md
 tools/changelog_2.0.0.md
 tools/changelog_2.0.1.md
