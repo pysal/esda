@@ -5,9 +5,9 @@ dependencies:
   - python=3.8
   # required
   - libpysal
-  - pandas>=1.0
-  - scikit-learn
-  - scipy>=1.0
+  - pandas>=1.0,<1.1
+  - scikit-learn>=1.0,<1.1
+  - scipy>=1.0,<1.1
   # testing
   - codecov
   - matplotlib
@@ -16,5 +16,5 @@ dependencies:
   - pytest-xdist
   - rtree
   # optional
-  - geopandas>=0.7.0
+  - geopandas>=0.12.0,<0.13
   - shapely>=2

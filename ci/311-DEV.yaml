@@ -5,9 +5,6 @@ dependencies:
   - python=3.11
   # required
   - geos
-  - pandas>=1.0
-  - scikit-learn
-  - scipy>=1.0
   # testing
   - codecov
   - matplotlib
@@ -23,6 +20,10 @@ dependencies:
   - sphinxcontrib-napoleon
   - sphinx_bootstrap_theme
   - pip:
-    - git+https://github.com/pysal/libpysal@main
-    - git+https://github.com/geopandas/geopandas@main
-    - git+https://github.com/toblerity/shapely@main
+      - --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple
+      - scikit-learn
+      - scipy
+      - pandas
+      - git+https://github.com/pysal/libpysal@main
+      - git+https://github.com/geopandas/geopandas@main
+      - git+https://github.com/toblerity/shapely@main
