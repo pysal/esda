@@ -1,6 +1,0 @@
-codecov
-geopandas
-pytest
-pytest-cov
-pytest-xdist
-twine
