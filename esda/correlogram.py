@@ -6,14 +6,11 @@ from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
 from libpysal.weights.util import get_points_array
-
-from .geary import Geary
-from .getisord import G
-from .moran import Moran
+from esda.moran import Moran
 
 
-def _get_autocorrelation_stat(inputs):
-    """helper function for computing parallel autocorrelation statistics
+def _get_stat(inputs):
+    """helper function for computing parallel statistics at multiple Graph specifications
 
     Parameters
     ----------
@@ -27,8 +24,8 @@ def _get_autocorrelation_stat(inputs):
     """
     (
         y,  # y variable
-        tree,  # kd tree
-        W,  # weights class DistanceBand or KNN
+        tree,  # kdreee,
+        W,  # weights class
         STATISTIC,  # class of statistic (Moran, Geary, etc)
         dist,  # threshold/k parameter for the weights
         weights_kwargs,  # additional args
@@ -48,16 +45,16 @@ def correlogram(
     gdf: gpd.GeoDataFrame,
     variable: str,
     distances: list,
+    statistic: callable = Moran,
     distance_type: str = "band",
-    statistic: str = "I",
     weights_kwargs: dict = None,
     stat_kwargs: dict = None,
+    select_numeric: bool = False,
     n_jobs: int = -1,
-    backend: str = "loky",
 ):
     """Generate a spatial correlogram
 
-    A spatial correlogram is a set of spatial autocorrelation statistics calculated for
+    A spatial profile is a set of spatial autocorrelation statistics calculated for
     a set of increasing distances. It is a useful exploratory tool for examining
     how the relationship between spatial units changes over different notions of scale.
 
@@ -69,21 +66,27 @@ def correlogram(
         column on the geodataframe used to compute autocorrelation statistic
     distances : list
         list of distances to compute the autocorrelation statistic
+    statistic : callable
+        statistic to be computed for a range of libpysal.Graph specifications.
+        This should be a class with a signature like `Statistic(y,w, **kwargs)`
+        where y is a numpy array and w is a libpysal.Graph.
+        Generally, this is a class from pysal's `esda` package
+        defaults to esda.Moran, which computes the Moran's I statistic
     distance_type : str, optional
         which concept of distance to increment. Options are {`band`, `knn`}.
         by default 'band' (for `libpysal.weights.DistanceBand` weights)
-    statistic : str, by default 'I'
-        which spatial autocorrelation statistic to compute. Options in {`I`, `G`, `C`}
     weights_kwargs : dict
         additional keyword arguments passed to the libpysal.weights.W class
     stat_kwargs : dict
         additional keyword arguments passed to the `esda` autocorrelation statistic class.
         For example for faster results with no statistical inference, set the number
         of permutations to zero with {permutations: 0}
+    select_numeric : bool
+        if True, only return numeric attributes from the original class. This is useful
+        e.g. to prevent lists inside a "cell" of a dataframe
     n_jobs : int
         number of jobs to pass to joblib. If -1 (default), all cores will be used
-    backend : str
-        backend parameter passed to joblib
+
 
     Returns
     -------
@@ -94,15 +97,6 @@ def correlogram(
         stat_kwargs = dict()
     if weights_kwargs is None:
         weights_kwargs = dict()
-    if statistic == "I":
-        STATISTIC = Moran
-    elif statistic == "G":
-        STATISTIC = G
-    elif statistic == "C":
-        STATISTIC = Geary
-    else:
-        with NotImplementedError as e:
-            raise e("Only I, G, and C statistics are currently implemented")
 
     if distance_type == "band":
         W = DistanceBand
@@ -115,36 +109,32 @@ def correlogram(
         with NotImplementedError as e:
             raise e("distance_type must be either `band` or `knn` ")
 
-    #  should be able to build the tree once and reuse it?
-    #  but in practice, im not seeing any real difference from starting a new W from scratch each time
+    # there's a faster way to do this by building the largest tree first, then subsetting...
     pts = get_points_array(gdf[gdf.geometry.name])
     tree = KDTree(pts)
     y = gdf[variable].values
 
     inputs = [
-        tuple(
-            [
+        (
                 y,
                 tree,
                 W,
-                STATISTIC,
+                statistic,
                 dist,
                 weights_kwargs,
                 stat_kwargs,
-            ]
-        )
+            )
         for dist in distances
     ]
 
-    outputs = Parallel(n_jobs=n_jobs, backend=backend)(
-        delayed(_get_autocorrelation_stat)(i) for i in inputs
+    outputs = Parallel(n_jobs=n_jobs, backend="loky")(
+        delayed(_get_stat)(i) for i in inputs
     )
 
-    return (
-        pd.DataFrame(outputs)
-        .select_dtypes(["number"])
-        .drop(columns=["permutations", "n"])
-    )
+    df = pd.DataFrame(outputs)
+    if select_numeric:
+        df = df.select_dtypes(["number"])
+    return df
 
 
 ## Note: To be implemented:
