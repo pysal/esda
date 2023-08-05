@@ -6,6 +6,7 @@ from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
 from libpysal.weights.util import get_points_array
+
 from esda.moran import Moran
 
 
