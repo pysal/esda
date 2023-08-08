@@ -10,6 +10,13 @@ except (ImportError, ModuleNotFoundError):
 from .crand import njit, prange
 
 
+__author__ = (
+    "Martin Fleischmann <martin@fleischmann.net>",
+    "Levi John Wolf <levi.john.wolf@gmail.com>",
+    "Alan Murray <amurray@ucsb.edu>",
+    "Jiwan Baik <jiwon.baik@geog.ucsb.edu>"
+)
+
 # -------------------- UTILITIES --------------------#
 def _cast(collection):
     """
