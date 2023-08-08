@@ -1,15 +1,15 @@
 import pytest
 from numpy import array, testing
-from shapely import geometry
-
+import shapely
 import esda
+import geopandas, libpysal, numpy
 
 pytest.importorskip("numba")
 
 
 shape = array(
     [
-        geometry.Polygon(
+        shapely.geometry.Polygon(
             [
                 (0, 0),
                 (0.25, 0.25),
@@ -26,6 +26,31 @@ shape = array(
 
 ATOL = 0.001
 
+## for a hole/multipart testbench: 
+
+counties = geopandas.read_file(libpysal.examples.get_path("south.shp"))
+ms_counties = counties.query("STATE_NAME == 'Mississippi'")
+
+
+test_geom = ms_counties.geometry.iloc[-1]
+
+test_geom_translated = shapely.transform(
+    test_geom, lambda x: (x-shapely.get_coordinates(shapely.centroid(test_geom)))*[2,4]-[3,-1]
+    )
+
+test_simple = shapely.difference(shapely.box(-1,0,-2,1), shapely.box(-1,0,-1.5,.5))
+
+test_hole = shapely.difference(shapely.box(0,0,1.81,1.81), shapely.box(.8,.8,1.6,1.6))
+
+test_mp = shapely.union(shapely.box(-1,-1,-1.5,-2), shapely.box(0,-1,1.25,-2))
+
+test_mp_hole = shapely.union(
+    shapely.transform(test_hole, lambda x: numpy.column_stack((-x[:,0]+3, x[:,1]*.5+3))),
+    shapely.transform(test_hole, lambda x: numpy.column_stack((x[:,0]+4, x[:,1])))
+    )
+
+testbench = geopandas.GeoDataFrame(geometry=[test_geom_translated, test_simple, test_mp, test_hole, test_mp_hole]).reset_index()
+testbench['name'] = ['Hanock County', 'Simple', 'Multi', 'Single Hole', 'Multi Hole']
 
 def test_boundary_amplitude():
     observed = esda.shape.boundary_amplitude(shape)
@@ -62,19 +87,24 @@ def test_ipq():
     testing.assert_allclose(observed, 0.387275, atol=ATOL)
 
 
-def test_moa():
-    observed = esda.shape.moa_ratio(shape)
-    testing.assert_allclose(observed, 3.249799, atol=ATOL)
-
-
 def test_moment_of_interia():
     observed = esda.shape.moment_of_inertia(shape)
     testing.assert_allclose(observed, 0.315715, atol=ATOL)
 
+def test_second_areal_moment():
+    observed = esda.shape.second_areal_moment(testbench.geometry)
+    testing.assert_allclose(observed, 
+        [0.23480628,  0.11458333,  1.57459077,  1.58210246, 14.18946959],
+        atol=ATOL
+        )
+
+def test_moa():
+    observed = esda.shape.moa_ratio(shape)
+    testing.assert_allclose(observed, 5.35261, atol=ATOL)
 
 def test_nmi():
     observed = esda.shape.nmi(shape)
-    testing.assert_allclose(observed, 0.487412, atol=ATOL)
+    testing.assert_allclose(observed, .802796, atol=ATOL)
 
 
 def test_mbc():
