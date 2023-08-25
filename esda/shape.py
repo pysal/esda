@@ -479,6 +479,7 @@ def second_areal_moment(collection):
         I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)
 
     While the :math:`y` axis is in a similar form:
+    .. math::
         I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)
 
     where :math:`x_i`,:math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,
