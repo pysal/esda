@@ -475,16 +475,20 @@ def second_areal_moment(collection):
     moment of area is the sum of the inertia across the x and y axes:
 
     The :math:`x` axis is given by:
+
     .. math::
+
         I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)
 
     While the :math:`y` axis is in a similar form:
+
     .. math::
+
         I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)
 
-    where :math:`x_i`,:math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,
-    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes, 
-    all parts are treated as separate contributions to the overall centroid, which 
+    where :math:`x_i`, :math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,
+    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes,
+    all parts are treated as separate contributions to the overall centroid, which
     provides the same result as if all parts with holes are separately computed, and then
     merged together using the parallel axis theorem.
 
