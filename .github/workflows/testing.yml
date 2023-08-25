@@ -55,11 +55,10 @@
        - name: checkout repo
          uses: actions/checkout@v3
        - name: setup micromamba
-         uses: mamba-org/provision-with-micromamba@main
+         uses: mamba-org/setup-micromamba@v1
          with:
             micromamba-version: 'latest'
             environment-file: ${{ matrix.environment-file }}
-            channel-priority: 'flexible'
 
        - name: install bleeding edge libpysal (Ubuntu / Python 3.10)
          shell: bash -l {0}
