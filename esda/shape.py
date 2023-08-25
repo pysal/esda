@@ -471,15 +471,19 @@ def nmi(collection):
 
 def second_areal_moment(collection):
     """
-    Using equation listed on en.wikipedia.org/wiki/Second_Moment_of_area, the second
-    moment of area is the sum of the inertia across the x and y axes
+    Using equation listed on en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon, the second
+    moment of area is the sum of the inertia across the x and y axes:
 
+    The :math:`x` axis is given by:
     .. math::
-        I_xy = (1/12)\\sum^{i=N}^{i=1} (x_iy_{i+1} + x_i^2 + x_ix_{i+1} + x_{i+1}^2 + y_i^2 + y_iy_{i+1} + y_{i+1}^2))
+        I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)
 
-    where x_i, y_i is the current point and x_{i+1}, y_{i+1} is the next point,
-    and where x_{n+1} = x_1, y_{n+1} = y_1. For multipart polygons with holes,
-    all parts are treated as separate contributions to the overall centroid, which
+    While the :math:`y` axis is in a similar form:
+        I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)
+
+    where :math:`x_i`,:math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,
+    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes, 
+    all parts are treated as separate contributions to the overall centroid, which 
     provides the same result as if all parts with holes are separately computed, and then
     merged together using the parallel axis theorem.
 
