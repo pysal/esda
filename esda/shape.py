@@ -10,6 +10,14 @@ except (ImportError, ModuleNotFoundError):
 from .crand import njit, prange
 
 
+__author__ = (
+    "Martin Fleischmann <martin@fleischmann.net>",
+    "Levi John Wolf <levi.john.wolf@gmail.com>",
+    "Alan Murray <amurray@ucsb.edu>",
+    "Jiwan Baik <jiwon.baik@geog.ucsb.edu>",
+)
+
+
 # -------------------- UTILITIES --------------------#
 def _cast(collection):
     """
@@ -463,43 +471,111 @@ def nmi(collection):
 
 def second_areal_moment(collection):
     """
-    Using equation listed on en.wikipedia.org/Second_Moment_of_area, the second
-    moment of area is actually the cross-moment of area between the X and Y
-    dimensions:
+    Using equation listed on en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon, the second
+    moment of area is the sum of the inertia across the x and y axes:
 
+    The :math:`x` axis is given by:
     .. math::
-        I_xy = (1/24)\\sum^{i=N}^{i=1} (x_iy_{i+1} + 2*x_iy_i + 2*x_{i+1}y_{i+1} +
-        x_{i+1}y_i)(x_iy_i - x_{i+1}y_i)
+        I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)
 
-    where x_i, y_i is the current point and x_{i+1}, y_{i+1} is the next point,
-    and where x_{n+1} = x_1, y_{n+1} = 1.
+    While the :math:`y` axis is in a similar form:
+    .. math::
+        I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)
 
-    This relation is known as the:
-    - second moment of area
-    - moment of inertia of plane area
-    - area moment of inertia
-    - second area moment
+    where :math:`x_i`,:math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,
+    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes, 
+    all parts are treated as separate contributions to the overall centroid, which 
+    provides the same result as if all parts with holes are separately computed, and then
+    merged together using the parallel axis theorem.
 
-    and is *not* the mass moment of inertia, a property of the distribution of
-    mass around a shape.
+    References
+    ----------
+    Hally, D. 1987. The calculations of the moments of polygons. Canadian National
+    Defense Research and Development Technical Memorandum 87/209.
+    https://apps.dtic.mil/dtic/tr/fulltext/u2/a183444.pdf
+
     """
     ga = _cast(collection)
-    result = numpy.zeros(len(ga))
-    n_holes_per_geom = shapely.get_num_interior_rings(ga)
-    for i, geometry in enumerate(ga):
-        n_holes = n_holes_per_geom[i]
-        for hole_ix in range(n_holes):
-            hole = shapely.get_coordinates(shapely.get_interior_ring(ga, hole_ix))
-            result[i] -= _second_moa_ring(hole)
-        for part in shapely.get_parts(geometry):
-            result[i] += _second_moa_ring(shapely.get_coordinates(part))
-    # must divide everything by 24 and flip if polygon is clockwise.
-    signflip = numpy.array([-1, 1])[shapely.is_ccw(ga).astype(int)]
-    return result * (1 / 24) * signflip
+    import geopandas  # function level, to follow module design
+
+    # construct a dataframe of the fundamental parts of all input polygons
+    parts, collection_ix = shapely.get_parts(ga, return_index=True)
+    rings, ring_ix = shapely.get_rings(parts, return_index=True)
+    # get_rings() always returns the exterior first, then the interiors
+    collection_ix = numpy.repeat(
+        collection_ix, shapely.get_num_interior_rings(parts) + 1
+    )
+    # we need to work in polygon-space for the algorithms (centroid, shoelace calculation) to work
+    polygon_rings = shapely.polygons(rings)
+    is_external = numpy.zeros_like(collection_ix).astype(bool)
+    # the first element is always external
+    is_external[0] = True
+    # and each subsequent element is external iff it is different from the preceeding index
+    is_external[1:] = ring_ix[1:] != ring_ix[:-1]
+    # now, our analysis frame contains a bunch of (guaranteed-to-be-simple) polygons
+    # that represent either exterior rings or holes
+    polygon_rings = geopandas.GeoDataFrame(
+        dict(
+            collection_ix=collection_ix,
+            ring_within_geom_ix=ring_ix,
+            is_external_ring=is_external,
+        ),
+        geometry=polygon_rings,
+    )
+    # the polygonal moi can be calculated using the same ring-based strategy,
+    # and this could be parallelized if necessary over the elemental shapes with:
+
+    # from joblib import Parallel, parallel_backend, delayed
+    # with parallel_backend('loky', n_jobs=-1):
+    #     engine = Parallel()
+    #     promise = delayed(_second_moment_of_area_polygon)
+    #     result = engine(promise(geom) for geom in polygon_rings.geometry.values)
+
+    # but we will keep simple for now
+    polygon_rings["moa"] = polygon_rings.geometry.apply(_second_moment_of_area_polygon)
+    # the above algorithm computes an unsigned moa to be insensitive to winding direction.
+    # however, we need to subtract the moa of holes. Hence, the sign of the moa is
+    # -1 when the polygon is an internal ring and 1 otherwise:
+    polygon_rings["sign"] = (1 - polygon_rings.is_external_ring * 2) * -1
+    # shapely already uses the correct formulation for centroids
+    polygon_rings["centroids"] = shapely.centroid(polygon_rings.geometry)
+    # the inertia of parts applies to the overall center of mass:
+    original_centroids = shapely.centroid(ga)
+    polygon_rings["collection_centroid"] = original_centroids[collection_ix]
+    # proportional to the squared distance between the original and part centroids:
+    polygon_rings["radius"] = shapely.distance(
+        polygon_rings.centroid.values, polygon_rings.collection_centroid.values
+    )
+    # now, we take the sum of (I+Ar^2) for each ring, treating the
+    # contribution of holes as negative. Then, we take the sum of all of the contributions
+    return (
+        polygon_rings.groupby(["collection_ix", "ring_within_geom_ix"])
+        .apply(
+            lambda ring_in_part: (
+                (ring_in_part.moa + ring_in_part.radius**2 * ring_in_part.area)
+                * ring_in_part.sign
+            ).sum()
+        )
+        .groupby(level="collection_ix")
+        .sum()
+        .values
+    )
+
+
+def _second_moment_of_area_polygon(polygon):
+    """
+    Compute the absolute value of the moment of area (i.e. ignoring winding direction)
+    for an input polygon.
+    """
+    coordinates = shapely.get_coordinates(polygon)
+    centroid = shapely.centroid(polygon)
+    centroid_coords = shapely.get_coordinates(centroid)
+    moi = _second_moa_ring_xplusy(coordinates - centroid_coords)
+    return abs(moi)
 
 
 @njit
-def _second_moa_ring(points):
+def _second_moa_ring_xplusy(points):
     """
     implementation of the moment of area for a single ring
     """
@@ -511,8 +587,15 @@ def _second_moa_ring(points):
         xhyt = x_head * y_tail
         xtyt = x_tail * y_tail
         xhyh = x_head * y_head
-        moi += (xtyh - xhyt) * (xtyh + 2 * xtyt + 2 * xhyh + xhyt)
-    return moi
+        moi += (xtyh - xhyt) * (
+            x_head**2
+            + x_head * x_tail
+            + x_tail**2
+            + y_head**2
+            + y_head * y_tail
+            + y_tail**2
+        )
+    return moi / 12
 
 
 # -------------------- OTHER MEASURES -------------------- #
