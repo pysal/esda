@@ -7,7 +7,7 @@ __all__ = ["G", "G_Local"]
 import warnings
 
 import numpy as np
-import scipy.stats as stats
+from scipy import stats
 
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from libpysal.weights.util import fill_diagonal
