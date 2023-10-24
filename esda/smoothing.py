@@ -23,7 +23,10 @@ __author__ = (
 import warnings
 from functools import reduce
 
+import numpy as np
+
 from libpysal.cg import (
+    KDTree,
     LineSegment,
     Point,
     Ray,
@@ -34,7 +37,6 @@ from libpysal.cg import (
     get_points_dist,
     get_segment_point_dist,
 )
-from libpysal.common import KDTree, np
 from libpysal.common import requires as _requires
 from libpysal.weights.distance import Kernel
 from libpysal.weights.spatial_lag import lag_spatial as slag
