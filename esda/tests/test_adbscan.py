@@ -2,7 +2,8 @@ import unittest
 
 import numpy as np
 import pandas
-
+import sklearn
+import pytest
 from .. import adbscan
 
 
@@ -72,6 +73,7 @@ class ADBSCAN_Tester(unittest.TestCase):
             ]
         )
 
+    @pytest.mark.skipif(sklearn.__version__ == "1.3.0", reason="sklearn regression")
     def test_adbscan(self):
         # ------------------------#
         #           # Single Core #
@@ -260,6 +262,7 @@ class Get_Cluster_Boundary_Tester(unittest.TestCase):
         _ = ads.fit(self.db, xy=["x", "y"])
         self.labels = pandas.Series(ads.labels_, index=self.db.index)
 
+    @pytest.mark.skipif(sklearn.__version__ == "1.3.0", reason="sklearn regression")
     def test_get_cluster_boundary(self):
         # ------------------------#
         #           # Single Core #

@@ -6,7 +6,9 @@ __all__ = ["G", "G_Local"]
 
 import warnings
 
-from libpysal.common import np, stats
+import numpy as np
+from scipy import stats
+
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from libpysal.weights.util import fill_diagonal
 
