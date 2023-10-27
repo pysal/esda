@@ -1809,7 +1809,6 @@ def _get_cluster_labels(moran_local, crit_value):
     gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 2), "Moran Cluster"] = "Low-High"
     gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 3), "Moran Cluster"] = "Low-Low"
     gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 4), "Moran Cluster"] = "High-Low"
-    # gdf.loc[gdf["p_sim"] >= crit_value, "Moran Cluster"] = "Insignificant"
 
     return gdf["Moran Cluster"].values
 
