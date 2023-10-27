@@ -11,8 +11,10 @@ __author__ = (
 from warnings import simplefilter
 
 import numpy as np
+import pandas as pd
 import scipy.stats as stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
+from matplotlib import colors
 from scipy import sparse
 
 from .crand import _prepare_univariate
@@ -20,8 +22,6 @@ from .crand import crand as _crand_plus
 from .crand import njit as _njit
 from .smoothing import assuncao_rate
 from .tabular import _bivariate_handler, _univariate_handler
-from matplotlib import colors
-
 
 __all__ = [
     "Moran",
@@ -1185,6 +1185,22 @@ class Moran_Local:
             **stat_kws,
         )
 
+    def get_cluster_labels(self, crit_value=0.05):
+        """Return LISA cluster labels for each observation.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            crititical significance value for statistical inference, by default 0.05
+
+        Returns
+        -------
+        numpy.array
+            an array of cluster labels aligned with the input data used to conduct the
+            local Moran analysis
+        """
+        return _get_cluster_labels(self, crit_value)
+
     def explore(self, gdf, crit_value=0.05, explore_kwargs=None, m=None):
         """Create interactive map of LISA indicators
 
@@ -1204,8 +1220,10 @@ class Moran_Local:
         Folium.Map
             interactive map with LISA clusters
         """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
         return _explore_local_moran(
-            self, gdf, crit_value=crit_value, explore_kwargs=explore_kwargs, m=m
+            self, gdf, crit_value, explore_kwargs=explore_kwargs, m=m
         )
 
 
@@ -1731,9 +1749,7 @@ class Moran_Local_Rate(Moran_Local):
             df[col] = rate_df[col]
 
 
-def _explore_local_moran(
-    moran_local, gdf, crit_value=0.05, explore_kwargs=None, m=None
-):
+def _explore_local_moran(moran_local, gdf, crit_value, explore_kwargs=None, m=None):
     """Plot local Moran values as an interactive map
 
     Parameters
@@ -1757,17 +1773,8 @@ def _explore_local_moran(
     if explore_kwargs is None:
         explore_kwargs = dict()
     gdf = gdf.copy()
-
-    gdf["q"] = moran_local.q
-    gdf["p_sim"] = moran_local.p_sim
-
-    gdf.loc[
-        (gdf["p_sim"] < crit_value) & (gdf["q"] == 1), "Moran Cluster"
-    ] = "High-High"
-    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 2), "Moran Cluster"] = "Low-High"
-    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 3), "Moran Cluster"] = "Low-Low"
-    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 4), "Moran Cluster"] = "High-Low"
-    gdf.loc[gdf["p_sim"] >= crit_value, "Moran Cluster"] = "Insignificant"
+    gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
+    gdf["p-value"] = moran_local.p_sim
 
     x = gdf["Moran Cluster"].values
     y = np.unique(x)
@@ -1783,8 +1790,28 @@ def _explore_local_moran(
     if "cmap" in explore_kwargs.keys():
         del explore_kwargs["cmap"]
 
-    m = gdf.explore("Moran Cluster", cmap=hmap, **explore_kwargs)
+    m = gdf[["Moran Cluster", "p-value", "geometry"]].explore(
+        "Moran Cluster", cmap=hmap, **explore_kwargs
+    )
     return m
+
+
+def _get_cluster_labels(moran_local, crit_value):
+
+    gdf = pd.DataFrame()
+    gdf["q"] = moran_local.q
+    gdf["p_sim"] = moran_local.p_sim
+    gdf["Moran Cluster"] = "Insignificant"
+
+    gdf.loc[
+        (gdf["p_sim"] < crit_value) & (gdf["q"] == 1), "Moran Cluster"
+    ] = "High-High"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 2), "Moran Cluster"] = "Low-High"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 3), "Moran Cluster"] = "Low-Low"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 4), "Moran Cluster"] = "High-Low"
+    # gdf.loc[gdf["p_sim"] >= crit_value, "Moran Cluster"] = "Insignificant"
+
+    return gdf["Moran Cluster"].values
 
 
 # --------------------------------------------------------------
