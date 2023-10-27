@@ -2,7 +2,11 @@ import unittest
 
 import libpysal
 import numpy as np
+import geopandas as gpd
+
 from libpysal.common import ATOL, RTOL
+
+from numpy.testing import assert_array_equal
 
 from .. import moran
 
@@ -117,6 +121,51 @@ class Moran_Local_Tester(unittest.TestCase):
         )
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
         self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+
+    def test_Moran_Local_labels(self):
+        lm = moran.Moran_Local(
+            self.y,
+            self.w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        expected_labels = np.array(
+            [
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "High-High",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+            ]
+        )
+        assert_array_equal(lm.get_cluster_labels(), expected_labels)
+
+    def test_Moran_Local_explore(self):
+        sac1 = libpysal.examples.load_example("Sacramento1")
+        sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
+
+        w = libpysal.weights.Queen.from_dataframe(sac1)
+        lm = moran.Moran_Local(
+            sac1.HSG_VAL.values,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        m = lm.explore(sac1)
+        np.testing.assert_array_equal(
+            m.get_bounds(),
+            [[38.018422, -122.422049], [39.316476, -119.877249]],
+        )
+        assert len(m.to_dict()["children"]) == 3
 
     def test_Moran_Local_parallel(self):
         lm = moran.Moran_Local(
