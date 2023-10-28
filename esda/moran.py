@@ -1201,7 +1201,7 @@ class Moran_Local:
         """
         return _get_cluster_labels(self, crit_value)
 
-    def explore(self, gdf, crit_value=0.05, explore_kwargs=None, m=None):
+    def explore(self, gdf, crit_value=0.05, **kwargs):
         """Create interactive map of LISA indicators
 
         Parameters
@@ -1210,10 +1210,8 @@ class Moran_Local:
             geodataframe used to conduct the local Moran analysis
         crit_value : float, optional
             critical value to determine statistical significance, by default 0.05
-        explore_kwargs : dict, optional
-            additional keyword arguments passed to the geopandas `explore` method, by default None
-        m : Folium.Map, optional
-            instance of a folium map canvas to plot on, by default None
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
 
         Returns
         -------
@@ -1223,7 +1221,7 @@ class Moran_Local:
         gdf = gdf.copy()
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
         return _explore_local_moran(
-            self, gdf, crit_value, explore_kwargs=explore_kwargs, m=m
+            self, gdf, crit_value, **kwargs
         )
 
 
@@ -1749,7 +1747,7 @@ class Moran_Local_Rate(Moran_Local):
             df[col] = rate_df[col]
 
 
-def _explore_local_moran(moran_local, gdf, crit_value, explore_kwargs=None, m=None):
+def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     """Plot local Moran values as an interactive map
 
     Parameters
@@ -1760,18 +1758,19 @@ def _explore_local_moran(moran_local, gdf, crit_value, explore_kwargs=None, m=No
         geodataframe used to create the Moran_Local class
     crit_value : float, optional
         critical value for determining statistical significance, by default 0.05
-    explore_kwargs : dict, optional
-        additional keyword arguments passed to geopandas.explore, by default None
-    m : folium.Map, optional
-        folium map canvas to plot on top of, by default None
+    kwargs : dict, optional
+        additional keyword arguments are passed directly to geopandas.explore, by default None
 
     Returns
     -------
     m
         folium.Map
     """
-    if explore_kwargs is None:
-        explore_kwargs = dict()
+    if kwargs is None:
+        kwargs = dict()
+    if 'cmap' in kwargs:
+        del kwargs['cmap']
+
     gdf = gdf.copy()
     gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
     gdf["p-value"] = moran_local.p_sim
@@ -1787,11 +1786,9 @@ def _explore_local_moran(moran_local, gdf, crit_value, explore_kwargs=None, m=No
     }
     colors5 = [colors5_mpl[i] for i in y]  # for mpl
     hmap = colors.ListedColormap(colors5)
-    if "cmap" in explore_kwargs.keys():
-        del explore_kwargs["cmap"]
 
     m = gdf[["Moran Cluster", "p-value", "geometry"]].explore(
-        "Moran Cluster", cmap=hmap, **explore_kwargs
+        "Moran Cluster", cmap=hmap, **kwargs
     )
     return m
 
