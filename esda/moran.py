@@ -8,15 +8,12 @@ __author__ = (
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
 
-from warnings import simplefilter
-
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from matplotlib import colors
 from scipy import sparse
-from warnings import warn
 
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
