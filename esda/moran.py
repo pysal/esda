@@ -16,6 +16,7 @@ import scipy.stats as stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
 from matplotlib import colors
 from scipy import sparse
+from warnings import warn
 
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
@@ -1768,8 +1769,6 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     """
     if kwargs is None:
         kwargs = dict()
-    if 'cmap' in kwargs:
-        del kwargs['cmap']
 
     gdf = gdf.copy()
     gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
@@ -1779,16 +1778,18 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     y = np.unique(x)
     colors5_mpl = {
         "High-High": "#d7191c",
-        "Low-High": "#abd9e9",
+        "Low-High": "#89cff0",
         "Low-Low": "#2c7bb6",
         "High-Low": "#fdae61",
         "Insignificant": "lightgrey",
     }
     colors5 = [colors5_mpl[i] for i in y]  # for mpl
     hmap = colors.ListedColormap(colors5)
+    if 'cmap' not in kwargs:
+        kwargs['cmap'] = hmap
 
     m = gdf[["Moran Cluster", "p-value", "geometry"]].explore(
-        "Moran Cluster", cmap=hmap, **kwargs
+        "Moran Cluster", **kwargs
     )
     return m
 
