@@ -8,7 +8,7 @@ __author__ = (
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
 
-from warnings import simplefilter, warn
+from warnings import simplefilter
 
 import numpy as np
 import pandas as pd
