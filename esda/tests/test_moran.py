@@ -167,6 +167,20 @@ class Moran_Local_Tester(unittest.TestCase):
         )
         assert len(m.to_dict()["children"]) == 3
 
+        out_str =_fetch_map_string(m)
+
+        assert '"High-High","__folium_color":"#d7191c"' in out_str
+        assert '"Low-High","__folium_color":"#89cff0"' in out_str
+        assert '"Low-Low","__folium_color":"#2c7bb6"' in out_str
+        assert '"High-Low","__folium_color":"#fdae61"' in out_str
+        assert '"Insignificant","__folium_color":"#d3d3d3"' in out_str
+
+        assert out_str.count("#d7191c") == 41
+        assert out_str.count("#89cff0") == 6
+        assert out_str.count("#2c7bb6") == 85
+        assert out_str.count("#fdae61") == 6
+        assert out_str.count("#d3d3d3") == 280
+
     def test_Moran_Local_parallel(self):
         lm = moran.Moran_Local(
             self.y,
@@ -342,6 +356,11 @@ class Moran_Local_Rate_Tester(unittest.TestCase):
         self.assertAlmostEqual(lm["SID79-BIR79_z_sim"][0], 0.02702781851384379, 7)
         self.assertAlmostEqual(lm["SID79-BIR79_p_z_sim"][0], 0.4892187730835096)
 
+
+def _fetch_map_string(m):
+    out = m._parent.render()
+    out_str = "".join(out.split())
+    return out_str
 
 suite = unittest.TestSuite()
 test_classes = [
