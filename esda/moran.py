@@ -1766,8 +1766,6 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     m
         folium.Map
     """
-    if kwargs is None:
-        kwargs = dict()
 
     gdf = gdf.copy()
     gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
