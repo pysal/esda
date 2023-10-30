@@ -21,6 +21,9 @@ dependencies:
   - sphinxcontrib-bibtex
   - sphinxcontrib-napoleon
   - sphinx_bootstrap_theme
+  - folium
+  - mapclassify
+  - matplotlib
   - pip:
       - --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
       - scikit-learn
