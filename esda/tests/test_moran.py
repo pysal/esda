@@ -2,7 +2,12 @@ import unittest
 
 import libpysal
 import numpy as np
+import geopandas as gpd
+import pandas as pd
+
 from libpysal.common import ATOL, RTOL
+
+from numpy.testing import assert_array_equal
 
 from .. import moran
 
@@ -117,6 +122,73 @@ class Moran_Local_Tester(unittest.TestCase):
         )
         self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
         self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+
+    def test_Moran_Local_labels(self):
+        sac1 = libpysal.examples.load_example("Sacramento1")
+        sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
+
+        w = libpysal.weights.Queen.from_dataframe(sac1)
+        lm = moran.Moran_Local(
+            sac1.HSG_VAL.values,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        expected_labels = np.array(
+            [
+                "High-High",
+                "High-High",
+                "Insignificant",
+                "High-High",
+                "Insignificant",
+                "High-High",
+                "High-High",
+                "High-High",
+                "Insignificant",
+                "Insignificant",
+            ]
+        )
+        assert_array_equal(lm.get_cluster_labels()[:10], expected_labels)
+        assert_array_equal(
+            pd.Series(lm.get_cluster_labels(0.05)).value_counts().values,
+            np.array([277, 82, 38, 3, 3]),
+        )
+
+    def test_Moran_Local_explore(self):
+        sac1 = libpysal.examples.load_example("Sacramento1")
+        sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
+
+        w = libpysal.weights.Queen.from_dataframe(sac1)
+        lm = moran.Moran_Local(
+            sac1.HSG_VAL.values,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        m = lm.explore(sac1)
+        np.testing.assert_array_equal(
+            m.get_bounds(),
+            [[38.018422, -122.422049], [39.316476, -119.877249]],
+        )
+        assert len(m.to_dict()["children"]) == 3
+
+        out_str = _fetch_map_string(m)
+
+        assert '"High-High","__folium_color":"#d7191c"' in out_str
+        assert '"Low-High","__folium_color":"#89cff0"' in out_str
+        assert '"Low-Low","__folium_color":"#2c7bb6"' in out_str
+        assert '"High-Low","__folium_color":"#fdae61"' in out_str
+        assert '"Insignificant","__folium_color":"#d3d3d3"' in out_str
+
+        assert out_str.count("#d7191c") == 41
+        assert out_str.count("#89cff0") == 6
+        assert out_str.count("#2c7bb6") == 85
+        assert out_str.count("#fdae61") == 6
+        assert out_str.count("#d3d3d3") == 280
 
     def test_Moran_Local_parallel(self):
         lm = moran.Moran_Local(
@@ -292,6 +364,12 @@ class Moran_Local_Rate_Tester(unittest.TestCase):
         )
         self.assertAlmostEqual(lm["SID79-BIR79_z_sim"][0], 0.02702781851384379, 7)
         self.assertAlmostEqual(lm["SID79-BIR79_p_z_sim"][0], 0.4892187730835096)
+
+
+def _fetch_map_string(m):
+    out = m._parent.render()
+    out_str = "".join(out.split())
+    return out_str
 
 
 suite = unittest.TestSuite()

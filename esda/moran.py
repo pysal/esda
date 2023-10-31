@@ -11,8 +11,10 @@ __author__ = (
 from warnings import simplefilter
 
 import numpy as np
+import pandas as pd
 import scipy.stats as stats
 from libpysal.weights.spatial_lag import lag_spatial as slag
+from matplotlib import colors
 from scipy import sparse
 
 from .crand import _prepare_univariate
@@ -34,7 +36,7 @@ __all__ = [
 PERMUTATIONS = 999
 
 
-class Moran(object):
+class Moran:
     """Moran's I Global Autocorrelation Statistic
 
     Parameters
@@ -288,11 +290,11 @@ class Moran(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
 
 
-class Moran_BV(object):
+class Moran_BV:
     """
     Bivariate Moran's I
 
@@ -380,7 +382,7 @@ class Moran_BV(object):
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
 
     Create an instance of Moran_BV
-    
+
     >>> from esda.moran import Moran_BV
     >>> mbi = Moran_BV(SIDR79,  SIDR74,  w)
 
@@ -449,7 +451,7 @@ class Moran_BV(object):
         inplace=False,
         pvalue="sim",
         outvals=None,
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_BV statistic on a dataframe
@@ -501,7 +503,7 @@ class Moran_BV(object):
             outvals=outvals,
             swapname=cls.__name__.lower(),
             stat=cls,
-            **stat_kws
+            **stat_kws,
         )
 
 
@@ -746,7 +748,7 @@ class Moran_Rate(Moran):
         pvalue="sim",
         outvals=None,
         swapname="",
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_Rate statistic on a dataframe
@@ -799,7 +801,7 @@ class Moran_Rate(Moran):
                 pvalue=pvalue,
                 outvals=outvals,
                 swapname=swapname,
-                **stat_kws
+                **stat_kws,
             )
             return new
         if isinstance(events, str):
@@ -838,7 +840,7 @@ class Moran_Rate(Moran):
             outvals=outvals,
             swapname=swapname,
             stat=Moran,  # how would this get done w/super?
-            **stat_kws
+            **stat_kws,
         )
         for col in stat_df.columns:
             df[col] = stat_df[col]
@@ -849,7 +851,7 @@ class Moran_Rate(Moran):
 # -----------------------------------------------------------------------------#
 
 
-class Moran_Local(object):
+class Moran_Local:
     """Local Moran Statistics.
 
 
@@ -1098,9 +1100,9 @@ class Moran_Local(object):
         # ---------------------------------------------------------
         expectation = -(z**2 * wi) / ((n - 1) * m2)
         var_term1 = (z / m2) ** 2
-        var_term2 = (n / (n - 2))
-        var_term3 = (wi2 - (wi**2 / (n - 1)))
-        var_term4 = (m2 - (z**2 / (n - 1)))
+        var_term2 = n / (n - 2)
+        var_term3 = wi2 - (wi**2 / (n - 1))
+        var_term4 = m2 - (z**2 / (n - 1))
         variance = var_term1 * var_term2 * var_term3 * var_term4
 
         self.EIc = expectation
@@ -1180,11 +1182,50 @@ class Moran_Local(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
+        )
+
+    def get_cluster_labels(self, crit_value=0.05):
+        """Return LISA cluster labels for each observation.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            crititical significance value for statistical inference, by default 0.05
+
+        Returns
+        -------
+        numpy.array
+            an array of cluster labels aligned with the input data used to conduct the
+            local Moran analysis
+        """
+        return _get_cluster_labels(self, crit_value)
+
+    def explore(self, gdf, crit_value=0.05, **kwargs):
+        """Create interactive map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        Folium.Map
+            interactive map with LISA clusters
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _explore_local_moran(
+            self, gdf, crit_value, **kwargs
         )
 
 
-class Moran_Local_BV(object):
+class Moran_Local_BV:
     """Bivariate Local Moran Statistics.
 
 
@@ -1395,7 +1436,7 @@ class Moran_Local_BV(object):
         inplace=False,
         pvalue="sim",
         outvals=None,
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_Local_BV statistic on a dataframe
@@ -1447,7 +1488,7 @@ class Moran_Local_BV(object):
             outvals=outvals,
             swapname=cls.__name__.lower(),
             stat=cls,
-            **stat_kws
+            **stat_kws,
         )
 
 
@@ -1608,7 +1649,7 @@ class Moran_Local_Rate(Moran_Local):
         pvalue="sim",
         outvals=None,
         swapname="",
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_Local_Rate statistic on a dataframe
@@ -1661,7 +1702,7 @@ class Moran_Local_Rate(Moran_Local):
                 pvalue=pvalue,
                 outvals=outvals,
                 swapname=swapname,
-                **stat_kws
+                **stat_kws,
             )
             return new
         if isinstance(events, str):
@@ -1700,10 +1741,71 @@ class Moran_Local_Rate(Moran_Local):
             outvals=outvals,
             swapname=swapname,
             stat=Moran_Local,  # how would this get done w/super?
-            **stat_kws
+            **stat_kws,
         )
         for col in rate_df.columns:
             df[col] = rate_df[col]
+
+
+def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
+    """Plot local Moran values as an interactive map
+
+    Parameters
+    ----------
+    moran_local : esda.Moran_Local
+        a fitted local Moran class from the PySAL esda module
+    gdf : geopandas.GeoDataFrame
+        geodataframe used to create the Moran_Local class
+    crit_value : float, optional
+        critical value for determining statistical significance, by default 0.05
+    kwargs : dict, optional
+        additional keyword arguments are passed directly to geopandas.explore, by default None
+
+    Returns
+    -------
+    m
+        folium.Map
+    """
+
+    gdf = gdf.copy()
+    gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
+    gdf["p-value"] = moran_local.p_sim
+
+    x = gdf["Moran Cluster"].values
+    y = np.unique(x)
+    colors5_mpl = {
+        "High-High": "#d7191c",
+        "Low-High": "#89cff0",
+        "Low-Low": "#2c7bb6",
+        "High-Low": "#fdae61",
+        "Insignificant": "lightgrey",
+    }
+    colors5 = [colors5_mpl[i] for i in y]  # for mpl
+    hmap = colors.ListedColormap(colors5)
+    if 'cmap' not in kwargs:
+        kwargs['cmap'] = hmap
+
+    m = gdf[["Moran Cluster", "p-value", "geometry"]].explore(
+        "Moran Cluster", **kwargs
+    )
+    return m
+
+
+def _get_cluster_labels(moran_local, crit_value):
+
+    gdf = pd.DataFrame()
+    gdf["q"] = moran_local.q
+    gdf["p_sim"] = moran_local.p_sim
+    gdf["Moran Cluster"] = "Insignificant"
+
+    gdf.loc[
+        (gdf["p_sim"] < crit_value) & (gdf["q"] == 1), "Moran Cluster"
+    ] = "High-High"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 2), "Moran Cluster"] = "Low-High"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 3), "Moran Cluster"] = "Low-Low"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 4), "Moran Cluster"] = "High-Low"
+
+    return gdf["Moran Cluster"].values
 
 
 # --------------------------------------------------------------
