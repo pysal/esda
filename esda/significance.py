@@ -22,7 +22,7 @@ def calculate_significance(test_stat, reference_distribution, method='two-sided'
 
     """
     if method == 'two-sided':
-        p_value = np.sum(reference_distribution >= np.abs(test_stat)) / (len(reference_distribution) + 1)
+        p_value = 2 * (np.sum(reference_distribution >= np.abs(test_stat)) / (len(reference_distribution) + 1))
     elif method == 'lesser':
         p_value = (np.sum(reference_distribution >= test_stat) + 1) / (len(reference_distribution) + 1)
     elif method == 'greater':
