@@ -39,14 +39,14 @@ def calculate_significance(test_stat, reference_distribution, method='two-sided'
         bounds = np.column_stack((1-percentile, percentile)) * 100
         bounds.sort(axis=1)
         lows, highs = np.row_stack([stats.scoreatpercentile(r, per=p) for r,p in zip(reference_distribution, bounds)]).T
-        n_outside = (reference_distribution <= lows[:,None]).sum(axis=1)
-        n_outside += (reference_distribution >= highs[:,None]).sum(axis=1) + 1
+        n_outside = (reference_distribution < lows[:,None]).sum(axis=1)
+        n_outside += (reference_distribution > highs[:,None]).sum(axis=1) + 1
         p_value = (n_outside+1) / (p_permutations+1)
     elif method == "folded":
         means = reference_distribution.mean(axis=1, keepdims=True)
         test_stat = np.abs(test_stat - means)
         reference_distribution = np.abs(reference_distribution - means)
-        p_value = ((reference_distribution>=test_stat).sum(axis=1) + 1) / (p_permutations + 1)
+        p_value = ((reference_distribution >= test_stat).sum(axis=1) + 1) / (p_permutations + 1)
     else:
         raise ValueError(f"Unknown p-value method: {method}. Generally, 'two-sided' is a good default!")
     return p_value
