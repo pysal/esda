@@ -31,9 +31,9 @@ def calculate_significance(test_stat, reference_distribution, method='two-sided'
         larger[low_extreme] = p_permutations - larger[low_extreme]
         p_value = (larger + 1.0) / (p_permutations + 1.0)
     elif method == 'lesser':
-        p_value = (np.sum(reference_distribution >= test_stat, axis=1) + 1) / (len(reference_distribution) + 1)
+        p_value = (np.sum(reference_distribution >= test_stat, axis=1) + 1) / (p_permutations + 1)
     elif method == 'greater':
-        p_value = (np.sum(reference_distribution <= test_stat, axis=1) + 1) / (len(reference_distribution) + 1)
+        p_value = (np.sum(reference_distribution <= test_stat, axis=1) + 1) / (p_permutations + 1)
     elif method == "two-sided":
         percentile = (reference_distribution < test_stat).mean(axis=1)
         bounds = np.column_stack((1-percentile, percentile)) * 100
@@ -42,6 +42,11 @@ def calculate_significance(test_stat, reference_distribution, method='two-sided'
         n_outside = (reference_distribution <= lows[:,None]).sum(axis=1)
         n_outside += (reference_distribution >= highs[:,None]).sum(axis=1) + 1
         p_value = (n_outside+1) / (p_permutations+1)
+    elif method == "folded":
+        means = reference_distribution.mean(axis=1, keepdims=True)
+        test_stat = np.abs(test_stat - means)
+        reference_distribution = np.abs(reference_distribution - means)
+        p_value = ((reference_distribution>=test_stat).sum(axis=1) + 1) / (p_permutations + 1)
     else:
         raise ValueError(f"Unknown p-value method: {method}. Generally, 'two-sided' is a good default!")
     return p_value
