@@ -11,22 +11,36 @@ def calculate_significance(test_stat, reference_distribution, method='two-sided'
     Parameters
     ----------
     test_stat:
-        The observed test statistic
+        The observed test statistic, or a vector of observed test statistics
     reference_distribution:
-        A one-dimensional numpy array containing simulated test statistics as a result of conditional permutation. 
+        A numpy array containing simulated test statistics as a result of conditional permutation.
     method: 
         One of 'two-sided', 'lesser', or 'greater'. Indicates the alternative hypothesis.
         - 'two-sided': the observed test-statistic is more-extreme than expected under the assumption of complete spatial randomness.
         - 'lesser': the observed test-statistic is less than the expected value under the assumption of complete spatial randomness.
         - 'greater': the observed test-statistic is greater than the exepcted value under the assumption of complete spatial randomness. 
-
+        - 'directed': run both lesser and greater tests, then pick the smaller p-value. 
     """
-    if method == 'two-sided':
-        p_value = 2 * (np.sum(reference_distribution >= np.abs(test_stat)) / (len(reference_distribution) + 1))
+    reference_distribution = numpy.atleast_2d(reference_distribution)
+    n_samples,p_permutations = reference_distribution.shape
+    test_stat = numpy.atleast_2d(test_stat).reshape(n_samples, -1)
+    if method == "directed":
+        larger = (reference_distribution >= test_stat).sum(axis=1)
+        low_extreme = (p_permutations - larger) < larger
+        larger[low_extreme] = p_permutations - larger[low_extreme]
+        p_value = (larger + 1.0) / (p_permutations + 1.0)
     elif method == 'lesser':
-        p_value = (np.sum(reference_distribution >= test_stat) + 1) / (len(reference_distribution) + 1)
+        p_value = (np.sum(reference_distribution >= test_stat, axis=1) + 1) / (len(reference_distribution) + 1)
     elif method == 'greater':
-        p_value = (np.sum(reference_distribution <= test_stat) + 1) / (len(reference_distribution) + 1)
+        p_value = (np.sum(reference_distribution <= test_stat, axis=1) + 1) / (len(reference_distribution) + 1)
+    elif method == "two-sided":
+        percentile = (reference_distribution < test_stat).mean(axis=1)
+        bounds = np.column_stack((1-percentile, percentile)) * 100
+        bounds.sort(axis=1)
+        lows, highs = np.row_stack([stats.scoreatpercentile(r, per=p) for r,p in zip(reference_distribution, bounds)]).T
+        n_outside = (reference_distribution <= lows[:,None]).sum(axis=1)
+        n_outside += (reference_distribution >= highs[:,None]).sum(axis=1) + 1
+        p_value = (n_outside+1) / (p_permutations+1)
     else:
-        raise ValueError(f"Unknown method {method}")
+        raise ValueError(f"Unknown p-value method: {method}. Generally, 'two-sided' is a good default!")
     return p_value
