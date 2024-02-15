@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import stats
 
 def calculate_significance(test_stat, reference_distribution, method='two-sided'):
     """
@@ -21,9 +22,9 @@ def calculate_significance(test_stat, reference_distribution, method='two-sided'
         - 'greater': the observed test-statistic is greater than the exepcted value under the assumption of complete spatial randomness. 
         - 'directed': run both lesser and greater tests, then pick the smaller p-value. 
     """
-    reference_distribution = numpy.atleast_2d(reference_distribution)
+    reference_distribution = np.atleast_2d(reference_distribution)
     n_samples,p_permutations = reference_distribution.shape
-    test_stat = numpy.atleast_2d(test_stat).reshape(n_samples, -1)
+    test_stat = np.atleast_2d(test_stat).reshape(n_samples, -1)
     if method == "directed":
         larger = (reference_distribution >= test_stat).sum(axis=1)
         low_extreme = (p_permutations - larger) < larger
