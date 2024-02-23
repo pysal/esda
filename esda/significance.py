@@ -6,22 +6,27 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
     """
     Calculate a pseudo p-value from a reference distribution.
 
-    Pseudo-p values are calculated using the formula (M + 1) / (R + 1). Where R is the number of simulations and M is the number of times that the simulated value was equal to, or more extreme than the observed test statistic.
-
-    Simulated test statistics are generated through a process of conditional permutation. Conditional permutation holds fixed the value of Xi and values of neighbors are randomly sampled from X removing Xi simulating spatial randomness. This process is repeated R times to generate a reference distribution from which the pseudo-p value is calculated.
+    Pseudo-p values are calculated using the formula (M + 1) / (R + 1). Where R is the number of simulations
+    and M is the number of times that the simulated value was equal to, or more extreme than the observed test statistic.
 
     Parameters
     ----------
-    test_stat:
+    test_stat: float or numpy.ndarray
         The observed test statistic, or a vector of observed test statistics
-    reference_distribution:
+    reference_distribution: numpy.ndarray
         A numpy array containing simulated test statistics as a result of conditional permutation.
-    method:
+    method: string
         One of 'two-sided', 'lesser', or 'greater'. Indicates the alternative hypothesis.
-        - 'two-sided': the observed test-statistic is more-extreme than expected under the assumption of complete spatial randomness.
-        - 'lesser': the observed test-statistic is less than the expected value under the assumption of complete spatial randomness.
-        - 'greater': the observed test-statistic is greater than the exepcted value under the assumption of complete spatial randomness.
-        - 'directed': run both lesser and greater tests, then pick the smaller p-value.
+        - 'two-sided': the observed test-statistic is an extreme value of the reference distribution.
+        - 'lesser': the observed test-statistic is small relative to the reference distribution.
+        - 'greater': the observed test-statistic is large relative to the reference distribution.
+        - 'directed': the observed test statistic is either small or large reltaive to the reference distribution.
+
+    Notes
+    -----
+
+    the directed p-value is half of the two-sided p-value, and corresponds to running the
+    lesser and greater tests, then picking the smaller significance value. This is not advised.
     """
     reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
@@ -32,11 +37,11 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
         larger[low_extreme] = p_permutations - larger[low_extreme]
         p_value = (larger + 1.0) / (p_permutations + 1.0)
     elif method == "lesser":
-        p_value = (np.sum(reference_distribution >= test_stat, axis=1) + 1) / (
+        p_value = (np.sum(reference_distribution <= test_stat, axis=1) + 1) / (
             p_permutations + 1
         )
     elif method == "greater":
-        p_value = (np.sum(reference_distribution <= test_stat, axis=1) + 1) / (
+        p_value = (np.sum(reference_distribution >= test_stat, axis=1) + 1) / (
             p_permutations + 1
         )
     elif method == "two-sided":
@@ -71,7 +76,6 @@ if __name__ == "__main__":
     import esda
     import pandas
     from libpysal.weights import Voronoi
-    from esda.significance import calculate_significance
 
     coordinates = numpy.random.random(size=(2000, 2))
     x = numpy.random.normal(size=(2000,))
@@ -99,3 +103,25 @@ if __name__ == "__main__":
             columns=["two-sided", "directed", "folded", "lt", "gt"],
         ).corr()
     )
+
+    answer = input("run big simulation? [y/n]")
+    if answer.lower().startswith("y"):
+        all_correlations = []
+        for i in range(1000):
+            x = numpy.random.normal(size=(2000,))
+            stat = esda.Moran_Local(x, w)
+            ts = calculate_significance(stat.Is, stat.rlisas, method="two-sided")
+            di = calculate_significance(stat.Is, stat.rlisas, method="directed")
+            lt = calculate_significance(stat.Is, stat.rlisas, method="lesser")
+            gt = calculate_significance(stat.Is, stat.rlisas, method="greater")
+            fo = calculate_significance(stat.Is, stat.rlisas, method="folded")
+            corrs = (
+                pandas.DataFrame(
+                    numpy.column_stack((ts, di, fo, lt, gt)),
+                    columns=["two-sided", "directed", "folded", "lt", "gt"],
+                )
+                .corr()
+                .assign(repno=i)
+            )
+            all_correlations.append(corrs)
+        all_correlations = pandas.concat(all_correlations)
