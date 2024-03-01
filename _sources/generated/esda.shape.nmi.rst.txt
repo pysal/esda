@@ -1,0 +1,6 @@
+﻿esda.shape.nmi
+==============
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: nmi

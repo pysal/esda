@@ -1,0 +1,6 @@
+﻿esda.shape.rectangularity
+=========================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: rectangularity

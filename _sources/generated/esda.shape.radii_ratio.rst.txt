@@ -1,0 +1,6 @@
+﻿esda.shape.radii\_ratio
+=======================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: radii_ratio

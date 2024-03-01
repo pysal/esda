@@ -1,0 +1,6 @@
+﻿esda.shape.equivalent\_rectangular\_index
+=========================================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: equivalent_rectangular_index
