@@ -12,7 +12,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
         <div class="col-sm-1 col-xs-hidden">
         </div>
         <div class="col-md-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/master/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
+            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/main/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
                 <img src="_static/images/prices.png" class="img-responsive center-block">
                 <div class="caption text-center">
                 <h6>Housing Prices Berlin</h6>
@@ -20,7 +20,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
             </a>
         </div>
         <div class="col-sm-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/master/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
+            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/main/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
                 <img src="_static/images/joincount.png" class="img-responsive center-block">
                 <div class="caption text-center">
                 <h6>Join Count Analysis</h6>
@@ -28,7 +28,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
             </a>
         </div>
         <div class="col-sm-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/master/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
+            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/main/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
                 <img src="_static/images/clustermap.png"
                 class="img-responsive center-block">
                 <div class="caption text-center">
