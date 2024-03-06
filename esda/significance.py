@@ -55,7 +55,7 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
             ]
         ).T
         n_outside = (reference_distribution < lows[:, None]).sum(axis=1)
-        n_outside += (reference_distribution > highs[:, None]).sum(axis=1) + 1
+        n_outside += (reference_distribution > highs[:, None]).sum(axis=1)
         p_value = (n_outside + 1) / (p_permutations + 1)
     elif method == "folded":
         means = reference_distribution.mean(axis=1, keepdims=True)
