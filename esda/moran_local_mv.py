@@ -12,24 +12,38 @@ except ImportError:
 
 class Partial_Moran_Local(object):
     def __init__(
-        self, y, X, W, permutations=999, dedupe=True, unit_scale=True, mvquads=True
+        self, y, X, W, permutations=999, unit_scale=True, mvquads=True
     ):
         """
         Compute the Multivariable Local Moran statistics under partial dependence, as defined by :cite:`wolf2024confounded`
 
         Arguments
         ---------
-        y               : (N,1) array
-                          array of data that is the targeted "outcome" covariate
-                          to compute the multivariable Moran's I
-        X               : (N,3) array
-                          array of data that is used as "confounding factors"
-                          to account for their covariance with Y.
-        W               : (N,N) weights object
-                          a PySAL weights object. Immediately row-standardized.
+        y   : (N,1) array
+            array of data that is the targeted "outcome" covariate
+            to compute the multivariable Moran's I
+        X   : (N,3) array
+            array of data that is used as "confounding factors"
+            to account for their covariance with Y.
+        W   : (N,N) weights object
+            a PySAL weights object. Immediately row-standardized.
         permutations    : int
-                          the number of permutations to run for the inference,
-                          driven by conditional randomization.
+            the number of permutations to run for the inference,
+            driven by conditional randomization.
+        unit_scale  : bool
+            whether to enforce unit variance in the local statistics. This
+            normalizes the variance of the data at inupt, ensuring that
+            the covariance statistics are not overwhelmed by any single
+            covariate's large variance.
+        mvquads : bool
+            whether to calculate the classification based on the multivariable
+            quadrant classification or the univariate quadrant classification,
+            like a classical Moran's I. When mvquads is True, the variables are labelled as:
+            - label 1: observations with large y - rho * x that also have large Wy values. 
+            - label 2: observations with small y - rho * x values that also have large Wy values.
+            - label 3: observations with small y - rho * x values that also have small Wy values. 
+            - label 4: observations with large y - rho * x values that have small Wy values.
+            When mvquads is false, we ignore the rho * x in the above classification. 
 
 
         Attributes
@@ -87,13 +101,12 @@ class Partial_Moran_Local(object):
         self.permutations = permutations
         if permutations is not None:  # NOQA necessary to avoid None > 0
             if permutations > 0:
-                if dedupe:
-                    self._crand(y, X, W)
-                else:
-                    self._dupe_crand(y, X, W)
+                self._crand(y, X, W)
+
 
                 self._rlmos_ *= W.n - 1
                 self._p_sim_ = np.zeros((W.n, self.P + 1))
+                # TODO: this should be changed to the general p-value framework
                 for permutation in range(self.permutations):
                     self._p_sim_ += (
                         self._rlmos_[:, permutation, :] < self._lmos_
@@ -105,7 +118,7 @@ class Partial_Moran_Local(object):
         for i, left in enumerate(self._left_component_.T):
             right = self.R[:, i]
             quads = (left < left.mean()).astype(int)
-            quads += (right < right.mean()).astype(int) * 2 + 1
+            quads += (right < 0).astype(int) * 2 + 1
             quads[quads == 4] = 5
             quads[quads == 3] = 4
             quads[quads == 5] = 3
@@ -186,43 +199,6 @@ class Partial_Moran_Local(object):
             shuffled_R = np.tile(shuffled_Wyi, self.P + 1)
             lmos[i] = (shuffled_R * shuffled_D) @ DtDi
         self._rlmos_ = lmos  # nobs, nperm, nvars
-
-    def _dupe_crand(self, y, X, W):
-        """
-        This does a full resampling, allowing the self neighbor
-        """
-        N = W.n
-        N_permutations = self.permutations
-        DtDi = self.DtDi
-        permutations = np.empty((N, N_permutations, self.P + 1))
-        from collections import defaultdict
-
-        n_dupes = defaultdict(int)
-        W = self.W
-        shuffs = [np.random.permutation(N) for _ in range(N_permutations)]
-        for permutation in tqdm(range(N_permutations), desc="Simulating"):
-            for observation in range(N):
-                # copy the data
-                yrand = y.copy()
-                Xrand = X.copy()
-                # make a shuffler
-                shuff = shuffs[permutation]
-                np.random.shuffle(shuff)
-                # shufle the input y and X, but keep records aligned
-                yrand = yrand[shuff, :]
-                Xrand = Xrand[shuff, :]
-                neighbors = shuff[W.neighbors[observation]]
-                n_dupes[observation] += int(observation in neighbors)
-                # reset the focal observation to its original value.
-                yrand[observation] = y[observation]
-                Xrand[observation] = X[observation]
-                # make Wy, D, and R
-                Drand, Rrand = self._make_data(yrand, Xrand, W)
-                # use these in the p-values
-                permutations[observation, permutation, :] = ((Drand * Rrand) @ DtDi)[
-                    observation
-                ]
-        self._rlmos_ = np.asarray(permutations)
 
     @property
     def associations_(self):
@@ -320,7 +296,6 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
                           driven by conditional randomization.
         unit_scale      : bool (default: True)
                           whether or not to convert the input data to a unit normal scale.
-                          data is ALWAYS centered, but variance will remain unadjusted.
         transformer     : callable (default: scikit regression)
                           should transform X into a predicted y. If not provided, will use
                           the standard scikit OLS regression of y on X.
@@ -341,6 +316,7 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         y_out = self.y_filtered_
         self.associations_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
         self._crand()
+        # TODO: use the general p-value framework
         p_sim = (self.reference_distribution_ < self.associations_[:, None]).mean(
             axis=1
         )
