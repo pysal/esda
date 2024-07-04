@@ -321,13 +321,11 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
             axis=1
         )
         self.significances_ = np.minimum(p_sim, 1 - p_sim)
-        quads = (y_out.flatten() < y_out.mean()).astype(int)
-        quads += (Wyf.flatten() < Wyf.mean()).astype(int) * 2
-        quads += 1
-        quads[quads == 3] = 5
-        quads[quads == 4] = 3
-        quads[quads == 5] = 4
-        self.labels_ = quads
+        quads = np.array([[3,2,4,1]]).reshape(2,2)
+        left_component_cluster = (y_filtered_ > 0).astype(int)
+        right_component_cluster = (Wyf > 0).astype(int)
+        quads = quads[left_component_cluster, right_component_cluster]
+        self.labels_ = quads.squeeze()
 
     def _part_regress_transform(self, y, X):
         """If the object has a _transformer, use it; otherwise, fit it."""
