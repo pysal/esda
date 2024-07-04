@@ -187,12 +187,12 @@ class Partial_Moran_Local(object):
             )  # these are N-permutations by 1 now
             # shuffled_X = X[randomized_permutations, :] #these are still N-permutations, N-neighbs, N-covariates
             if X is None:
-                local_data = np.array((1, y[i])).reshape(1, -1)
+                local_data = np.array((1, y[i].item())).reshape(1, -1)
                 shuffled_D = np.tile(
                     local_data, N_permutations
                 ).T  # now N permutations by P
             else:
-                local_data = np.array((1, y[i], *X[i])).reshape(-1, 1)
+                local_data = np.array((1, y[i].item(), *X[i])).reshape(-1, 1)
                 shuffled_D = np.tile(
                     local_data, N_permutations
                 ).T  # now N permutations by P
@@ -309,7 +309,7 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         self.X = X
         W.transform = "r"
         self.W = W
-        y_filtered_ = self._part_regress_transform(y, X)
+        y_filtered_ = self.y_filtered_ = self._part_regress_transform(y, X)
         Wyf = lag_spatial(self.W, y_filtered_)
         self.partials_ = np.column_stack((Wyf, y_filtered_))
         self.permutations = permutations
@@ -351,7 +351,7 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         ids and take the first ni elements of the permuted ids as the
         neighbors to i in each randomization.
         """
-        _, z = self.partials.T
+        _, z = self.partials_.T
         lisas = np.zeros((self.W.n, self.permutations))
         n_1 = self.W.n - 1
         prange = list(range(self.permutations))
