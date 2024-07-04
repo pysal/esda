@@ -80,10 +80,10 @@ class Partial_Moran_Local(object):
         self._mvquads = mvquads
         y = np.asarray(y).reshape(-1, 1)
         W.transform = "r"
-        y -= y.mean()
+        y = y - y.mean()
         if unit_scale:
             y /= y.std()
-        X -= X.mean(axis=0)
+        X = X - X.mean(axis=0)
         if unit_scale:
             X = X / X.std(axis=0)
         self.y = y
@@ -300,8 +300,8 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
                           should transform X into a predicted y. If not provided, will use
                           the standard scikit OLS regression of y on X.
         """
-        y -= y.mean()
-        X -= X.mean(axis=0)
+        y = y - y.mean()
+        X = X - X.mean(axis=0)
         if unit_scale:
             y /= y.std()
             X /= X.std(axis=0)
