@@ -311,7 +311,7 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         self.W = W
         y_filtered_ = self.y_filtered_ = self._part_regress_transform(y, X)
         Wyf = lag_spatial(self.W, y_filtered_)
-        self.partials_ = np.column_stack((Wyf, y_filtered_))
+        self.partials_ = np.column_stack((y_filtered_, Wyf))
         self.permutations = permutations
         y_out = self.y_filtered_
         self.associations_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
