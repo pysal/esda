@@ -315,12 +315,13 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         self.permutations = permutations
         y_out = self.y_filtered_
         self.associations_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
-        self._crand()
+        if permutations > 0:
+            self._crand()
         # TODO: use the general p-value framework
-        p_sim = (self.reference_distribution_ < self.associations_[:, None]).mean(
-            axis=1
-        )
-        self.significances_ = np.minimum(p_sim, 1 - p_sim)
+            p_sim = (self.reference_distribution_ < self.associations_[:, None]).mean(
+                axis=1
+            )
+            self.significances_ = np.minimum(p_sim, 1 - p_sim)
         quads = np.array([[3,2,4,1]]).reshape(2,2)
         left_component_cluster = (y_filtered_ > 0).astype(int)
         right_component_cluster = (Wyf > 0).astype(int)
