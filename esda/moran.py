@@ -2,6 +2,7 @@
 Moran's I Spatial Autocorrelation Statistics
 
 """
+
 __author__ = (
     "Sergio J. Rey <srey@asu.edu>, "
     "Dani Arribas-Bel <daniel.arribas.bel@gmail.com>, "
@@ -13,7 +14,8 @@ from warnings import simplefilter
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-from libpysal.weights.spatial_lag import lag_spatial as slag
+from libpysal.weights import W
+from libpysal.weights.spatial_lag import lag_spatial
 from matplotlib import colors
 from scipy import sparse
 
@@ -36,6 +38,23 @@ __all__ = [
 PERMUTATIONS = 999
 
 
+def _slag(w, y):
+    """Helper to compute lag either for W or for Graph"""
+    if isinstance(w, W):
+        return lag_spatial(w, y)
+    else:
+        return w.lag(y)
+
+
+def _transform(w, transformation):
+    """Helper to transform W or Graph"""
+    if isinstance(w, W):
+        w.transform = transformation
+        return w
+    else:
+        return w.transform(transformation)
+
+
 class Moran:
     """Moran's I Global Autocorrelation Statistic
 
@@ -44,8 +63,8 @@ class Moran:
 
     y               : array
                       variable measured across n spatial units
-    w               : W
-                      spatial weights instance
+    w               : W | Graph
+                      spatial weights instance as W or Graph aligned with y
     transformation  : string
                       weights transformation,  default is row-standardized "r".
                       Other options include "B": binary,  "D":
@@ -62,7 +81,7 @@ class Moran:
     ----------
     y            : array
                    original variable
-    w            : W
+    w            : W | Graph
                    original w object
     permutations : int
                    number of permutations
@@ -161,7 +180,7 @@ class Moran:
     ):
         y = np.asarray(y).flatten()
         self.y = y
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
         self.__moments()
@@ -235,7 +254,7 @@ class Moran:
         self.seI_rand = VIR ** (1 / 2.0)
 
     def __calc(self, z):
-        zl = slag(self.w, z)
+        zl = _slag(self.w, z)
         inum = (z * zl).sum()
         return self.n / self.w.s0 * inum / self.z2ss
 
@@ -257,9 +276,9 @@ class Moran:
             a pandas dataframe with a geometry column
         cols : string or list of string
             name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -304,8 +323,8 @@ class Moran_BV:
         x-axis variable
     y : array
         wy will be on y axis
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with x and y
     transformation  : {'R', 'B', 'D', 'U', 'V'}
                       weights transformation, default is row-standardized "r".
                       Other options include
@@ -323,7 +342,7 @@ class Moran_BV:
                     original x variable standardized by mean and std
     zy            : array
                     original y variable standardized by mean and std
-    w             : W
+    w             : W | Graph
                     original w object
     permutation   : int
                     number of permutations
@@ -410,7 +429,7 @@ class Moran_BV:
         self.zy = zy
         n = x.shape[0]
         self.den = n - 1.0  # zx'zx = zy'zy = n-1
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.I = self.__calc(zy)  # noqa E741
         if permutations:
@@ -432,7 +451,7 @@ class Moran_BV:
                 self.p_z_sim = stats.norm.cdf(self.z_sim)
 
     def __calc(self, zy):
-        wzy = slag(self.w, zy)
+        wzy = _slag(self.w, zy)
         self.num = (self.zx * wzy).sum()
         return self.num / self.den
 
@@ -468,9 +487,9 @@ class Moran_BV:
             column name or list of column names to use as Y values to compute
             the bivariate statistic. if no Y is provided, pariwise comparisons
             among the X variates are used instead.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -517,8 +536,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     ----------
     variables    : array or pandas.DataFrame
                    sequence of variables to be assessed
-    w            : W
-                   a spatial weights object
+    w            : W | Graph
+                   spatial weights instance as W or Graph aligned with variables
     permutations : int
                    number of permutations
     varnames     : list, optional if variables is an array
@@ -619,8 +638,8 @@ class Moran_Rate(Moran):
     b               : array
                       a population-at-risk variable measured across n spatial
                       units
-    w               : W
-                      spatial weights instance
+    w               : W | Graph
+                      spatial weights instance as W or Graph aligned with e and b
     adjusted        : boolean
                       whether or not Moran's I needs to be adjusted for rate
                       variable
@@ -644,7 +663,7 @@ class Moran_Rate(Moran):
                    rate variable computed from parameters e and b
                    if adjusted is True, y is standardized rates
                    otherwise, y is raw rates
-    w            : W
+    w            : W | Graph
                    original w object
     permutations : int
                    number of permutations
@@ -765,9 +784,9 @@ class Moran_Rate(Moran):
             used for all event columns. If more than one population column
             is provided but there is not a population for every event
             column, an exception will be raised.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -859,8 +878,8 @@ class Moran_Local:
     ----------
     y : array
         (n,1), attribute array
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
          weights transformation,  default is row-standardized "r".
          Other options include
@@ -898,7 +917,7 @@ class Moran_Local:
 
     y : array
         original variable
-    w : W
+    w : W | Graph
         original w object
     permutations : int
         number of random permutations for calculation of pseudo p_values
@@ -1023,7 +1042,7 @@ class Moran_Local:
         z /= sy
         np.seterr(**orig_settings)
         self.z = z
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
         self.den = (z * z).sum()
@@ -1069,11 +1088,11 @@ class Moran_Local:
                 self.p_z_sim = np.nan
 
     def __calc(self, w, z):
-        zl = slag(w, z)
+        zl = _slag(w, z)
         return self.n_1 * self.z * zl / self.den
 
     def __quads(self):
-        zl = slag(self.w, self.z)
+        zl = _slag(self.w, self.z)
         zp = self.z > 0
         lp = zl > 0
         pp = zp * lp
@@ -1148,9 +1167,9 @@ class Moran_Local:
             a pandas dataframe with a geometry column
         cols : string or list of string
             name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -1220,9 +1239,7 @@ class Moran_Local:
         """
         gdf = gdf.copy()
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
-        return _explore_local_moran(
-            self, gdf, crit_value, **kwargs
-        )
+        return _explore_local_moran(self, gdf, crit_value, **kwargs)
 
 
 class Moran_Local_BV:
@@ -1235,8 +1252,8 @@ class Moran_Local_BV:
         x-axis variable
     y : array
         (n,1), wy will be on y axis
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
         weights transformation,  default is row-standardized "r".
         Other options include
@@ -1275,7 +1292,7 @@ class Moran_Local_BV:
         original x variable standardized by mean and std
     zy : array
         original y variable standardized by mean and std
-    w : W
+    w : W | Graph
         original w object
     permutations : int
         number of random permutations for calculation of pseudo p_values
@@ -1368,7 +1385,7 @@ class Moran_Local_BV:
         np.seterr(**orig_settings)
         self.zx = zx
         self.zy = zy
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
         self.den = (zx * zx).sum()
@@ -1406,11 +1423,11 @@ class Moran_Local_BV:
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     def __calc(self, w, zx, zy):
-        zly = slag(w, zy)
+        zly = _slag(w, zy)
         return self.n_1 * self.zx * zly / self.den
 
     def __quads(self):
-        zl = slag(self.w, self.zy)
+        zl = _slag(self.w, self.zy)
         zp = self.zx > 0
         lp = zl > 0
         pp = zp * lp
@@ -1453,9 +1470,9 @@ class Moran_Local_BV:
             column name or list of column names to use as Y values to compute
             the bivariate statistic. if no Y is provided, pariwise comparisons
             among the X variates are used instead.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -1502,8 +1519,8 @@ class Moran_Local_Rate(Moran_Local):
         (n,1), an event variable across n spatial units
     b : array
         (n,1), a population-at-risk variable across n spatial units
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     adjusted : boolean
         whether or not local Moran statistics need to be adjusted for
         rate variable
@@ -1543,7 +1560,7 @@ class Moran_Local_Rate(Moran_Local):
         rate variables computed from parameters e and b
         if adjusted is True, y is standardized rates
         otherwise, y is raw rates
-    w : W
+    w : W | Graph
         original w object
     permutations : int
         number of random permutations for calculation of pseudo
@@ -1666,9 +1683,9 @@ class Moran_Local_Rate(Moran_Local):
             used for all event columns. If more than one population column
             is provided but there is not a population for every event
             column, an exception will be raised.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe
             inplace or to return a series contaning the results of
@@ -1782,25 +1799,22 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     }
     colors5 = [colors5_mpl[i] for i in y]  # for mpl
     hmap = colors.ListedColormap(colors5)
-    if 'cmap' not in kwargs:
-        kwargs['cmap'] = hmap
+    if "cmap" not in kwargs:
+        kwargs["cmap"] = hmap
 
-    m = gdf[["Moran Cluster", "p-value", "geometry"]].explore(
-        "Moran Cluster", **kwargs
-    )
+    m = gdf[["Moran Cluster", "p-value", "geometry"]].explore("Moran Cluster", **kwargs)
     return m
 
 
 def _get_cluster_labels(moran_local, crit_value):
-
     gdf = pd.DataFrame()
     gdf["q"] = moran_local.q
     gdf["p_sim"] = moran_local.p_sim
     gdf["Moran Cluster"] = "Insignificant"
 
-    gdf.loc[
-        (gdf["p_sim"] < crit_value) & (gdf["q"] == 1), "Moran Cluster"
-    ] = "High-High"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 1), "Moran Cluster"] = (
+        "High-High"
+    )
     gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 2), "Moran Cluster"] = "Low-High"
     gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 3), "Moran Cluster"] = "Low-Low"
     gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 4), "Moran Cluster"] = "High-Low"

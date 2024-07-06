@@ -1,41 +1,92 @@
 import unittest
 
+import geopandas as gpd
 import libpysal
 import numpy as np
-import geopandas as gpd
 import pandas as pd
-
+import pytest
 from libpysal.common import ATOL, RTOL
-
 from numpy.testing import assert_array_equal
 
 from .. import moran
 
 SEED = 12345
 
+parametrize_stl = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.io.open(libpysal.examples.get_path("stl.gal")).read(),
+        libpysal.graph.Graph.from_W(
+            libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+        ),
+    ],
+    ids=["W", "Graph"],
+)
+parametrize_sids = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read(),
+        libpysal.graph.Graph.from_W(
+            libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+        ),
+    ],
+    ids=["W", "Graph"],
+)
 
-class Moran_Tester(unittest.TestCase):
-    def setUp(self):
-        self.w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+parametrize_lat3x3 = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.weights.util.lat2W(3, 3),
+        libpysal.graph.Graph.from_W(libpysal.weights.util.lat2W(3, 3)),
+    ],
+    ids=["W", "Graph"],
+)
+parametrize_desmith = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.io.open(libpysal.examples.get_path("desmith.gal")).read(),
+        libpysal.graph.Graph.from_W(
+            libpysal.io.open(libpysal.examples.get_path("desmith.gal")).read()
+        ),
+    ],
+    ids=["W", "Graph"],
+)
+
+sac1 = libpysal.examples.load_example("Sacramento1")
+sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
+
+parametrize_sac = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.weights.Queen.from_dataframe(sac1),
+        libpysal.graph.Graph.build_contiguity(sac1, rook=False),
+    ],
+    ids=["W", "Graph"],
+)
+
+
+class TestMoran:
+    def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
         self.y = np.array(f.by_col["HR8893"])
 
-    def test_moran(self):
-        mi = moran.Moran(self.y, self.w, two_tailed=False)
+    @parametrize_stl
+    def test_moran(self, w):
+        mi = moran.Moran(self.y, w, two_tailed=False)
         np.testing.assert_allclose(mi.I, 0.24365582621771659, rtol=RTOL, atol=ATOL)
-        self.assertAlmostEqual(mi.p_norm, 0.00013573931385468807)
+        np.testing.assert_allclose(mi.p_norm, 0.00013573931385468807)
 
-    def test_sids(self):
-        w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+    @parametrize_sids
+    def test_sids(self, w):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
         SIDR = np.array(f.by_col("SIDR74"))
         mi = moran.Moran(SIDR, w, two_tailed=False)
         np.testing.assert_allclose(mi.I, 0.24772519320480135, atol=ATOL, rtol=RTOL)
-        self.assertAlmostEqual(mi.p_norm, 5.7916539074498452e-05)
+        np.testing.assert_allclose(mi.p_norm, 5.7916539074498452e-05)
 
-    def test_variance(self):
+    @parametrize_lat3x3
+    def test_variance(self, w):
         y = np.arange(1, 10)
-        w = libpysal.weights.util.lat2W(3, 3)
         mi = moran.Moran(y, w, transformation="B")
         np.testing.assert_allclose(
             mi.VI_rand, 0.059687500000000004, atol=ATOL, rtol=RTOL
@@ -44,10 +95,11 @@ class Moran_Tester(unittest.TestCase):
             mi.VI_norm, 0.053125000000000006, atol=ATOL, rtol=RTOL
         )
 
-    def test_z_consistency(self):
-        m1 = moran.Moran(self.y, self.w)
+    @parametrize_stl
+    def test_z_consistency(self, w):
+        m1 = moran.Moran(self.y, w)
         # m2 = moran.Moran_BV(self.x, self.y, self.w) TODO testing for other.z values
-        m3 = moran.Moran_Local(self.y, self.w, keep_simulations=True, seed=SEED)
+        m3 = moran.Moran_Local(self.y, w, keep_simulations=True, seed=SEED)
         # m4 = moran.Moran_Local_BV(self.x, self.y, self.w)
         np.testing.assert_allclose(m1.z, m3.z, atol=ATOL, rtol=RTOL)
 
@@ -61,20 +113,20 @@ class Moran_Tester(unittest.TestCase):
         sidr = np.unique(mi.SIDR74_moran.values).item()
         pval = np.unique(mi.SIDR74_p_sim.values).item()
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
-        self.assertAlmostEqual(pval, 0.001)
+        np.testing.assert_allclose(pval, 0.001)
 
 
-class Moran_Rate_Tester(unittest.TestCase):
-    def setUp(self):
-        self.w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+class TestMoranRate:
+    def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
         self.e = np.array(f.by_col["SID79"])
         self.b = np.array(f.by_col["BIR79"])
 
-    def test_moran_rate(self):
-        mi = moran.Moran_Rate(self.e, self.b, self.w, two_tailed=False)
+    @parametrize_sids
+    def test_moran_rate(self, w):
+        mi = moran.Moran_Rate(self.e, self.b, w, two_tailed=False)
         np.testing.assert_allclose(mi.I, 0.16622343552567395, rtol=RTOL, atol=ATOL)
-        self.assertAlmostEqual(mi.p_norm, 0.004191499504892171)
+        np.testing.assert_allclose(mi.p_norm, 0.004191499504892171)
 
     @unittest.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
@@ -87,47 +139,44 @@ class Moran_Rate_Tester(unittest.TestCase):
         sidr = np.unique(mi["SID79-BIR79_moran_rate"].values).item()
         pval = np.unique(mi["SID79-BIR79_p_sim"].values).item()
         np.testing.assert_allclose(sidr, 0.16622343552567395, rtol=RTOL, atol=ATOL)
-        self.assertAlmostEqual(pval, 0.008)
+        np.testing.assert_allclose(pval, 0.008)
 
 
-class Moran_BV_matrix_Tester(unittest.TestCase):
-    def setUp(self):
+class TestMoranBVmatrix:
+    def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
         varnames = ["SIDR74", "SIDR79", "NWR74", "NWR79"]
         self.names = varnames
         vars = [np.array(f.by_col[var]) for var in varnames]
         self.vars = vars
-        self.w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
 
-    def test_Moran_BV_matrix(self):
-        res = moran.Moran_BV_matrix(self.vars, self.w, varnames=self.names)
-        self.assertAlmostEqual(res[(0, 1)].I, 0.19362610652874668)
-        self.assertAlmostEqual(res[(3, 0)].I, 0.37701382542927858)
+    @parametrize_sids
+    def test_Moran_BV_matrix(self, w):
+        res = moran.Moran_BV_matrix(self.vars, w, varnames=self.names)
+        np.testing.assert_allclose(res[(0, 1)].I, 0.19362610652874668)
+        np.testing.assert_allclose(res[(3, 0)].I, 0.37701382542927858)
 
 
-class Moran_Local_Tester(unittest.TestCase):
-    def setUp(self):
-        self.w = libpysal.io.open(libpysal.examples.get_path("desmith.gal")).read()
+class TestMoranLocal:
+    def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("desmith.txt"))
         self.y = np.array(f.by_col["z"])
 
-    def test_Moran_Local(self):
+    @parametrize_desmith
+    def test_Moran_Local(self, w):
         lm = moran.Moran_Local(
             self.y,
-            self.w,
+            w,
             transformation="r",
             permutations=99,
             keep_simulations=True,
             seed=SEED,
         )
-        self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
-        self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+        np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
+        np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
-    def test_Moran_Local_labels(self):
-        sac1 = libpysal.examples.load_example("Sacramento1")
-        sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
-
-        w = libpysal.weights.Queen.from_dataframe(sac1)
+    @parametrize_sac
+    def test_Moran_Local_labels(self, w):
         lm = moran.Moran_Local(
             sac1.HSG_VAL.values,
             w,
@@ -156,11 +205,8 @@ class Moran_Local_Tester(unittest.TestCase):
             np.array([277, 82, 38, 3, 3]),
         )
 
-    def test_Moran_Local_explore(self):
-        sac1 = libpysal.examples.load_example("Sacramento1")
-        sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
-
-        w = libpysal.weights.Queen.from_dataframe(sac1)
+    @parametrize_sac
+    def test_Moran_Local_explore(self, w):
         lm = moran.Moran_Local(
             sac1.HSG_VAL.values,
             w,
@@ -190,18 +236,19 @@ class Moran_Local_Tester(unittest.TestCase):
         assert out_str.count("#fdae61") == 6
         assert out_str.count("#d3d3d3") == 280
 
-    def test_Moran_Local_parallel(self):
+    @parametrize_desmith
+    def test_Moran_Local_parallel(self, w):
         lm = moran.Moran_Local(
             self.y,
-            self.w,
+            w,
             transformation="r",
             n_jobs=-1,
             permutations=99,
             keep_simulations=True,
             seed=SEED,
         )
-        self.assertAlmostEqual(lm.z_sim[0], -0.6990291160835514)
-        self.assertAlmostEqual(lm.p_z_sim[0], 0.24226691753791396)
+        np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
+        np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
     @unittest.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
@@ -218,13 +265,14 @@ class Moran_Local_Tester(unittest.TestCase):
             keep_simulations=True,
             seed=SEED,
         )
-        self.assertAlmostEqual(lm.z_z_sim[0], -0.6990291160835514)
-        self.assertAlmostEqual(lm.z_p_z_sim[0], 0.24226691753791396)
+        np.testing.assert_allclose(lm.z_z_sim[0], -0.6990291160835514)
+        np.testing.assert_allclose(lm.z_p_z_sim[0], 0.24226691753791396)
 
-    def test_local_moments(self):
+    @parametrize_desmith
+    def test_local_moments(self, w):
         lm = moran.Moran_Local(
             self.y,
-            self.w,
+            w,
             transformation="r",
             permutations=0,
             seed=SEED,
@@ -288,26 +336,26 @@ class Moran_Local_Tester(unittest.TestCase):
         np.testing.assert_allclose(lm.VI, VI, rtol=RTOL, atol=ATOL)
 
 
-class Moran_Local_BV_Tester(unittest.TestCase):
-    def setUp(self):
-        self.w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+class TestMoranLocalBV:
+    def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
         self.x = np.array(f.by_col["SIDR79"])
         self.y = np.array(f.by_col["SIDR74"])
 
-    def test_Moran_Local_BV(self):
+    @parametrize_sids
+    def test_Moran_Local_BV(self, w):
         lm = moran.Moran_Local_BV(
             self.x,
             self.y,
-            self.w,
+            w,
             keep_simulations=True,
             transformation="r",
             permutations=99,
             seed=SEED,
         )
-        self.assertAlmostEqual(lm.Is[0], 1.4649221250620736)
-        self.assertAlmostEqual(lm.z_sim[0], 1.330673752886702)
-        self.assertAlmostEqual(lm.p_z_sim[0], 0.09164819151535242)
+        np.testing.assert_allclose(lm.Is[0], 1.4649221250620736)
+        np.testing.assert_allclose(lm.z_sim[0], 1.330673752886702)
+        np.testing.assert_allclose(lm.p_z_sim[0], 0.09164819151535242)
 
     @unittest.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
@@ -328,24 +376,24 @@ class Moran_Local_BV_Tester(unittest.TestCase):
         bvstats = df["SIDR79-SIDR74_moran_local_bv"].values
         bvz = df["SIDR79-SIDR74_z_sim"].values
         bvzp = df["SIDR79-SIDR74_p_z_sim"].values
-        self.assertAlmostEqual(bvstats[0], 1.4649221250620736)
-        self.assertAlmostEqual(bvz[0], 1.7900932313425777, 5)
-        self.assertAlmostEqual(bvzp[0], 0.036719462378528744, 5)
+        np.testing.assert_allclose(bvstats[0], 1.4649221250620736)
+        np.testing.assert_allclose(bvz[0], 1.7900932313425777, 5)
+        np.testing.assert_allclose(bvzp[0], 0.036719462378528744, 5)
 
 
-class Moran_Local_Rate_Tester(unittest.TestCase):
-    def setUp(self):
-        self.w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
+class TestMoranLocalRate:
+    def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
         self.e = np.array(f.by_col["SID79"])
         self.b = np.array(f.by_col["BIR79"])
 
-    def test_moran_rate(self):
+    @parametrize_sids
+    def test_moran_rate(self, w):
         lm = moran.Moran_Local_Rate(
-            self.e, self.b, self.w, transformation="r", permutations=99, seed=SEED
+            self.e, self.b, w, transformation="r", permutations=99, seed=SEED
         )
-        self.assertAlmostEqual(lm.z_sim[0], 0.02702781851384379, 7)
-        self.assertAlmostEqual(lm.p_z_sim[0], 0.4892187730835096)
+        np.testing.assert_allclose(lm.z_sim[0], 0.02702781851384379, 7)
+        np.testing.assert_allclose(lm.p_z_sim[0], 0.4892187730835096)
 
     @unittest.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
@@ -362,29 +410,11 @@ class Moran_Local_Rate_Tester(unittest.TestCase):
             permutations=99,
             seed=SEED,
         )
-        self.assertAlmostEqual(lm["SID79-BIR79_z_sim"][0], 0.02702781851384379, 7)
-        self.assertAlmostEqual(lm["SID79-BIR79_p_z_sim"][0], 0.4892187730835096)
+        np.testing.assert_allclose(lm["SID79-BIR79_z_sim"][0], 0.02702781851384379, 7)
+        np.testing.assert_allclose(lm["SID79-BIR79_p_z_sim"][0], 0.4892187730835096)
 
 
 def _fetch_map_string(m):
     out = m._parent.render()
     out_str = "".join(out.split())
     return out_str
-
-
-suite = unittest.TestSuite()
-test_classes = [
-    Moran_Tester,
-    Moran_Rate_Tester,
-    Moran_BV_matrix_Tester,
-    Moran_Local_Tester,
-    Moran_Local_BV_Tester,
-    Moran_Local_Rate_Tester,
-]
-for i in test_classes:
-    a = unittest.TestLoader().loadTestsFromTestCase(i)
-    suite.addTest(a)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
