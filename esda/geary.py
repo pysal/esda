@@ -23,8 +23,8 @@ class Geary:
     ----------
     y              : array
                      (n, 1) attribute vector
-    w              : W
-                     spatial weights
+    w              : W | Graph
+                     spatial weights instance as W or Graph aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
                      weights transformation, default is row-standardized.
                      Other options include "B": binary, "D":
@@ -38,7 +38,7 @@ class Geary:
     ----------
     y              : array
                      original variable
-    w              : W
+    w              : W | Graph
                      spatial weights
     permutations   : int
                      number of permutations
