@@ -2,12 +2,14 @@
 Spatial autocorrelation for binary attributes
 
 """
+
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
 import warnings
 
 import numpy as np
 import pandas as pd
+from libpysal.weights import W
 from scipy.stats import chi2, chi2_contingency
 
 from .crand import njit as _njit
@@ -18,7 +20,7 @@ __all__ = ["Join_Counts"]
 PERMUTATIONS = 999
 
 
-class Join_Counts(object):
+class Join_Counts:
     """Binary Join Counts
 
 
@@ -27,8 +29,8 @@ class Join_Counts(object):
 
     y               : array
                       binary variable measured across n spatial units
-    w               : W
-                      spatial weights instance
+    w               : W | Graph
+                      spatial weights instance as W or Graph aligned with y
     permutations    : int
                       number of random permutations for calculation of pseudo-p_values
 
@@ -150,9 +152,12 @@ class Join_Counts(object):
         y = np.asarray(y).flatten()
         w.transformation = "b"  # ensure we have binary weights
         self.w = w
-        self.adj_list = self.w.to_adjlist(
-            remove_symmetric=False, drop_islands=drop_islands
-        )
+        if isinstance(w, W):
+            self.adj_list = self.w.to_adjlist(
+                remove_symmetric=False, drop_islands=drop_islands
+            )
+        else:
+            self.adj_list = self.w.adjacency.reset_index()
         self.y = y
         self.permutations = permutations
         self.J = w.s0 / 2.0
@@ -206,9 +211,7 @@ class Join_Counts(object):
                 self.sim_autocurr_pos
             ) ** 2 + (
                 self.autocorr_neg - np.mean(self.sim_autocurr_neg)
-            ) ** 2 / np.mean(
-                self.sim_autocurr_pos
-            ) ** 2
+            ) ** 2 / np.mean(self.sim_autocurr_pos) ** 2
             self.sim_autocorr_chi2 = 1 - chi2.cdf(stat, 1)
 
             p_sim_bb = self.__pseudop(self.sim_bb, self.bb)
@@ -228,7 +231,10 @@ class Join_Counts(object):
 
     def __calc(self, z):
         adj_list = self.adj_list
-        zseries = pd.Series(z, index=self.w.id_order)
+        zseries = pd.Series(
+            z,
+            index=self.w.id_order if hasattr(self.w, "id_order") else self.w.unique_ids,
+        )
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values
         sim = focal == neighbor
@@ -265,9 +271,9 @@ class Join_Counts(object):
             a pandas dataframe with a geometry column
         cols : string or list of string
             name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -310,7 +316,7 @@ class Join_Counts(object):
             outvals=outvals,
             stat=cls,
             swapname="bw",
-            **stat_kws
+            **stat_kws,
         )
 
 
