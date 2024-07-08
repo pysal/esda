@@ -1,20 +1,21 @@
 """
 Geary's C statistic for spatial autocorrelation
 """
+
 __author__ = "Serge Rey <sjsrey@gmail.com> "
 
 import warnings
 
 import numpy as np
 import scipy.stats as stats
-from libpysal import weights
+from libpysal import graph, weights
 
 from .tabular import _univariate_handler
 
 __all__ = ["Geary"]
 
 
-class Geary(object):
+class Geary:
     """
     Global Geary C Autocorrelation statistic
 
@@ -103,14 +104,18 @@ class Geary(object):
     """
 
     def __init__(self, y, w, transformation="r", permutations=999):
-        if not isinstance(w, weights.W):
+        if not isinstance(w, (weights.W, graph.Graph)):
             raise TypeError(
-                f"w must be a pysal weights object, got {type(w)} instead."
+                "w must be a libpysal.weights.W or libpysal.graph.Graph:object, "
+                f"got {type(w)} instead."
             )
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
-        w.transform = transformation
+        if isinstance(w, weights.W):
+            w.transform = transformation
+        else:
+            w = w.transform(transformation)
         self.w = w
         self._focal_ix, self._neighbor_ix = w.sparse.nonzero()
         self._weights = w.sparse.data
@@ -122,7 +127,8 @@ class Geary(object):
         yd = y - y.mean()
         yss = sum(yd * yd)
 
-        self.den = yss * self.w.s0 * 2.0
+        s0 = self.w._s0 if hasattr(self.w, "_s0") else self.w.s0
+        self.den = yss * s0 * 2.0
         self.C = self.__calc(y)
         de = self.C - 1.0
         self.EC = 1.0
@@ -159,10 +165,9 @@ class Geary(object):
     def __moments(self):
         y = self.y
         n = self.n
-        w = self.w
-        s0 = w.s0
-        s1 = w.s1
-        s2 = w.s2
+        s1 = self.w._s1 if hasattr(self.w, "_s1") else self.w.s1
+        s0 = self.w._s0 if hasattr(self.w, "_s0") else self.w.s0
+        s2 = self.w._s2 if hasattr(self.w, "_s2") else self.w.s2
         s02 = s0 * s0
         yd = y - y.mean()
         yd4 = yd**4
@@ -242,5 +247,5 @@ class Geary(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
