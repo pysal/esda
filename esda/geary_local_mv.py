@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
+from libpysal import weights
 from scipy import stats
 from sklearn.base import BaseEstimator
 from sklearn.utils import check_array
 
 
 class Geary_Local_MV(BaseEstimator):
-
     """Local Geary - Multivariate"""
 
     def __init__(self, connectivity=None, permutations=999, drop_islands=True):
@@ -15,10 +15,8 @@ class Geary_Local_MV(BaseEstimator):
 
         Parameters
         ----------
-        connectivity     : scipy.sparse matrix object
-                           the connectivity structure describing
-                           the relationships between observed units.
-                           Need not be row-standardized.
+        connectivity     : W | Graph
+                           spatial weights instance as W or Graph aligned with y
         permutations     : int
                            (default=999)
                            number of random permutations for calculation
@@ -85,7 +83,12 @@ class Geary_Local_MV(BaseEstimator):
             estimator=self,
         )
 
-        w = self.connectivity
+        w = (
+            self.connectivity
+            if isinstance(self.connectivity, weights.W)
+            else self.connectivity.to_W()
+            # falling back to W due to _crand requiring refactoring otherwise
+        )
         w.transform = "r"
 
         self.n = len(variables[0])
@@ -130,7 +133,7 @@ class Geary_Local_MV(BaseEstimator):
         # Rearrange data based on w id order
         adj_list_gs["w_order"] = w.id_order
         adj_list_gs.sort_values(by="w_order", inplace=True)
-        adj_list_gs.drop(columns=['w_order'], inplace=True)
+        adj_list_gs.drop(columns=["w_order"], inplace=True)
         localG = np.array(adj_list_gs.sum(axis=1, numeric_only=True) / k)
 
         return localG
@@ -169,7 +172,7 @@ class Geary_Local_MV(BaseEstimator):
             # Calculate diff
             diff = []
             for z in range(nvars):
-                _diff = (np.array((zvariables[z][i] - vars_rand[z]) ** 2 * w[i]))
+                _diff = np.array((zvariables[z][i] - vars_rand[z]) ** 2 * w[i])
                 diff.append(_diff.sum(1) / nvars)
             # add up differences
             temp = np.array([sum(x) for x in zip(*diff)])
