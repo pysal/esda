@@ -30,10 +30,10 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-"libpysal",
-"pandas>1.4",
-"scikit-learn>=1.0",
-"scipy>=1.9"
+    "libpysal",
+    "pandas>1.4",
+    "scikit-learn>=1.0",
+    "scipy>=1.9"
 ]
 
 
@@ -42,6 +42,9 @@ Home = "https://pysal.org/esda/"
 Repository = "https://github.com/pysal/esda"
 
 [project.optional-dependencies]
+topo = [
+    "rtree>=1.0",
+]
 tests = [
     "codecov",
     "coverage",

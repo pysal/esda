@@ -9,5 +9,6 @@ dependencies:
   - matplotlib
   - numba
   - pandas
+  - rtree
   - scikit-learn
   - scipy>=0.11

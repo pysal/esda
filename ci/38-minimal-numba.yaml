@@ -15,7 +15,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-  - rtree
   # optional
   - geopandas>=0.12.0,<0.13
+  - rtree
   - shapely>=2

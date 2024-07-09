@@ -15,9 +15,9 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-  - rtree
   # optional
   - geopandas>=0.7.0
+  - rtree
   - shapely>=2.0
   # doc build
   - nbsphinx
