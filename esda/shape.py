@@ -123,7 +123,7 @@ def _get_angles(points, n_coords_per_geom):
         a = left - center
         b = right - center
         # compute the angle between the segments
-        angle = numpy.math.atan2(a[0] * b[1] - a[1] * b[0], numpy.dot(a, b))
+        angle = numpy.atan2(a[0] * b[1] - a[1] * b[0], numpy.dot(a, b))
         result.append(angle)
         on_coord += 1
     return result
