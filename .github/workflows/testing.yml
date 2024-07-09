@@ -42,9 +42,13 @@
            - ci/311-numba-DEV.yaml
          include:
            - environment-file: ci/310-numba.yaml
-             os: macos-latest
+             os: macos-13 # Intel
            - environment-file: ci/311.yaml
-             os: macos-latest
+             os: macos-13 # Intel
+           - environment-file: ci/310-numba.yaml
+             os: macos-14 # Apple Silicon
+           - environment-file: ci/311.yaml
+             os: macos-14 # Apple Silicon
            - environment-file: ci/310-numba.yaml
              os: windows-latest
            - environment-file: ci/311.yaml
