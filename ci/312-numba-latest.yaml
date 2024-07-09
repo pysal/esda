@@ -11,6 +11,8 @@ dependencies:
   - scipy
   # testing
   - codecov
+  - folium
+  - mapclassify
   - matplotlib
   - pytest
   - pytest-cov

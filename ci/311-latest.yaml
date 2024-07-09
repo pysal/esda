@@ -4,17 +4,19 @@ channels:
 dependencies:
   - python=3.11
   # required
+  - geopandas
   - libpysal
   - pandas
   - scikit-learn
   - scipy
+  - shapely
   # testing
   - codecov
+  - folium
+  - mapclassify
   - matplotlib
   - pytest
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas
   - rtree
-  - shapely

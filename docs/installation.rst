@@ -45,5 +45,3 @@ contribute to esda development.
 .. _Python Package Index: https://pypi.org/project/esda/
 .. _pysal/esda: https://github.com/pysal/esda
 .. _fork: https://help.github.com/articles/fork-a-repo/
-
-

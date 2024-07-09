@@ -4,14 +4,16 @@ channels:
 dependencies:
   - python=3.12
   # required
+  - geopandas
   - libpysal
   - numpy
   - pandas
   - scikit-learn
   - scipy
-  # optional
-  - geopandas
+  - shapely
+  # optional, testing, etc.
+  - folium
+  - mapclassify
   - matplotlib
   - numba
   - rtree
-  - shapely

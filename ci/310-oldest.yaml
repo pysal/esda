@@ -5,16 +5,18 @@ dependencies:
   - python=3.10
   # required
   - libpysal
+  - geopandas=0.12
   - numpy=1.24
   - pandas<1.6
   - scikit-learn=1.2
   - scipy=1.9
-  # optional
-  - geopandas=0.12
   - shapely=2.0
+  # optional
   - rtree=1.0
   # testing
   - codecov
+  - folium
+  - mapclassify
   - matplotlib
   - pytest
   - pytest-cov

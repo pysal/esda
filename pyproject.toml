@@ -30,11 +30,13 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "geopandas>=0.12",
     "libpysal",
     "numpy>=1.24",
     "pandas>1.5",
     "scikit-learn>=1.2",
     "scipy>=1.9",
+    "shapely>=2.0",
 ]
 
 
@@ -44,13 +46,14 @@ Repository = "https://github.com/pysal/esda"
 
 [project.optional-dependencies]
 plus = [
-    "geopandas>=0.12",
     "numba>=0.57",
     "rtree>=1.0",
-    "shapely>=2.0",
 ]
 tests = [
     "codecov",
+    "folium",
+    "mapclassify",
+    "matplotlib",
     "pytest",
     "pytest-cov",
     "pytest-xdist",
@@ -65,8 +68,6 @@ docs = [
     "sphinx_bootstrap_theme",
 ]
 notebooks = [
-    "folium",
-    "matplotlib",
     "matplotlib-scalebar",
     "seaborn",
     "watermark",
