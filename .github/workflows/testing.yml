@@ -20,7 +20,7 @@
    unittests:
      env:
        FETCH_DATA: python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "sids2", "stl"]]'
-       RUN_TEST: pytest esda -v -r a -n auto --cov esda --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
+       RUN_TEST: pytest esda -v -r a -n auto --cov esda --cov-report xml --color yes --cov-append --cov-report term-missing
      name: CI (${{ matrix.os }}, ${{ matrix.environment-file }})
      runs-on: ${{ matrix.os }}
      timeout-minutes: 25
@@ -42,9 +42,13 @@
            - ci/311-numba-DEV.yaml
          include:
            - environment-file: ci/310-numba.yaml
-             os: macos-latest
+             os: macos-13 # Intel
            - environment-file: ci/311.yaml
-             os: macos-latest
+             os: macos-13 # Intel
+           - environment-file: ci/310-numba.yaml
+             os: macos-14 # Apple Silicon
+           - environment-file: ci/311.yaml
+             os: macos-14 # Apple Silicon
            - environment-file: ci/310-numba.yaml
              os: windows-latest
            - environment-file: ci/311.yaml
