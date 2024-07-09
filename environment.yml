@@ -1,13 +1,17 @@
 name: esda
 channels:
   - conda-forge
-  - defaults
 dependencies:
-  - geopandas
+  - python=3.12
+  # required
   - libpysal
-  - mapclassify
-  - matplotlib
-  - numba
+  - numpy
   - pandas
   - scikit-learn
-  - scipy>=0.11
+  - scipy
+  # optional
+  - geopandas
+  - matplotlib
+  - numba
+  - rtree
+  - shapely

@@ -4,16 +4,18 @@ channels:
 dependencies:
   - python=3.10
   # required
-  - pandas>=1.0
-  - scikit-learn
-  - scipy>=1.0
+  - libpysal
+  - numpy=1.24
+  - pandas<1.6
+  - scikit-learn=1.2
+  - scipy=1.9
+  # optional
+  - geopandas=0.12
+  - shapely=2.0
+  - rtree=1.0
   # testing
   - codecov
   - matplotlib
   - pytest
   - pytest-cov
   - pytest-xdist
-  - rtree
-  # optional
-  - geopandas>=0.12.0
-  - shapely>=2
