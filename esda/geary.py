@@ -106,7 +106,7 @@ class Geary:
     def __init__(self, y, w, transformation="r", permutations=999):
         if not isinstance(w, (weights.W, graph.Graph)):
             raise TypeError(
-                "w must be a libpysal.weights.W or libpysal.graph.Graph:object, "
+                "w must be a libpysal.weights.W or libpysal.graph.Graph object, "
                 f"got {type(w)} instead."
             )
         y = np.asarray(y).flatten()
