@@ -12,7 +12,7 @@ dependencies:
   - scipy=1.9
   - shapely=2.0
   # optional
-  - numba=0.57
+  - numba=0.59
   - rtree=1.0
   # testing
   - codecov

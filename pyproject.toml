@@ -46,7 +46,7 @@ Repository = "https://github.com/pysal/esda"
 
 [project.optional-dependencies]
 plus = [
-    "numba>=0.57",
+    "numba>=0.59",
     "rtree>=1.0",
 ]
 tests = [
