@@ -2,6 +2,7 @@ from unittest import TestCase
 
 import numpy
 import pandas
+import pytest
 
 from ..topo import isolation, prominence, to_elevation, weights
 
@@ -48,6 +49,9 @@ class TopoTester(TestCase):
         assert not numpy.allclose(default, middle)
 
     def test_isolation_options(self):
+
+        pytest.importorskip("rtree")
+
         marks = self.marks
         points = self.points
         default = isolation(marks, points)
@@ -63,6 +67,8 @@ class TopoTester(TestCase):
 
     def test_isolation_valid(self):
         # results should be valid
+
+        pytest.importorskip("rtree")
 
         marks = self.marks
         points = self.points
