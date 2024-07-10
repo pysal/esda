@@ -72,9 +72,7 @@ esda development is hosted on github_.
 
 Discussions of development occurs on the
 `developer list <http://groups.google.com/group/pysal-dev>`_
-as well as gitter_.
-
-.. _gitter : https://gitter.im/pysal/pysal?
+as well as the `esda Discord channel <https://discord.gg/Re46DjyB9U>`_.
 
 ****************
 Getting Involved
@@ -115,7 +113,6 @@ If you use PySAL-esda in a scientific publication, we would appreciate citations
       }
 
 
-
 *******************
 License information
 *******************
@@ -134,8 +131,6 @@ WARRANTIES.
    Tutorial <tutorial>
    API <api>
    References <references>
-
-
 
 
 .. _PySAL: https://github.com/pysal/pysal

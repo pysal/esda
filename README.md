@@ -57,16 +57,13 @@ PySAL-esda is under active development and contributors are welcome.
 
 If you have any suggestion, feature request, or bug report, please open a new [issue](https://github.com/pysal/esda/issues) on GitHub. To submit patches, please follow the PySAL development [guidelines](https://github.com/pysal/pysal/wiki) and open a [pull request](https://github.com/pysal/esda). Once your changes get merged, you’ll automatically be added to the [Contributors List](https://github.com/pysal/esda/graphs/contributors).
 
-
 ## Support
 
-If you are having issues, please talk to us in the [gitter room](https://gitter.im/pysal/pysal).
- 
- 
+If you are having issues, please talk to us in the [`esda` Discord channel](https://discord.gg/Re46DjyB9U).
+
 ## License
 
 The project is licensed under the [BSD 3-Clause license](https://github.com/pysal/esda/blob/main/LICENSE).
-
 
 ## Funding
 
