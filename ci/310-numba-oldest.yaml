@@ -6,13 +6,13 @@ dependencies:
   # required
   - libpysal
   - geopandas=0.12
-  - numpy=1.24
+  - numpy=1.22
   - pandas<1.6
   - scikit-learn=1.2
   - scipy=1.9
   - shapely=2.0
   # optional
-  - numba=0.59
+  - numba=0.57
   - rtree=1.0
   # testing
   - codecov
