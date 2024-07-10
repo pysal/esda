@@ -2,27 +2,29 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   # required
+  - geopandas
   - libpysal
-  - pandas>=1.0
+  - numpy
+  - pandas
   - scikit-learn
-  - scipy>=1.0
-  - numba
+  - scipy
+  - shapely
   # testing
   - codecov
+  - folium
+  - mapclassify
   - matplotlib
   - pytest
   - pytest-cov
   - pytest-xdist
-  - rtree
   # optional
-  - geopandas>=0.7.0
-  - shapely>=2.0
+  - rtree
   # doc build
   - nbsphinx
   - numpydoc
+  - pandoc
   - sphinx
   - sphinxcontrib-bibtex
-  - sphinxcontrib-napoleon
   - sphinx_bootstrap_theme

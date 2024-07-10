@@ -1,7 +1,8 @@
 # Exploratory Spatial Data Analysis in PySAL
 
+![tag](https://img.shields.io/github/v/release/pysal/esda?include_prereleases&sort=semver)
 [![Continuous Integration](https://github.com/pysal/esda/actions/workflows/testing.yml/badge.svg)](https://github.com/pysal/esda/actions/workflows/testing.yml) 
-[![codecov](https://codecov.io/gh/pysal/esda/branch/master/graph/badge.svg)](https://codecov.io/gh/pysal/esda)
+[![codecov](https://codecov.io/gh/pysal/esda/branch/main/graph/badge.svg)](https://codecov.io/gh/pysal/esda)
 [![DOI](https://zenodo.org/badge/81873636.svg)](https://zenodo.org/badge/latestdoi/81873636)
 
 Methods for testing for global and local autocorrelation in areal unit data.
@@ -11,23 +12,44 @@ Methods for testing for global and local autocorrelation in areal unit data.
 - [Tutorial](https://pysal.org/esda/tutorial.html)
 - [API](https://pysal.org/esda/api.html)
 
-
 ## Installation
 
-Install esda by running:
+Install `esda` by running:
+
+### conda-forge
+
+*preferred*
+
+```
+$ conda install -c conda-forge esda
+```
+
+### PyPI
 
 ```
 $ pip install esda
 ```
 
+### GitHub
+
+```
+$ pip install git+https://github.com/pysal/esda@main
+```
 
 ## Requirements
 
-- libpysal
+- `geopandas>=0.12`
+- ***`libpysal>=??`***
+- `numpy>=1.24`
+- `pandas>1.5`
+- `scikit-learn>=1.2`
+- `scipy>=1.9`
+- `shapely>=2.0`
 
 ### Optional dependencies
 
-- `numba`, version `0.50.1` or greater, is used to accelerate computational geometry and permutation-based statistical inference. Unfortunately, versions before `0.50.1` may cause some local statistical functions to break, so please ensure you have `numba>=0.50.1` installed. 
+- `numba>=0.57` - used to accelerate computational geometry and permutation-based statistical inference.
+- `rtree>=1.0` - required for `esda.topo.isolation()`
 
 ## Contribute
 
@@ -43,9 +65,9 @@ If you are having issues, please talk to us in the [gitter room](https://gitter.
  
 ## License
 
-The project is licensed under the [BSD 3-Clause license](https://github.com/pysal/esda/blob/master/LICENSE).
+The project is licensed under the [BSD 3-Clause license](https://github.com/pysal/esda/blob/main/LICENSE).
 
 
 ## Funding
 
-[<img align="middle" src="/Users/the-gaboardi/esda/docs/_static/images/nsf_logo.jpg" width="100">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1421935: [New Approaches to Spatial Distribution Dynamics](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1421935)
+[<img align="middle" src="https://github.com/pysal/esda/blob/main/docs/_static/images/nsf_logo.jpg" width="100">](https://www.nsf.gov/index.jsp) National Science Foundation Award #1421935: [New Approaches to Spatial Distribution Dynamics](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1421935)
