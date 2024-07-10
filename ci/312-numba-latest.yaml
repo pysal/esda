@@ -4,11 +4,13 @@ channels:
 dependencies:
   - python=3.12
   # required
+  - geopandas
   - libpysal
   - numpy
   - pandas
   - scikit-learn
   - scipy
+  - shapely
   # testing
   - codecov
   - folium
@@ -18,7 +20,5 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas
   - numba
   - rtree
-  - shapely

@@ -58,11 +58,6 @@
             micromamba-version: 'latest'
             environment-file: ${{ matrix.environment-file }}
 
-       - name: install bleeding edge libpysal (Ubuntu / DEV envs)
-         run: |
-           pip install git+https://github.com/pysal/libpysal.git@main
-         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'dev')
-
        - name: environment info
          run: |
            micromamba info
