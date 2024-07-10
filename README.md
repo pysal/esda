@@ -40,7 +40,7 @@ $ pip install git+https://github.com/pysal/esda@main
 
 - `geopandas>=0.12`
 - ***`libpysal>=??`***
-- `numpy>=1.22`
+- `numpy>=1.24`
 - `pandas>1.5`
 - `scikit-learn>=1.2`
 - `scipy>=1.9`
@@ -48,7 +48,7 @@ $ pip install git+https://github.com/pysal/esda@main
 
 ### Optional dependencies
 
-- `numba>=0.55` - used to accelerate computational geometry and permutation-based statistical inference.
+- `numba>=0.57` - used to accelerate computational geometry and permutation-based statistical inference.
 - `rtree>=1.0` - required for `esda.topo.isolation()`
 
 ## Contribute
