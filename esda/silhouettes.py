@@ -63,7 +63,7 @@ def path_silhouette(
                 matrix of data with N observations and P covariates.
     labels  :   np.ndarray (N,)
                 flat vector of the L labels assigned over N observations.
-    W       :   pysal.W object
+    W       :   libpysal.weights.W | libpysal.graph.Graph
                 spatial weights object reflecting the spatial connectivity
                 in the problem under analysis
     D       :   np.ndarray (N,N)
@@ -266,7 +266,7 @@ def boundary_silhouette(
                 observation, and each clumn should be one feature.
     labels  :   (N_obs,) array of labels
                 the labels corresponding to the group each observation is assigned.
-    W       :   pysal.weights.W object
+    W       :   libpysal.weights.W | libpysal.graph.Graph
                 a spatial weights object containing the connectivity structure
                 for the data
     metric  :   callable, array,

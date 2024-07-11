@@ -11,8 +11,8 @@ ATOL = libpysal.common.ATOL
 parametrize_w = pytest.mark.parametrize(
     "w",
     [
-        libpysal.weights.util.lat2W(3, 3),
-        libpysal.graph.Graph.from_W(libpysal.weights.util.lat2W(3, 3)),
+        libpysal.weights.util.lat2W(3, 3, rook=False),
+        libpysal.graph.Graph.from_W(libpysal.weights.util.lat2W(3, 3, rook=False)),
     ],
     ids=["W", "Graph"],
 )
@@ -76,7 +76,7 @@ class TestSilhouette:
             self.X, self.groups, w, metric=self.precomputed
         )
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             silhouettes.boundary_silhouette(
                 self.X,
                 self.groups,
@@ -118,11 +118,11 @@ class TestSilhouette:
             self.X, self.groups, w, metric=self.altmetric
         )
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             silhouettes.path_silhouette(
                 self.X, self.groups, w, metric=self.precomputed
             )
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             silhouettes.path_silhouette(
                 self.X, self.groups, w, metric=lambda d: -self.altmetric(d)
             )
@@ -195,8 +195,11 @@ class TestSilhouette:
                 0.0,
             ]
         )
-
+        if isinstance(w, libpysal.weights.W):
+            alist = w.to_adjlist(drop_islands=True)
+        else:
+            alist = w.adjacency.drop(w.isolates).reset_index()
         test = silhouettes.silhouette_alist(
-            self.X, self.groups, w.to_adjlist(drop_islands=True)
+            self.X, self.groups, alist
         )
         numpy.testing.assert_allclose(known, test.silhouette, rtol=RTOL, atol=ATOL)
