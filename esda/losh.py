@@ -6,6 +6,14 @@ from scipy import stats
 from sklearn.base import BaseEstimator
 
 
+def _slag(w, y):
+    """Helper to compute lag either for W or for Graph"""
+    if isinstance(w, lp.weights.W):
+        return lp.weights.lag_spatial(w, y)
+    else:
+        return w.lag(y)
+
+
 class LOSH(BaseEstimator):
     """Local spatial heteroscedasticity (LOSH)"""
 
@@ -15,9 +23,8 @@ class LOSH(BaseEstimator):
 
         Parameters
         ----------
-        connectivity     : scipy.sparse matrix object
-                           the connectivity structure describing the
-                           relationships between observed units.
+        connectivity     : W | Graph
+                          spatial weights instance as W or Graph aligned with y
         inference        : str
                            describes type of inference to be used. options are
                            "chi-square" or "permutation" methods.
@@ -117,23 +124,23 @@ class LOSH(BaseEstimator):
         rowsum = np.array(w.sparse.sum(axis=1)).flatten()
 
         # Calculate spatial mean
-        ylag = lp.weights.lag_spatial(w, y) / rowsum
+        ylag = _slag(w, y) / rowsum
         # Calculate and adjust residuals based on multiplier
         yresid = abs(y - ylag) ** a
         # Calculate denominator of Hi equation
         denom = np.mean(yresid) * np.array(rowsum)
         # Carry out final Hi calculation
-        Hi = lp.weights.lag_spatial(w, yresid) / denom
+        Hi = _slag(w, yresid) / denom
         # Calculate average of residuals
         yresid_mean = np.mean(yresid)
 
         # Calculate VarHi
         n = len(y)
         squared_rowsum = np.asarray(w.sparse.multiply(w.sparse).sum(axis=1)).flatten()
-        term1 = ((n - 1) ** -1)
-        term2 = (denom**-2)
-        term3 = ((np.sum(yresid**2) / n) - yresid_mean**2)
-        term4 = ((n * squared_rowsum) - (rowsum**2))
+        term1 = (n - 1) ** -1
+        term2 = denom**-2
+        term3 = (np.sum(yresid**2) / n) - yresid_mean**2
+        term4 = (n * squared_rowsum) - (rowsum**2)
         VarHi = term1 * term2 * term3 * term4
 
         return (Hi, ylag, yresid, VarHi)
