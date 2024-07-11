@@ -175,7 +175,10 @@ class Geary_Local(BaseEstimator):
             adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
             zseries = pd.Series(zscore_x, index=w.id_order)
         else:
-            adj_list = w.adjacency.reset_index()
+            adj_list = w.adjacency
+            if drop_islands:
+                adj_list = adj_list.drop(w.isolates)
+            adj_list = adj_list.reset_index()
             zseries = pd.Series(zscore_x, index=w.unique_ids)
         zi = zseries.loc[adj_list.focal].values
         zj = zseries.loc[adj_list.neighbor].values
