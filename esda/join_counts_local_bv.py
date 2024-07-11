@@ -189,7 +189,10 @@ class Join_Counts_Local_BV(BaseEstimator):
             zseries_x = pd.Series(x, index=w.id_order)
             zseries_z = pd.Series(z, index=w.id_order)
         else:
-            adj_list = w.adjacency.reset_index()
+            if drop_islands:
+                adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                adj_list = w.adjacency.reset_index()
             # First, set up a series that maps the values to the weights table
             zseries_x = pd.Series(x, index=w.unique_ids)
             zseries_z = pd.Series(z, index=w.unique_ids)

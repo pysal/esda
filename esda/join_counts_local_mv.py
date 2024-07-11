@@ -151,7 +151,10 @@ class Join_Counts_Local_MV(BaseEstimator):
             # The zseries
             zseries = [pd.Series(i, index=w.id_order) for i in variables]
         else:
-            adj_list = w.adjacency.reset_index()
+            if drop_islands:
+                adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                adj_list = w.adjacency.reset_index()
             zseries = [pd.Series(i, index=w.unique_ids) for i in variables]
         # The focal values
         focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]

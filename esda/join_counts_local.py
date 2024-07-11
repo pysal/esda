@@ -156,7 +156,10 @@ class Join_Counts_Local(BaseEstimator):
             adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
             zseries = pd.Series(y, index=w.id_order)
         else:
-            adj_list = w.adjacency.reset_index()
+            if drop_islands:
+                adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                adj_list = w.adjacency.reset_index()
             zseries = pd.Series(y, index=w.unique_ids)
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values

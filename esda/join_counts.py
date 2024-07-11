@@ -150,14 +150,20 @@ class Join_Counts:
 
     def __init__(self, y, w, permutations=PERMUTATIONS, drop_islands=True):
         y = np.asarray(y).flatten()
-        w.transformation = "b"  # ensure we have binary weights
-        self.w = w
+
         if isinstance(w, W):
+            w.transform = "b"  # ensure we have binary weights
+            self.w = w
             self.adj_list = self.w.to_adjlist(
                 remove_symmetric=False, drop_islands=drop_islands
             )
         else:
-            self.adj_list = self.w.adjacency.reset_index()
+            w = w.transform("b")
+            self.w = w
+            if drop_islands:
+                self.adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                self.adj_list = w.adjacency.reset_index()
         self.y = y
         self.permutations = permutations
         s0 = w._s0 if hasattr(w, "_s0") else w.s0
