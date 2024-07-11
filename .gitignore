@@ -10,7 +10,7 @@ dist
 .bash_history
 .cache/
 .conda/
-.coverage
+*.coverage*
 .coverage.snuc.30509.410533
 .eggs/
 .ipython/
