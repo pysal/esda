@@ -3,8 +3,7 @@
 Installation
 ============
 
-esda supports Python ``>=3.8``. Please make sure that you are
-operating in a Python 3 environment.
+Please make sure that you are operating in a Python 3 environment.
 
 Installing released version
 ---------------------------
@@ -46,5 +45,3 @@ contribute to esda development.
 .. _Python Package Index: https://pypi.org/project/esda/
 .. _pysal/esda: https://github.com/pysal/esda
 .. _fork: https://help.github.com/articles/fork-a-repo/
-
-
