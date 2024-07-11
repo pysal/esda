@@ -83,13 +83,11 @@ class Geary_Local_MV(BaseEstimator):
             estimator=self,
         )
 
-        w = (
-            self.connectivity
-            if isinstance(self.connectivity, weights.W)
-            else self.connectivity.to_W()
-            # falling back to W due to _crand requiring refactoring otherwise
-        )
-        w.transform = "r"
+        w = self.connectivity
+        if isinstance(w, weights.W):
+            w.transform = "r"
+        else:
+            w = w.transform("r")
 
         self.n = len(variables[0])
         self.w = w
@@ -100,7 +98,9 @@ class Geary_Local_MV(BaseEstimator):
         # to be used in _statistic and _crand
         zvariables = stats.zscore(variables, axis=1)
 
-        self.localG = self._statistic(variables, zvariables, w, self.drop_islands)
+        stat = self._statistic_w if isinstance(w, weights.W) else self._statistic_g
+
+        self.localG = stat(variables, zvariables, w, self.drop_islands)
 
         if permutations:
             self._crand(zvariables)
@@ -114,26 +114,50 @@ class Geary_Local_MV(BaseEstimator):
         return self
 
     @staticmethod
-    def _statistic(variables, zvariables, w, drop_islands):
-        # Define denominator adjustment
-        k = len(variables)
-        # Create focal and neighbor values
-        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
-        zseries = [pd.Series(i, index=w.id_order) for i in zvariables]
+    def _stat(zseries, adj_list, variables):
         focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
         neighbor = [
             zseries[i].loc[adj_list.neighbor].values for i in range(len(variables))
         ]
         # Carry out local Geary calculation
         gs = adj_list.weight.values * (np.array(focal) - np.array(neighbor)) ** 2
+        return gs
+
+    def _statistic_w(self, variables, zvariables, w, drop_islands):
+        # Define denominator adjustment
+        k = len(variables)
+        # Create focal and neighbor values
+        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
+
+        zseries = [pd.Series(i, index=w.id_order) for i in zvariables]
+        gs = self._stat(zseries, adj_list, variables)
+
         # Reorganize data
         temp = pd.DataFrame(gs).T
-        temp["ID"] = adj_list.focal.values
-        adj_list_gs = temp.groupby(by="ID").sum()
+        adj_list_gs = temp.groupby(by=adj_list.focal.values).sum()
         # Rearrange data based on w id order
         adj_list_gs["w_order"] = w.id_order
         adj_list_gs.sort_values(by="w_order", inplace=True)
         adj_list_gs.drop(columns=["w_order"], inplace=True)
+        localG = np.array(adj_list_gs.sum(axis=1, numeric_only=True) / k)
+
+        return localG
+
+    def _statistic_g(self, variables, zvariables, w, drop_islands):
+        # Define denominator adjustment
+        k = len(variables)
+        # Create focal and neighbor values
+        if drop_islands:
+            adj_list = w.adjacency.drop(w.isolates).reset_index()
+        else:
+            adj_list = w.adjacency.reset_index()
+        zseries = [pd.Series(i, index=w.unique_ids) for i in zvariables]
+
+        gs = self._stat(zseries, adj_list, variables)
+
+        # Reorganize data
+        temp = pd.DataFrame(gs).T
+        adj_list_gs = temp.groupby(by=adj_list.focal.values).sum().reindex(w.unique_ids)
         localG = np.array(adj_list_gs.sum(axis=1, numeric_only=True) / k)
 
         return localG
@@ -154,13 +178,21 @@ class Geary_Local_MV(BaseEstimator):
         nvars = self.variables.shape[0]
         Gs = np.zeros((self.n, self.permutations))
         prange = list(range(self.permutations))
-        k = self.w.max_neighbors + 1
+        k = (
+            self.w.max_neighbors + 1
+            if isinstance(self.w, weights.W)
+            else self.w.cardinalities.max() + 1
+        )
         nn = self.n - 1
         rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
         ids = np.arange(self.w.n)
-        ido = self.w.id_order
-        w = [self.w.weights[ido[i]] for i in ids]
-        wc = [self.w.cardinalities[ido[i]] for i in ids]
+        if isinstance(self.w, weights.W):
+            ido = self.w.id_order
+            w = [self.w.weights[ido[i]] for i in ids]
+            wc = [self.w.cardinalities[ido[i]] for i in ids]
+        else:
+            w = list(self.w.weights.values())
+            wc = self.w.cardinalities.tolist()
 
         for i in range(self.w.n):
             idsi = ids[ids != i]
