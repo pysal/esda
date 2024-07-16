@@ -245,8 +245,7 @@ class Gamma:
         elif op == "s":  # squared difference
             z = pd.Series(z, index=self.w.unique_ids)
             z2 = z**2
-            focal = self.w._adjacency.index.get_level_values(0)
-            neighbour = self.w._adjacency.index.get_level_values(1)
+            focal, neighbour = self.w.index_pairs
             g = (
                 self.w._adjacency.values
                 * (
@@ -257,8 +256,7 @@ class Gamma:
             ).sum()
         elif op == "a":  # absolute difference
             z = pd.Series(z, index=self.w.unique_ids)
-            focal = self.w._adjacency.index.get_level_values(0)
-            neighbour = self.w._adjacency.index.get_level_values(1)
+            focal, neighbour = self.w.index_pairs
             g = (
                 self.w._adjacency.values
                 * (np.abs(z[focal].values - z[neighbour].values))
