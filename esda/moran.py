@@ -231,9 +231,15 @@ class Moran:
         self.EI = -1.0 / (self.n - 1)
         n = self.n
         n2 = n * n
-        s1 = self.w._s1 if hasattr(self.w, "_s1") else self.w.s1
-        s0 = self.w._s0 if hasattr(self.w, "_s0") else self.w.s0
-        s2 = self.w._s2 if hasattr(self.w, "_s2") else self.w.s2
+        if isinstance(self.w, W):
+            s1 = self.w.s1
+            s0 = self.w.s0
+            s2 = self.w.s2
+        else:
+            self.summary = self.w.summary()
+            s1 = self.summary.s1
+            s0 = self.summary.s0
+            s2 = self.summary.s2
         s02 = s0 * s0
         v_num = n2 * s1 - n * s2 + 3 * s02
         v_den = (n - 1) * (n + 1) * s02
@@ -256,7 +262,7 @@ class Moran:
     def __calc(self, z):
         zl = _slag(self.w, z)
         inum = (z * zl).sum()
-        s0 = self.w._s0 if hasattr(self.w, "_s0") else self.w.s0
+        s0 = self.w.s0 if isinstance(self.w, W) else self.summary.s0
         return self.n / s0 * inum / self.z2ss
 
     @property
