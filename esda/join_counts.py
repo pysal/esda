@@ -166,7 +166,7 @@ class Join_Counts:
                 self.adj_list = w.adjacency.reset_index()
         self.y = y
         self.permutations = permutations
-        s0 = w._s0 if hasattr(w, "_s0") else w.s0
+        s0 = w.s0 if isinstance(w, W) else w._adjacency.sum()
         self.J = s0 / 2.0
         results = self.__calc(self.y)
         self.bb = results[0]
