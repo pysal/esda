@@ -120,6 +120,7 @@ class G:
             w.transform = "B"
         else:
             w = w.transform("B")
+            self.summary = w.summary()
         self.w = w
         self.permutations = permutations
         self.__moments()
@@ -153,11 +154,11 @@ class G:
         n = self.n
         w = self.w
         n2 = n * n
-        s0 = w.s0
+        s0 = w.s0 if isinstance(w, W) else self.summary.s0
         self.EG = s0 / (n * (n - 1))
         s02 = s0 * s0
-        s1 = w.s1
-        s2 = w.s2
+        s1 = w.s1 if isinstance(w, W) else self.summary.s1
+        s2 = w.s2 if isinstance(w, W) else self.summary.s2
         b0 = (n2 - 3 * n + 3) * s1 - n * s2 + 3 * s02
         b1 = (-1.0) * ((n2 - n) * s1 - 2 * n * s2 + 6 * s02)
         b2 = (-1.0) * (2 * n * s1 - (n + 3) * s2 + 6 * s02)
