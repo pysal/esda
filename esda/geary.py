@@ -116,6 +116,7 @@ class Geary:
             w.transform = transformation
         else:
             w = w.transform(transformation)
+            self.summary = w.summary()
         self.w = w
         self._focal_ix, self._neighbor_ix = w.sparse.nonzero()
         self._weights = w.sparse.data
@@ -126,8 +127,8 @@ class Geary:
         self.y2 = y * y
         yd = y - y.mean()
         yss = sum(yd * yd)
+        s0 = self.w.s0 if isinstance(self.w, weights.W) else self.summary.s0
 
-        s0 = self.w._s0 if hasattr(self.w, "_s0") else self.w.s0
         self.den = yss * s0 * 2.0
         self.C = self.__calc(y)
         de = self.C - 1.0
@@ -165,9 +166,9 @@ class Geary:
     def __moments(self):
         y = self.y
         n = self.n
-        s1 = self.w._s1 if hasattr(self.w, "_s1") else self.w.s1
-        s0 = self.w._s0 if hasattr(self.w, "_s0") else self.w.s0
-        s2 = self.w._s2 if hasattr(self.w, "_s2") else self.w.s2
+        s0 = self.w.s0 if isinstance(self.w, weights.W) else self.summary.s0
+        s1 = self.w.s1 if isinstance(self.w, weights.W) else self.summary.s1
+        s2 = self.w.s2 if isinstance(self.w, weights.W) else self.summary.s2
         s02 = s0 * s0
         yd = y - y.mean()
         yd4 = yd**4
