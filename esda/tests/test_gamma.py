@@ -72,6 +72,8 @@ class TestGamma:
     @parametrize_lat
     def test_Gamma_op(self, w):
         np.random.seed(12345)
+        if isinstance(w, libpysal.graph.Graph):
+            pytest.skip("Calleble not supported with Graph")
 
         def func(z, i, j):
             q = z[i] * z[j]
