@@ -1,5 +1,4 @@
-import unittest
-
+import pytest
 import libpysal
 import numpy
 from sklearn.metrics import pairwise
@@ -9,17 +8,25 @@ from .. import silhouettes
 RTOL = libpysal.common.RTOL
 ATOL = libpysal.common.ATOL
 
+parametrize_w = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.weights.util.lat2W(3, 3, rook=False),
+        libpysal.graph.Graph.from_W(libpysal.weights.util.lat2W(3, 3, rook=False)),
+    ],
+    ids=["W", "Graph"],
+)
 
-class Silhouette_Tester(unittest.TestCase):
-    def setUp(self):
-        self.w = libpysal.weights.lat2W(3, 3, rook=False)
+class TestSilhouette:
+    def setup_method(self):
         numpy.random.seed(12345)
         self.X = numpy.random.random((9, 3))
         self.groups = numpy.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]]).flatten()
         self.precomputed = self.X @ self.X.T
         self.altmetric = pairwise.manhattan_distances
 
-    def test_boundary(self):
+    @parametrize_w
+    def test_boundary(self, w):
         known = numpy.array(
             [
                 0.03042804,
@@ -33,7 +40,7 @@ class Silhouette_Tester(unittest.TestCase):
                 0.0,
             ]
         )
-        test = silhouettes.boundary_silhouette(self.X, self.groups, self.w)
+        test = silhouettes.boundary_silhouette(self.X, self.groups, w)
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
         known = numpy.array(
             [
@@ -49,7 +56,7 @@ class Silhouette_Tester(unittest.TestCase):
             ]
         )
         test = silhouettes.boundary_silhouette(
-            self.X, self.groups, self.w, metric=self.altmetric
+            self.X, self.groups, w, metric=self.altmetric
         )
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
         known = numpy.array(
@@ -66,18 +73,19 @@ class Silhouette_Tester(unittest.TestCase):
             ]
         )
         test = silhouettes.boundary_silhouette(
-            self.X, self.groups, self.w, metric=self.precomputed
+            self.X, self.groups, w, metric=self.precomputed
         )
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             silhouettes.boundary_silhouette(
                 self.X,
                 self.groups,
-                self.w,
+                w,
                 metric=self.precomputed - self.precomputed.mean(),
             )
 
-    def test_path(self):
+    @parametrize_w
+    def test_path(self, w):
         known = numpy.array(
             [
                 0.15982274,
@@ -91,7 +99,7 @@ class Silhouette_Tester(unittest.TestCase):
                 0.4165144,
             ]
         )
-        test = silhouettes.path_silhouette(self.X, self.groups, self.w)
+        test = silhouettes.path_silhouette(self.X, self.groups, w)
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
         known = numpy.array(
             [
@@ -107,16 +115,16 @@ class Silhouette_Tester(unittest.TestCase):
             ]
         )
         test = silhouettes.path_silhouette(
-            self.X, self.groups, self.w, metric=self.altmetric
+            self.X, self.groups, w, metric=self.altmetric
         )
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             silhouettes.path_silhouette(
-                self.X, self.groups, self.w, metric=self.precomputed
+                self.X, self.groups, w, metric=self.precomputed
             )
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             silhouettes.path_silhouette(
-                self.X, self.groups, self.w, metric=lambda d: -self.altmetric(d)
+                self.X, self.groups, w, metric=lambda d: -self.altmetric(d)
             )
 
     def test_nearest_label(self):
@@ -141,7 +149,8 @@ class Silhouette_Tester(unittest.TestCase):
         )
         numpy.testing.assert_allclose(d, knownd, rtol=RTOL, atol=ATOL)
 
-    def test_silhouette_alist(self):
+    @parametrize_w
+    def test_silhouette_alist(self, w):
         known = numpy.array(
             [
                 0.0,
@@ -186,8 +195,11 @@ class Silhouette_Tester(unittest.TestCase):
                 0.0,
             ]
         )
-
+        if isinstance(w, libpysal.weights.W):
+            alist = w.to_adjlist(drop_islands=True)
+        else:
+            alist = w.adjacency.drop(w.isolates).reset_index()
         test = silhouettes.silhouette_alist(
-            self.X, self.groups, self.w.to_adjlist(drop_islands=True)
+            self.X, self.groups, alist
         )
         numpy.testing.assert_allclose(known, test.silhouette, rtol=RTOL, atol=ATOL)
