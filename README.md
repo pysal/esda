@@ -39,7 +39,7 @@ $ pip install git+https://github.com/pysal/esda@main
 ## Requirements
 
 - `geopandas>=0.12`
-- ***`libpysal>=??`***
+- `libpysal>=4.12`
 - `numpy>=1.24`
 - `pandas>1.5`
 - `scikit-learn>=1.2`
