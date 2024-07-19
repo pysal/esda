@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse import csgraph as cg
+from libpysal import weights
 
 try:
     import pandas as pd
@@ -27,7 +28,7 @@ def _raise_initial_error():
         missing.append("pandas")
     raise ImportError(
         "This function requires scikit-learn and "
-        "pandas to be installed. Missing {','.join(missing)}."
+        f"pandas to be installed. Missing {','.join(missing)}."
     )
 
 
@@ -62,7 +63,7 @@ def path_silhouette(
                 matrix of data with N observations and P covariates.
     labels  :   np.ndarray (N,)
                 flat vector of the L labels assigned over N observations.
-    W       :   pysal.W object
+    W       :   libpysal.weights.W | libpysal.graph.Graph
                 spatial weights object reflecting the spatial connectivity
                 in the problem under analysis
     D       :   np.ndarray (N,N)
@@ -176,13 +177,13 @@ def path_silhouette(
                 else:
                     psils = subgraph_solutions
             if return_nbfc:
-                closest_connecting_label_[
-                    this_component_mask
-                ] = closest_connecting_label
+                closest_connecting_label_[this_component_mask] = (
+                    closest_connecting_label
+                )
             if return_nbfc_score:
-                closest_connection_score_[
-                    this_component_mask
-                ] = closest_connection_score
+                closest_connection_score_[this_component_mask] = (
+                    closest_connection_score
+                )
             psils_[this_component_mask] = psils
         closest_connection_score = closest_connection_score_
         closest_connecting_label = closest_connecting_label_
@@ -265,7 +266,7 @@ def boundary_silhouette(
                 observation, and each clumn should be one feature.
     labels  :   (N_obs,) array of labels
                 the labels corresponding to the group each observation is assigned.
-    W       :   pysal.weights.W object
+    W       :   libpysal.weights.W | libpysal.graph.Graph
                 a spatial weights object containing the connectivity structure
                 for the data
     metric  :   callable, array,
@@ -308,7 +309,15 @@ def boundary_silhouette(
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
 
-    alist = W.to_adjlist(drop_islands=drop_islands)
+    if isinstance(W, weights.W):
+        alist = W.to_adjlist(drop_islands=drop_islands)
+        index = W.id_order
+    else:
+        if drop_islands:
+            alist = W.adjacency.drop(W.isolates).reset_index()
+        else:
+            alist = W.adjacancy.reset_index()
+        index = W.unique_ids
     labels = np.asarray(labels)
     if callable(metric):
         full_distances = metric(data)
@@ -330,7 +339,7 @@ def boundary_silhouette(
     assert 0 == (full_distances < 0).sum(), (
         "Distance metric has negative values, " "which is not supported"
     )
-    label_frame = pd.DataFrame(labels, index=W.id_order, columns=["label"])
+    label_frame = pd.DataFrame(labels, index=index, columns=["label"])
     alist = alist.merge(
         label_frame, left_on="focal", right_index=True, how="left"
     ).merge(
