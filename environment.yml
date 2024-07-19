@@ -5,7 +5,7 @@ dependencies:
   - python=3.12
   # required
   - geopandas
-  - libpysal
+  - libpysal>=4.12
   - numpy
   - pandas
   - scikit-learn
