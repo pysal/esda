@@ -1,5 +1,3 @@
-from __future__ import division
-
 """
 Apply smoothing to rate computation
 
@@ -24,7 +22,6 @@ import warnings
 from functools import reduce
 
 import numpy as np
-
 from libpysal.cg import (
     KDTree,
     LineSegment,
@@ -68,7 +65,7 @@ __all__ = [
 ]
 
 
-def flatten(l, unique=True):  # noqa E741
+def flatten(l, unique=True):  # noqa: E741
     """flatten a list of lists
 
     Parameters
@@ -96,7 +93,7 @@ def flatten(l, unique=True):  # noqa E741
     [1, 2, 3, 4, 5, 6]
 
     """
-    l = reduce(lambda x, y: x + y, l)  # noqa E741
+    l = reduce(lambda x, y: x + y, l)  # noqa: E741
     if not unique:
         return list(l)
     return list(set(l))
@@ -141,14 +138,14 @@ def weighted_median(d, w):
     4
 
     """
-    dtype = [("w", "%s" % w.dtype), ("v", "%s" % d.dtype)]
-    d_w = np.array(list(zip(w, d)), dtype=dtype)
+    dtype = [("w", f"{w.dtype}"), ("v", f"{d.dtype}")]
+    d_w = np.array(list(zip(w, d, strict=True)), dtype=dtype)
     d_w.sort(order="v")
     reordered_w = d_w["w"].cumsum()
     cumsum_threshold = reordered_w[-1] * 1.0 / 2
     median_inx = (reordered_w >= cumsum_threshold).nonzero()[0][0]
     if reordered_w[median_inx] == cumsum_threshold and len(d) - 1 > median_inx:
-        return np.sort(d)[median_inx : median_inx + 2].mean()  # noqa E203
+        return np.sort(d)[median_inx : median_inx + 2].mean()  # noqa: E203
     return np.sort(d)[median_inx]
 
 
@@ -196,7 +193,7 @@ def sum_by_n(d, w, n):
     t = len(d)
     h = t // n  # must be floor!
     d = d * w
-    return np.array([sum(d[i : i + h]) for i in range(0, t, h)])  # noqa E203
+    return np.array([sum(d[i : i + h]) for i in range(0, t, h)])  # noqa: E203
 
 
 def crude_age_standardization(e, b, n):
@@ -325,7 +322,7 @@ def direct_age_standardization(e, b, s, n, alpha=0.05):
     g_b = var_estimate / adjusted_r
     _b = len(b)
     _rb = range(0, _b, _b // n)
-    k = [age_weight[i : i + _b // n].max() for i in _rb]  # noqa E203
+    k = [age_weight[i : i + _b // n].max() for i in _rb]  # noqa: E203
     g_a_k = np.square(adjusted_r + k) / (var_estimate + np.square(k))
     g_b_k = (var_estimate + np.square(k)) / (adjusted_r + k)
     res = []
@@ -421,7 +418,7 @@ def indirect_age_standardization(e, b, s_e, s_b, n, alpha=0.05):
     log_smr_upper = log_smr + norm_thres * log_smr_sd
     smr_lower = np.exp(log_smr_lower) * s_r_all
     smr_upper = np.exp(log_smr_upper) * s_r_all
-    res = list(zip(adjusted_r, smr_lower, smr_upper))
+    res = list(zip(adjusted_r, smr_lower, smr_upper, strict=True))
     return res
 
 
@@ -615,7 +612,7 @@ def assuncao_rate(e, b):
     return (y - ebi_b) / np.sqrt(ebi_v)
 
 
-class _Smoother(object):
+class _Smoother:
     """
     This is a helper class that implements things that all smoothers should do.
     Right now, the only thing that we need to propagate is the by_col function.
@@ -661,7 +658,7 @@ class _Smoother(object):
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=True)
 
         if not inplace:
             new = df.copy()
@@ -679,8 +676,8 @@ class _Smoother(object):
             raise ValueError(
                 "There is no one-to-one mapping between event "
                 "variable and population at risk variable!"
-            )
-        for ei, bi in zip(e, b):
+            ) from None
+        for ei, bi in zip(e, b, strict=True):
             ename = ei
             bname = bi
             ei = df[ename]
@@ -689,7 +686,7 @@ class _Smoother(object):
             df[outcol] = cls(ei, bi, **kwargs).r
 
 
-class Excess_Risk(_Smoother):
+class Excess_Risk(_Smoother):  # noqa: N801
     """Excess Risk
 
     Parameters
@@ -745,7 +742,7 @@ class Excess_Risk(_Smoother):
         self.r = e * 1.0 / (b * r_mean)
 
 
-class Empirical_Bayes(_Smoother):
+class Empirical_Bayes(_Smoother):  # noqa: N801
     """Aspatial Empirical Bayes Smoothing
 
     Parameters
@@ -810,7 +807,7 @@ class Empirical_Bayes(_Smoother):
         self.r = weight * rate + (1.0 - weight) * r_mean
 
 
-class _Spatial_Smoother(_Smoother):
+class _Spatial_Smoother(_Smoother):  # noqa: N801
     """
     This is a helper class that implements things that all the things that
     spatial smoothers should do.
@@ -863,7 +860,7 @@ class _Spatial_Smoother(_Smoother):
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         if not inplace:
             new = df.copy()
@@ -875,7 +872,7 @@ class _Spatial_Smoother(_Smoother):
             b = [b]
         if w is None:
             found = False
-            for k in df._metadata:
+            for _ in df._metadata:
                 w = df.__dict__.get(w, None)
                 if isinstance(w, W):
                     found = True
@@ -894,8 +891,8 @@ class _Spatial_Smoother(_Smoother):
             raise ValueError(
                 "There is no one-to-one mapping between event "
                 "variable and population at risk variable!"
-            )
-        for ei, bi, wi in zip(e, b, w):
+            ) from None
+        for ei, bi, wi in zip(e, b, w, strict=True):
             ename = ei
             bname = bi
             ei = df[ename]
@@ -904,7 +901,7 @@ class _Spatial_Smoother(_Smoother):
             df[outcol] = cls(ei, bi, w=wi, **kwargs).r
 
 
-class Spatial_Empirical_Bayes(_Spatial_Smoother):
+class Spatial_Empirical_Bayes(_Spatial_Smoother):  # noqa: N801
     """Spatial Empirical Bayes Smoothing
 
     Parameters
@@ -992,7 +989,7 @@ class Spatial_Empirical_Bayes(_Spatial_Smoother):
         self.r = r_mean + (rate - r_mean) * (r_var / (r_var + (r_mean / b)))
 
 
-class Spatial_Rate(_Spatial_Smoother):
+class Spatial_Rate(_Spatial_Smoother):  # noqa: N801
     """Spatial Rate Smoothing
 
     Parameters
@@ -1067,7 +1064,7 @@ class Spatial_Rate(_Spatial_Smoother):
             w.transform = "o"
 
 
-class Kernel_Smoother(_Spatial_Smoother):
+class Kernel_Smoother(_Spatial_Smoother):  # noqa: N801
     """Kernal smoothing
 
     Parameters
@@ -1124,7 +1121,7 @@ class Kernel_Smoother(_Spatial_Smoother):
     """
 
     def __init__(self, e, b, w):
-        if type(w) != Kernel:
+        if not isinstance(w, Kernel):
             raise TypeError("w must be an instance of Kernel weights.")
         if not w.id_order_set:
             raise ValueError(
@@ -1137,7 +1134,7 @@ class Kernel_Smoother(_Spatial_Smoother):
             self.r = w_e / w_b
 
 
-class Age_Adjusted_Smoother(_Spatial_Smoother):
+class Age_Adjusted_Smoother(_Spatial_Smoother):  # noqa: N801
     """Age-adjusted rate smoothing
 
     Parameters
@@ -1262,7 +1259,7 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         if s is None:
             raise ValueError("Standard population variable 's' must be supplied.")
@@ -1276,7 +1273,7 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
             s = [s]
         if w is None:
             found = False
-            for k in df._metadata:
+            for _ in df._metadata:
                 w = df.__dict__.get(w, None)
                 if isinstance(w, W):
                     found = True
@@ -1301,10 +1298,10 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
                 "There is no one-to-one mapping between event variable and "
                 "population variable and population at risk variable, and "
                 " standard population variable, and spatial weights!"
-            )
+            ) from None
         rdf = []
         max_len = 0
-        for ei, bi, wi, si in zip(e, b, w, s):
+        for ei, bi, wi, si in zip(e, b, w, s, strict=True):
             ename = ei
             bname = bi
             outcol = "_".join(("-".join((ename, bname)), cls.__name__.lower()))
@@ -1312,12 +1309,12 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
             max_len = 0 if len(this_r) > max_len else max_len
             rdf.append((outcol, this_r.tolist()))
         padded = (r[1] + [None] * max_len for r in rdf)
-        rdf = dict(zip((r[0] for r in rdf), padded))
+        rdf = dict(zip((r[0] for r in rdf), padded, strict=True))
         rdf = pd.DataFrame.from_dict(rdf)
         return rdf
 
 
-class Disk_Smoother(_Spatial_Smoother):
+class Disk_Smoother(_Spatial_Smoother):  # noqa: N801
     """Locally weighted averages or disk smoothing
 
     Parameters
@@ -1394,7 +1391,7 @@ class Disk_Smoother(_Spatial_Smoother):
             self.r = slag(w, r) / np.array(weight_sum).reshape(-1, 1)
 
 
-class Spatial_Median_Rate(_Spatial_Smoother):
+class Spatial_Median_Rate(_Spatial_Smoother):  # noqa: N801
     """Spatial Median Rate Smoothing
 
     Parameters
@@ -1511,18 +1508,18 @@ class Spatial_Median_Rate(_Spatial_Smoother):
         r, aw, w = self.r, self.aw, self.w
         new_r = []
         if self.aw is None:
-            for i, id in enumerate(w.id_order):
-                r_disk = np.append(r[i], r[w.neighbor_offsets[id]])
+            for i, _id in enumerate(w.id_order):
+                r_disk = np.append(r[i], r[w.neighbor_offsets[_id]])
                 new_r.append(np.median(r_disk))
         else:
-            for i, id in enumerate(w.id_order):
-                id_d = [i] + list(w.neighbor_offsets[id])
+            for i, _id in enumerate(w.id_order):
+                id_d = [i] + list(w.neighbor_offsets[_id])
                 aw_d, r_d = aw[id_d], r[id_d]
                 new_r.append(weighted_median(r_d, aw_d))
         self.r = np.asarray(new_r).reshape(r.shape)
 
 
-class Spatial_Filtering(_Smoother):
+class Spatial_Filtering(_Smoother):  # noqa: N801
     """Spatial Filtering
 
     Parameters
@@ -1625,10 +1622,10 @@ class Spatial_Filtering(_Smoother):
         x_range = bbox[1][0] - bbox[0][0]
         y_range = bbox[1][1] - bbox[0][1]
         x, y = np.mgrid[
-            bbox[0][0] : bbox[1][0] : float(x_range) / x_grid,  # noqa E203
-            bbox[0][1] : bbox[1][1] : float(y_range) / y_grid,  # noqa E203
+            bbox[0][0] : bbox[1][0] : float(x_range) / x_grid,  # noqa: E203
+            bbox[0][1] : bbox[1][1] : float(y_range) / y_grid,  # noqa: E203
         ]
-        self.grid = list(zip(x.ravel(), y.ravel()))
+        self.grid = list(zip(x.ravel(), y.ravel(), strict=True))
         self.r = []
         if r is None and pop is None:
             raise ValueError("Either r or pop should not be None.")
@@ -1687,7 +1684,7 @@ class Spatial_Filtering(_Smoother):
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         import pandas as pd
 
@@ -1698,30 +1695,27 @@ class Spatial_Filtering(_Smoother):
             b = [b]
         if len(e) > len(b):
             b = b * len(e)
-        if isinstance(x_grid, (int, float)):
+        if isinstance(x_grid, int | float):
             x_grid = [x_grid] * len(e)
-        if isinstance(y_grid, (int, float)):
+        if isinstance(y_grid, int | float):
             y_grid = [y_grid] * len(e)
 
         bbox = get_bounding_box(df[geom_col])
         bbox = [[bbox.left, bbox.lower], [bbox.right, bbox.upper]]
         data = get_points_array(df[geom_col])
         res = []
-        for ename, bname, xgi, ygi in zip(e, b, x_grid, y_grid):
+        for ename, bname, xgi, ygi in zip(e, b, x_grid, y_grid, strict=True):
             r = cls(bbox, data, df[ename], df[bname], xgi, ygi, **kwargs)
             grid = np.asarray(r.grid).reshape(-1, 2)
             name = "_".join(("-".join((ename, bname)), cls.__name__.lower()))
             colnames = ("_".join((name, suffix)) for suffix in ["X", "Y", "R"])
-            items = [
-                (name, col)
-                for name, col in zip(colnames, [grid[:, 0], grid[:, 1], r.r])
-            ]
+            items = list(zip(colnames, [grid[:, 0], grid[:, 1], r.r], strict=True))
             res.append(pd.DataFrame.from_dict(dict(items)))
         outdf = pd.concat(res)
         return outdf
 
 
-class Headbanging_Triples(object):
+class Headbanging_Triples:  # noqa: N801
     """Generate a pseudo spatial weights instance that contains headbanging triples
 
     Parameters
@@ -1869,7 +1863,9 @@ class Headbanging_Triples(object):
         self.triples, points = {}, {}
         for i, pnt in enumerate(data):
             ng = w.neighbor_offsets[i]
-            points[(i, Point(pnt))] = dict(list(zip(ng, [Point(d) for d in data[ng]])))
+            points[(i, Point(pnt))] = dict(
+                list(zip(ng, [Point(d) for d in data[ng]], strict=True))
+            )
         for i, pnt in list(points.keys()):
             ng = points[(i, pnt)]
             tr, tr_dis = {}, []
@@ -1889,7 +1885,7 @@ class Headbanging_Triples(object):
                 self.triples[i] = list(tr.keys())
         if edgecor:
             self.extra = {}
-            ps = dict([(p, i) for i, p in list(points.keys())])
+            ps = {p: i for i, p in list(points.keys())}
             chull = convex_hull(list(ps.keys()))
             chull = [p for p in chull if len(self.triples[ps[p]]) == 0]
             for point in chull:
@@ -1933,7 +1929,7 @@ class Headbanging_Triples(object):
                 self.extra[ps[point]] = extra
 
 
-class Headbanging_Median_Rate(object):
+class Headbanging_Median_Rate:  # noqa: N801
     """Headbaning Median Rate Smoothing
 
     Parameters
@@ -2039,42 +2035,42 @@ class Headbanging_Median_Rate(object):
             self.__search_headbanging_median()
             iteration -= 1
 
-    def __get_screens(self, id, triples, weighted=False):
+    def __get_screens(self, _id, triples, weighted=False):
         r = self.r
         if len(triples) == 0:
-            return r[id]
-        if hasattr(self, "extra") and id in self.extra:
+            return r[_id]
+        if hasattr(self, "extra") and _id in self.extra:
             extra = self.extra
             trp_r = r[list(triples[0])]
             # observed rate
             # plus difference in rate scaled by ratio of extrapolated distance
             # & observed distance.
             trp_r[-1] = trp_r[0] + (trp_r[0] - trp_r[-1]) * (
-                extra[id][-1] * 1.0 / extra[id][1]
+                extra[_id][-1] * 1.0 / extra[_id][1]
             )
             trp_r = sorted(trp_r)
             if not weighted:
-                return r[id], trp_r[0], trp_r[-1]
+                return r[_id], trp_r[0], trp_r[-1]
             else:
                 trp_aw = self.aw[triples[0]]
                 extra_w = trp_aw[0] + (trp_aw[0] - trp_aw[-1]) * (
-                    extra[id][-1] * 1.0 / extra[id][1]
+                    extra[_id][-1] * 1.0 / extra[_id][1]
                 )
-                return r[id], trp_r[0], trp_r[-1], self.aw[id], trp_aw[0] + extra_w
+                return r[_id], trp_r[0], trp_r[-1], self.aw[_id], trp_aw[0] + extra_w
         if not weighted:
             lowest, highest = [], []
             for trp in triples:
                 trp_r = np.sort(r[list(trp)])
                 lowest.append(trp_r[0])
                 highest.append(trp_r[-1])
-            return r[id], np.median(np.array(lowest)), np.median(np.array(highest))
+            return r[_id], np.median(np.array(lowest)), np.median(np.array(highest))
         if weighted:
             lowest, highest = [], []
             lowest_aw, highest_aw = [], []
             for trp in triples:
                 trp_r = r[list(trp)]
-                dtype = [("r", "%s" % trp_r.dtype), ("w", "%s" % self.aw.dtype)]
-                trp_r = np.array(list(zip(trp_r, list(trp))), dtype=dtype)
+                dtype = [("r", f"{trp_r.dtype}"), ("w", f"{self.aw.dtype}")]
+                trp_r = np.array(list(zip(trp_r, list(trp), strict=True)), dtype=dtype)
                 trp_r.sort(order="r")
                 lowest.append(trp_r["r"][0])
                 highest.append(trp_r["r"][-1])
@@ -2084,10 +2080,10 @@ class Headbanging_Median_Rate(object):
             wm_highest = weighted_median(np.array(highest), np.array(highest_aw))
             triple_members = flatten(triples, unique=False)
             return (
-                r[id],
+                r[_id],
                 wm_lowest,
                 wm_highest,
-                self.aw[id] * len(triples),
+                self.aw[_id] * len(triples),
                 self.aw[triple_members].sum(),
             )
 
@@ -2156,7 +2152,7 @@ class Headbanging_Median_Rate(object):
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         if not inplace:
             new = df.copy()
@@ -2179,7 +2175,7 @@ class Headbanging_Median_Rate(object):
         w = kwargs.pop("w", None)
         if w is None:
             found = False
-            for k in df._metadata:
+            for _k in df._metadata:
                 w = df.__dict__.get(w, None)
                 if isinstance(w, W):
                     found = True
@@ -2196,7 +2192,7 @@ class Headbanging_Median_Rate(object):
 
         hbt = Headbanging_Triples(data, w, k=k, t=t, angle=angle, edgecor=edgecor)
 
-        for ename, bname in zip(e, b):
+        for ename, bname in zip(e, b, strict=True):
             r = cls(df[ename], df[bname], hbt, **kwargs).r
             name = "_".join(("-".join((ename, bname)), cls.__name__.lower()))
             df[name] = r
