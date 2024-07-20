@@ -113,7 +113,7 @@ def _univariate_handler(
         if y is not None:
             col += "-" + y.name
         outcols = ["_".join((col, val)) for val in outvals]
-        for colname, attname in zip(outcols, outvals):
+        for colname, attname in zip(outcols, outvals, strict=True):
             df[colname] = stat_obj.__getattribute__(attname)
     if swapname != "":
         df.columns = [
