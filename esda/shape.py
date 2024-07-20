@@ -1,14 +1,15 @@
+import contextlib
+
 import numpy
 import pandas
 from packaging.version import Version
 
-try:
+# gets handled at the _cast level.
+with contextlib.suppress(ImportError, ModuleNotFoundError):
     import shapely
-except (ImportError, ModuleNotFoundError):
-    pass  # gets handled at the _cast level.
+
 
 from .crand import njit, prange
-
 
 __author__ = (
     "Martin Fleischmann <martin@fleischmann.net>",
@@ -29,15 +30,15 @@ def _cast(collection):
     except (ImportError, ModuleNotFoundError) as exception:
         raise type(exception)(
             "shapely and geopandas are required for shape statistics."
-        )
+        ) from None
 
     if Version(shapely.__version__) < Version("2"):
         raise ImportError("Shapely 2.0 or newer is required.")
 
-    if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+    if isinstance(collection, geopandas.GeoSeries | geopandas.GeoDataFrame):
         return numpy.asarray(collection.geometry.array)
     else:
-        if isinstance(collection, (numpy.ndarray, list)):
+        if isinstance(collection, numpy.ndarray | list):
             return numpy.asarray(collection)
         else:
             return numpy.array([collection])
@@ -94,7 +95,7 @@ def _get_angles(points, n_coords_per_geom):
     This assumes that the input geometries are simple, not multi!
     """
     # Start at the first point of the first geometry
-    offset = int(0)
+    offset = 0
     on_geom = 0
     on_coord = 0
     result = []
@@ -498,7 +499,7 @@ def second_areal_moment(collection):
     Defense Research and Development Technical Memorandum 87/209.
     https://apps.dtic.mil/dtic/tr/fulltext/u2/a183444.pdf
 
-    """
+    """  # noqa: E501
     ga = _cast(collection)
     import geopandas  # function level, to follow module design
 
@@ -509,12 +510,14 @@ def second_areal_moment(collection):
     collection_ix = numpy.repeat(
         collection_ix, shapely.get_num_interior_rings(parts) + 1
     )
-    # we need to work in polygon-space for the algorithms (centroid, shoelace calculation) to work
+    # we need to work in polygon-space for the algorithms
+    # (centroid, shoelace calculation) to work
     polygon_rings = shapely.polygons(rings)
     is_external = numpy.zeros_like(collection_ix).astype(bool)
     # the first element is always external
     is_external[0] = True
-    # and each subsequent element is external iff it is different from the preceeding index
+    # and each subsequent element is external iff
+    # it is different from the preceeding index
     is_external[1:] = ring_ix[1:] != ring_ix[:-1]
     # now, our analysis frame contains a bunch of (guaranteed-to-be-simple) polygons
     # that represent either exterior rings or holes
@@ -537,7 +540,8 @@ def second_areal_moment(collection):
 
     # but we will keep simple for now
     polygon_rings["moa"] = polygon_rings.geometry.apply(_second_moment_of_area_polygon)
-    # the above algorithm computes an unsigned moa to be insensitive to winding direction.
+    # the above algorithm computes an unsigned moa
+    # to be insensitive to winding direction.
     # however, we need to subtract the moa of holes. Hence, the sign of the moa is
     # -1 when the polygon is an internal ring and 1 otherwise:
     polygon_rings["sign"] = (1 - polygon_rings.is_external_ring * 2) * -1
@@ -551,7 +555,8 @@ def second_areal_moment(collection):
         polygon_rings.centroid.values, polygon_rings.collection_centroid.values
     )
     # now, we take the sum of (I+Ar^2) for each ring, treating the
-    # contribution of holes as negative. Then, we take the sum of all of the contributions
+    # contribution of holes as negative.
+    # Then, we take the sum of all of the contributions
     return (
         polygon_rings.groupby(["collection_ix", "ring_within_geom_ix"])
         .apply(
@@ -589,8 +594,8 @@ def _second_moa_ring_xplusy(points):
         x_head, y_head = points[i + 1]
         xtyh = x_tail * y_head
         xhyt = x_head * y_tail
-        xtyt = x_tail * y_tail
-        xhyh = x_head * y_head
+        xtyt = x_tail * y_tail  # noqa: F841 -- Really not used? Perhaps bug???
+        xhyh = x_head * y_head  # noqa: F841 -- Really not used? Perhaps bug???
         moi += (xtyh - xhyt) * (
             x_head**2
             + x_head * x_tail
