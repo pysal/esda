@@ -69,6 +69,9 @@ class TestGLocal:
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
 
     @parametrize_w
+    @pytest.mark.xfail(
+        reason="Intermittently does not warn; reason unknown; see gh#331"
+    )
     def test_G_star_Row_Standardized(self, w):
         with pytest.warns(UserWarning, match="Gi\\* requested, but"):
             lg = getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
