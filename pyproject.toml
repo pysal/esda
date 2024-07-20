@@ -58,7 +58,10 @@ tests = [
     "pytest-cov",
     "pytest-xdist",
 ]
-dev = ["pre-commit"]
+dev = [
+    "ruff",
+    "pre-commit"
+]
 docs = [
     "nbsphinx",
     "numpydoc",
@@ -76,9 +79,6 @@ notebooks = [
 
 [tool.setuptools.packages.find]
 include = ["esda", "esda.*"]
-
-[tool.black]
-line-length = 88
 
 [tool.ruff]
 line-length = 88
