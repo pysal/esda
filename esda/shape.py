@@ -594,8 +594,6 @@ def _second_moa_ring_xplusy(points):
         x_head, y_head = points[i + 1]
         xtyh = x_tail * y_head
         xhyt = x_head * y_tail
-        xtyt = x_tail * y_tail  # noqa: F841 -- Really unused? Perhaps bug? - FILE ISSUE
-        xhyh = x_head * y_head  # noqa: F841 -- Really unused? Perhaps bug? - FILE ISSUE
         moi += (xtyh - xhyt) * (
             x_head**2
             + x_head * x_tail
