@@ -184,7 +184,7 @@ class Moran:
         self.w = w
         self.permutations = permutations
         self.__moments()
-        self.I = self.__calc(self.z)  # noqa E741
+        self.I = self.__calc(self.z)  # noqa: E741
         self.z_norm = (self.I - self.EI) / self.seI_norm
         self.z_rand = (self.I - self.EI) / self.seI_rand
 
@@ -320,7 +320,7 @@ class Moran:
         )
 
 
-class Moran_BV:
+class Moran_BV:  # noqa: N801
     """
     Bivariate Moran's I
 
@@ -438,7 +438,7 @@ class Moran_BV:
         self.den = n - 1.0  # zx'zx = zy'zy = n-1
         w = _transform(w, transformation)
         self.w = w
-        self.I = self.__calc(zy)  # noqa E741
+        self.I = self.__calc(zy)  # noqa: E741
         if permutations:
             nrp = np.random.permutation
             sim = [self.__calc(nrp(zy)) for i in range(permutations)]
@@ -533,7 +533,7 @@ class Moran_BV:
         )
 
 
-def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
+def Moran_BV_matrix(variables, w, permutations=0, varnames=None):  # noqa: N802
     """
     Bivariate Moran Matrix
 
@@ -610,7 +610,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     return results
 
 
-def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
+def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):  # noqa: N802
     """
     Base calculation for MORAN_BV_Matrix
     """
@@ -632,7 +632,7 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     return results
 
 
-class Moran_Rate(Moran):
+class Moran_Rate(Moran):  # noqa: N801
     """
     Adjusted Moran's I Global Autocorrelation Statistic for Rate
     Variables :cite:`Assuncao1999`
@@ -750,10 +750,7 @@ class Moran_Rate(Moran):
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
-        if adjusted:
-            y = assuncao_rate(e, b)
-        else:
-            y = e * 1.0 / b
+        y = assuncao_rate(e, b) if adjusted else e * 1.0 / b
         Moran.__init__(
             self,
             y,
@@ -850,12 +847,12 @@ class Moran_Rate(Moran):
 
         rates = [
             assuncao_rate(df[e], df[pop]) if adj else df[e].astype(float) / df[pop]
-            for e, pop, adj in zip(events, populations, adjusted)
+            for e, pop, adj in zip(events, populations, adjusted, strict=True)
         ]
-        names = ["-".join((e, p)) for e, p in zip(events, populations)]
+        names = ["-".join((e, p)) for e, p in zip(events, populations, strict=True)]
         out_df = df.copy()
         rate_df = out_df.from_dict(
-            dict(zip(names, rates))
+            dict(zip(names, rates, strict=True))
         )  # trick to avoid importing pandas
         stat_df = _univariate_handler(
             rate_df,
@@ -877,7 +874,7 @@ class Moran_Rate(Moran):
 # -----------------------------------------------------------------------------#
 
 
-class Moran_Local:
+class Moran_Local:  # noqa: N801
     """Local Moran Statistics.
 
 
@@ -1034,7 +1031,7 @@ class Moran_Local:
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,
+        island_weight=0,  # noqa: ARG002
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1249,7 +1246,7 @@ class Moran_Local:
         return _explore_local_moran(self, gdf, crit_value, **kwargs)
 
 
-class Moran_Local_BV:
+class Moran_Local_BV:  # noqa: N801
     """Bivariate Local Moran Statistics.
 
 
@@ -1370,7 +1367,7 @@ class Moran_Local_BV:
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,
+        island_weight=0,  # noqa: ARG002
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1429,7 +1426,7 @@ class Moran_Local_BV:
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
-    def __calc(self, w, zx, zy):
+    def __calc(self, w, zx, zy):  # noqa: ARG002 -- Seems unneeded - FILE ISSUE
         zly = _slag(w, zy)
         return self.n_1 * self.zx * zly / self.den
 
@@ -1516,7 +1513,7 @@ class Moran_Local_BV:
         )
 
 
-class Moran_Local_Rate(Moran_Local):
+class Moran_Local_Rate(Moran_Local):  # noqa: N801
     """
     Adjusted Local Moran Statistics for Rate Variables :cite:`Assuncao1999`.
 
@@ -1642,14 +1639,11 @@ class Moran_Local_Rate(Moran_Local):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,
+        island_weight=0,  # noqa: ARG002
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
-        if adjusted:
-            y = assuncao_rate(e, b)
-        else:
-            y = e * 1.0 / b
+        y = assuncao_rate(e, b) if adjusted else e * 1.0 / b
         Moran_Local.__init__(
             self,
             y,
@@ -1749,12 +1743,12 @@ class Moran_Local_Rate(Moran_Local):
 
         rates = [
             assuncao_rate(df[e], df[pop]) if adj else df[e].astype(float) / df[pop]
-            for e, pop, adj in zip(events, populations, adjusted)
+            for e, pop, adj in zip(events, populations, adjusted, strict=True)
         ]
-        names = ["-".join((e, p)) for e, p in zip(events, populations)]
+        names = ["-".join((e, p)) for e, p in zip(events, populations, strict=True)]
         out_df = df.copy()
         rate_df = out_df.from_dict(
-            dict(zip(names, rates))
+            dict(zip(names, rates, strict=True))
         )  # trick to avoid importing pandas
         _univariate_handler(
             rate_df,
@@ -1783,7 +1777,8 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     crit_value : float, optional
         critical value for determining statistical significance, by default 0.05
     kwargs : dict, optional
-        additional keyword arguments are passed directly to geopandas.explore, by default None
+        additional keyword arguments are passed directly
+        to geopandas.explore, by default None
 
     Returns
     -------
@@ -1917,10 +1912,9 @@ def _wikh_slow(W, sokal_correction=False):
                 # excluding wik * wii
                 if i == h:
                     continue
-                if sokal_correction:
+                if sokal_correction and h == k:
                     # excluding wih * wih
-                    if h == k:
-                        continue
+                    continue
                 acc += W[i, k] * W[i, h]
         result[i] = acc
     return result / 2

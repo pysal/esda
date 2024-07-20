@@ -10,7 +10,7 @@ from esda.crand import njit as _njit
 PERMUTATIONS = 999
 
 
-class Join_Counts_Local_BV(BaseEstimator):
+class Join_Counts_Local_BV(BaseEstimator):  # noqa: N801
     """Univariate Local Join Count Statistic"""
 
     def __init__(
@@ -239,7 +239,7 @@ class Join_Counts_Local_BV(BaseEstimator):
 
 
 @_njit(fastmath=True)
-def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
+def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     zx = z[:, 0]
     zy = z[:, 1]
     other_weights = weights_i[1:]
@@ -248,7 +248,7 @@ def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
 
 
 @_njit(fastmath=True)
-def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):
+def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     zy = z[:, 1]
     other_weights = weights_i[1:]
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, other_weights)

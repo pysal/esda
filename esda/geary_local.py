@@ -8,7 +8,7 @@ from esda.crand import crand as _crand_plus
 from esda.crand import njit as _njit
 
 
-class Geary_Local(BaseEstimator):
+class Geary_Local(BaseEstimator):  # noqa: N801
     """Local Geary - Univariate"""
 
     def __init__(
@@ -206,7 +206,7 @@ class Geary_Local(BaseEstimator):
 
 
 @_njit(fastmath=True)
-def _local_geary(i, z, permuted_ids, weights_i, scaling):
+def _local_geary(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zi - zrand) ** 2 @ other_weights
