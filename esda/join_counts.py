@@ -20,7 +20,7 @@ __all__ = ["Join_Counts"]
 PERMUTATIONS = 999
 
 
-class Join_Counts:
+class Join_Counts:  # noqa: N801
     """Binary Join Counts
 
 
@@ -308,7 +308,7 @@ class Join_Counts:
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         if outvals is None:
             outvals = []
