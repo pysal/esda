@@ -16,7 +16,7 @@ from scipy.interpolate import interp1d
 __all__ = ["Smaup"]
 
 
-class Smaup(object):
+class Smaup:
     """S-maup: Statistical Test to Measure the Sensitivity
     to the Modifiable Areal Unit Problem.
 

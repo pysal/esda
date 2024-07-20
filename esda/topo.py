@@ -442,8 +442,8 @@ def _check_connectivity(connectivity_or_coordinates):
 if __name__ == "__main__":
     import geopandas
     import matplotlib.pyplot as plt
-    import pandas  # noqa F811
-    from libpysal import examples, weights  # noqa F811
+    import pandas  # noqa: F811
+    from libpysal import examples, weights  # noqa: F811
     from matplotlib import cm
 
     current_cmap = cm.get_cmap()
