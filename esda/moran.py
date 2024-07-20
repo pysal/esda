@@ -1393,7 +1393,7 @@ class Moran_Local_BV:  # noqa: N801
         self.w = w
         self.permutations = permutations
         self.den = (zx * zx).sum()
-        self.Is = self.__calc(self.w, self.zx, self.zy)
+        self.Is = self.__calc()
         self.geoda_quads = geoda_quads
         quads = [1, 2, 3, 4]
         if geoda_quads:
@@ -1426,8 +1426,8 @@ class Moran_Local_BV:  # noqa: N801
                 self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
-    def __calc(self, w, zx, zy):  # noqa: ARG002 -- Seems unneeded - FILE ISSUE
-        zly = _slag(w, zy)
+    def __calc(self):
+        zly = _slag(self.w, self.zy)
         return self.n_1 * self.zx * zly / self.den
 
     def __quads(self):
