@@ -12,6 +12,7 @@ PERMUTATIONS = 999
 
 class Join_Counts_Local_MV(BaseEstimator):
     """Multivariate Local Join Count Statistic"""
+
     def __init__(
         self,
         connectivity=None,
@@ -27,10 +28,8 @@ class Join_Counts_Local_MV(BaseEstimator):
 
         Parameters
         ----------
-        connectivity : scipy.sparse matrix object
-            the connectivity structure describing
-            the relationships between observed units.
-            Need not be row-standardized.
+        connectivity : W | Graph
+            spatial weights instance as W or Graph aligned with y
         permutations : int
             number of random permutations for calculation of pseudo p_values
         n_jobs : int
@@ -110,8 +109,11 @@ class Join_Counts_Local_MV(BaseEstimator):
 
         w = self.connectivity
         # Fill the diagonal with 0s
-        w = weights.util.fill_diagonal(w, val=0)
-        w.transform = "b"
+        if isinstance(w, weights.W):
+            w = weights.util.fill_diagonal(w, val=0)
+            w.transform = "b"
+        else:
+            w = w.assign_self_weight(0).eliminate_zeros().transform("b")
 
         self.n = len(variables[0])
         self.w = w
@@ -144,10 +146,16 @@ class Join_Counts_Local_MV(BaseEstimator):
     def _statistic(variables, w, drop_islands):
         # Create adjacency list. Note that remove_symmetric=False -
         # different from the esda.Join_Counts() function.
-        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
-
-        # The zseries
-        zseries = [pd.Series(i, index=w.id_order) for i in variables]
+        if isinstance(w, weights.W):
+            adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
+            # The zseries
+            zseries = [pd.Series(i, index=w.id_order) for i in variables]
+        else:
+            if drop_islands:
+                adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                adj_list = w.adjacency.reset_index()
+            zseries = [pd.Series(i, index=w.unique_ids) for i in variables]
         # The focal values
         focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
         # The neighbor values
