@@ -82,8 +82,8 @@ include = ["esda", "esda.*"]
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
-ignore = [
+lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
+lint.ignore = [
     "B006",
     "B008",
     "B009",

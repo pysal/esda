@@ -1289,9 +1289,7 @@ class Age_Adjusted_Smoother(_Spatial_Smoother):
         if isinstance(w, W):
             w = [w] * len(e)
         if not all(isinstance(wi, W) for wi in w):
-            raise TypeError(
-                "Weights object must be an instance of libpysal.weights.W!"
-            )
+            raise TypeError("Weights object must be an instance of libpysal.weights.W!")
         b = b * len(e) if len(b) == 1 and len(e) > 1 else b
         s = s * len(e) if len(s) == 1 and len(e) > 1 else s
         try:

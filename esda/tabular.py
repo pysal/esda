@@ -18,7 +18,7 @@ def _univariate_handler(
     pvalue="sim",
     outvals=None,
     swapname="",
-    **kwargs
+    **kwargs,
 ):
     """
     Compute a univariate descriptive statistic `stat` over columns `cols` in
@@ -65,7 +65,7 @@ def _univariate_handler(
             inplace=True,
             outvals=outvals,
             swapname=swapname,
-            **kwargs
+            **kwargs,
         )
         return new_df
     if w is None:
@@ -172,7 +172,7 @@ def _bivariate_handler(
             swapname=real_swapname,
             pvalue=pvalue,
             outvals=outvals,
-            **kwargs
+            **kwargs,
         )
         return new_df
     if y is None:
@@ -189,10 +189,9 @@ def _bivariate_handler(
             pvalue=pvalue,
             outvals=outvals,
             swapname="",
-            **kwargs
+            **kwargs,
         )
     if real_swapname != "":
-
         df.columns = [
             _swap_ending(col, real_swapname) if col.endswith("_statistic") else col
             for col in df.columns

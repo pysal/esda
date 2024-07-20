@@ -104,7 +104,6 @@ class Smaup(object):
     """
 
     def __init__(self, n, k, rho):
-
         self.n = n
         self.k = k
         self.rho = rho

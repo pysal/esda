@@ -429,7 +429,9 @@ def chunk_generator(
         observed_chunk = observed[start : (start + chunk_size)]  # noqa E203
         cardinalities_chunk = cardinalities[start : (start + chunk_size)]  # noqa E203
         w_chunk = other_weights[
-            w_boundary_points[i] : w_boundary_points[i + 1]  # noqa E203
+            w_boundary_points[i] : w_boundary_points[
+                i + 1
+            ]  # noqa E203
         ]
         yield (
             start,

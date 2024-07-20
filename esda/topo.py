@@ -141,9 +141,7 @@ def isolation(
     for iter_ix, ix in pbar(enumerate(sort_order[1:])):
         rank = iter_ix + 1
         value = X[ix]
-        location = coordinates[
-            ix,
-        ]
+        location = coordinates[ix,]
         (match,) = tree.nearest(tuple(location), objects=True)
         higher_rank = match.id
         higher_value = match.object
