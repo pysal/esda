@@ -98,8 +98,12 @@ class LOSH(BaseEstimator):
         elif self.inference == "chi-square":
             if a != 2:
                 warnings.warn(
-                    "Chi-square inference assumes that a=2, but "
-                    f"a={a}. This means the inference will be invalid!"
+                    (
+                        "Chi-square inference assumes that a=2, but "
+                        f"a={a}. This means the inference will be invalid!"
+                    ),
+                    UserWarning,
+                    stacklevel=2,
                 )
             else:
                 dof = 2 / self.VarHi
@@ -116,10 +120,7 @@ class LOSH(BaseEstimator):
     @staticmethod
     def _statistic(y, w, a):
         # Define what type of variance to use
-        if a is None:
-            a = 2
-        else:
-            a = a
+        a = 2 if a is None else a
 
         rowsum = np.array(w.sparse.sum(axis=1)).flatten()
 
