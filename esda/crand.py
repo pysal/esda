@@ -11,12 +11,12 @@ try:
     from numba import boolean, jit, njit, prange
 except (ImportError, ModuleNotFoundError):
 
-    def jit(*dec_args, **dec_kwargs):
+    def jit(*dec_args, **dec_kwargs):  # noqa: ARG001
         """
         decorator mimicking numba.jit
         """
 
-        def intercepted_function(f, *f_args, **f_kwargs):
+        def intercepted_function(f, *f_args, **f_kwargs):  # noqa: ARG001
             return f
 
         return intercepted_function
@@ -174,7 +174,7 @@ def crand(
 
     if n_jobs != 1:
         try:
-            import joblib  # noqa F401
+            import joblib  # noqa: F401
         except (ModuleNotFoundError, ImportError):
             warnings.warn(
                 f"Parallel processing is requested (n_jobs={n_jobs}),"
@@ -304,10 +304,7 @@ def compute_chunk(
     chunk_n = z_chunk.shape[0]
     n = z.shape[0]
     larger = np.zeros((chunk_n,), dtype=np.int64)
-    if keep:
-        rlocals = np.empty((chunk_n, permuted_ids.shape[0]))
-    else:
-        rlocals = np.empty((1, 1))
+    rlocals = np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
 
     mask = np.ones((n,), dtype=np.int8) == 1
     wloc = 0
@@ -322,7 +319,7 @@ def compute_chunk(
             weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
             weights_i[0] = self_weights[i]
             # this chomps the next `cardinality` weights off of `weights`
-            weights_i[1:] = other_weights[wloc : (wloc + cardinality)]  # noqa E203
+            weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
         wloc += cardinality
         mask[chunk_start + i] = False
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
@@ -362,7 +359,7 @@ def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int):
     chunk_size = np.int64(n / n_chunks) + 1
     start = 0
     for i in range(n_chunks):
-        advance = cardinalities[start : start + chunk_size].sum()  # noqa E203
+        advance = cardinalities[start : start + chunk_size].sum()
         boundary_points[i + 1] = boundary_points[i] + advance
         start += chunk_size
     return boundary_points
@@ -424,13 +421,11 @@ def chunk_generator(
     chunk_size = starts[1] - starts[0]
     for i in range(n_jobs):
         start = starts[i]
-        z_chunk = z[start : (start + chunk_size)]  # noqa E203
-        self_weights_chunk = self_weights[start : (start + chunk_size)]  # noqa E203
-        observed_chunk = observed[start : (start + chunk_size)]  # noqa E203
-        cardinalities_chunk = cardinalities[start : (start + chunk_size)]  # noqa E203
-        w_chunk = other_weights[
-            w_boundary_points[i] : w_boundary_points[i + 1]  # noqa E203
-        ]
+        z_chunk = z[start : (start + chunk_size)]
+        self_weights_chunk = self_weights[start : (start + chunk_size)]
+        observed_chunk = observed[start : (start + chunk_size)]
+        cardinalities_chunk = cardinalities[start : (start + chunk_size)]
+        w_chunk = other_weights[w_boundary_points[i] : w_boundary_points[i + 1]]
         yield (
             start,
             z_chunk,
@@ -522,10 +517,7 @@ def parallel_crand(
     # ------------------------------------------------------------------
     # Set up output holders
     larger = np.zeros((n,), dtype=np.int64)
-    if keep:
-        rlocals = np.empty((n, permuted_ids.shape[0]))
-    else:
-        rlocals = np.empty((1, 1))
+    rlocals = np.empty((n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
     # ------------------------------------------------------------------
     # Joblib parallel loop by chunks
 
@@ -548,7 +540,7 @@ def parallel_crand(
             )
             for pars in chunks
         )
-    larger, rlocals = zip(*worker_out)
+    larger, rlocals = zip(*worker_out, strict=True)
     larger = np.hstack(larger).squeeze()
     rlocals = np.row_stack(rlocals).squeeze()
     return larger, rlocals
@@ -591,6 +583,6 @@ def _prepare_bivariate(i, z, permuted_ids, weights_i):
 
 
 @njit(fastmath=True)
-def local(i, z, permuted_ids, weights_i, scaling):
+def local(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     raise NotImplementedError
     # returns (k_permutations,) array of random statistics for observation i

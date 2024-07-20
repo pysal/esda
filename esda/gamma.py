@@ -214,7 +214,7 @@ class Gamma:
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = list(zip(neighbors, wijs))
+                zw = list(zip(neighbors, wijs, strict=True))
                 zs[i] = sum(
                     [wij * (z2[i] - 2.0 * z[i] * z[j] + z2[j]) for j, wij in zw]
                 )
@@ -224,7 +224,7 @@ class Gamma:
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = list(zip(neighbors, wijs))
+                zw = list(zip(neighbors, wijs, strict=True))
                 zs[i] = sum([wij * abs(z[i] - z[j]) for j, wij in zw])
             g = zs.sum()
         else:  # any previously defined function op
@@ -232,7 +232,7 @@ class Gamma:
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = list(zip(neighbors, wijs))
+                zw = list(zip(neighbors, wijs, strict=True))
                 zs[i] = sum([wij * op(z, i, j) for j, wij in zw])
             g = zs.sum()
 
@@ -282,7 +282,7 @@ class Gamma:
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,

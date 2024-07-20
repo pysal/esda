@@ -230,7 +230,7 @@ class G:
             "The `.by_cols()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,
@@ -245,7 +245,7 @@ class G:
         )
 
 
-class G_Local:
+class G_Local:  # noqa: N801
     """
     Generalized Local G Autocorrelation
 
@@ -465,7 +465,7 @@ class G_Local:
         rids = np.array([np.random.permutation(rid)[0:k] for i in prange])
         ids = np.arange(self.w.n)
         wc = self.__getCardinalities()
-        if self.w_transform == "r":
+        if self.w_transform == "r":  # noqa: SIM108 -- keeping readability
             den = np.array(wc) + self.star
         else:
             den = np.ones(self.w.n)
@@ -485,7 +485,7 @@ class G_Local:
         larger[below] = self.permutations - larger[below]
         self.p_sim = (larger + 1) / (self.permutations + 1)
 
-    def __getCardinalities(self):
+    def __getCardinalities(self):  # noqa: N802
         if isinstance(self.w, W):
             ido = self.w.id_order
             self.wc = np.array([self.w.cardinalities[ido[i]] for i in range(self.n)])
@@ -579,7 +579,7 @@ class G_Local:
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,
@@ -613,7 +613,7 @@ def _infer_star_and_structure_w(weights, star, transform):
         else:
             weights = weights.assign_self_weight(0).eliminate_zeros()
     # Want nonzero diagonal and have it
-    elif (not zero_diagonal) & (star is True):
+    elif (not zero_diagonal) & (star is True):  # noqa: SIM114 -- keeping readability
         weights = weights
     # Want zero diagonal and have it
     elif zero_diagonal & (star is False):
@@ -639,7 +639,7 @@ def _infer_star_and_structure_w(weights, star, transform):
             # this works successfully for effectively binary but "O"-transformed input
             elif transform.lower() == "r":
                 # This warning is presented in the documentation as well
-                warnings.warn(star_warn)
+                warnings.warn(star_warn, UserWarning, stacklevel=2)
                 weights = fill_diagonal(
                     weights, np.asarray(adj_matrix.max(axis=1).todense()).flatten()
                 )
@@ -647,7 +647,7 @@ def _infer_star_and_structure_w(weights, star, transform):
             if transform.lower() == "b" or weights.transformation.lower() == "b":
                 weights = weights.assign_self_weight(1)
             elif transform.lower() == "r":
-                warnings.warn(star_warn)
+                warnings.warn(star_warn, UserWarning, stacklevel=2)
                 weights = weights.assign_self_weight(
                     np.asarray(adj_matrix.max(axis=1).todense()).flatten()
                 )
@@ -661,7 +661,7 @@ def _infer_star_and_structure_w(weights, star, transform):
             raise TypeError(
                 f"Type of star ({type(star)}) not understood."
                 f" Must be an integer, boolean, float, or numpy.ndarray."
-            )
+            ) from None
     star = (weights.sparse.diagonal() > 0).any()
     if isinstance(weights, W):
         weights.transform = transform

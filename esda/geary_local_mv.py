@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator
 from sklearn.utils import check_array
 
 
-class Geary_Local_MV(BaseEstimator):
+class Geary_Local_MV(BaseEstimator):  # noqa: N801
     """Local Geary - Multivariate"""
 
     def __init__(self, connectivity=None, permutations=999, drop_islands=True):
@@ -199,7 +199,7 @@ class Geary_Local_MV(BaseEstimator):
             np.random.shuffle(idsi)
             vars_rand = []
             for j in range(nvars):
-                vars_rand.append(zvariables[j][idsi[rids[:, 0 : wc[i]]]])  # noqa E203
+                vars_rand.append(zvariables[j][idsi[rids[:, 0 : wc[i]]]])
             # vars rand as tmp
             # Calculate diff
             diff = []
@@ -207,7 +207,7 @@ class Geary_Local_MV(BaseEstimator):
                 _diff = np.array((zvariables[z][i] - vars_rand[z]) ** 2 * w[i])
                 diff.append(_diff.sum(1) / nvars)
             # add up differences
-            temp = np.array([sum(x) for x in zip(*diff)])
+            temp = np.array([sum(x) for x in zip(*diff, strict=True)])
             # Assign to object to be returned
             Gs[i] = temp
         self.Gs = Gs

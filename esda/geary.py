@@ -104,7 +104,7 @@ class Geary:
     """
 
     def __init__(self, y, w, transformation="r", permutations=999):
-        if not isinstance(w, (weights.W, graph.Graph)):
+        if not isinstance(w, weights.W | graph.Graph):
             raise TypeError(
                 "w must be a libpysal.weights.W or libpysal.graph.Graph object, "
                 f"got {type(w)} instead."
@@ -237,7 +237,7 @@ class Geary:
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,
