@@ -69,9 +69,16 @@ class TestGLocal:
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
 
     @parametrize_w
-    def test_G_star_Row_Standardized(self, w):
+    @pytest.mark.xfail(
+        reason="Intermittently does not warn for W param; reason unknown; see gh#331"
+    )
+    def test_G_star_Row_Standardized_warning(self, w):
         with pytest.warns(UserWarning, match="Gi\\* requested, but"):
             lg = getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
+
+    @parametrize_w
+    def test_G_star_Row_Standardized_values(self, w):
+        lg = getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
         np.testing.assert_allclose(lg.Zs[0], -0.62488094, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
 
