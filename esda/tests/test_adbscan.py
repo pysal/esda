@@ -1,14 +1,13 @@
-import unittest
-
 import numpy as np
 import pandas
-import sklearn
 import pytest
+import sklearn
+
 from .. import adbscan
 
 
-class ADBSCAN_Tester(unittest.TestCase):
-    def setUp(self):
+class TestADBSCAN:
+    def setup_method(self):
         np.random.seed(10)
         self.db = pandas.DataFrame(
             {"x": np.random.random(25), "y": np.random.random(25)}
@@ -82,14 +81,14 @@ class ADBSCAN_Tester(unittest.TestCase):
         ads = adbscan.ADBSCAN(0.03, 3, reps=10, keep_solus=True)
         _ = ads.fit(self.db, xy=["x", "y"])
         # Params
-        self.assertAlmostEqual(ads.eps, 0.03)
-        self.assertEqual(ads.min_samples, 3)
-        self.assertEqual(ads.algorithm, "auto")
-        self.assertEqual(ads.n_jobs, 1)
-        self.assertEqual(ads.pct_exact, 0.1)
-        self.assertEqual(ads.reps, 10)
-        self.assertEqual(ads.keep_solus, True)
-        self.assertEqual(ads.pct_thr, 0.9)
+        assert pytest.approx(ads.eps) == 0.03
+        assert ads.min_samples == 3
+        assert ads.algorithm == "auto"
+        assert ads.n_jobs == 1
+        assert ads.pct_exact == 0.1
+        assert ads.reps == 10
+        assert ads.keep_solus is True
+        assert ads.pct_thr == 0.9
         # Labels
         np.testing.assert_equal(ads.labels_, self.lbls)
         # Votes
@@ -109,9 +108,16 @@ class ADBSCAN_Tester(unittest.TestCase):
         # ------------------------#
         np.random.seed(10)
         ads = adbscan.ADBSCAN(0.03, 3, reps=10, keep_solus=True, n_jobs=-1)
-        _ = ads.fit(self.db, xy=["x", "y"])
+        with pytest.warns(
+            UserWarning,
+            match=(
+                "Multi-core implementation only works on relabelling solutions. "
+                "Execution of draws is still sequential."
+            ),
+        ):
+            _ = ads.fit(self.db, xy=["x", "y"])
         # Params
-        self.assertEqual(ads.n_jobs, -1)
+        assert ads.n_jobs == -1
         # Labels
         np.testing.assert_equal(ads.labels_, self.lbls)
         # Votes
@@ -128,8 +134,8 @@ class ADBSCAN_Tester(unittest.TestCase):
         np.testing.assert_equal(ads.solus.astype(int).sum(axis=1).values, i_sum)
 
 
-class Remap_lbls_Tester(unittest.TestCase):
-    def setUp(self):
+class TestRemapLBLS:
+    def setup_method(self):
         self.db = pandas.DataFrame({"X": [0, 0.1, 4, 6, 5], "Y": [0, 0.2, 5, 7, 5]})
         self.solus = pandas.DataFrame(
             {
@@ -159,8 +165,8 @@ class Remap_lbls_Tester(unittest.TestCase):
         np.testing.assert_equal(lbls.values, vals)
 
 
-class Ensemble_Tester(unittest.TestCase):
-    def setUp(self):
+class TestEnsemble:
+    def setup_method(self):
         self.db = pandas.DataFrame(
             {"X": [0, 0.1, 4, 6, 5], "Y": [0, 0.2, 5, 7, 5]}
         ).rename(lambda i: "i_" + str(i))
@@ -192,8 +198,8 @@ class Ensemble_Tester(unittest.TestCase):
         np.testing.assert_almost_equal(ensemble_solu.values, vals)
 
 
-class Get_Cluster_Boundary_Tester(unittest.TestCase):
-    def setUp(self):
+class TestGetClusterBoundary:
+    def setup_method(self):
         np.random.seed(10)
         self.db = pandas.DataFrame(
             {"x": np.random.random(25), "y": np.random.random(25)}
@@ -275,7 +281,7 @@ class Get_Cluster_Boundary_Tester(unittest.TestCase):
             "0.5475861559192435, 0.5425443680112613 0.7546476915298572, "
             "0.7217553174317995 0.8192869956700687))"
         )
-        self.assertEqual(polys[0].wkt, wkt)
+        assert polys.iloc[0].wkt == wkt
 
         # ------------------------#
         #           # Multi Core #
@@ -290,15 +296,4 @@ class Get_Cluster_Boundary_Tester(unittest.TestCase):
             "0.5475861559192435, 0.5425443680112613 0.7546476915298572, "
             "0.7217553174317995 0.8192869956700687))"
         )
-        self.assertEqual(polys[0].wkt, wkt)
-
-
-suite = unittest.TestSuite()
-test_classes = [ADBSCAN_Tester, Remap_lbls_Tester, Ensemble_Tester]
-for i in test_classes:
-    a = unittest.TestLoader().loadTestsFromTestCase(i)
-    suite.addTest(a)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
+        assert polys.iloc[0].wkt == wkt
