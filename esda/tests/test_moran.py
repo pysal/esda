@@ -162,6 +162,7 @@ class TestMoranLocal:
         f = libpysal.io.open(libpysal.examples.get_path("desmith.txt"))
         self.y = np.array(f.by_col["z"])
 
+
     @parametrize_desmith
     def test_Moran_Local(self, w):
         lm = moran.Moran_Local(
@@ -174,6 +175,30 @@ class TestMoranLocal:
         )
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
+        
+    @parametrize_desmith
+    def test_Moran_Local_custom_perms(self, w):
+        np.random.seed(SEED)
+        cardinalities = np.array((w.sparse != 0).sum(1)).flatten()
+        max_card = cardinalities.max()
+        original_array = np.arange(len(self.y))
+        permutations_array = np.zeros((99, max_card), dtype=np.int32)
+
+        for i in range(99):
+            random_number = np.random.randint(0, len(self.y) - max_card)
+            permutations_array[i] = original_array[random_number:random_number + max_card]
+
+        lm = moran.Moran_Local(
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            permutations_array=permutations_array,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        np.testing.assert_allclose(lm.z_sim[0], -0.49229215590070813)
+        np.testing.assert_allclose(lm.p_z_sim[0], 0.311256412279757)
 
     @parametrize_sac
     def test_Moran_Local_labels(self, w):
