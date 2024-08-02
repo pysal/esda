@@ -50,6 +50,7 @@ $ pip install git+https://github.com/pysal/esda@main
 
 - `numba>=0.57` - used to accelerate computational geometry and permutation-based statistical inference.
 - `rtree>=1.0` - required for `esda.topo.isolation()`
+- `matplotlib` - required for `esda.moran.explore()`
 
 ## Contribute
 

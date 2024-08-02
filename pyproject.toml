@@ -46,6 +46,7 @@ Repository = "https://github.com/pysal/esda"
 
 [project.optional-dependencies]
 plus = [
+    "matplotlib",
     "numba>=0.57",
     "rtree>=1.0",
 ]
@@ -53,7 +54,6 @@ tests = [
     "codecov",
     "folium",
     "mapclassify",
-    "matplotlib",
     "pytest",
     "pytest-cov",
     "pytest-xdist",

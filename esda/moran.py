@@ -16,7 +16,6 @@ import pandas as pd
 import scipy.stats as stats
 from libpysal.weights import W
 from libpysal.weights.spatial_lag import lag_spatial
-from matplotlib import colors
 from scipy import sparse
 
 from .crand import _prepare_univariate
@@ -1785,6 +1784,11 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     m
         folium.Map
     """
+
+    try:
+        from matplotlib import colors
+    except ImportError:
+        raise ImportError("matplotlib library must be installed to use the explore feature") from None
 
     gdf = gdf.copy()
     gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
