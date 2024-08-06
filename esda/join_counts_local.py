@@ -138,6 +138,7 @@ class Join_Counts_Local(BaseEstimator):  # noqa: N801
                 w=self.w,
                 observed=self.LJC,
                 permutations=permutations,
+                permutations_array=None,
                 keep=keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_ljc_uni,

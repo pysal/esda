@@ -69,6 +69,7 @@ def crand(
     w,
     observed,
     permutations,
+    permutations_array,
     keep,
     n_jobs,
     stat_func,
@@ -91,6 +92,8 @@ def crand(
         (N,) array with observed values
     permutations : int
         Number of permutations for conditional randomisation
+    permutations_array : ndarray
+        (permutations, ) array with indices of permuted
     keep : Boolean
         If True, store simulation; else do not return randomised statistics
     n_jobs : int
@@ -170,8 +173,21 @@ def crand(
     # self neighbor, since conditional randomization conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
     max_card = cardinalities.max()
-    permuted_ids = vec_permutations(max_card, n, permutations, seed)
-
+    
+    if permutations_array is None:
+        # Random permutation array
+        permuted_ids = vec_permutations(max_card, n, permutations, seed)
+    else:
+        # User defined permutation array
+        permuted_ids = permutations_array
+        if permuted_ids.shape[0] != permutations:
+            permutations = permuted_ids.shape[0]
+            warnings.warn(
+                f"Number of permutations has been adjusted to match the length of the "
+                f"permutations array. New value of 'permutations' is {permutations}.",
+                stacklevel=2,
+            )
+    
     if n_jobs != 1:
         try:
             import joblib  # noqa: F401
