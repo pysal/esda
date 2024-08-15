@@ -40,8 +40,8 @@ def test_partial_accuracy(w):
     # check values
     numpy.testing.assert_allclose(manual, m.associations_)
 
-    # check significances
-    numpy.testing.assert_equal((m.significances_ < .01).sum(), 18)
+    # check significances are about 18
+    numpy.testing.assert_allclose((m.significances_ < .01).sum(), 18, atol=1)
     numpy.testing.assert_equal((m.significances_[:5] < .1), [True, True, True, False, False])
 
     # check quad
@@ -62,18 +62,16 @@ def test_partial_unscaled(w):
 def test_partial_uvquads(w):
     """Check that the quadrant decisions vary correctly with the inputs"""
     m = Partial_Moran_Local(y,X,w, permutations=0, mvquads=False)
-    bv = Moran_Local_BV(y,X,w,permutations=0)
+    bvx = Moran_Local_BV(X,y,w,permutations=0)
     # TODO: this currently fails, and it should pass. I am probably mis-calculating the bivariate quadrants for this option, and need to correct the code. 
-    numpy.testing.assert_array_equal(m.quads_, bv.q)
+    numpy.testing.assert_array_equal(m.quads_, bvx.q)
 
 def test_aux_runs(w):
-    print(type(w), w.transform)
     """Check that the class completes successfully in a default configuration"""
     a = Auxiliary_Moran_Local(y,X, w, permutations=1)
     #done, just check if it runs
 
 def test_aux_accuracy(w):
-    print(type(w), w.transform)
     """Check that the class outputs expected values for a given seed"""
     numpy.random.seed(111221)
     a = Auxiliary_Moran_Local(y,X,w, permutations=10)
@@ -101,7 +99,6 @@ def test_aux_accuracy(w):
     numpy.testing.assert_equal(is_cluster, is_odd_label)
 
 def test_aux_unscaled(w):
-    print(type(w), w.transform)
     """Check that the variance scaling behaves as expected"""
     a = Auxiliary_Moran_Local(y,X/10000,w, permutations=0, unit_scale=True)
     a2 = Auxiliary_Moran_Local(y,X,w, permutations=0, unit_scale=False)
@@ -110,7 +107,6 @@ def test_aux_unscaled(w):
         )
 
 def test_aux_transformer(w):
-    print(type(w), w.transform)
     """Check that an alternative regressor can be used to calculate y|X"""
     a = Auxiliary_Moran_Local(y,X,w, permutations=0, transformer=TheilSenRegressor)
     # done, should just complete

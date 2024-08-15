@@ -135,15 +135,12 @@ class Partial_Moran_Local(object):
         )
 
         uvquads = []
+        negative_lag = R[:,1] < 0
         for i, x_ in enumerate(self.D.T):
             if i == 0:
                 continue
-            quads = (self.R[:, 1].flatten() < self.R[:, 1].mean()).astype(int)
-            quads += (x_.flatten() < x_.mean()).astype(int) * 2
-            quads += 1
-            quads[quads == 4] = 5
-            quads[quads == 3] = 4
-            quads[quads == 5] = 3
+            off_sign = np.sign(x_) != np.sign(R[:,1])
+            quads = negative_lag.astype(int).flatten() * 2 + off_sign.astype(int) + 1
             uvquads.append(quads.flatten())
 
         self._uvquads_ = np.row_stack(uvquads).T
@@ -154,7 +151,7 @@ class Partial_Moran_Local(object):
             self.quads_ = self._uvquads_[:, 1]
 
     def _make_data(self, z, X, W):
-        if isinstance(W, Graph):
+        if isinstance(W, Graph): # NOQA because ternary is confusing
             Wz = W.lag(z)
         else:
             Wz = lag_spatial(W, z)
