@@ -79,6 +79,8 @@ class Partial_Moran_Local(object):
         """
         self._mvquads = mvquads
         y = np.asarray(y).reshape(-1, 1)
+        if hasattr(W, "to_W"):
+            W = W.to_W()
         W.transform = "r"
         y = y - y.mean()
         if unit_scale:
@@ -307,6 +309,8 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
             X /= X.std(axis=0)
         self.y = y
         self.X = X
+        if hasattr(W, "to_W"):
+            W = W.to_W()
         W.transform = "r"
         self.W = W
         y_filtered_ = self.y_filtered_ = self._part_regress_transform(y, X)
