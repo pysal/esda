@@ -23,7 +23,7 @@ class Partial_Moran_Local(object):
         y   : (N,1) array
             array of data that is the targeted "outcome" covariate
             to compute the multivariable Moran's I
-        X   : (N,3) array
+        X   : (N,p) array
             array of data that is used as "confounding factors"
             to account for their covariance with Y.
         W   : (N,N) weights object
@@ -83,7 +83,7 @@ class Partial_Moran_Local(object):
         if isinstance(W, Graph):
             W = W.transform("R")
         else:
-            W.transform = "r" # TODO: as a function for graph
+            W.transform = "r"
         y = y - y.mean()
         if unit_scale:
             y /= y.std()
@@ -154,7 +154,10 @@ class Partial_Moran_Local(object):
             self.quads_ = self._uvquads_[:, 1]
 
     def _make_data(self, z, X, W):
-        Wz = lag_spatial(W, z)
+        if isinstance(W, Graph):
+            Wz = W.lag(z)
+        else:
+            Wz = lag_spatial(W, z)
         if X is not None:
             D = np.hstack((np.ones(z.shape), z, X))
             P = X.shape[1] + 1
@@ -368,7 +371,10 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         lisas = np.zeros((self.connectivity.n, self.permutations))
         n_1 = self.connectivity.n - 1
         prange = list(range(self.permutations))
-        k = self.connectivity.cardinalities.max() + 1
+        if isinstance(self.connectivity, Graph):
+            k = self.connectivity.cardinalities.max() + 1
+        else:
+            k = self.connectivity.max_neighbors + 1
         nn = self.connectivity.n - 1
         rids = np.array([np.random.permutation(nn)[0:k] for i in prange])
         ids = np.arange(self.connectivity.n)
