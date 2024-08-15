@@ -894,8 +894,6 @@ class Moran_Local:  # noqa: N801
     permutations : int
         number of random permutations for calculation of pseudo
         p_values
-    permutations_array: array
-        user specified permutations
     geoda_quads : boolean
         (default=False)
         If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
@@ -1029,7 +1027,6 @@ class Moran_Local:  # noqa: N801
         w,
         transformation="r",
         permutations=PERMUTATIONS,
-        permutations_array=None,
         geoda_quads=False,
         n_jobs=1,
         keep_simulations=True,
@@ -1067,7 +1064,6 @@ class Moran_Local:  # noqa: N801
                 w,
                 self.Is,
                 permutations,
-                permutations_array,
                 keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_moran_local_crand,
@@ -1655,7 +1651,6 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
             w,
             transformation=transformation,
             permutations=permutations,
-            permutations_array=None,
             geoda_quads=geoda_quads,
             n_jobs=n_jobs,
             keep_simulations=keep_simulations,

@@ -69,7 +69,6 @@ def crand(
     w,
     observed,
     permutations,
-    permutations_array,
     keep,
     n_jobs,
     stat_func,
@@ -92,8 +91,6 @@ def crand(
         (N,) array with observed values
     permutations : int
         Number of permutations for conditional randomisation
-    permutations_array : ndarray
-        (permutations, ) array with indices of permuted
     keep : Boolean
         If True, store simulation; else do not return randomised statistics
     n_jobs : int
@@ -173,13 +170,17 @@ def crand(
     # self neighbor, since conditional randomization conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
     max_card = cardinalities.max()
-    
-    if permutations_array is None:
+
+    if np.ndim(permutations) == 0:
         # Random permutation array
+        if int(permutations) != permutations:
+            raise ValueError(
+            f"An integer number of permutations is required, but {permutations} was provided."
+            )
         permuted_ids = vec_permutations(max_card, n, permutations, seed)
-    else:
+    elif np.ndim(permutations) == 2:
         # User defined permutation array
-        permuted_ids = permutations_array
+        permuted_ids = permutations
         if permuted_ids.shape[0] != permutations:
             permutations = permuted_ids.shape[0]
             warnings.warn(
@@ -187,7 +188,22 @@ def crand(
                 f"permutations array. New value of 'permutations' is {permutations}.",
                 stacklevel=2,
             )
-    
+        if permuted_ids.shape[1] < max_card:
+            raise ValueError(
+            f"The `permutations` provided were shape {permuted_ids.shape}"
+            f", but must be ({permutations, max_card}) in order to supply"
+            f" enough possible neighbors to shuffle every observation."
+            f" Consider supplying a wider permutation matrix, with"
+            f" {max_card-permuted_ids.shape[1]} more columns."
+            )
+    else:
+        raise ValueError(
+            f"The `permutations` argument must be either an integer, or a"
+            f" two-dimensional numpy array of shape (p,k), where p is the"
+            f" number of permutations to run and k is the largest amount of"
+            f" shuffled pairs that must be considered at a given site, but"
+            f" {permutations} was provided."
+            )    
     if n_jobs != 1:
         try:
             import joblib  # noqa: F401

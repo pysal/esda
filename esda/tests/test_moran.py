@@ -192,8 +192,7 @@ class TestMoranLocal:
             self.y,
             w,
             transformation="r",
-            permutations=99,
-            permutations_array=permutations_array,
+            permutations=permutations_array,
             keep_simulations=True,
             seed=SEED,
         )
