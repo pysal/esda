@@ -9,6 +9,7 @@ dependencies:
   - numba
   - rtree
   # testing
+  - geodatasets
   - codecov
   - folium
   - mapclassify

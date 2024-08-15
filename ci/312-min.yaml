@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.12
   # required
+  - geodatasets
   - geopandas
   - libpysal>=4.12
   - numpy

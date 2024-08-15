@@ -19,6 +19,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  - geodatasets
   # optional
   - numba
   - rtree
