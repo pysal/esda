@@ -891,9 +891,15 @@ class Moran_Local:  # noqa: N801
          "D": doubly-standardized,
          "U": untransformed (general weights),
          "V": variance-stabilizing.
-    permutations : int
-        number of random permutations for calculation of pseudo
-        p_values
+    permutations : int, np.ndarray
+        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        conditional random null hypothesis for each site. Permutations
+        might be specified as an array of indices if the user needs to add
+        structure to this conditional permutation null hypothesis. Common
+        reasons to do this include exchangeability violations, which might
+        then require us to shuffle observations within (but not between)
+        groups, or linearity constraints, which may require certain
+        sequences of observation relationships to be preserved.
     geoda_quads : boolean
         (default=False)
         If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
@@ -1265,9 +1271,15 @@ class Moran_Local_BV:  # noqa: N801
         "D": doubly-standardized,
         "U": untransformed (general weights),
         "V": variance-stabilizing.
-    permutations   : int
-        number of random permutations for calculation of pseudo
-        p_values
+    permutations : int, np.ndarray
+        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        conditional random null hypothesis for each site. Permutations
+        might be specified as an array of indices if the user needs to add
+        structure to this conditional permutation null hypothesis. Common
+        reasons to do this include exchangeability violations, which might
+        then require us to shuffle observations within (but not between)
+        groups, or linearity constraints, which may require certain
+        sequences of observation relationships to be preserved.
     geoda_quads    : boolean
         (default=False)
         If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
@@ -1536,9 +1548,15 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
         "D": doubly-standardized,
         "U": untransformed (general weights),
         "V": variance-stabilizing.
-    permutations : int
-        number of random permutations for calculation of pseudo
-        p_values
+    permutations : int, np.ndarray
+        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        conditional random null hypothesis for each site. Permutations
+        might be specified as an array of indices if the user needs to add
+        structure to this conditional permutation null hypothesis. Common
+        reasons to do this include exchangeability violations, which might
+        then require us to shuffle observations within (but not between)
+        groups, or linearity constraints, which may require certain
+        sequences of observation relationships to be preserved.
     geoda_quads : boolean
          (default=False)
          If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4

@@ -257,9 +257,15 @@ class G_Local:  # noqa: N801
         spatial weights instance as W or Graph aligned with y
     transform : {'R', 'B'}
         the type of w, either 'B' (binary) or 'R' (row-standardized)
-    permutations : int
-        the number of random permutations for calculating
-        pseudo p values
+    permutations : int, np.ndarray
+        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        conditional random null hypothesis for each site. Permutations
+        might be specified as an array of indices if the user needs to add
+        structure to this conditional permutation null hypothesis. Common
+        reasons to do this include exchangeability violations, which might
+        then require us to shuffle observations within (but not between)
+        groups, or linearity constraints, which may require certain
+        sequences of observation relationships to be preserved.
     star : boolean or float
         whether or not to include focal observation in sums (default: False)
         if the row-transformed weight is provided, then this is the default

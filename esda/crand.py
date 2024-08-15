@@ -89,8 +89,15 @@ def crand(
         Spatial weights object
     observed : ndarray
         (N,) array with observed values
-    permutations : int
-        Number of permutations for conditional randomisation
+    permutations : int, np.ndarray
+        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        conditional random null hypothesis for each site. Permutations
+        might be specified as an array of indices if the user needs to add
+        structure to this conditional permutation null hypothesis. Common
+        reasons to do this include exchangeability violations, which might
+        then require us to shuffle observations within (but not between)
+        groups, or linearity constraints, which may require certain
+        sequences of observation relationships to be preserved.
     keep : Boolean
         If True, store simulation; else do not return randomised statistics
     n_jobs : int
