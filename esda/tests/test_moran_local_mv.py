@@ -13,11 +13,15 @@ df = df[df.FIPS.str.match("2606500[01234]...") | (df.FIPS == "26065006500")]
 
 y = df.HH_INC.values.reshape(-1,1)
 X = df.HSG_VAL.values.reshape(-1,1)
-w_classic = Queen.from_dataframe(df) 
-w_classic.transform = 'r'
-g = Graph.build_contiguity(df).transform("r")
+def rsqueen(df):
+    w_classic = Queen.from_dataframe(df) 
+    w_classic.transform = 'r'
+    return w_classic
 
-test_over_w = pytest.mark.parametrize("w", [w_classic, g], ids=['W', 'Graph'])
+test_over_w = pytest.mark.parametrize("w", 
+                                      [rsqueen(df), 
+                                       Graph.build_contiguity(df).transform("r")], 
+                                       ids=['W', 'Graph'])
 
 @test_over_w
 def test_partial_runs(w):
