@@ -17,7 +17,7 @@ w_classic = Queen.from_dataframe(df)
 w_classic.transform = 'r'
 g = Graph.build_contiguity(df).transform("r")
 
-test_over_w = pytest.mark.parametrize("w", [g, w_classic])
+test_over_w = pytest.mark.parametrize("w", [w_classic, g], ids=['W', 'Graph'])
 
 @test_over_w
 def test_partial_runs(w):
