@@ -88,7 +88,6 @@ def correlogram(
     n_jobs : int
         number of jobs to pass to joblib. If -1 (default), all cores will be used
 
-
     Returns
     -------
     outputs : pandas.DataFrame
