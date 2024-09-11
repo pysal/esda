@@ -155,6 +155,7 @@ class Moran:
     0.00027147862770937614
 
     SIDS example replicating OpenGeoda
+
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> SIDR = np.array(f.by_col("SIDR74"))
