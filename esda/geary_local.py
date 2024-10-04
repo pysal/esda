@@ -42,10 +42,15 @@ class Geary_Local(BaseEstimator):  # noqa: N801
                            (default=0.05)
                            Default significance threshold used for
                            creation of labels groups.
-        permutations     : int
-                           (default=999)
-                           number of random permutations for calculation
-                           of pseudo p_values
+        permutations : int, np.ndarray
+            Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+            conditional random null hypothesis for each site. Permutations
+            might be specified as an array of indices if the user needs to add
+            structure to this conditional permutation null hypothesis. Common
+            reasons to do this include exchangeability violations, which might
+            then require us to shuffle observations within (but not between)
+            groups, or linearity constraints, which may require certain
+            sequences of observation relationships to be preserved.
         n_jobs           : int
                            (default=1)
                            Number of cores to be used in the conditional
