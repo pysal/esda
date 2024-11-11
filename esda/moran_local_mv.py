@@ -11,23 +11,37 @@ except ImportError:
         return x
 
 
+def _calc_quad(x,y):
+    """
+    This is a simpler solution to calculate a cartesian quadrant. 
+
+    To explain graphically, let the tuple below be (off_sign[i], neg_y[i]*2). 
+
+    If sign(x[i]) != sign(y[i]), we are on the negative diagonal. 
+    If y is negative, we are on the bottom of the plot. 
+
+    Therefore, the sum (off_sign + neg_y*2 + 1) gives you the cartesian quadrant. 
+
+     II  |   I
+     1,0 | 0,0
+    -----+-----
+     0,2 | 1,2
+     III |  IV
+
+    """
+    off_sign = np.sign(x) != np.sign(y)
+    neg_y = (y<0)
+    return off_sign + neg_y*2 + 1
+
 class Partial_Moran_Local(object):
     def __init__(
-        self, y, X, W, permutations=999, unit_scale=True, mvquads=True
+        self, permutations=999, unit_scale=True, partial_labels=True
     ):
         """
         Compute the Multivariable Local Moran statistics under partial dependence, as defined by :cite:`wolf2024confounded`
 
         Arguments
         ---------
-        y   : (N,1) array
-            array of data that is the targeted "outcome" covariate
-            to compute the multivariable Moran's I
-        X   : (N,p) array
-            array of data that is used as "confounding factors"
-            to account for their covariance with Y.
-        W   : (N,N) weights object
-            a PySAL weights object. Immediately row-standardized.
         permutations    : int
             the number of permutations to run for the inference,
             driven by conditional randomization.
@@ -36,16 +50,15 @@ class Partial_Moran_Local(object):
             normalizes the variance of the data at inupt, ensuring that
             the covariance statistics are not overwhelmed by any single
             covariate's large variance.
-        mvquads : bool
-            whether to calculate the classification based on the multivariable
+        partial_labels : bool
+            whether to calculate the classification based on the part-regressive 
             quadrant classification or the univariate quadrant classification,
             like a classical Moran's I. When mvquads is True, the variables are labelled as:
             - label 1: observations with large y - rho * x that also have large Wy values. 
             - label 2: observations with small y - rho * x values that also have large Wy values.
             - label 3: observations with small y - rho * x values that also have small Wy values. 
             - label 4: observations with large y - rho * x values that have small Wy values.
-            When mvquads is false, we ignore the rho * x in the above classification. 
-
+            Defaults to part-regressive quadrants
 
         Attributes
         ----------
@@ -78,17 +91,40 @@ class Partial_Moran_Local(object):
                     partials_[:,:,0] corresponds to the partial regression
                     describing the relationship between y and Wy.
         """
-        self._mvquads = mvquads
+        self.permutations = permutations
+        self.unit_scale = unit_scale
+        self.partial_labels = partial_labels
+    
+    def fit(self, X, y, W):
+        """
+        Fit the partial local Moran statistic on input data
+
+        Parameters
+        ----------
+        X   : (N,p) array
+            array of data that is used as "confounding factors"
+            to account for their covariance with Y.
+        y   : (N,1) array
+            array of data that is the targeted "outcome" covariate
+            to compute the multivariable Moran's I
+        W   : (N,N) weights object
+            a PySAL weights object. Immediately row-standardized.
+      
+        Returns
+        -------
+        self    :   object
+            this Partial_Moran_Local() statistic after fitting to data
+        """
         y = np.asarray(y).reshape(-1, 1)
         if isinstance(W, Graph):
             W = W.transform("R")
         else:
             W.transform = "r"
         y = y - y.mean()
-        if unit_scale:
+        if self.unit_scale:
             y /= y.std()
         X = X - X.mean(axis=0)
-        if unit_scale:
+        if self.unit_scale:
             X = X / X.std(axis=0)
         self.y = y
         self.X = X
@@ -102,9 +138,9 @@ class Partial_Moran_Local(object):
         self._left_component_ = (self.D @ self.DtDi) * (self.N - 1)
         self._lmos_ = self._left_component_ * self.R
         self.connectivity = W
-        self.permutations = permutations
-        if permutations is not None:  # NOQA necessary to avoid None > 0
-            if permutations > 0:
+        self.permutations = self.permutations
+        if self.permutations is not None:  # NOQA necessary to avoid None > 0
+            if self.permutations > 0:
                 self._crand(y, X, W)
 
 
@@ -121,11 +157,7 @@ class Partial_Moran_Local(object):
         component_quads = []
         for i, left in enumerate(self._left_component_.T):
             right = self.R[:, i]
-            quads = (left < left.mean()).astype(int)
-            quads += (right < 0).astype(int) * 2 + 1
-            quads[quads == 4] = 5
-            quads[quads == 3] = 4
-            quads[quads == 5] = 3
+            quads = _calc_quad(left - left.mean(), right)
             component_quads.append(quads)
         self._partials_ = np.asarray(
             [
@@ -145,10 +177,7 @@ class Partial_Moran_Local(object):
 
         self._uvquads_ = np.row_stack(uvquads).T
         self._mvquads_ = np.row_stack(component_quads).T
-        if self._mvquads:
-            self.quads_ = self._mvquads_[:, 1]
-        else:
-            self.quads_ = self._uvquads_[:, 1]
+        return self
 
     def _make_data(self, z, X, W):
         if isinstance(W, Graph): # NOQA because ternary is confusing
@@ -195,7 +224,8 @@ class Partial_Moran_Local(object):
             shuffled_Wyi = (shuffled_ys * these_weights).sum(
                 axis=1
             )  # these are N-permutations by 1 now
-            # shuffled_X = X[randomized_permutations, :] #these are still N-permutations, N-neighbs, N-covariates
+            # shuffled_X = X[randomized_permutations, :] 
+            # #these are still N-permutations, N-neighbs, N-covariates
             if X is None:
                 local_data = np.array((1, y[i].item())).reshape(1, -1)
                 shuffled_D = np.tile(
@@ -266,7 +296,7 @@ class Partial_Moran_Local(object):
           - 4: above-average left component (either y or D @ DtDi)
                below-average right component (local average of y)
         """
-        if self._mvquads:
+        if self.partial_labels:
             return self._mvquads_[:, 1]
         else:
             return self._uvquads_[:, 1]
@@ -281,26 +311,14 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
 
     def __init__(
         self,
-        y,
-        X,
-        W,
         permutations=999,
         unit_scale=True,
         transformer=None,
     ):
         """
-        Fit a local Moran statistic on the regression residuals
+        Initialize a local Moran statistic on the regression residuals
 
-        Arguments
-        ---------
-        y               : (N,1) array
-                          array of data that is the targeted "outcome" covariate
-                          to compute the multivariable Moran's I
-        X               : (N,3) array
-                          array of data that is used as "confounding factors"
-                          to account for their covariance with Y.
-        W               : (N,N) weights object
-                          a PySAL weights object. Immediately row-standardized.
+
         permutations    : int (default: 999)
                           the number of permutations to run for the inference,
                           driven by conditional randomization.
@@ -310,9 +328,30 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
                           should transform X into a predicted y. If not provided, will use
                           the standard scikit OLS regression of y on X.
         """
+        self.permutations = permutations
+        self.unit_scale = unit_scale
+        self.transformer = transformer
+
+    def fit(self, X, y, W):
+        """
+        Arguments
+        ---------
+        y               : (N,1) array
+                        array of data that is the targeted "outcome" covariate
+                        to compute the multivariable Moran's I
+        X               : (N,3) array
+                        array of data that is used as "confounding factors"
+                        to account for their covariance with Y.
+        W               : (N,N) weights object
+                        a PySAL weights object. Immediately row-standardized.
+        
+        Returns
+        -------
+        A fitted Auxiliary_Moran_Local() estimator
+        """
         y = y - y.mean()
         X = X - X.mean(axis=0)
-        if unit_scale:
+        if self.unit_scale:
             y /= y.std()
             X /= X.std(axis=0)
         self.y = y
@@ -326,10 +365,9 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
             Wyf = lag_spatial(W, y_filtered_) # TODO: graph
         self.connectivity = W
         self.partials_ = np.column_stack((y_filtered_, Wyf))
-        self.permutations = permutations
         y_out = self.y_filtered_
         self.associations_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
-        if permutations > 0:
+        if self.permutations > 0:
             self._crand()
         # TODO: use the general p-value framework
             p_sim = (self.reference_distribution_ < self.associations_[:, None]).mean(
@@ -341,6 +379,7 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         right_component_cluster = (Wyf > 0).astype(int)
         quads = quads[left_component_cluster, right_component_cluster]
         self.labels_ = quads.squeeze()
+        return self
 
     def _part_regress_transform(self, y, X):
         """If the object has a _transformer, use it; otherwise, fit it."""

@@ -35,14 +35,14 @@ def graph(data, request):
 def test_partial_runs(data, graph):
     """Check if the class computes successfully in a default configuration"""
     y,X,df = data
-    m = Partial_Moran_Local(y,X,graph, permutations=1)
+    m = Partial_Moran_Local(permutations=1).fit(X,y,graph)
     # done, just check if it runs
 
 def test_partial_accuracy(data, graph):
     """Check if the class outputs expected results at a given seed"""
     y,X,df = data
     numpy.random.seed(111221)
-    m = Partial_Moran_Local(y,X,graph, permutations=10)
+    m = Partial_Moran_Local(permutations=10).fit(X,y,graph)
     # compute result by hand
     zy = (y - y.mean())/y.std()
     wz = (graph.sparse @ zy)
@@ -67,8 +67,8 @@ def test_partial_accuracy(data, graph):
 def test_partial_unscaled(data, graph):
     """Check if the variance scaling behaves as expected"""
     y,X,df = data
-    m = Partial_Moran_Local(y,X,graph, permutations=0, unit_scale=True)
-    m2 = Partial_Moran_Local(y,X,graph, permutations=0, unit_scale=False)
+    m = Partial_Moran_Local(permutations=0, unit_scale=True).fit(X,y,graph)
+    m2 = Partial_Moran_Local(permutations=0, unit_scale=False).fit(X,y,graph)
     # variance in the partials_ should be different
     s1y,s1x = m.partials_.std(axis=0)
     s2y,s2x = m2.partials_.std(axis=0)
@@ -78,22 +78,21 @@ def test_partial_unscaled(data, graph):
 def test_partial_uvquads(data, graph):
     """Check that the quadrant decisions vary correctly with the inputs"""
     y,X,df = data
-    m = Partial_Moran_Local(y,X,graph, permutations=0, mvquads=False)
+    m = Partial_Moran_Local(permutations=0, partial_labels=False).fit(X,y,graph)
     bvx = Moran_Local_BV(X,y,graph,permutations=0)
-    # TODO: this currently fails, and it should pass. I am probably mis-calculating the bivariate quadrants for this option, and need to correct the code. 
-    numpy.testing.assert_array_equal(m.quads_, bvx.q)
+    numpy.testing.assert_array_equal(m.labels_, bvx.q)
 
 def test_aux_runs(data, graph):
     """Check that the class completes successfully in a default configuration"""
     y,X,df = data
-    a = Auxiliary_Moran_Local(y,X, graph, permutations=1)
+    a = Auxiliary_Moran_Local(permutations=1).fit(X,y,graph)
     #done, just check if it runs
 
 def test_aux_accuracy(data, graph):
     """Check that the class outputs expected values for a given seed"""
     y,X,df = data
     numpy.random.seed(111221)
-    a = Auxiliary_Moran_Local(y,X,graph, permutations=10)
+    a = Auxiliary_Moran_Local(permutations=10).fit(X,y,graph)
 
     # compute result by hand
     zy = (y - y.mean())/y.std()
@@ -120,14 +119,14 @@ def test_aux_accuracy(data, graph):
 def test_aux_unscaled(data, graph):
     """Check that the variance scaling behaves as expected"""
     y,X,df = data
-    a = Auxiliary_Moran_Local(y,X/10000,graph, permutations=0, unit_scale=True)
-    a2 = Auxiliary_Moran_Local(y,X,graph, permutations=0, unit_scale=False)
+    a = Auxiliary_Moran_Local(permutations=0, unit_scale=True).fit(X,y,graph)
+    a2 = Auxiliary_Moran_Local(permutations=0, unit_scale=False).fit(X,y,graph)
     assert (a.partials_.std(axis=0) < a2.partials_.std(axis=0)).all(), (
         "variance is not scaled correctly in partial regression."
         )
 
 def test_aux_transformer(data, graph):
     """Check that an alternative regressor can be used to calculate y|X"""
-    y,X,df = data
-    a = Auxiliary_Moran_Local(y,X,graph, permutations=0, transformer=TheilSenRegressor)
+    y,X, df = data
+    a = Auxiliary_Moran_Local(permutations=0, transformer=TheilSenRegressor).fit(X,y,graph)
     # done, should just complete
