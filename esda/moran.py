@@ -67,7 +67,8 @@ class Moran:
     transformation  : string
                       weights transformation,  default is row-standardized "r".
                       Other options include "B": binary,  "D":
-                      doubly-standardized,  "O": restore original transformation
+                      doubly-standardized,  "O": restore original transformation 
+                      (applicable only if ``w`` is  passed as ``W``)
                       (general weights), "V": variance-stabilizing.
     permutations    : int
                       number of random permutations for calculation of
