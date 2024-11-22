@@ -8,6 +8,7 @@ dependencies:
   # optional
   - rtree
   # testing
+  - geodatasets
   - codecov
   - folium
   - mapclassify
