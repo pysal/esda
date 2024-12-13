@@ -82,6 +82,8 @@ class Moran:
                    original variable
     w            : W | Graph
                    original w object
+    z            : array
+                   zero-mean, unit standard deviation normalized y                   
     permutations : int
                    number of permutations
     I            : float
