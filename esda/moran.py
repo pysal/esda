@@ -672,6 +672,8 @@ class Moran_Rate(Moran):  # noqa: N801
                    rate variable computed from parameters e and b
                    if adjusted is True, y is standardized rates
                    otherwise, y is raw rates
+    z            : array
+                   zero-mean, unit standard deviation normalized y                   
     w            : W | Graph
                    original w object
     permutations : int
@@ -925,6 +927,8 @@ class Moran_Local:  # noqa: N801
         original variable
     w : W | Graph
         original w object
+    z : array
+        zero-mean, unit standard deviation normalized y    
     permutations : int
         number of random permutations for calculation of pseudo p_values
     Is : array
@@ -1566,6 +1570,8 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
         rate variables computed from parameters e and b
         if adjusted is True, y is standardized rates
         otherwise, y is raw rates
+    z : array
+        zero-mean, unit standard deviation normalized y    
     w : W | Graph
         original w object
     permutations : int
