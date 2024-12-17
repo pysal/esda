@@ -67,7 +67,8 @@ class Moran:
     transformation  : string
                       weights transformation,  default is row-standardized "r".
                       Other options include "B": binary,  "D":
-                      doubly-standardized,  "U": untransformed
+                      doubly-standardized,  "O": restore original transformation 
+                      (applicable only if ``w`` is  passed as ``W``)
                       (general weights), "V": variance-stabilizing.
     permutations    : int
                       number of random permutations for calculation of
@@ -339,7 +340,7 @@ class Moran_BV:  # noqa: N801
                       Other options include
                       "B": binary,
                       "D": doubly-standardized,
-                      "U": untransformed (general weights),
+                      "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
                       "V": variance-stabilizing.
     permutations    : int
                       number of random permutations for calculation of pseudo
@@ -657,7 +658,7 @@ class Moran_Rate(Moran):  # noqa: N801
                       Other options include
                       "B": binary,
                       "D": doubly-standardized,
-                      "U": untransformed (general weights),
+                      "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
                       "V": variance-stabilizing.
     two_tailed      : boolean
                       If True (default), analytical p-values for Moran's I are
@@ -893,7 +894,7 @@ class Moran_Local:  # noqa: N801
          Other options include
          "B": binary,
          "D": doubly-standardized,
-         "U": untransformed (general weights),
+         "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
          "V": variance-stabilizing.
     permutations : int
         number of random permutations for calculation of pseudo
@@ -1269,7 +1270,7 @@ class Moran_Local_BV:  # noqa: N801
         Other options include
         "B": binary,
         "D": doubly-standardized,
-        "U": untransformed (general weights),
+        "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
         "V": variance-stabilizing.
     permutations   : int
         number of random permutations for calculation of pseudo
@@ -1539,7 +1540,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
         Other options include
         "B": binary,
         "D": doubly-standardized,
-        "U": untransformed (general weights),
+        "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
         "V": variance-stabilizing.
     permutations : int
         number of random permutations for calculation of pseudo
