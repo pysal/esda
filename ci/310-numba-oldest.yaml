@@ -11,6 +11,7 @@ dependencies:
   - scikit-learn=1.2
   - scipy=1.9
   - shapely=2.0
+  - fiona<1.9
   # optional
   - numba=0.57
   - rtree=1.0
