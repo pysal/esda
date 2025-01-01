@@ -1252,7 +1252,7 @@ class Moran_Local:  # noqa: N801
         return _viz_local_moran(self, gdf, crit_value, "explore", **kwargs)
 
     def plot(self, gdf, crit_value=0.05, **kwargs):
-        """Create interactive map of LISA indicators
+        """Create static map of LISA indicators
 
         Parameters
         ----------
@@ -1265,8 +1265,8 @@ class Moran_Local:  # noqa: N801
 
         Returns
         -------
-        Folium.Map
-            interactive map with LISA clusters
+        ax
+            matplotlib axis
         """
         gdf = gdf.copy()
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
