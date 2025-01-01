@@ -83,7 +83,7 @@ class Moran:
     w            : W | Graph
                    original w object
     z            : array
-                   zero-mean, unit standard deviation normalized y                   
+                   zero-mean, unit standard deviation normalized y
     permutations : int
                    number of permutations
     I            : float
@@ -673,7 +673,7 @@ class Moran_Rate(Moran):  # noqa: N801
                    if adjusted is True, y is standardized rates
                    otherwise, y is raw rates
     z            : array
-                   zero-mean, unit standard deviation normalized y                   
+                   zero-mean, unit standard deviation normalized y
     w            : W | Graph
                    original w object
     permutations : int
@@ -928,7 +928,7 @@ class Moran_Local:  # noqa: N801
     w : W | Graph
         original w object
     z : array
-        zero-mean, unit standard deviation normalized y    
+        zero-mean, unit standard deviation normalized y
     permutations : int
         number of random permutations for calculation of pseudo p_values
     Is : array
@@ -1249,7 +1249,7 @@ class Moran_Local:  # noqa: N801
         """
         gdf = gdf.copy()
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
-        return _explore_local_moran(self, gdf, crit_value, **kwargs)
+        return _viz_local_moran(self, gdf, crit_value, "explore", **kwargs)
 
     def plot(self, gdf, crit_value=0.05, **kwargs):
         """Create interactive map of LISA indicators
@@ -1270,7 +1270,7 @@ class Moran_Local:  # noqa: N801
         """
         gdf = gdf.copy()
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
-        return _plot_local_moran(self, gdf, crit_value, **kwargs)
+        return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
 
 
 class Moran_Local_BV:  # noqa: N801
@@ -1592,7 +1592,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
         if adjusted is True, y is standardized rates
         otherwise, y is raw rates
     z : array
-        zero-mean, unit standard deviation normalized y    
+        zero-mean, unit standard deviation normalized y
     w : W | Graph
         original w object
     permutations : int
@@ -1794,7 +1794,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
             df[col] = rate_df[col]
 
 
-def _viz_local_moran(moran_local, gdf, crit_value, kwargs):
+def _viz_local_moran(moran_local, gdf, crit_value, method, **kwargs):
     """Common helper for local Moran's I vizualization
 
     Parameters
@@ -1805,13 +1805,16 @@ def _viz_local_moran(moran_local, gdf, crit_value, kwargs):
         geodataframe used to create the Moran_Local class
     crit_value : float, optional
         critical value for determining statistical significance, by default 0.05
+    method : str {"explore", "plot"}
+        GeoDataFrame method to be used
     kwargs : dict, optional
         additional keyword arguments are passed directly
         to the plotting method, by default None
 
     Returns
     -------
-    gdf, kwargs
+    m | ax
+        either folium.Map or maptlotlib.Axes
     """
 
     try:
@@ -1839,59 +1842,9 @@ def _viz_local_moran(moran_local, gdf, crit_value, kwargs):
     if "cmap" not in kwargs:
         kwargs["cmap"] = hmap
 
-    return gdf, kwargs
-
-
-def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
-    """Plot local Moran values as an interactive map
-
-    Parameters
-    ----------
-    moran_local : esda.Moran_Local
-        a fitted local Moran class from the PySAL esda module
-    gdf : geopandas.GeoDataFrame
-        geodataframe used to create the Moran_Local class
-    crit_value : float, optional
-        critical value for determining statistical significance, by default 0.05
-    kwargs : dict, optional
-        additional keyword arguments are passed directly
-        to GeoDataFrame.explore, by default None
-
-    Returns
-    -------
-    m
-        folium.Map
-    """
-    gdf, kwargs = _viz_local_moran(moran_local, gdf, crit_value, kwargs)
-
-    return gdf[["Moran Cluster", "p-value", "geometry"]].explore(
+    return getattr(gdf[["Moran Cluster", "p-value", "geometry"]], method)(
         "Moran Cluster", **kwargs
     )
-
-
-def _plot_local_moran(moran_local, gdf, crit_value, **kwargs):
-    """Plot local Moran values as a static map
-
-    Parameters
-    ----------
-    moran_local : esda.Moran_Local
-        a fitted local Moran class from the PySAL esda module
-    gdf : geopandas.GeoDataFrame
-        geodataframe used to create the Moran_Local class
-    crit_value : float, optional
-        critical value for determining statistical significance, by default 0.05
-    kwargs : dict, optional
-        additional keyword arguments are passed directly
-        to GeoDataFrame.plot, by default None
-
-    Returns
-    -------
-    m
-        folium.Map
-    """
-    gdf, kwargs = _viz_local_moran(moran_local, gdf, crit_value, kwargs)
-
-    return gdf.plot("Moran Cluster", **kwargs)
 
 
 def _get_cluster_labels(moran_local, crit_value):
