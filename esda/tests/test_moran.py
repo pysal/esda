@@ -236,6 +236,31 @@ class TestMoranLocal:
         assert out_str.count("#fdae61") == 6
         assert out_str.count("#d3d3d3") == 280
 
+    @parametrize_sac
+    def test_Moran_Local_plot(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.HSG_VAL.values,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        ax = lm.plot(sac1)
+        unique, counts = np.unique(ax.collections[0].get_facecolors(), axis=0, return_counts=True)
+        np.testing.assert_array_almost_equal(unique, np.array([
+            [0.17254902, 0.48235294, 0.71372549, 1.],
+            [0.5372549 , 0.81176471, 0.94117647, 1.],
+            [0.82745098, 0.82745098, 0.82745098, 1.],
+            [0.84313725, 0.09803922, 0.10980392, 1.],
+            [0.99215686, 0.68235294, 0.38039216, 1.]]
+        ))
+        np.testing.assert_array_equal(counts, np.array([86,3, 298,38, 3]))
+
     @parametrize_desmith
     def test_Moran_Local_parallel(self, w):
         lm = moran.Moran_Local(

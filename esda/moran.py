@@ -83,7 +83,7 @@ class Moran:
     w            : W | Graph
                    original w object
     z            : array
-                   zero-mean, unit standard deviation normalized y                   
+                   zero-mean, unit standard deviation normalized y
     permutations : int
                    number of permutations
     I            : float
@@ -673,7 +673,7 @@ class Moran_Rate(Moran):  # noqa: N801
                    if adjusted is True, y is standardized rates
                    otherwise, y is raw rates
     z            : array
-                   zero-mean, unit standard deviation normalized y                   
+                   zero-mean, unit standard deviation normalized y
     w            : W | Graph
                    original w object
     permutations : int
@@ -928,7 +928,7 @@ class Moran_Local:  # noqa: N801
     w : W | Graph
         original w object
     z : array
-        zero-mean, unit standard deviation normalized y    
+        zero-mean, unit standard deviation normalized y
     permutations : int
         number of random permutations for calculation of pseudo p_values
     Is : array
@@ -1249,7 +1249,28 @@ class Moran_Local:  # noqa: N801
         """
         gdf = gdf.copy()
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
-        return _explore_local_moran(self, gdf, crit_value, **kwargs)
+        return _viz_local_moran(self, gdf, crit_value, "explore", **kwargs)
+
+    def plot(self, gdf, crit_value=0.05, **kwargs):
+        """Create static map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        ax
+            matplotlib axis
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
 
 
 class Moran_Local_BV:  # noqa: N801
@@ -1571,7 +1592,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
         if adjusted is True, y is standardized rates
         otherwise, y is raw rates
     z : array
-        zero-mean, unit standard deviation normalized y    
+        zero-mean, unit standard deviation normalized y
     w : W | Graph
         original w object
     permutations : int
@@ -1773,8 +1794,8 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
             df[col] = rate_df[col]
 
 
-def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
-    """Plot local Moran values as an interactive map
+def _viz_local_moran(moran_local, gdf, crit_value, method, **kwargs):
+    """Common helper for local Moran's I vizualization
 
     Parameters
     ----------
@@ -1784,20 +1805,24 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
         geodataframe used to create the Moran_Local class
     crit_value : float, optional
         critical value for determining statistical significance, by default 0.05
+    method : str {"explore", "plot"}
+        GeoDataFrame method to be used
     kwargs : dict, optional
         additional keyword arguments are passed directly
-        to geopandas.explore, by default None
+        to the plotting method, by default None
 
     Returns
     -------
-    m
-        folium.Map
+    m | ax
+        either folium.Map or maptlotlib.Axes
     """
 
     try:
         from matplotlib import colors
-    except ImportError:
-        raise ImportError("matplotlib library must be installed to use the explore feature") from None
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib library must be installed to use the vizualization feature"
+        ) from err
 
     gdf = gdf.copy()
     gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
@@ -1817,8 +1842,9 @@ def _explore_local_moran(moran_local, gdf, crit_value, **kwargs):
     if "cmap" not in kwargs:
         kwargs["cmap"] = hmap
 
-    m = gdf[["Moran Cluster", "p-value", "geometry"]].explore("Moran Cluster", **kwargs)
-    return m
+    return getattr(gdf[["Moran Cluster", "p-value", "geometry"]], method)(
+        "Moran Cluster", **kwargs
+    )
 
 
 def _get_cluster_labels(moran_local, crit_value):
