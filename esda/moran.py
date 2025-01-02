@@ -1279,12 +1279,30 @@ class Moran_Local:  # noqa: N801
         scatter_kwds=None,
         fitline_kwds=None,
     ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            Critical value to determine statistical significance, by default 0.05
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot
+        """
         try:
-            from matplotlib import colors
             from matplotlib import pyplot as plt
         except ImportError as err:
             raise ImportError(
-                "matplotlib library must be installed to use the vizualization feature"
+                "matplotlib library must be installed to use the scatterplot feature"
             ) from err
 
         # to set default as an empty dictionary that is later filled with defaults
