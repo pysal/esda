@@ -9,7 +9,7 @@ __author__ = (
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
 
-from warnings import simplefilter
+from warnings import simplefilter, warn
 
 import numpy as np
 import pandas as pd
@@ -1272,6 +1272,76 @@ class Moran_Local:  # noqa: N801
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
         return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
 
+    def plot_scatterplot(
+        self,
+        crit_value=0.05,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        try:
+            from matplotlib import colors
+            from matplotlib import pyplot as plt
+        except ImportError as err:
+            raise ImportError(
+                "matplotlib library must be installed to use the vizualization feature"
+            ) from err
+
+        # to set default as an empty dictionary that is later filled with defaults
+        if scatter_kwds is None:
+            scatter_kwds = dict()
+        if fitline_kwds is None:
+            fitline_kwds = dict()
+
+        if crit_value is not None:
+            labels = self.get_cluster_labels(crit_value)
+            # TODO: allow customization of colors in here and in plot and explore
+            # TODO: in a way to keep them easily synced
+            colors5_mpl = {
+                "High-High": "#d7191c",
+                "Low-High": "#89cff0",
+                "Low-Low": "#2c7bb6",
+                "High-Low": "#fdae61",
+                "Insignificant": "lightgrey",
+            }
+            colors5 = [colors5_mpl[i] for i in labels]  # for mpl
+
+        # define customization
+        scatter_kwds.setdefault("alpha", 0.6)
+        fitline_kwds.setdefault("alpha", 0.9)
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        # set labels
+        ax.set_xlabel("Attribute")
+        ax.set_ylabel("Spatial Lag")
+        ax.set_title("Moran Local Scatterplot")
+
+        # plot and set standards
+        lag = lag_spatial(self.w, self.z)
+        fit = stats.linregress(
+            self.z,
+            lag,
+        )
+        # v- and hlines
+        ax.axvline(0, alpha=0.5, color="k", linestyle="--")
+        ax.axhline(0, alpha=0.5, color="k", linestyle="--")
+        if crit_value is not None:
+            fitline_kwds.setdefault("color", "k")
+            scatter_kwds.setdefault("c", colors5)
+            ax.plot(self.z, fit.intercept + fit.slope * self.z, **fitline_kwds)
+            ax.scatter(self.z, lag, **scatter_kwds)
+        else:
+            scatter_kwds.setdefault("color", "#bababa")
+            fitline_kwds.setdefault("color", "#d6604d")
+            ax.plot(self.z, fit.intercept + fit.slope * self.z, **fitline_kwds)
+            ax.scatter(self.z, lag, **scatter_kwds)
+
+        ax.set_aspect("equal")
+
+        return ax
+
 
 class Moran_Local_BV:  # noqa: N801
     """Bivariate Local Moran Statistics.
@@ -1845,6 +1915,47 @@ def _viz_local_moran(moran_local, gdf, crit_value, method, **kwargs):
     return getattr(gdf[["Moran Cluster", "p-value", "geometry"]], method)(
         "Moran Cluster", **kwargs
     )
+
+
+def _moran_loc_scatterplot(
+    moran_loc,
+    crit_value=None,
+    ax=None,
+    scatter_kwds=None,
+    fitline_kwds=None,
+):
+    """
+    Moran Scatterplot with option of coloring of Local Moran Statistics
+
+    Parameters
+    ----------
+    moran_loc : esda.moran.Moran_Local instance
+        Values of Moran's I Local Autocorrelation Statistics
+    p : float, optional
+        If given, the p-value threshold for significance. Points will
+        be colored by significance. By default it will not be colored.
+        Default =None.
+    aspect_equal : bool, optional
+        If True, Axes of Moran Scatterplot will show the same
+        aspect or visual proportions.
+    ax : Matplotlib Axes instance, optional
+        If given, the Moran plot will be created inside this axis.
+        Default =None.
+    scatter_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points.
+        Default =None.
+    fitline_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline.
+        Default =None.
+
+    Returns
+    -------
+    fig : Matplotlib Figure instance
+        Moran Local scatterplot figure
+    ax : matplotlib Axes instance
+        Axes in which the figure is plotted
+
+    """
 
 
 def _get_cluster_labels(moran_local, crit_value):
