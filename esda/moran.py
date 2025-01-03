@@ -333,16 +333,16 @@ class Moran:
         Parameters
         ----------
         ax : matplotlib.axes.Axes, optional
-            Pre-existing axes for the plot, by default None
+            Pre-existing axes for the plot, by default None.
         scatter_kwds : dict, optional
-            Additional keyword arguments for scatter plot, by default None
+            Additional keyword arguments for scatter plot, by default None.
         fitline_kwds : dict, optional
-            Additional keyword arguments for fit line, by default None
+            Additional keyword arguments for fit line, by default None.
 
         Returns
         -------
         matplotlib.axes.Axes
-            Axes object with the Moran scatterplot
+            Axes object with the Moran scatterplot.
         """
         return _scatterplot(
             self,
@@ -1316,18 +1316,18 @@ class Moran_Local:  # noqa: N801
         Parameters
         ----------
         crit_value : float, optional
-            Critical value to determine statistical significance, by default 0.05
+            Critical value to determine statistical significance, by default 0.05.
         ax : matplotlib.axes.Axes, optional
-            Pre-existing axes for the plot, by default None
+            Pre-existing axes for the plot, by default None.
         scatter_kwds : dict, optional
-            Additional keyword arguments for scatter plot, by default None
+            Additional keyword arguments for scatter plot, by default None.
         fitline_kwds : dict, optional
-            Additional keyword arguments for fit line, by default None
+            Additional keyword arguments for fit line, by default None.
 
         Returns
         -------
         matplotlib.axes.Axes
-            Axes object with the Moran scatterplot
+            Axes object with the Moran scatterplot.
         """
         return _scatterplot(
             self,
@@ -1920,36 +1920,35 @@ def _moran_loc_scatterplot(
     fitline_kwds=None,
 ):
     """
-    Moran Scatterplot with option of coloring of Local Moran Statistics
+    Moran Scatterplot with option of coloring of Local Moran Statistics.
 
     Parameters
     ----------
     moran_loc : esda.moran.Moran_Local instance
-        Values of Moran's I Local Autocorrelation Statistics
+        Values of Moran's I Local Autocorrelation Statistics.
     p : float, optional
         If given, the p-value threshold for significance. Points will
-        be colored by significance. By default it will not be colored.
-        Default =None.
+        be colored by significance. By default it will not be colored,
+        by default None.
     aspect_equal : bool, optional
         If True, Axes of Moran Scatterplot will show the same
         aspect or visual proportions.
     ax : Matplotlib Axes instance, optional
-        If given, the Moran plot will be created inside this axis.
-        Default =None.
+        If given, the Moran plot will be created inside this axis,
+        by default None.
     scatter_kwds : keyword arguments, optional
-        Keywords used for creating and designing the scatter points.
-        Default =None.
+        Keywords used for creating and designing the scatter points,
+        by default None.
     fitline_kwds : keyword arguments, optional
-        Keywords used for creating and designing the moran fitline.
-        Default =None.
+        Keywords used for creating and designing the moran fitline,
+        by default None.
 
     Returns
     -------
     fig : Matplotlib Figure instance
-        Moran Local scatterplot figure
+        Moran Local scatterplot figure.
     ax : matplotlib Axes instance
-        Axes in which the figure is plotted
-
+        Axes in which the figure is plotted.
     """
 
 
