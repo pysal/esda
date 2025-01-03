@@ -115,6 +115,58 @@ class TestMoran:
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
         np.testing.assert_allclose(pval, 0.001)
 
+    @parametrize_sac
+    def test_Moran_plot_scatterplot(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatterplot()
+
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0.729412, 0.729412, 0.729412, 0.6]]),
+        )
+
+        # test fitline
+        l = ax.lines[2]
+        x, y = l.get_data()
+        np.testing.assert_almost_equal(x.min(), -1.8236414387225368)
+        np.testing.assert_almost_equal(x.max(), 3.893056527659032)
+        np.testing.assert_almost_equal(y.min(), -0.7371749399524187)
+        np.testing.assert_almost_equal(y.max(), 1.634939204358587)
+        assert l.get_color() == "#d6604d"
+
+    @parametrize_sac
+    def test_Moran_plot_scatterplot_args(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatterplot(scatter_kwds=dict(color='blue'), fitline_kwds=dict(color='pink'))
+
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0, 0, 1, 0.6]]),
+        )
+
+        # test fitline
+        l = ax.lines[2]
+        assert l.get_color() == "pink"
+
+
 
 class TestMoranRate:
     def setup_method(self):
