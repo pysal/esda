@@ -115,6 +115,89 @@ class TestMoran:
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
         np.testing.assert_allclose(pval, 0.001)
 
+    @parametrize_sac
+    def test_plot_simulation(self, w):
+        pytest.importorskip("seaborn")
+
+        m = moran.Moran(sac1.WHITE, w=w)
+        ax = m.plot_simulation()
+
+        assert len(ax.collections) == 3
+
+        kde = ax.collections[0]
+        np.testing.assert_array_almost_equal(
+            kde.get_facecolor(),
+            [[0.7294117647058823, 0.7294117647058823, 0.7294117647058823, 0.25]],
+        )
+        assert kde.get_fill()
+        assert len(kde.get_paths()[0]) == 403
+
+        i_vline = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            i_vline.get_color(),
+            [[0.8392156862745098, 0.3764705882352941, 0.30196078431372547, 1.0]],
+        )
+        assert i_vline.get_label() == "Moran's I"
+        np.testing.assert_array_almost_equal(
+            i_vline.get_paths()[0].vertices,
+            np.array([[m.I, 0.0], [m.I, 1.0]]),
+        )
+
+        ei_vline = ax.collections[2]
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_color(),
+            [[0.12156863, 0.46666667, 0.70588235, 1.0]],
+        )
+        assert ei_vline.get_label() == "Expected I"
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_paths()[0].vertices,
+            np.array([[m.EI, 0.0], [m.EI, 1.0]]),
+        )
+
+    @parametrize_sac
+    def test_plot_simulation_custom(self, w):
+        pytest.importorskip("seaborn")
+        plt = pytest.importorskip("matplotlib.pyplot")
+
+        m = moran.Moran(sac1.WHITE, w=w)
+
+        _, ax = plt.subplots(figsize=(12, 12))
+        ax = m.plot_simulation(
+            ax=ax, fitline_kwds={"color": "red"}, color="pink", shade=False
+        )
+
+        assert len(ax.collections) == 2
+        assert len(ax.lines) == 1
+
+        kde = ax.lines[0]
+        np.testing.assert_array_almost_equal(
+            kde.get_color(),
+            [1.0, 0.75294118, 0.79607843, 1],
+        )
+        assert len(kde.get_path()) == 200
+
+        i_vline = ax.collections[0]
+        np.testing.assert_array_almost_equal(
+            i_vline.get_color(),
+            [[1.0, 0.0, 0.0, 1.0]],
+        )
+        assert i_vline.get_label() == "Moran's I"
+        np.testing.assert_array_almost_equal(
+            i_vline.get_paths()[0].vertices,
+            np.array([[m.I, 0.0], [m.I, 1.0]]),
+        )
+
+        ei_vline = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_color(),
+            [[0.12156863, 0.46666667, 0.70588235, 1.0]],
+        )
+        assert ei_vline.get_label() == "Expected I"
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_paths()[0].vertices,
+            np.array([[m.EI, 0.0], [m.EI, 1.0]]),
+        )
+
 
 class TestMoranRate:
     def setup_method(self):
@@ -251,15 +334,22 @@ class TestMoranLocal:
             seed=SEED,
         )
         ax = lm.plot(sac1)
-        unique, counts = np.unique(ax.collections[0].get_facecolors(), axis=0, return_counts=True)
-        np.testing.assert_array_almost_equal(unique, np.array([
-            [0.17254902, 0.48235294, 0.71372549, 1.],
-            [0.5372549 , 0.81176471, 0.94117647, 1.],
-            [0.82745098, 0.82745098, 0.82745098, 1.],
-            [0.84313725, 0.09803922, 0.10980392, 1.],
-            [0.99215686, 0.68235294, 0.38039216, 1.]]
-        ))
-        np.testing.assert_array_equal(counts, np.array([86,3, 298,38, 3]))
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 1.0],
+                    [0.5372549, 0.81176471, 0.94117647, 1.0],
+                    [0.82745098, 0.82745098, 0.82745098, 1.0],
+                    [0.84313725, 0.09803922, 0.10980392, 1.0],
+                    [0.99215686, 0.68235294, 0.38039216, 1.0],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
 
     @parametrize_desmith
     def test_Moran_Local_parallel(self, w):
