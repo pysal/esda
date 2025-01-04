@@ -343,6 +343,31 @@ class Moran:
         Notes
         -----
         This requires optional dependencies ``matplotlib`` and ``seaborn``.
+
+
+        Examples
+        --------
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+        >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
+        >>> y = np.array(f.by_col['HR8893'])
+        >>> from esda.moran import Moran
+        >>> mi = Moran(y,  w)
+
+        Default plot:
+
+        >>> mi.plot_simulation()
+
+        Customized styling that turns the distribution into a pink line and line
+        indicating I to a black line:
+
+        >>> mi.plot_simulation(fitline_kwds={"color": "k"}, color="pink", shade=False)
+
+        If you'd like I and EI to show up in the legend, use ``plt.legend()`` directly:
+
+        >>> import matplotlib.pyplot as plt
+        >>> mi.plot_simulation()
+        >>> plt.legend()
         """
         try:
             import seaborn as sns
