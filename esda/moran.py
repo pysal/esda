@@ -321,6 +321,52 @@ class Moran:
             **stat_kws,
         )
 
+    def plot_simulation(self, ax=None, fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for vertical Moran fit line, by default None.
+        **kwargs : keyword arguments, optional
+            Additional keyword arguments for KDE plot passed to ``seaborn.kdeplot``,
+            by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        try:
+            import seaborn as sns
+            from matplotlib import pyplot as plt
+        except ImportError as err:
+            raise ImportError(
+                "matplotlib and seaborn must be installed to plot the simulation."
+            ) from err
+        # to set default as an empty dictionary that is later filled with defaults
+        if fitline_kwds is None:
+            fitline_kwds = dict()
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        # plot distribution
+        shade = kwargs.pop("shade", True)
+        color = kwargs.pop("color", "#bababa")
+        sns.kdeplot(self.sim, fill=shade, color=color, ax=ax, **kwargs)
+
+        # customize plot
+        fitline_kwds.setdefault("color", "#d6604d")
+        ax.vlines(self.I, 0, 1, **fitline_kwds, label="Moran's I")
+        ax.vlines(self.EI, 0, 1, label="Expected I")
+        ax.set_title("Reference Distribution")
+        ax.set_xlabel(f"Moran's I: {self.I:.2f}")
+        return ax
+
 
 class Moran_BV:  # noqa: N801
     """
