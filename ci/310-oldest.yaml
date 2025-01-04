@@ -19,6 +19,7 @@ dependencies:
   - folium
   - mapclassify
   - matplotlib
+  - seaborn
   - pytest
   - pytest-cov
   - pytest-xdist

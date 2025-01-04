@@ -339,6 +339,10 @@ class Moran:
         -------
         matplotlib.axes.Axes
             Axes object with the Moran scatterplot.
+
+        Notes
+        -----
+        This requires optional dependencies ``matplotlib`` and ``seaborn``.
         """
         try:
             import seaborn as sns
