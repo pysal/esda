@@ -346,7 +346,6 @@ class Moran:
         -----
         This requires optional dependencies ``matplotlib`` and ``seaborn``.
 
-
         Examples
         --------
         >>> import libpysal
