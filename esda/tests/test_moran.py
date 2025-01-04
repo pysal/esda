@@ -116,7 +116,7 @@ class TestMoran:
         np.testing.assert_allclose(pval, 0.001)
 
     @parametrize_sac
-    def test_Moran_plot_scatterplot(self, w):
+    def test_Moran_plot_scatter(self, w):
         import matplotlib
 
         matplotlib.use("Agg")
@@ -126,7 +126,7 @@ class TestMoran:
             w,
         )
 
-        ax = m.plot_scatterplot()
+        ax = m.plot_scatter()
 
         # test scatter
         np.testing.assert_array_almost_equal(
@@ -144,7 +144,7 @@ class TestMoran:
         assert l.get_color() == "#d6604d"
 
     @parametrize_sac
-    def test_Moran_plot_scatterplot_args(self, w):
+    def test_Moran_plot_scatter_args(self, w):
         import matplotlib
 
         matplotlib.use("Agg")
@@ -154,7 +154,7 @@ class TestMoran:
             w,
         )
 
-        ax = m.plot_scatterplot(scatter_kwds=dict(color='blue'), fitline_kwds=dict(color='pink'))
+        ax = m.plot_scatter(scatter_kwds=dict(color='blue'), fitline_kwds=dict(color='pink'))
 
         # test scatter
         np.testing.assert_array_almost_equal(
@@ -321,7 +321,7 @@ class TestMoranLocal:
         np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
 
     @parametrize_sac
-    def test_Moran_Local_plot_scatterplot(self, w):
+    def test_Moran_Local_plot_scatter(self, w):
         import matplotlib
 
         matplotlib.use("Agg")
@@ -335,7 +335,7 @@ class TestMoranLocal:
             seed=SEED,
         )
 
-        ax = lm.plot_scatterplot()
+        ax = lm.plot_scatter()
 
         # test scatter
         unique, counts = np.unique(
@@ -365,7 +365,7 @@ class TestMoranLocal:
         assert l.get_color() == "k"
 
     @parametrize_sac
-    def test_Moran_Local_plot_scatterplot_args(self, w):
+    def test_Moran_Local_plot_scatter_args(self, w):
         import matplotlib
 
         matplotlib.use("Agg")
@@ -379,7 +379,7 @@ class TestMoranLocal:
             seed=SEED,
         )
 
-        ax = lm.plot_scatterplot(
+        ax = lm.plot_scatter(
             crit_value=None,
             scatter_kwds={"s": 10},
             fitline_kwds={"linewidth": 4},

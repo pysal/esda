@@ -321,7 +321,7 @@ class Moran:
             **stat_kws,
         )
 
-    def plot_scatterplot(
+    def plot_scatter(
         self,
         ax=None,
         scatter_kwds=None,
@@ -1303,7 +1303,7 @@ class Moran_Local:  # noqa: N801
         gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
         return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
 
-    def plot_scatterplot(
+    def plot_scatter(
         self,
         crit_value=0.05,
         ax=None,
