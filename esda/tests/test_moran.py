@@ -163,7 +163,7 @@ class TestMoran:
 
         _, ax = plt.subplots(figsize=(12, 12))
         ax = m.plot_simulation(
-            ax=ax, fitline_kwds={"color": "red"}, color="pink", shade=False
+            ax=ax, fitline_kwds={"color": "red"}, color="pink", shade=False, legend=True
         )
 
         assert len(ax.collections) == 2
@@ -197,6 +197,12 @@ class TestMoran:
             ei_vline.get_paths()[0].vertices,
             np.array([[m.EI, 0.0], [m.EI, 1.0]]),
         )
+
+        assert ax.get_legend_handles_labels()[1] == [
+            "Distribution of simulated Is",
+            "Moran's I",
+            "Expected I",
+        ]
 
 
 class TestMoranRate:
