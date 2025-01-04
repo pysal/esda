@@ -1912,46 +1912,6 @@ def _viz_local_moran(moran_local, gdf, crit_value, method, **kwargs):
     )
 
 
-def _moran_loc_scatterplot(
-    moran_loc,
-    crit_value=None,
-    ax=None,
-    scatter_kwds=None,
-    fitline_kwds=None,
-):
-    """
-    Moran Scatterplot with option of coloring of Local Moran Statistics.
-
-    Parameters
-    ----------
-    moran_loc : esda.moran.Moran_Local instance
-        Values of Moran's I Local Autocorrelation Statistics.
-    p : float, optional
-        If given, the p-value threshold for significance. Points will
-        be colored by significance. By default it will not be colored,
-        by default None.
-    aspect_equal : bool, optional
-        If True, Axes of Moran Scatterplot will show the same
-        aspect or visual proportions.
-    ax : Matplotlib Axes instance, optional
-        If given, the Moran plot will be created inside this axis,
-        by default None.
-    scatter_kwds : keyword arguments, optional
-        Keywords used for creating and designing the scatter points,
-        by default None.
-    fitline_kwds : keyword arguments, optional
-        Keywords used for creating and designing the moran fitline,
-        by default None.
-
-    Returns
-    -------
-    fig : Matplotlib Figure instance
-        Moran Local scatterplot figure.
-    ax : matplotlib Axes instance
-        Axes in which the figure is plotted.
-    """
-
-
 def _get_cluster_labels(moran_local, crit_value):
     gdf = pd.DataFrame()
     gdf["q"] = moran_local.q
@@ -1975,6 +1935,32 @@ def _scatterplot(
     scatter_kwds=None,
     fitline_kwds=None,
 ):
+    """Generates a Moran Local or Global Scatterplot.
+
+    Parameters
+    ----------
+    moran : Moran object
+        An instance of a Moran or Moran_Local object.
+    crit_value : float, optional
+        The critical value for significance. Default is 0.05.
+    ax : matplotlib.axes.Axes, optional
+        The axes on which to draw the plot. If None, a new figure and axes are created.
+    scatter_kwds : dict, optional
+        Additional keyword arguments to pass to the scatter plot.
+    fitline_kwds : dict, optional
+        Additional keyword arguments to pass to the fit line plot.
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+        The axes with the Moran Scatterplot.
+
+    Raises
+    ------
+    ImportError
+        If matplotlib is not installed.
+    """
+
     try:
         from matplotlib import pyplot as plt
     except ImportError as err:
