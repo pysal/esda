@@ -565,6 +565,38 @@ class Moran_BV:  # noqa: N801
             **stat_kws,
         )
 
+    def plot_scatter(
+        self,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        return _scatterplot(
+            self,
+            crit_value=None,
+            bivariate=True,
+            ax=ax,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+        )
+
 
 def Moran_BV_matrix(variables, w, permutations=0, varnames=None):  # noqa: N802
     """
@@ -1604,6 +1636,41 @@ class Moran_Local_BV:  # noqa: N801
             **stat_kws,
         )
 
+    def plot_scatter(
+        self,
+        crit_value=0.05,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            Critical value to determine statistical significance, by default 0.05.
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        return _scatterplot(
+            self,
+            crit_value=crit_value,
+            bivariate=True,
+            ax=ax,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+        )
+
 
 class Moran_Local_Rate(Moran_Local):  # noqa: N801
     """
@@ -1931,6 +1998,7 @@ def _get_cluster_labels(moran_local, crit_value):
 def _scatterplot(
     moran,
     crit_value=0.05,
+    bivariate=False,
     ax=None,
     scatter_kwds=None,
     fitline_kwds=None,
@@ -1975,7 +2043,7 @@ def _scatterplot(
         fitline_kwds = dict()
 
     if crit_value is not None:
-        labels = moran.get_cluster_labels(crit_value)
+        labels = _get_cluster_labels(moran, crit_value)
         # TODO: allow customization of colors in here and in plot and explore
         # TODO: in a way to keep them easily synced
         colors5_mpl = {
@@ -1994,15 +2062,21 @@ def _scatterplot(
     if ax is None:
         _, ax = plt.subplots()
 
-    # set labels
-    ax.set_xlabel("Attribute")
-    ax.set_ylabel("Spatial Lag")
-    ax.set_title("Moran Local Scatterplot")
+    ax.set_title("Moran Scatterplot")
 
-    # plot and set standards
-    lag = lag_spatial(moran.w, moran.z)
+    if bivariate:
+        x = moran.zx
+        lag = lag_spatial(moran.w, moran.zy)
+        ax.set_xlabel("Attribute X")
+        ax.set_ylabel("Spatial Lag of Y")
+    else:
+        x = moran.z
+        lag = lag_spatial(moran.w, moran.z)
+        ax.set_xlabel("Attribute")
+        ax.set_ylabel("Spatial Lag")
+
     fit = stats.linregress(
-        moran.z,
+        x,
         lag,
     )
     # v- and hlines
@@ -2011,13 +2085,13 @@ def _scatterplot(
     if crit_value is not None:
         fitline_kwds.setdefault("color", "k")
         scatter_kwds.setdefault("c", colors5)
-        ax.plot(moran.z, fit.intercept + fit.slope * moran.z, **fitline_kwds)
-        ax.scatter(moran.z, lag, **scatter_kwds)
+        ax.plot(x, fit.intercept + fit.slope * x, **fitline_kwds)
+        ax.scatter(x, lag, **scatter_kwds)
     else:
         scatter_kwds.setdefault("color", "#bababa")
         fitline_kwds.setdefault("color", "#d6604d")
-        ax.plot(moran.z, fit.intercept + fit.slope * moran.z, **fitline_kwds)
-        ax.scatter(moran.z, lag, **scatter_kwds)
+        ax.plot(x, fit.intercept + fit.slope * x, **fitline_kwds)
+        ax.scatter(x, lag, **scatter_kwds)
 
     ax.set_aspect("equal")
 
