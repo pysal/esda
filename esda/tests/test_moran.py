@@ -204,6 +204,7 @@ class TestMoran:
             "Expected I",
         ]
 
+    @parametrize_sac
     def test_Moran_plot_scatter(self, w):
         import matplotlib
 
