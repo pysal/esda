@@ -115,6 +115,58 @@ class TestMoran:
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
         np.testing.assert_allclose(pval, 0.001)
 
+    @parametrize_sac
+    def test_Moran_plot_scatter(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatter()
+
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0.729412, 0.729412, 0.729412, 0.6]]),
+        )
+
+        # test fitline
+        l = ax.lines[2]
+        x, y = l.get_data()
+        np.testing.assert_almost_equal(x.min(), -1.8236414387225368)
+        np.testing.assert_almost_equal(x.max(), 3.893056527659032)
+        np.testing.assert_almost_equal(y.min(), -0.7371749399524187)
+        np.testing.assert_almost_equal(y.max(), 1.634939204358587)
+        assert l.get_color() == "#d6604d"
+
+    @parametrize_sac
+    def test_Moran_plot_scatter_args(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatter(scatter_kwds=dict(color='blue'), fitline_kwds=dict(color='pink'))
+
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0, 0, 1, 0.6]]),
+        )
+
+        # test fitline
+        l = ax.lines[2]
+        assert l.get_color() == "pink"
+
+
 
 class TestMoranRate:
     def setup_method(self):
@@ -251,15 +303,98 @@ class TestMoranLocal:
             seed=SEED,
         )
         ax = lm.plot(sac1)
-        unique, counts = np.unique(ax.collections[0].get_facecolors(), axis=0, return_counts=True)
-        np.testing.assert_array_almost_equal(unique, np.array([
-            [0.17254902, 0.48235294, 0.71372549, 1.],
-            [0.5372549 , 0.81176471, 0.94117647, 1.],
-            [0.82745098, 0.82745098, 0.82745098, 1.],
-            [0.84313725, 0.09803922, 0.10980392, 1.],
-            [0.99215686, 0.68235294, 0.38039216, 1.]]
-        ))
-        np.testing.assert_array_equal(counts, np.array([86,3, 298,38, 3]))
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 1.0],
+                    [0.5372549, 0.81176471, 0.94117647, 1.0],
+                    [0.82745098, 0.82745098, 0.82745098, 1.0],
+                    [0.84313725, 0.09803922, 0.10980392, 1.0],
+                    [0.99215686, 0.68235294, 0.38039216, 1.0],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
+
+    @parametrize_sac
+    def test_Moran_Local_plot_scatter(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+
+        ax = lm.plot_scatter()
+
+        # test scatter
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 0.6],
+                    [0.5372549, 0.81176471, 0.94117647, 0.6],
+                    [0.82745098, 0.82745098, 0.82745098, 0.6],
+                    [0.84313725, 0.09803922, 0.10980392, 0.6],
+                    [0.99215686, 0.68235294, 0.38039216, 0.6],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([73, 12, 261, 52, 5]))
+
+        # test fitline
+        l = ax.lines[2]
+        x, y = l.get_data()
+        np.testing.assert_almost_equal(x.min(), -1.8236414387225368)
+        np.testing.assert_almost_equal(x.max(), 3.893056527659032)
+        np.testing.assert_almost_equal(y.min(), -0.7371749399524187)
+        np.testing.assert_almost_equal(y.max(), 1.634939204358587)
+        assert l.get_color() == "k"
+
+    @parametrize_sac
+    def test_Moran_Local_plot_scatter_args(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+
+        ax = lm.plot_scatter(
+            crit_value=None,
+            scatter_kwds={"s": 10},
+            fitline_kwds={"linewidth": 4},
+        )
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0.729412, 0.729412, 0.729412, 0.6]]),
+        )
+        assert ax.collections[0].get_sizes()[0] == 10
+
+        # test fitline
+        l = ax.lines[2]
+        assert l.get_color() == "#d6604d"
+        assert l.get_linewidth() == 4.0
 
     @parametrize_desmith
     def test_Moran_Local_parallel(self, w):
