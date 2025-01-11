@@ -116,6 +116,95 @@ class TestMoran:
         np.testing.assert_allclose(pval, 0.001)
 
     @parametrize_sac
+    def test_plot_simulation(self, w):
+        pytest.importorskip("seaborn")
+
+        m = moran.Moran(sac1.WHITE, w=w)
+        ax = m.plot_simulation()
+
+        assert len(ax.collections) == 3
+
+        kde = ax.collections[0]
+        np.testing.assert_array_almost_equal(
+            kde.get_facecolor(),
+            [[0.7294117647058823, 0.7294117647058823, 0.7294117647058823, 0.25]],
+        )
+        assert kde.get_fill()
+        assert len(kde.get_paths()[0]) == 403
+
+        i_vline = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            i_vline.get_color(),
+            [[0.8392156862745098, 0.3764705882352941, 0.30196078431372547, 1.0]],
+        )
+        assert i_vline.get_label() == "Moran's I"
+        np.testing.assert_array_almost_equal(
+            i_vline.get_paths()[0].vertices,
+            np.array([[m.I, 0.0], [m.I, 1.0]]),
+        )
+
+        ei_vline = ax.collections[2]
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_color(),
+            [[0.12156863, 0.46666667, 0.70588235, 1.0]],
+        )
+        assert ei_vline.get_label() == "Expected I"
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_paths()[0].vertices,
+            np.array([[m.EI, 0.0], [m.EI, 1.0]]),
+        )
+
+    @parametrize_sac
+    def test_plot_simulation_custom(self, w):
+        pytest.importorskip("seaborn")
+        plt = pytest.importorskip("matplotlib.pyplot")
+
+        m = moran.Moran(sac1.WHITE, w=w)
+
+        _, ax = plt.subplots(figsize=(12, 12))
+        ax = m.plot_simulation(
+            ax=ax, fitline_kwds={"color": "red"}, color="pink", shade=False, legend=True
+        )
+
+        assert len(ax.collections) == 2
+        assert len(ax.lines) == 1
+
+        kde = ax.lines[0]
+        np.testing.assert_array_almost_equal(
+            kde.get_color(),
+            [1.0, 0.75294118, 0.79607843, 1],
+        )
+        assert len(kde.get_path()) == 200
+
+        i_vline = ax.collections[0]
+        np.testing.assert_array_almost_equal(
+            i_vline.get_color(),
+            [[1.0, 0.0, 0.0, 1.0]],
+        )
+        assert i_vline.get_label() == "Moran's I"
+        np.testing.assert_array_almost_equal(
+            i_vline.get_paths()[0].vertices,
+            np.array([[m.I, 0.0], [m.I, 1.0]]),
+        )
+
+        ei_vline = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_color(),
+            [[0.12156863, 0.46666667, 0.70588235, 1.0]],
+        )
+        assert ei_vline.get_label() == "Expected I"
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_paths()[0].vertices,
+            np.array([[m.EI, 0.0], [m.EI, 1.0]]),
+        )
+
+        assert ax.get_legend_handles_labels()[1] == [
+            "Distribution of simulated Is",
+            "Moran's I",
+            "Expected I",
+        ]
+
+    @parametrize_sac
     def test_Moran_plot_scatter(self, w):
         import matplotlib
 

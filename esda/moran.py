@@ -352,6 +352,58 @@ class Moran:
             fitline_kwds=fitline_kwds,
         )
 
+    def plot_simulation(self, ax=None, legend=False, fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        legend : bool, optional
+            Plot a legend, by default False
+        fitline_kwds : dict, optional
+            Additional keyword arguments for vertical Moran fit line, by default None.
+        **kwargs : keyword arguments, optional
+            Additional keyword arguments for KDE plot passed to ``seaborn.kdeplot``,
+            by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+
+        Notes
+        -----
+        This requires optional dependencies ``matplotlib`` and ``seaborn``.
+
+        Examples
+        --------
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+        >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
+        >>> y = np.array(f.by_col['HR8893'])
+        >>> from esda.moran import Moran
+        >>> mi = Moran(y,  w)
+
+        Default plot:
+
+        >>> mi.plot_simulation()
+
+        Customized styling that turns the distribution into a pink line and line
+        indicating I to a black line:
+
+        >>> mi.plot_simulation(fitline_kwds={"color": "k"}, color="pink", shade=False)
+        """
+        return _simulation_plot(
+            self,
+            ax=ax,
+            legend=legend,
+            bivariate=False,
+            fitline_kwds=fitline_kwds,
+            **kwargs,
+        )
+
 
 class Moran_BV:  # noqa: N801
     """
@@ -563,6 +615,40 @@ class Moran_BV:  # noqa: N801
             swapname=cls.__name__.lower(),
             stat=cls,
             **stat_kws,
+        )
+
+    def plot_simulation(self, ax=None, legend=False, fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        legend : bool, optional
+            Plot a legend, by default False
+        fitline_kwds : dict, optional
+            Additional keyword arguments for vertical Moran fit line, by default None.
+        **kwargs : keyword arguments, optional
+            Additional keyword arguments for KDE plot passed to ``seaborn.kdeplot``,
+            by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+
+        Notes
+        -----
+        This requires optional dependencies ``matplotlib`` and ``seaborn``.
+        """
+        return _simulation_plot(
+            self,
+            ax=ax,
+            legend=legend,
+            bivariate=True,
+            fitline_kwds=fitline_kwds,
+            **kwargs,
         )
 
 
@@ -2021,6 +2107,49 @@ def _scatterplot(
 
     ax.set_aspect("equal")
 
+    return ax
+
+
+def _simulation_plot(
+    moran, ax=None, legend=False, bivariate=False, fitline_kwds=None, **kwargs
+):
+    try:
+        import seaborn as sns
+        from matplotlib import pyplot as plt
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib and seaborn must be installed to plot the simulation."
+        ) from err
+    # to set default as an empty dictionary that is later filled with defaults
+    if fitline_kwds is None:
+        fitline_kwds = dict()
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    # plot distribution
+    shade = kwargs.pop("shade", True)
+    color = kwargs.pop("color", "#bababa")
+    sns.kdeplot(
+        moran.sim,
+        fill=shade,
+        color=color,
+        ax=ax,
+        label="Distribution of simulated Is",
+        **kwargs,
+    )
+
+    exp = moran.EI_sim if bivariate else moran.EI
+
+    # customize plot
+    fitline_kwds.setdefault("color", "#d6604d")
+    ax.vlines(moran.I, 0, 1, **fitline_kwds, label="Moran's I")
+    ax.vlines(exp, 0, 1, label="Expected I")
+    ax.set_title("Reference Distribution")
+    ax.set_xlabel(f"Moran's I: {moran.I:.2f}")
+
+    if legend:
+        ax.legend()
     return ax
 
 
