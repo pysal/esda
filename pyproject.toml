@@ -49,6 +49,7 @@ plus = [
     "matplotlib",
     "numba>=0.57",
     "rtree>=1.0",
+    "seaborn",
 ]
 tests = [
     "codecov",
@@ -72,7 +73,6 @@ docs = [
 ]
 notebooks = [
     "matplotlib-scalebar",
-    "seaborn",
     "watermark",
 ]
 
