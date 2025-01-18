@@ -243,7 +243,9 @@ class TestMoran:
             w,
         )
 
-        ax = m.plot_scatter(scatter_kwds=dict(color='blue'), fitline_kwds=dict(color='pink'))
+        ax = m.plot_scatter(
+            scatter_kwds=dict(color="blue"), fitline_kwds=dict(color="pink")
+        )
 
         # test scatter
         np.testing.assert_array_almost_equal(
@@ -254,7 +256,6 @@ class TestMoran:
         # test fitline
         l = ax.lines[2]
         assert l.get_color() == "pink"
-
 
 
 class TestMoranRate:
@@ -584,10 +585,50 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.EI, EI, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lm.VI, VI, rtol=RTOL, atol=ATOL)
 
+    @parametrize_sac
+    def test_plot_combination(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        axs = lm.plot_combination(
+            sac1,
+            "WHITE",
+            legend_kwds=dict(loc="lower right"),
+            region_column="FIPS",
+            mask=["06067009504", "06067009503"],
+            quadrant=1,
+        )
+
+        assert len(axs) == 3
+        assert len(axs[0].patches) == 1
+        assert len(axs[1].collections) == 4
+        assert len(axs[2].collections) == 4
+
+        axs2 = lm.plot_combination(
+            sac1,
+            "WHITE",
+            legend_kwds=dict(loc="lower right"),
+        )
+
+        assert len(axs2) == 3
+        assert len(axs2[0].patches) == 0
+        assert len(axs2[1].collections) == 1
+        assert len(axs2[2].collections) == 1
+
 
 class TestMoranLocalBV:
     def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
+        self.gdf = gpd.read_file(libpysal.examples.get_path("sids2.shp"))
         self.x = np.array(f.by_col["SIDR79"])
         self.y = np.array(f.by_col["SIDR74"])
 
@@ -628,6 +669,132 @@ class TestMoranLocalBV:
         np.testing.assert_allclose(bvstats[0], 1.4649221250620736)
         np.testing.assert_allclose(bvz[0], 1.7900932313425777, 5)
         np.testing.assert_allclose(bvzp[0], 0.036719462378528744, 5)
+
+    @parametrize_sids
+    def test_Moran_LocalBV_labels(self, w):
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        expected_labels = np.array(
+            [
+                "Insignificant",
+                "Insignificant",
+                "Low-Low",
+                "High-Low",
+                "Low-High",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+            ]
+        )
+        assert_array_equal(lm.get_cluster_labels()[:10], expected_labels)
+        assert_array_equal(
+            pd.Series(lm.get_cluster_labels(0.05)).value_counts().values,
+            np.array([80, 7, 6, 5, 2]),
+        )
+
+    @parametrize_sids
+    def test_Moran_LocalBV_explore(self, w):
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        m = lm.explore(self.gdf)
+        np.testing.assert_array_equal(
+            m.get_bounds(),
+            [
+                [33.88199234008789, -84.3238525390625],
+                [36.58964920043945, -75.45697784423828],
+            ],
+        )
+        assert len(m.to_dict()["children"]) == 2
+
+        out_str = _fetch_map_string(m)
+
+        assert '"High-High","__folium_color":"#d7191c"' in out_str
+        assert '"Low-High","__folium_color":"#89cff0"' in out_str
+        assert '"Low-Low","__folium_color":"#2c7bb6"' in out_str
+        assert '"High-Low","__folium_color":"#fdae61"' in out_str
+        assert '"Insignificant","__folium_color":"#d3d3d3"' in out_str
+
+        assert out_str.count("#d7191c") == 10
+        assert out_str.count("#89cff0") == 5
+        assert out_str.count("#2c7bb6") == 9
+        assert out_str.count("#fdae61") == 8
+        assert out_str.count("#d3d3d3") == 83
+
+    @parametrize_sids
+    def test_Moran_LocalBV_plot(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        ax = lm.plot(self.gdf)
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 1.0],
+                    [0.5372549, 0.81176471, 0.94117647, 1.0],
+                    [0.82745098, 0.82745098, 0.82745098, 1.0],
+                    [0.84313725, 0.09803922, 0.10980392, 1.0],
+                    [0.99215686, 0.68235294, 0.38039216, 1.0],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([6, 2, 86, 7, 7]))
+
+    @parametrize_sids
+    def test_plot_combination(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        axs = lm.plot_combination(
+            self.gdf,
+            "SIDR79",
+            legend_kwds=dict(loc="lower right"),
+            quadrant=1,
+        )
+
+        assert len(axs) == 3
+        assert len(axs[0].patches) == 1
+        assert len(axs[1].collections) == 3
+        assert len(axs[2].collections) == 3
 
 
 class TestMoranLocalRate:
