@@ -243,7 +243,9 @@ class TestMoran:
             w,
         )
 
-        ax = m.plot_scatter(scatter_kwds=dict(color='blue'), fitline_kwds=dict(color='pink'))
+        ax = m.plot_scatter(
+            scatter_kwds=dict(color="blue"), fitline_kwds=dict(color="pink")
+        )
 
         # test scatter
         np.testing.assert_array_almost_equal(
@@ -254,7 +256,6 @@ class TestMoran:
         # test fitline
         l = ax.lines[2]
         assert l.get_color() == "pink"
-
 
 
 class TestMoranRate:
@@ -296,6 +297,26 @@ class TestMoranBVmatrix:
         res = moran.Moran_BV_matrix(self.vars, w, varnames=self.names)
         np.testing.assert_allclose(res[(0, 1)].I, 0.19362610652874668)
         np.testing.assert_allclose(res[(3, 0)].I, 0.37701382542927858)
+
+    @parametrize_sids
+    def test_plot_moran_facet(self, w):
+        matrix = moran.Moran_BV_matrix(self.vars, w, varnames=self.names)
+        axes = moran.plot_moran_facet(matrix)
+        assert axes.shape == (4, 4)
+
+        assert axes[0][0].spines["left"].get_visible()
+        assert not axes[0][0].spines["bottom"].get_visible()
+        assert axes[3][0].spines["left"].get_visible()
+        assert axes[3][0].spines["bottom"].get_visible()
+        assert not axes[3][1].spines["left"].get_visible()
+        assert axes[3][1].spines["bottom"].get_visible()
+        assert not axes[1][1].spines["left"].get_visible()
+        assert not axes[1][1].spines["bottom"].get_visible()
+
+        np.testing.assert_array_almost_equal(
+            axes[1][1].get_facecolor(),
+            (0.8509803921568627, 0.8509803921568627, 0.8509803921568627, 1.0),
+        )
 
 
 class TestMoranLocal:

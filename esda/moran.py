@@ -793,7 +793,9 @@ def plot_moran_facet(
 ):
     """
     Moran Facet visualization.
-    Includes BV Morans and Global Morans on the diagonal.
+
+    A matrix containing bivariate Moran plots between all pairs of variables present in
+    the ``moran_matrix`` dictionary. On the diagonal contains global Moran plot.
 
     Parameters
     ----------
