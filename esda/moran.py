@@ -1455,6 +1455,86 @@ class Moran_Local:  # noqa: N801
             fitline_kwds=fitline_kwds,
         )
 
+    def plot_combination(
+        self,
+        gdf,
+        attribute,
+        crit_value=0.05,
+        region_column=None,
+        mask=None,
+        mask_color="#636363",
+        quadrant=None,
+        legend=True,
+        scheme="Quantiles",
+        cmap="YlGnBu",
+        figsize=(15, 4),
+        scatter_kwds=None,
+        fitline_kwds=None,
+        legend_kwds=None,
+    ):
+        """
+        Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
+        and Choropleth maps, with Local Moran region and quadrant masking
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        attribute : str
+            Column name of attribute which should be depicted in Choropleth map.
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        region_column: string, optional
+            Column name containing mask region of interest, by default None
+        mask: str, float, int, optional
+            Identifier or name of the region to highlight, by default None
+            Use the same dtype to specifiy as in original dataset.
+        mask_color: str, optional
+            Color of mask, by default '#636363'.
+        quadrant : int, optional
+            Quadrant 1-4 in scatterplot masking values in LISA cluster and
+            Choropleth maps, by default None
+        figsize: tuple, optional
+            W, h of figure, by default (15,4)
+        legend: boolean, optional
+            If True, legend for maps will be depicted, by default True
+        scheme: str, optional
+            Name of mapclassify classifier to be used, by default 'Quantiles'
+        cmap: str, optional
+            Name of matplotlib colormap used for plotting the Choropleth.
+            By default 'YlGnBu'.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points, by default
+            None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            in the scatterplot, by default None.
+        legend_kwds : dict
+            Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds``
+            allowing repositioning of the legend in LISA cluster plot and choropleth.
+
+        Returns
+        -------
+        axs : array of Matplotlib axes
+        """
+        return _plot_combination(
+            self,
+            gdf,
+            attribute,
+            crit_value=crit_value,
+            region_column=region_column,
+            mask=mask,
+            mask_color=mask_color,
+            quadrant=quadrant,
+            legend=legend,
+            scheme=scheme,
+            cmap=cmap,
+            figsize=figsize,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+            legend_kwds=legend_kwds,
+        )
+
 
 class Moran_Local_BV:  # noqa: N801
     """Bivariate Local Moran Statistics.
@@ -1813,6 +1893,86 @@ class Moran_Local_BV:  # noqa: N801
             ax=ax,
             scatter_kwds=scatter_kwds,
             fitline_kwds=fitline_kwds,
+        )
+
+    def plot_combination(
+        self,
+        gdf,
+        attribute,
+        crit_value=0.05,
+        region_column=None,
+        mask=None,
+        mask_color="#636363",
+        quadrant=None,
+        legend=True,
+        scheme="Quantiles",
+        cmap="YlGnBu",
+        figsize=(15, 4),
+        scatter_kwds=None,
+        fitline_kwds=None,
+        legend_kwds=None,
+    ):
+        """
+        Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
+        and Choropleth maps, with Local Moran region and quadrant masking
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        attribute : str
+            Column name of attribute which should be depicted in Choropleth map.
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        region_column: string, optional
+            Column name containing mask region of interest, by default None
+        mask: str, float, int, optional
+            Identifier or name of the region to highlight, by default None
+            Use the same dtype to specifiy as in original dataset.
+        mask_color: str, optional
+            Color of mask, by default '#636363'.
+        quadrant : int, optional
+            Quadrant 1-4 in scatterplot masking values in LISA cluster and
+            Choropleth maps, by default None
+        figsize: tuple, optional
+            W, h of figure, by default (15,4)
+        legend: boolean, optional
+            If True, legend for maps will be depicted, by default True
+        scheme: str, optional
+            Name of mapclassify classifier to be used, by default 'Quantiles'
+        cmap: str, optional
+            Name of matplotlib colormap used for plotting the Choropleth.
+            By default 'YlGnBu'.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points, by default
+            None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            in the scatterplot, by default None.
+        legend_kwds : dict
+            Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds``
+            allowing repositioning of the legend in LISA cluster plot and choropleth.
+
+        Returns
+        -------
+        axs : array of Matplotlib axes
+        """
+        return _plot_combination(
+            self,
+            gdf,
+            attribute,
+            crit_value=crit_value,
+            region_column=region_column,
+            mask=mask,
+            mask_color=mask_color,
+            quadrant=quadrant,
+            legend=legend,
+            scheme=scheme,
+            cmap=cmap,
+            figsize=figsize,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+            legend_kwds=legend_kwds,
         )
 
 
@@ -2283,6 +2443,209 @@ def _simulation_plot(
     if legend:
         ax.legend()
     return ax
+
+
+def _plot_combination(
+    moran_loc,
+    gdf,
+    attribute,
+    crit_value=0.05,
+    region_column=None,
+    mask=None,
+    mask_color="#636363",
+    quadrant=None,
+    legend=True,
+    scheme="Quantiles",
+    cmap="YlGnBu",
+    figsize=(15, 4),
+    scatter_kwds=None,
+    fitline_kwds=None,
+    legend_kwds=None,
+):
+    """
+    Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
+    and Choropleth maps, with Local Moran region and quadrant masking
+
+    Parameters
+    ----------
+    moran_loc : esda.moran.Moran_Local or Moran_Local_BV instance
+        Values of Moran's Local Autocorrelation Statistic
+    gdf : geopandas dataframe
+        The Dataframe containing information to plot the two maps.
+    attribute : str
+        Column name of attribute which should be depicted in Choropleth map.
+    p : float, optional
+        The p-value threshold for significance. Points and polygons will
+        be colored by significance. Default = 0.05.
+    region_column: string, optional
+        Column name containing mask region of interest. Default = None
+    mask: str, float, int, optional
+        Identifier or name of the region to highlight. Default = None
+        Use the same dtype to specifiy as in original dataset.
+    mask_color: str, optional
+        Color of mask. Default = '#636363'
+    quadrant : int, optional
+        Quadrant 1-4 in scatterplot masking values in LISA cluster and
+        Choropleth maps. Default = None
+    figsize: tuple, optional
+        W, h of figure. Default = (15,4)
+    legend: boolean, optional
+        If True, legend for maps will be depicted. Default = True
+    scheme: str, optional
+        Name of PySAL classifier to be used. Default = 'Quantiles'
+    cmap: str, optional
+        Name of matplotlib colormap used for plotting the Choropleth.
+        Default = 'YlGnBu'
+    scatter_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points.
+        Default =None.
+    fitline_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline
+        in the scatterplot. Default =None.
+    legend_kwds : dict
+        Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds`` allowing
+        repositioning of the legend in LISA cluster plot and choropleth.
+
+    Returns
+    -------
+    axs : array of Matplotlib axes
+    """
+    try:
+        from matplotlib import patches
+        from matplotlib import pyplot as plt
+
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib library must be installed to use the scatterplot feature"
+        ) from err
+
+    _, axs = plt.subplots(
+        1, 3, figsize=figsize, subplot_kw={"aspect": "equal", "adjustable": "datalim"}
+    )
+    # Moran Scatterplot
+    moran_loc.plot_scatter(
+        crit_value=crit_value,
+        ax=axs[0],
+        scatter_kwds=scatter_kwds,
+        fitline_kwds=fitline_kwds,
+    )
+
+    # Lisa cluster map
+    moran_loc.plot(
+        gdf,
+        crit_value=crit_value,
+        ax=axs[1],
+        legend=legend,
+        legend_kwds=legend_kwds,
+    )
+
+    # Choropleth for attribute
+    gdf.plot(
+        column=attribute,
+        scheme=scheme,
+        cmap=cmap,
+        legend=legend,
+        legend_kwds=legend_kwds,
+        ax=axs[2],
+        alpha=1,
+    )
+    axs[2].set_axis_off()
+    axs[2].set_aspect("equal")
+
+    # MASKING QUADRANT VALUES
+    if quadrant is not None:
+        # Quadrant masking in Scatterplot
+        mask_angles = {1: 0, 2: 90, 3: 180, 4: 270}  # rectangle angles
+        # We don't want to change the axis data limits, so use the current ones
+        xmin, xmax = axs[0].get_xlim()
+        ymin, ymax = axs[0].get_ylim()
+        # We are rotating, so we start from 0 degrees and
+        # figured out the right dimensions for the rectangles for other angles
+        mask_width = {1: abs(xmax), 2: abs(ymax), 3: abs(xmin), 4: abs(ymin)}
+        mask_height = {1: abs(ymax), 2: abs(xmin), 3: abs(ymin), 4: abs(xmax)}
+        axs[0].add_patch(
+            patches.Rectangle(
+                (0, 0),
+                width=mask_width[quadrant],
+                height=mask_height[quadrant],
+                angle=mask_angles[quadrant],
+                color="#E5E5E5",
+                zorder=-1,
+                alpha=0.8,
+            )
+        )
+        # quadrant selection in maps
+        non_quadrant = ~(moran_loc.q == quadrant)
+        mask_quadrant = gdf[non_quadrant]
+        df_quadrant = gdf.iloc[~non_quadrant]
+        union2 = df_quadrant.dissolve().boundary
+
+        # LISA Cluster mask and cluster boundary
+        mask_quadrant.plot(
+            scheme=scheme,
+            color="white",
+            ax=axs[1],
+            alpha=0.7,
+            zorder=1,
+        )
+        union2.plot(linewidth=1, ax=axs[1], color="#E5E5E5")
+
+        # CHOROPLETH MASK
+        mask_quadrant.plot(
+            scheme=scheme,
+            color="white",
+            ax=axs[2],
+            alpha=0.7,
+            zorder=1,
+        )
+        union2.plot(linewidth=1, ax=axs[2], color="#E5E5E5")
+
+    # REGION MASKING
+    if region_column is not None:
+        # masking inside axs[0] or Moran Scatterplot
+        # enforce the same dtype of list and mask
+        if not isinstance(mask[0], type(gdf[region_column].iloc[0])):
+            warn(
+                "Values in `mask` are not the same dtype as"
+                + " values in `region_column`. Converting `mask` values"
+                + " to dtype of first observation in region_column.",
+                stacklevel=3,
+            )
+            data_type = type(gdf[region_column][0].item())
+            mask = list(map(data_type, mask))
+
+        ix = gdf[region_column].isin(mask)
+
+        if not ix.any():
+            raise ValueError(
+                f"Specified values {mask} in `mask` not in `region_column`"
+            )
+
+        df_mask = gdf[ix]
+        x_mask = moran_loc.z[ix]
+        y_mask = lag_spatial(moran_loc.w, moran_loc.z)[ix]
+        axs[0].plot(
+            x_mask,
+            y_mask,
+            color=mask_color,
+            marker="o",
+            markersize=14,
+            alpha=0.8,
+            linestyle="None",
+            zorder=-1,
+        )
+
+        # masking inside axs[1] or Lisa cluster map
+        union = df_mask.dissolve().boundary
+        union.plot(linewidth=2, ax=axs[1], color=mask_color)
+
+        # masking inside axs[2] or Chloropleth
+        union.plot(linewidth=2, ax=axs[2], color=mask_color)
+
+    axs[0].spines[["right", "top"]].set_visible(False)
+    axs[1].set_axis_off()
+
+    return axs
 
 
 # --------------------------------------------------------------
