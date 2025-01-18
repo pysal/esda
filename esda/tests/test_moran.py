@@ -585,6 +585,45 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.EI, EI, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lm.VI, VI, rtol=RTOL, atol=ATOL)
 
+    @parametrize_sac
+    def test_plot_combination(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        axs = lm.plot_combination(
+            sac1,
+            "WHITE",
+            legend_kwds=dict(loc="lower right"),
+            region_column="FIPS",
+            mask=["06067009504", "06067009503"],
+            quadrant=1,
+        )
+
+        assert len(axs) == 3
+        assert len(axs[0].patches) == 1
+        assert len(axs[1].collections) == 4
+        assert len(axs[2].collections) == 4
+
+        axs2 = lm.plot_combination(
+            sac1,
+            "WHITE",
+            legend_kwds=dict(loc="lower right"),
+        )
+
+        assert len(axs2) == 3
+        assert len(axs2[0].patches) == 0
+        assert len(axs2[1].collections) == 1
+        assert len(axs2[2].collections) == 1
+
 
 class TestMoranLocalBV:
     def setup_method(self):
@@ -729,6 +768,33 @@ class TestMoranLocalBV:
             ),
         )
         np.testing.assert_array_equal(counts, np.array([6, 2, 86, 7, 7]))
+
+    @parametrize_sids
+    def test_plot_combination(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        axs = lm.plot_combination(
+            self.gdf,
+            "SIDR79",
+            legend_kwds=dict(loc="lower right"),
+            quadrant=1,
+        )
+
+        assert len(axs) == 3
+        assert len(axs[0].patches) == 1
+        assert len(axs[1].collections) == 3
+        assert len(axs[2].collections) == 3
 
 
 class TestMoranLocalRate:
