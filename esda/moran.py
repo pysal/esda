@@ -1722,6 +1722,64 @@ class Moran_Local_BV:  # noqa: N801
             **stat_kws,
         )
 
+    def get_cluster_labels(self, crit_value=0.05):
+        """Return LISA cluster labels for each observation.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            crititical significance value for statistical inference, by default 0.05
+
+        Returns
+        -------
+        numpy.array
+            an array of cluster labels aligned with the input data used to conduct the
+            local Moran analysis
+        """
+        return _get_cluster_labels(self, crit_value)
+
+    def explore(self, gdf, crit_value=0.05, **kwargs):
+        """Create interactive map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        Folium.Map
+            interactive map with LISA clusters
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "explore", **kwargs)
+
+    def plot(self, gdf, crit_value=0.05, **kwargs):
+        """Create static map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        ax
+            matplotlib axis
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
+
     def plot_scatter(
         self,
         crit_value=0.05,
