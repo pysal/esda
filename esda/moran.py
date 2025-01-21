@@ -9,7 +9,7 @@ __author__ = (
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
 
-from warnings import simplefilter, warn
+from warnings import simplefilter
 
 import numpy as np
 import pandas as pd
@@ -32,6 +32,7 @@ __all__ = [
     "Moran_Local_BV",
     "Moran_Rate",
     "Moran_Local_Rate",
+    "plot_moran_facet",
 ]
 
 PERMUTATIONS = 999
@@ -782,6 +783,115 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):  # noqa
             results[i, j].varnames = {"x": varnames[i], "y": varnames[j]}
             results[j, i].varnames = {"x": varnames[j], "y": varnames[i]}
     return results
+
+
+def plot_moran_facet(
+    moran_matrix,
+    figsize=(16, 12),
+    scatter_bv_kwds=None,
+    fitline_bv_kwds=None,
+    scatter_glob_kwds=dict(color="#737373"),
+    fitline_glob_kwds=None,
+):
+    """
+    Moran Facet visualization.
+
+    A matrix containing bivariate Moran plots between all pairs of variables present in
+    the ``moran_matrix`` dictionary. On the diagonal contains global Moran plot.
+
+    Parameters
+    ----------
+    moran_matrix : dict
+        Dictionary of Moran_BV objects returned by Moran_BV_matrix
+    figsize : tuple, optional
+        Size of the figure. Default is (16,12)
+    scatter_bv_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points of
+        off-diagonal Moran_BV plots.
+        Default =None.
+    fitline_bv_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline of
+        off-diagonal Moran_BV plots.
+        Default =None.
+    scatter_glob_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points of
+        diagonal Moran plots.
+        Default =None.
+    fitline_glob_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline of
+        diagonal Moran plots.
+        Default =None.
+
+    Returns
+    -------
+    ax : matplotlib Axes instance
+        Axes in which the figure is plotted
+    """
+    try:
+        from matplotlib import pyplot as plt
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib must be installed to plot the simulation."
+        ) from err
+
+    nrows = int(np.sqrt(len(moran_matrix))) + 1
+    ncols = nrows
+
+    fig, axarr = plt.subplots(nrows, ncols, figsize=figsize, sharey=True, sharex=True)
+    fig.suptitle("Moran Facet")
+
+    for row in range(nrows):
+        for col in range(ncols):
+            if row == col:
+                global_m = Moran(
+                    moran_matrix[row, (row + 1) % 4].zy,
+                    moran_matrix[row, (row + 1) % 4].w,
+                )
+                _scatterplot(
+                    global_m,
+                    crit_value=None,
+                    ax=axarr[row, col],
+                    scatter_kwds=scatter_glob_kwds,
+                    fitline_kwds=fitline_glob_kwds,
+                )
+                axarr[row, col].set_facecolor("#d9d9d9")
+            else:
+                _scatterplot(
+                    moran_matrix[row, col],
+                    bivariate=True,
+                    crit_value=None,
+                    ax=axarr[row, col],
+                    scatter_kwds=scatter_bv_kwds,
+                    fitline_kwds=fitline_bv_kwds,
+                )
+
+            axarr[row, col].spines[["left", "right", "top", "bottom"]].set_visible(
+                False
+            )
+            if row == nrows - 1:
+                axarr[row, col].set_xlabel(
+                    str(moran_matrix[(col + 1) % 4, col].varnames["x"]).format(col)
+                )
+                axarr[row, col].spines["bottom"].set_visible(True)
+            else:
+                axarr[row, col].set_xlabel("")
+
+            if col == 0:
+                axarr[row, col].set_ylabel(
+                    (
+                        "Spatial Lag of "
+                        + str(moran_matrix[row, (row + 1) % 4].varnames["y"])
+                    ).format(row)
+                )
+                axarr[row, col].spines["left"].set_visible(True)
+            else:
+                axarr[row, col].set_ylabel("")
+
+            axarr[row, col].set_title("")
+
+    plt.tight_layout()
+
+    return axarr
 
 
 class Moran_Rate(Moran):  # noqa: N801
