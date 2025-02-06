@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Local join counts &#8212; esda v2.7.0 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=dfec817d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Assessing local patterns of spatial heteroskedasticity" href="LOSH.html" />
+    <link rel="prev" title="Exploratory Analysis of Spatial Data: Spatial Autocorrelation" href="spatialautocorrelation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Local join counts</a><ul>
+<li><a class="reference internal" href="#Univariate-LJC">Univariate LJC</a></li>
+<li><a class="reference internal" href="#Bivariate-LJC-(case-1)">Bivariate LJC (case 1)</a></li>
+<li><a class="reference internal" href="#Bivariate-LJC-(case-2)">Bivariate LJC (case 2)</a></li>
+<li><a class="reference internal" href="#Multivariate-LJC">Multivariate LJC</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda//home/runner/work/esda/esda/docs/notebooks/localjoincounts.ipynb">/home/runner/work/esda/esda/docs/notebooks/localjoincounts.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath=/home/runner/work/esda/esda/docs/notebooks/localjoincounts.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Local-join-counts">
+<h1>Local join counts<a class="headerlink" href="#Local-join-counts" title="Link to this heading">¶</a></h1>
+<p>In the following notebook we review the different type of local join counts (LJC) put forward by <a class="reference external" href="https://econpapers.repec.org/article/kapjgeosy/v_3a21_3ay_3a2019_3ai_3a2_3ad_3a10.1007_5fs10109-019-00299-x.htm">Anselin and Li (2019)</a>. LJC focus on spatial phenomenon that take on binary values (e.g. 0 or 1). This suite of exploratory statistics is especially useful to analysts who want to focus on different types of what Anselin and Li call ‘co-location’; that is, the presence or absence of
+specific 0 or 1 values.</p>
+<p>Note that there are several versions of the LJC:</p>
+<ul class="simple">
+<li><p>univariate LJC</p></li>
+<li><p>bivariate LJC (case 1)</p></li>
+<li><p>bivariate LJC (case 2)</p></li>
+<li><p>multivariate LJC</p></li>
+</ul>
+<p>The use case of each of these statistics, as well as their implementation in PySAL, is provided below.</p>
+<section id="Univariate-LJC">
+<h2>Univariate LJC<a class="headerlink" href="#Univariate-LJC" title="Link to this heading">¶</a></h2>
+<p>The univariate LJC is a the local version of the ‘black-black’ (aka ‘BB’) statistic. This statistic describes the count of the neighbors, <span class="math notranslate nohighlight">\(x_j\)</span>, of a given unit, <span class="math notranslate nohighlight">\(x_i\)</span>, that are equal to 1 when the unit is also equal to 1. Formally:</p>
+<p>Eq 1.</p>
+<div class="math notranslate nohighlight">
+\[BB_i = x_i \sum_{j} w_{ij} x_j\]</div>
+<p>It is important to note that when a given unit <span class="math notranslate nohighlight">\(x_i\)</span> is equal to 0, the statistic also becomes 0. Anselin and Li describe the application of this statisttic as:</p>
+<blockquote>
+<div><p>Hence, the local join count statistic is only meaningful to assess whether locations with an “event” (i.e., <span class="math notranslate nohighlight">\(x_i = 1\)</span> ) are surrounded by more locations with events than would be the case under spatial randomness. <em>Anselin and Li, 2019, Section 2.2 Page 192</em></p>
+</div></blockquote>
+<p>We can apply the PySAL implementation of the univariate LJC statistic to its original implementation in <a class="reference external" href="https://geodacenter.github.io/workbook/6a_local_auto/lab6a.html#local-join-count-statistic">GeoDa</a>. We first load in the Guerry dataset and convert the column <code class="docutils literal notranslate"><span class="pre">Donats</span></code> to binary column. This new binary column has a value of 1 for the top three groupings of <code class="docutils literal notranslate"><span class="pre">Donats</span></code> based on a Natural Breaks classification method (and 0 for otherwise).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import libpysal
+import geopandas as gpd
+guerry = libpysal.examples.load_example(&#39;Guerry&#39;)
+guerry_ds = gpd.read_file(guerry.get_path(&#39;guerry.shp&#39;))
+guerry_ds[&#39;SELECTED&#39;] = 0
+guerry_ds.loc[(guerry_ds[&#39;Donatns&#39;] &gt; 10997), &#39;SELECTED&#39;] = 1
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/serge/anaconda3/envs/dev/lib/python3.8/site-packages/geopandas/_compat.py:84: UserWarning: The Shapely GEOS version (3.8.0-CAPI-1.13.1 ) is incompatible with the GEOS version PyGEOS was compiled with (3.8.1-CAPI-1.13.3). Conversions between both will be slow.
+  warnings.warn(
+</pre></div></div>
+</div>
+<p>We now make a Queen-contiguity weights object to describe the relationship between the units.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+</pre></div>
+</div>
+</div>
+<p>We can now apply the univariate LJC function on the dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from esda.join_counts_local import Join_Counts_Local
+LJC_uni = Join_Counts_Local(connectivity=w).fit(guerry_ds[&#39;SELECTED&#39;])
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">LJC</span></code> attribute returned from the function counts the total number of local join counts.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>LJC_uni.LJC
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 3., 3., 0.,
+       1., 0., 0., 0., 0., 0., 0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 1.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 2., 0., 3., 0., 0.])
+</pre></div></div>
+</div>
+<p>And the <code class="docutils literal notranslate"><span class="pre">p_sim</span></code> attribute contains the p-values obtained from a conditional randomization procedure.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>LJC_uni.p_sim
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+         nan,   nan,   nan, 0.457,   nan, 0.026, 0.026,   nan, 0.289,
+         nan,   nan,   nan,   nan,   nan,   nan, 0.275,   nan, 0.325,
+         nan,   nan,   nan,   nan,   nan,   nan, 0.297,   nan,   nan,
+         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.459,
+         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+         nan,   nan, 0.031,   nan,   nan,   nan,   nan,   nan, 0.117,
+         nan, 0.053,   nan,   nan])
+</pre></div></div>
+</div>
+<p>We can map these values after placing them back into the dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>guerry_ds[&#39;LJC_UNI&#39;] = LJC_uni.LJC
+guerry_ds[&#39;LJC_UNI_p_sim&#39;] = LJC_uni.p_sim
+</pre></div>
+</div>
+</div>
+<p>From here you may be interested in mapping the LJC…</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+fig,ax = plt.subplots(figsize=(12,10), subplot_kw={&#39;aspect&#39;:&#39;equal&#39;})
+guerry_ds.plot(color=&#39;white&#39;, edgecolor=&#39;black&#39;, ax=ax)
+guerry_ds.plot(column=&#39;LJC_UNI&#39;,
+               categorical=True,
+               cmap=&#39;GnBu&#39;,
+               legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_localjoincounts_18_1.png" src="../_images/notebooks_localjoincounts_18_1.png" />
+</div>
+</div>
+<p>Or mapping the accompanying significance values below a certain threshold…</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy
+guerry_ds[&#39;LJC_UNI_p_sim_sig&#39;] = numpy.nan
+guerry_ds.loc[(guerry_ds[&#39;LJC_UNI_p_sim&#39;] &lt;= 0.05), &#39;LJC_UNI_p_sim_sig&#39;] = guerry_ds[&#39;LJC_UNI_p_sim&#39;]
+
+import matplotlib.pyplot as plt
+fig,ax = plt.subplots(figsize=(12,10), subplot_kw={&#39;aspect&#39;:&#39;equal&#39;})
+guerry_ds.plot(color=&#39;white&#39;, edgecolor=&#39;black&#39;, ax=ax)
+guerry_ds.plot(column=&#39;LJC_UNI_p_sim_sig&#39;,
+               legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_localjoincounts_20_1.png" src="../_images/notebooks_localjoincounts_20_1.png" />
+</div>
+</div>
+</section>
+<section id="Bivariate-LJC-(case-1)">
+<h2>Bivariate LJC (case 1)<a class="headerlink" href="#Bivariate-LJC-(case-1)" title="Link to this heading">¶</a></h2>
+<p>When considering two variables, say <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(z\)</span>, in the bivariate LJC, distinctions need to be made about what spatial pattern is of interest. Anselin and Li define two use cases of the statistic. The first use case is when there is <strong>no in-situ co-location</strong>, or where <span class="math notranslate nohighlight">\(x_i\)</span> and <span class="math notranslate nohighlight">\(z_i\)</span> <strong>no not</strong> take the same value at <span class="math notranslate nohighlight">\(i\)</span> or <span class="math notranslate nohighlight">\(j\)</span>. More specifically, the bivariate LJC case 1 is interested in when both <span class="math notranslate nohighlight">\(x_i\)</span> and <span class="math notranslate nohighlight">\(x_j\)</span> equal 1 (i.e. <span class="math notranslate nohighlight">\(x_i=x_j=1\)</span>)
+as well as <span class="math notranslate nohighlight">\(x_j=0\)</span>. Substantively, Anselin and Li explain that case is useful when the phenomenon represented by <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(z\)</span> “cannot occur in the same location”.</p>
+<p>Formally, this case is represented as:</p>
+<p>Eq 2.</p>
+<div class="math notranslate nohighlight">
+\[BJC_i = x_i (1 - z_i) \sum_{j} w_{ij} z_j (1-x_j)\]</div>
+<p>As above, we apply the PySAL implementation of the bivariate LJC case 1 statistic to its original implementation in <a class="reference external" href="https://geodacenter.github.io/workbook/6b_local_adv/lab6b.html#bivariate---no-co-location">GeoDa</a>. Unlike above, we now move to the <cite>Community areas in Chicago dataset (``commpop`</cite>) &lt;<a class="reference external" href="https://geodacenter.github.io/data-and-lab//">https://geodacenter.github.io/data-and-lab//</a>&gt;`__. We are going to examine instances of negative spatial autocorrelation, identified by locations where negative population changes (<code class="docutils literal notranslate"><span class="pre">popneg=1</span></code>)
+surrounded by more locations with positive popuation changes (<code class="docutils literal notranslate"><span class="pre">popplus=1</span></code>).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import libpysal
+import geopandas as gpd
+commpop = gpd.read_file(&quot;https://github.com/jeffcsauer/GSOC2020/raw/master/validation/data/commpop.gpkg&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/serge/anaconda3/envs/dev/lib/python3.8/site-packages/geopandas/geodataframe.py:422: RuntimeWarning: Sequential read of iterator was interrupted. Resetting iterator. This can negatively impact the performance.
+  for feature in features_lst:
+</pre></div></div>
+</div>
+<p>We again make a Queen-contiguity weights object to describe the relationship between the units.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = libpysal.weights.Queen.from_dataframe(commpop)
+</pre></div>
+</div>
+</div>
+<p>Now we run the <code class="docutils literal notranslate"><span class="pre">Local_Join_Count_BV</span></code> function. <strong>Note that the order of the variables is meaningful!</strong> Changing the order of the variables will change the implied research question.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from esda.join_counts_local_bv import Join_Counts_Local_BV
+LJC_BV_Case1 = Join_Counts_Local_BV(connectivity=w).fit(commpop[&#39;popneg&#39;], commpop[&#39;popplus&#39;], case=&#39;BJC&#39;)
+</pre></div>
+</div>
+</div>
+<p>As before, we can map both the <code class="docutils literal notranslate"><span class="pre">LJC</span></code> and <code class="docutils literal notranslate"><span class="pre">p_sim</span></code> values after placing the results back into the <code class="docutils literal notranslate"><span class="pre">commpop</span></code> dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>commpop[&#39;LJC_BV_Case1&#39;] = LJC_BV_Case1.LJC
+commpop[&#39;LJC_BV_Case1_p_sim&#39;] = LJC_BV_Case1.p_sim
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig,ax = plt.subplots(figsize=(12,10), subplot_kw={&#39;aspect&#39;:&#39;equal&#39;})
+commpop.plot(color=&#39;white&#39;, edgecolor=&#39;black&#39;, ax=ax)
+commpop.plot(column=&#39;LJC_BV_Case1&#39;,
+             cmap=&#39;GnBu&#39;,
+             categorical=True,
+             legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_localjoincounts_30_1.png" src="../_images/notebooks_localjoincounts_30_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>commpop[&#39;LJC_BV_Case1_p_sim_sig&#39;] = numpy.nan
+commpop.loc[(commpop[&#39;LJC_BV_Case1_p_sim&#39;] &lt;= 0.05), &#39;LJC_BV_Case1_p_sim_sig&#39;] = commpop[&#39;LJC_BV_Case1_p_sim&#39;]
+
+fig,ax = plt.subplots(figsize=(12,10), subplot_kw={&#39;aspect&#39;:&#39;equal&#39;})
+commpop.plot(color=&#39;white&#39;, edgecolor=&#39;black&#39;, ax=ax)
+commpop.plot(column=&#39;LJC_BV_Case1_p_sim_sig&#39;,
+               legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_localjoincounts_31_1.png" src="../_images/notebooks_localjoincounts_31_1.png" />
+</div>
+</div>
+</section>
+<section id="Bivariate-LJC-(case-2)">
+<h2>Bivariate LJC (case 2)<a class="headerlink" href="#Bivariate-LJC-(case-2)" title="Link to this heading">¶</a></h2>
+<p>We now move on to case 2 of the bivariate LJC. Unlike case 1, case 2 <strong>identifies areas with co-location</strong>. Case 2 is explicitly concerned with instances where <span class="math notranslate nohighlight">\(x_i=z_i=1\)</span> as well as <span class="math notranslate nohighlight">\(x_j=z_j=1\)</span>. Anselin and Li refer to this situation as a <strong>co-location cluster (CLC)</strong>. We formally write this as:</p>
+<div class="math notranslate nohighlight">
+\[CLC_i = x_i * z_i \sum_j w_{ij} x_j z_j\]</div>
+<p>We return to the Guerry dataset to demonstrate its implementation in PySAL. We are interested in identifying areas that are in the top Quantile for the variables <code class="docutils literal notranslate"><span class="pre">Infants</span></code> (children born out of wedlock) and <code class="docutils literal notranslate"><span class="pre">Donatns</span></code> (donations). We reload the dataset and create the variables below:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>guerry = libpysal.examples.load_example(&#39;Guerry&#39;)
+guerry_ds = gpd.read_file(guerry.get_path(&#39;guerry.shp&#39;))
+guerry_ds[&#39;infq5&#39;] = 0
+guerry_ds[&#39;donq5&#39;] = 0
+guerry_ds.loc[(guerry_ds[&#39;Infants&#39;] &gt; 23574), &#39;infq5&#39;] = 1
+guerry_ds.loc[(guerry_ds[&#39;Donatns&#39;] &gt; 10973), &#39;donq5&#39;] = 1
+</pre></div>
+</div>
+</div>
+<p>We again make a Queen-contiguity weights object to describe the relationship between the units.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+</pre></div>
+</div>
+</div>
+<p>We now run the <code class="docutils literal notranslate"><span class="pre">Local_Join_Count_BV</span></code> command, this time changing the <code class="docutils literal notranslate"><span class="pre">case</span></code> argument to <code class="docutils literal notranslate"><span class="pre">CLC</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>LJC_BV_Case2 = Join_Counts_Local_BV(connectivity=w).fit(guerry_ds[&#39;infq5&#39;], guerry_ds[&#39;donq5&#39;], case=&#39;CLC&#39;)
+</pre></div>
+</div>
+</div>
+<p>As before, we can map the <code class="docutils literal notranslate"><span class="pre">LJC</span></code> and accompanying <code class="docutils literal notranslate"><span class="pre">p_sim</span></code> values.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>guerry_ds[&#39;LJC_BV_Case2&#39;] = LJC_BV_Case2.LJC
+guerry_ds[&#39;LJC_BV_Case2_p_sim&#39;] = LJC_BV_Case2.p_sim
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig,ax = plt.subplots(figsize=(12,10), subplot_kw={&#39;aspect&#39;:&#39;equal&#39;})
+guerry_ds.plot(color=&#39;white&#39;, edgecolor=&#39;black&#39;, ax=ax)
+guerry_ds.plot(column=&#39;LJC_BV_Case2&#39;,
+             cmap=&#39;GnBu&#39;,
+             categorical=True,
+             legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_localjoincounts_41_1.png" src="../_images/notebooks_localjoincounts_41_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig,ax = plt.subplots(figsize=(12,10), subplot_kw={&#39;aspect&#39;:&#39;equal&#39;})
+guerry_ds.plot(color=&#39;white&#39;, edgecolor=&#39;black&#39;, ax=ax)
+guerry_ds.plot(column=&#39;LJC_BV_Case2_p_sim&#39;,
+               legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_localjoincounts_42_1.png" src="../_images/notebooks_localjoincounts_42_1.png" />
+</div>
+</div>
+</section>
+<section id="Multivariate-LJC">
+<h2>Multivariate LJC<a class="headerlink" href="#Multivariate-LJC" title="Link to this heading">¶</a></h2>
+<p>The last LJC to review is the multivariate LJC statistic. This is actually an extension of the bivariate LJC case 2. Rather than considering two variables <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(z\)</span>, the multivariate statistic consdiers <span class="math notranslate nohighlight">\(m\)</span> variables at each location <span class="math notranslate nohighlight">\(i\)</span>. All <span class="math notranslate nohighlight">\(m\)</span> variables must then meet the co-location criterion of equalling 1. Formally:</p>
+<div class="math notranslate nohighlight">
+\[CLC_i = \Pi^m_{h=1} x_{hi} \sum_j w_{ij} \Pi^m_{h=1} x_{hj}\]</div>
+<p>Anselin and Li state clearly in multiple sources that although the multivariate LJC statistic is a straightforward extension of the bivariate LJC case 2, its substantive meaning is less straightforward. In their own words:</p>
+<blockquote>
+<div><p>The extension to multiple binary variables is mathematically straightforward, although maybe conceptually less so. While different combinations are possible, the most practical use case would be one where the interest focuses on the co-location of multiple variables coinciding with co-location for the neighbors. Again, we can refer to this as a co-location cluster. An example would be where binary variables were constructed from continuous-valued measures for those locations where the
+observations fall in a pre-specified range, such as the upper decile. The co-location cluster would indicate where such coincidences occur with neighbors that have similar coincidences. However, as the number of variables considered increases, we run into the “curse of dimensionality,” and results would be less meaningful, in the sense that such coincidences would likely be increasingly rare and thus always be indicated as “significant.” <em>Anselin and Li, 2019, Section 3.3, Page 198</em></p>
+</div></blockquote>
+<p>We demonstrate this problem by extending the example from the bivariate LJC case 2. We add a third variable that counts the number of suicides in an area (<code class="docutils literal notranslate"><span class="pre">Suicids</span></code>). The substnative quesiton of interest is now seeking areas that are in the highest Quantile for the number of births out of wedlock, the number of donations to the poor, and the number of suicides. We reload the Guerry dataset and create the variables:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>guerry = libpysal.examples.load_example(&#39;Guerry&#39;)
+guerry_ds = gpd.read_file(guerry.get_path(&#39;guerry.shp&#39;))
+guerry_ds[&#39;infq5&#39;] = 0
+guerry_ds[&#39;donq5&#39;] = 0
+guerry_ds[&#39;suic5&#39;] = 0
+guerry_ds.loc[(guerry_ds[&#39;Infants&#39;] &gt; 23574), &#39;infq5&#39;] = 1
+guerry_ds.loc[(guerry_ds[&#39;Donatns&#39;] &gt; 10973), &#39;donq5&#39;] = 1
+guerry_ds.loc[(guerry_ds[&#39;Suicids&#39;] &gt; 55564), &#39;suic5&#39;] = 1
+</pre></div>
+</div>
+</div>
+<p>And agian create the Queen contiguity spatial weights object.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+</pre></div>
+</div>
+</div>
+<p>We now load in the <code class="docutils literal notranslate"><span class="pre">Local_Join_Count_MV</span></code> function and apply it to all three variables:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from esda.join_counts_local_mv import Join_Counts_Local_MV
+LJC_MV = Join_Counts_Local_MV(connectivity=w).fit([guerry_ds[&#39;infq5&#39;], guerry_ds[&#39;donq5&#39;], guerry_ds[&#39;suic5&#39;]])
+</pre></div>
+</div>
+</div>
+<p>Before proceeding to mapping, it is worthwhile to check if there are <strong>any</strong> areas that meet the criterion described above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>LJC_MV.LJC
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+</pre></div></div>
+</div>
+<p>Because there are no areas that meet the criteria, no areas will have a significance value.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>LJC_MV.p_sim
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan])
+</pre></div></div>
+</div>
+<p>Nevertheless, it is important to recognize tht such a finding <strong>may still be important as a ‘null’ result!</strong></p>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/localjoincounts.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.1.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

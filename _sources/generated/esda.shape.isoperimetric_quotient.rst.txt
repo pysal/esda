@@ -1,0 +1,6 @@
+﻿esda.shape.isoperimetric\_quotient
+==================================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: isoperimetric_quotient

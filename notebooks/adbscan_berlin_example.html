@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Cluster points and explore boundary blurriness with A-DBSCAN &#8212; esda v2.7.0 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=dfec817d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Measures of shape" href="shape-measures.html" />
+    <link rel="prev" title="Geosilhouettes: geographical measures of cluster fit" href="geosilhouettes.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a><ul>
+<li><a class="reference internal" href="#Data">Data</a></li>
+<li><a class="reference internal" href="#Identify-clusters-of-AirBnb">Identify clusters of AirBnb</a></li>
+<li><a class="reference internal" href="#Explore-boundary-blurriness">Explore boundary <em>blurriness</em></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda//home/runner/work/esda/esda/docs/notebooks/adbscan_berlin_example.ipynb">/home/runner/work/esda/esda/docs/notebooks/adbscan_berlin_example.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath=/home/runner/work/esda/esda/docs/notebooks/adbscan_berlin_example.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Cluster-points-and-explore-boundary-blurriness-with-A-DBSCAN">
+<h1>Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN<a class="headerlink" href="#Cluster-points-and-explore-boundary-blurriness-with-A-DBSCAN" title="Link to this heading">¶</a></h1>
+<p>In this example, we will illustrate how to use A-DBSCAN (<a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0094119019300944">Arribas-Bel et al., 2019</a>) with a sample of AirBnb properties in Berlin. A-DBSCAN will allow us do two things:</p>
+<ul class="simple">
+<li><p>Identify clusters of high density of AirBnb properties and delineate their boundaries</p></li>
+<li><p>Explore the stability of such boundaries</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import pandas
+import geopandas
+import numpy as np
+import contextily as cx
+import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
+from libpysal.cg.alpha_shapes import alpha_shape_auto
+
+import sys
+sys.path.append(&quot;../&quot;)
+try:
+    from esda.adbscan import ADBSCAN, get_cluster_boundary, remap_lbls
+# This below can be removed once A-DBSCAN is merged into `esda`
+except:
+    print(&quot;Import from local folder...&quot;)
+    import sys
+    sys.path.append(&quot;../esda&quot;)
+    from adbscan import ADBSCAN, get_cluster_boundary, remap_lbls
+</pre></div>
+</div>
+</div>
+<section id="Data">
+<h2>Data<a class="headerlink" href="#Data" title="Link to this heading">¶</a></h2>
+<p>We will be using the Berlin extract from <a class="reference external" href="http://insideairbnb.com/">Inside Airbnb</a>. This is the same dataset used in the <a class="reference external" href="https://github.com/geopandas/scipy2018-geospatial-data">Scipy 2018 tutorial on Geospatial data analysis with Python</a>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tab = pandas.read_csv(&quot;data/berlin-listings.csv&quot;)
+tab.head(2)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>id</th>
+      <th>listing_url</th>
+      <th>scrape_id</th>
+      <th>last_scraped</th>
+      <th>name</th>
+      <th>summary</th>
+      <th>space</th>
+      <th>description</th>
+      <th>experiences_offered</th>
+      <th>...</th>
+      <th>review_scores_value</th>
+      <th>requires_license</th>
+      <th>license</th>
+      <th>jurisdiction_names</th>
+      <th>instant_bookable</th>
+      <th>cancellation_policy</th>
+      <th>require_guest_profile_picture</th>
+      <th>require_guest_phone_verification</th>
+      <th>calculated_host_listings_count</th>
+      <th>reviews_per_month</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>17260587</td>
+      <td>https://www.airbnb.com/rooms/17260587</td>
+      <td>20170507222235</td>
+      <td>2017-05-08</td>
+      <td>Kunterbuntes Zimmer mit eigenem Bad für jedermann</td>
+      <td>Meine Unterkunft ist gut für paare, alleinreis...</td>
+      <td>NaN</td>
+      <td>Meine Unterkunft ist gut für paare, alleinreis...</td>
+      <td>none</td>
+      <td>...</td>
+      <td>10.0</td>
+      <td>f</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>t</td>
+      <td>flexible</td>
+      <td>f</td>
+      <td>f</td>
+      <td>3</td>
+      <td>2.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>17227881</td>
+      <td>https://www.airbnb.com/rooms/17227881</td>
+      <td>20170507222235</td>
+      <td>2017-05-08</td>
+      <td>Modernes Zimmer in Berlin Pankow</td>
+      <td>Es ist ein schönes gepflegtes und modernes Zim...</td>
+      <td>Das Haus befindet sich direkt vor eine Tram Ha...</td>
+      <td>Es ist ein schönes gepflegtes und modernes Zim...</td>
+      <td>none</td>
+      <td>...</td>
+      <td>10.0</td>
+      <td>f</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>t</td>
+      <td>flexible</td>
+      <td>f</td>
+      <td>f</td>
+      <td>1</td>
+      <td>1.29</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 96 columns</p>
+</div></div>
+</div>
+<p>The original dataset includes more than 20,000 observations:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tab.shape
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(20053, 96)
+</pre></div></div>
+</div>
+<p>To make the illustration run a bit speedier on any hardware, let us pick a random sample of 10% of the set; that is we’ll pick 2,000 properties at random:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tab = tab.sample(n=2000, random_state=1234)
+</pre></div>
+</div>
+</div>
+<p>For convenience, we convert into a <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> where the geometries are built from the lon/lat columns in the original table:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>db_ll = geopandas.GeoDataFrame(tab,
+                               geometry=geopandas.points_from_xy(tab.longitude, tab.latitude),
+                               crs={&#39;init&#39;: &#39;epsg:4326&#39;}
+                              )
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/serge/anaconda3/envs/analytical/lib/python3.7/site-packages/pyproj/crs/crs.py:53: FutureWarning: &#39;+init=&lt;authority&gt;:&lt;code&gt;&#39; syntax is deprecated. &#39;&lt;authority&gt;:&lt;code&gt;&#39; is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  return _prepare_from_string(&#34; &#34;.join(pjargs))
+</pre></div></div>
+</div>
+<p>Because we are going to run an algorithm that relies on distances, we need to be able to calculate such distances in a projected plane. Instead of the original lon/lat coordinates, we use the <code class="docutils literal notranslate"><span class="pre">`ETRS89</span></code> &lt;<a class="reference external" href="http://epsg.io/5243">http://epsg.io/5243</a>&gt;`__ projection, designed for Germany and expressed in metres:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>db = db_ll.to_crs(epsg=5243)
+</pre></div>
+</div>
+</div>
+<p><em>Voila!</em> We can now visualise our dataset:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = db.plot(markersize=0.1, color=&#39;orange&#39;)
+cx.add_basemap(ax, crs=db.crs.to_string());
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_13_0.png" src="../_images/notebooks_adbscan_berlin_example_13_0.png" />
+</div>
+</div>
+<p>And before we get going, we will also pull out the projected coordinates into separate columns:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>db[&quot;X&quot;] = db.geometry.x
+db[&quot;Y&quot;] = db.geometry.y
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Identify-clusters-of-AirBnb">
+<h2>Identify clusters of AirBnb<a class="headerlink" href="#Identify-clusters-of-AirBnb" title="Link to this heading">¶</a></h2>
+<p>A-DBSCAN, similar to the original DBSCAN algorithm, requires two parameters before it can be run:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">eps</span></code>: maximum distance to look for neighbors from each location</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_samples</span></code>: minimum number of neighboring points required for a point to be considered part of a cluster</p></li>
+</ol>
+<p>For this example, we will pick a 1% of the overall sample size for the <code class="docutils literal notranslate"><span class="pre">min_samples</span></code> parameter:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>db.shape[0] * 0.01
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+20.0
+</pre></div></div>
+</div>
+<p>We will use a maximum radious of 500m for the <code class="docutils literal notranslate"><span class="pre">eps</span></code> parameter. This implicitly implies we are looking at a density of at least about 25 properties per Sq. <span class="math notranslate nohighlight">\(Km^2\)</span> (<span class="math notranslate nohighlight">\(dens = \frac{20}{\pi \, \times \, 0.5^2}\)</span>).</p>
+<p>Once we know the parameters we’ll use, we can go ahead and run A-DBSCAN:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%%time
+# Get clusters
+adbs = ADBSCAN(500, 20, pct_exact=0.5, reps=10, keep_solus=True)
+np.random.seed(1234)
+adbs.fit(db)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 755 ms, sys: 3.36 ms, total: 758 ms
+Wall time: 752 ms
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ADBSCAN(eps=500, keep_solus=True, min_samples=20, pct_exact=0.5, reps=10)
+</pre></div></div>
+</div>
+<p>Once <code class="docutils literal notranslate"><span class="pre">fit()</span></code>, we can extract the labels in a similar way that we would from <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>, and then we can plot on a map:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = db.assign(lbls=adbs.votes[&quot;lbls&quot;])\
+       .plot(column=&quot;lbls&quot;,
+             categorical=True,
+             markersize=2.5,
+             figsize=(12, 12)
+            )
+cx.add_basemap(ax, crs=db.crs.to_string());
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_21_0.png" src="../_images/notebooks_adbscan_berlin_example_21_0.png" />
+</div>
+</div>
+<p>This only displays each property colored based on its label assigned. Beyond this, we can also create polygons that represent a tight boundary around all the points in a given cluster. To do this, we use the <span class="math notranslate nohighlight">\(\alpha\)</span>-shapes algorithm through the helper function <code class="docutils literal notranslate"><span class="pre">get_cluster_boundary</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%time polys = get_cluster_boundary(adbs.votes[&quot;lbls&quot;], db, crs=db.crs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 1.76 s, sys: 15.2 ms, total: 1.78 s
+Wall time: 1.77 s
+</pre></div></div>
+</div>
+<p>These polygons can also be plotted as any other <code class="docutils literal notranslate"><span class="pre">GeoSeries</span></code> object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = polys.plot(alpha=0.5, color=&quot;red&quot;)
+cx.add_basemap(ax, crs=polys.crs.to_string());
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_25_0.png" src="../_images/notebooks_adbscan_berlin_example_25_0.png" />
+</div>
+</div>
+<p>And, just for fun, we can create more zoomed-in views, dimming out areas outside each cluster:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, axs = plt.subplots(1, 3, figsize=(18, 6))
+for i, ax in enumerate(axs):
+    # Plot the boundary of the cluster found
+    ax = polys[[i]].plot(ax=ax,
+                         edgecolor=&quot;red&quot;,
+                         facecolor=&quot;none&quot;
+                        )
+    # Add basemap
+    cx.add_basemap(ax,
+                   crs=polys.crs.to_string(),
+                   url=cx.providers.CartoDB.Voyager,
+                   zoom=13
+                  )
+    # Extra to dim non-cluster areas
+    (minX, maxX), (minY, maxY) = ax.get_xlim(), ax.get_ylim()
+    bb = Polygon([(minX, minY),
+                  (maxX, minY),
+                  (maxX, maxY),
+                  (minX, maxY),
+                  (minX, minY)
+                 ])
+    geopandas.GeoSeries([bb.difference(polys[i])],
+                        crs=polys.crs
+                       ).plot(ax=ax,
+                              color=&#39;k&#39;,
+                              alpha=0.5
+                             )
+    ax.set_axis_off()
+    ax.set_title(f&quot;Cluster {polys[[i]].index[0]}&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/serge/anaconda3/envs/analytical/lib/python3.7/site-packages/ipykernel_launcher.py:12: FutureWarning: The &#34;url&#34; option is deprecated. Please use the &#34;source&#34; argument instead.
+  if sys.path[0] == &#39;&#39;:
+/home/serge/anaconda3/envs/analytical/lib/python3.7/site-packages/ipykernel_launcher.py:12: FutureWarning: The &#34;url&#34; option is deprecated. Please use the &#34;source&#34; argument instead.
+  if sys.path[0] == &#39;&#39;:
+/home/serge/anaconda3/envs/analytical/lib/python3.7/site-packages/ipykernel_launcher.py:12: FutureWarning: The &#34;url&#34; option is deprecated. Please use the &#34;source&#34; argument instead.
+  if sys.path[0] == &#39;&#39;:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_27_1.png" src="../_images/notebooks_adbscan_berlin_example_27_1.png" />
+</div>
+</div>
+</section>
+<section id="Explore-boundary-blurriness">
+<h2>Explore boundary <em>blurriness</em><a class="headerlink" href="#Explore-boundary-blurriness" title="Link to this heading">¶</a></h2>
+<p>One of the key benefits of A-DBSCAN is that, because it relies on an ensemble approach that generates several candidate solutions, it allows us to explore to what extent boundaries are stable and clearcut or blurrier. To do this, we need to extract from the <code class="docutils literal notranslate"><span class="pre">ADBSCAN</span></code> object each candidate solution and turn them into boundary lines (this may take a little bit to run):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%%time
+solus_rl = remap_lbls(adbs.solus, db, n_jobs=-1)
+lines = []
+for rep in solus_rl:
+    line = get_cluster_boundary(solus_rl[rep],
+                                db,
+                                crs=db.crs,
+                                n_jobs=-1
+                               )
+    line = line.boundary
+    line = line.reset_index()\
+               .rename(columns={0: &quot;geometry&quot;,
+                                &quot;index&quot;: &quot;cluster_id&quot;}
+                      )\
+               .assign(rep=rep)
+    lines.append(line)
+lines = pandas.concat(lines)
+lines = geopandas.GeoDataFrame(lines, crs=db.crs)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 665 ms, sys: 1.45 s, total: 2.12 s
+Wall time: 4.83 s
+</pre></div></div>
+</div>
+<p>Here is a first look at all the solutions drawn up from the simulation:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = lines.plot(color=&quot;#FFDB58&quot;,
+                linewidth=0.5
+               )
+cx.add_basemap(ax,
+               alpha=0.5,
+               url=cx.providers.Stamen.TonerHybrid,
+               crs=lines.crs.to_string()
+              )
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/serge/anaconda3/envs/analytical/lib/python3.7/site-packages/ipykernel_launcher.py:7: FutureWarning: The &#34;url&#34; option is deprecated. Please use the &#34;source&#34; argument instead.
+  import sys
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_31_1.png" src="../_images/notebooks_adbscan_berlin_example_31_1.png" />
+</div>
+</div>
+<p>Having every single candidate boundary stored and labelled into a table, it allows us to make several queries. For example, here are all the solutions generated in the first replication:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lines.query(&quot;rep == &#39;rep-00&#39;&quot;).plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fc0003522d0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_33_1.png" src="../_images/notebooks_adbscan_berlin_example_33_1.png" />
+</div>
+</div>
+<p>And here we have all the candidate solutions for cluster label No. 2:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lines.query(&quot;cluster_id == &#39;2&#39;&quot;).plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fc000452e90&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_adbscan_berlin_example_35_1.png" src="../_images/notebooks_adbscan_berlin_example_35_1.png" />
+</div>
+</div>
+<p>Finally, we can take this idea into an interactive context by building widgets that allow us to brush through replications:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from ipywidgets import interact, IntSlider
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_rep(rep):
+    f, ax = plt.subplots(1, figsize=(9, 9))
+    ax.set_facecolor(&quot;k&quot;)
+    # Background points
+    db[[&quot;X&quot;, &quot;Y&quot;]].plot.scatter(&quot;X&quot;, &quot;Y&quot;, ax=ax, color=&quot;0.25&quot;, s=0.5)
+    # Boundaries
+    cs = lines.query(f&quot;rep == &#39;rep-{str(rep).zfill(2)}&#39;&quot;)
+    cs.plot(ax=ax, color=&quot;red&quot;)
+    # Cluster IDs
+    for s, row in cs.iterrows():
+        ax.text(row.geometry.centroid.x,
+                row.geometry.centroid.y,
+                s,
+                size=20,
+                c=&quot;w&quot;
+               )
+    return None
+reps = range(len(lines[&quot;rep&quot;].unique()))
+slider = IntSlider(min=min(reps), max=max(reps), step=1)
+interact(plot_rep, rep=slider);
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6c32dc4e1fe349d9b3f80c42cdc8155c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>Or to pull out all solutions for a given cluster IDs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def plot_cluster(cluster_id):
+    f, ax = plt.subplots(1, figsize=(9, 9))
+    ax.set_facecolor(&quot;k&quot;)
+    # Background points
+    db[[&quot;X&quot;, &quot;Y&quot;]].plot.scatter(&quot;X&quot;,
+                                &quot;Y&quot;,
+                                ax=ax,
+                                color=&quot;0.25&quot;,
+                                s=0.5,
+                                alpha=0.5
+                               )
+    # Boundaries
+    lines.query(f&quot;cluster_id == &#39;{cluster_id}&#39;&quot;).plot(ax=ax,
+                                                      linewidth=1,
+                                                      alpha=0.5
+                                                     )
+    return None
+interact(plot_cluster, cluster_id=lines[&quot;cluster_id&quot;].unique());
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e60efc1763b2493f9b3fd4c1017a71e7", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/adbscan_berlin_example.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.1.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

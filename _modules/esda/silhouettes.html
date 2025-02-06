@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.silhouettes &#8212; esda v2.7.0 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../../_static/documentation_options.js?v=dfec817d"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatialautocorrelation.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for esda.silhouettes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csgraph</span> <span class="k">as</span> <span class="n">cg</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sk</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">skp</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LabelEncoder</span>  <span class="c1"># noqa: F401</span>
+
+    <span class="n">HAS_REQUIREMENTS</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_REQUIREMENTS</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_raise_initial_error</span><span class="p">():</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span>  <span class="c1"># noqa: F401</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;scikit-learn&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>  <span class="c1"># noqa: F401</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pandas&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+        <span class="s2">&quot;This function requires scikit-learn and &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;pandas to be installed. Missing </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;path_silhouette&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;boundary_silhouette&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;silhouette_alist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nearest_label&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="path_silhouette">
+<a class="viewcode-back" href="../../generated/esda.path_silhouette.html#esda.path_silhouette">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">path_silhouette</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">,</span>
+    <span class="n">W</span><span class="p">,</span>
+    <span class="n">D</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">metric</span><span class="o">=</span><span class="n">skp</span><span class="o">.</span><span class="n">euclidean_distances</span><span class="p">,</span>
+    <span class="n">closest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_nbfc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_nbfc_score</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_paths</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a path silhouette for all observations</span>
+<span class="sd">    :cite:`wolf2019geosilhouettes,Rousseeuw1987`.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    data    :   np.ndarray (N,P)</span>
+<span class="sd">                matrix of data with N observations and P covariates.</span>
+<span class="sd">    labels  :   np.ndarray (N,)</span>
+<span class="sd">                flat vector of the L labels assigned over N observations.</span>
+<span class="sd">    W       :   libpysal.weights.W | libpysal.graph.Graph</span>
+<span class="sd">                spatial weights object reflecting the spatial connectivity</span>
+<span class="sd">                in the problem under analysis</span>
+<span class="sd">    D       :   np.ndarray (N,N)</span>
+<span class="sd">                a precomputed distance matrix to apply over W. If passed,</span>
+<span class="sd">                takes precedence over data, and data is ignored.</span>
+<span class="sd">    metric  :   callable</span>
+<span class="sd">                function mapping the (N,P) data into an (N,N) dissimilarity matrix,</span>
+<span class="sd">                like that found in scikit.metrics.pairwise or scipy.spatial.distance</span>
+<span class="sd">    closest :   bool</span>
+<span class="sd">                whether or not to consider the observation &quot;connected&quot; when it</span>
+<span class="sd">                is first connected to the cluster, or considering the path cost</span>
+<span class="sd">                to transit through the cluster. If True, the path cost is assessed</span>
+<span class="sd">                between i and the path-closest j in each cluster. If False, the path</span>
+<span class="sd">                cost is assessed as the average of path costs between i and all j</span>
+<span class="sd">                in each cluster</span>
+<span class="sd">    return_nbfc     :   bool</span>
+<span class="sd">                        Whether or not to return the label of the next best fit</span>
+<span class="sd">                        cluster</span>
+<span class="sd">    return_nbfc_score:  bool</span>
+<span class="sd">                        Whether or not to return the score of the next best fit</span>
+<span class="sd">                        cluster.</span>
+<span class="sd">    return_paths    :   bool</span>
+<span class="sd">                        Whether or not to return the matrix of shortest path</span>
+<span class="sd">                        lengths after having computed them.</span>
+<span class="sd">    directed    :   bool</span>
+<span class="sd">                    whether to consider the weights matrix as directed or undirected.</span>
+<span class="sd">                    If directed, asymmetry in the input W is heeded. If not,</span>
+<span class="sd">                    asymmetry is ignored.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    An (N_obs,) array of the path silhouette values for each observation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_REQUIREMENTS</span><span class="p">:</span>
+        <span class="n">_raise_initial_error</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">D</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1"># polymorphic for sparse &amp; dense input</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">D</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Distance metric has negative values, which is not supported.&quot;</span>
+    <span class="n">off_diag_zeros</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">D</span><span class="p">[</span><span class="n">off_diag_zeros</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">Wm</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span>
+    <span class="n">DW</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">Wm</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">DW</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+    <span class="n">DW</span><span class="p">[</span><span class="n">DW</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">DW</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">all_pairs</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">DW</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="n">directed</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">W</span><span class="o">.</span><span class="n">n_components</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">WSP</span>
+
+        <span class="n">psils_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">closest_connecting_label_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">closest_connection_score_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">component_labels</span><span class="p">):</span>
+            <span class="n">this_component_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">component_labels</span> <span class="o">==</span> <span class="n">component</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">subgraph</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">sparse</span><span class="p">[</span>
+                <span class="n">this_component_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># these rows</span>
+                <span class="n">this_component_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="p">]</span>  <span class="c1"># these columns</span>
+            <span class="n">subgraph_W</span> <span class="o">=</span> <span class="n">WSP</span><span class="p">(</span><span class="n">subgraph</span><span class="p">)</span><span class="o">.</span><span class="n">to_W</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">subgraph_W</span><span class="o">.</span><span class="n">n_components</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="c1"># DW operation is idempotent</span>
+            <span class="n">subgraph_D</span> <span class="o">=</span> <span class="n">DW</span><span class="p">[</span>
+                <span class="n">this_component_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># these rows</span>
+                <span class="n">this_component_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="p">]</span>  <span class="c1"># these columns</span>
+            <span class="n">subgraph_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">this_component_mask</span><span class="p">]</span>
+            <span class="n">n_subgraph_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">subgraph_labels</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="n">n_subgraph_labels</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">subgraph_W</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+                <span class="n">psils</span> <span class="o">=</span> <span class="n">subgraph_solutions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">subgraph_W</span><span class="o">.</span><span class="n">n</span>
+                <span class="n">closest_connecting_label</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="n">subgraph_W</span><span class="o">.</span><span class="n">n</span>
+                <span class="n">closest_connection_score</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">*</span> <span class="n">subgraph_W</span><span class="o">.</span><span class="n">n</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">subgraph_solutions</span> <span class="o">=</span> <span class="n">path_silhouette</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="n">subgraph_labels</span><span class="p">,</span>
+                    <span class="n">W</span><span class="o">=</span><span class="n">subgraph_W</span><span class="p">,</span>
+                    <span class="n">D</span><span class="o">=</span><span class="n">subgraph_D</span><span class="p">,</span>
+                    <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
+                    <span class="n">closest</span><span class="o">=</span><span class="n">closest</span><span class="p">,</span>
+                    <span class="n">return_nbfc</span><span class="o">=</span><span class="n">return_nbfc</span><span class="p">,</span>
+                    <span class="n">return_nbfc_score</span><span class="o">=</span><span class="n">return_nbfc_score</span><span class="p">,</span>
+                    <span class="n">return_paths</span><span class="o">=</span><span class="n">return_paths</span><span class="p">,</span>
+                    <span class="n">directed</span><span class="o">=</span><span class="n">directed</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="c1"># always throw away all_pairs, since we already have it built</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">return_nbfc</span> <span class="ow">or</span> <span class="n">return_nbfc_score</span><span class="p">)</span> <span class="ow">and</span> <span class="n">return_paths</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">return_nbfc_score</span><span class="p">:</span>
+                        <span class="p">(</span>
+                            <span class="n">psils</span><span class="p">,</span>
+                            <span class="n">closest_connecting_label</span><span class="p">,</span>
+                            <span class="n">closest_connection_score</span><span class="p">,</span>
+                            <span class="n">_</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="o">=</span> <span class="n">subgraph_solutions</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">psils</span><span class="p">,</span> <span class="n">closest_connecting_label</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">subgraph_solutions</span>
+                <span class="k">elif</span> <span class="n">return_nbfc_score</span><span class="p">:</span>
+                    <span class="p">(</span>
+                        <span class="n">psils</span><span class="p">,</span>
+                        <span class="n">closest_connecting_label</span><span class="p">,</span>
+                        <span class="n">closest_connection_score</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="o">=</span> <span class="n">subgraph_solutions</span>
+                <span class="k">elif</span> <span class="n">return_nbfc</span><span class="p">:</span>
+                    <span class="n">psils</span><span class="p">,</span> <span class="n">closest_connecting_label</span> <span class="o">=</span> <span class="n">subgraph_solutions</span>
+                <span class="k">elif</span> <span class="n">return_paths</span><span class="p">:</span>
+                    <span class="n">psils</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">subgraph_solutions</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">psils</span> <span class="o">=</span> <span class="n">subgraph_solutions</span>
+            <span class="k">if</span> <span class="n">return_nbfc</span><span class="p">:</span>
+                <span class="n">closest_connecting_label_</span><span class="p">[</span><span class="n">this_component_mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">closest_connecting_label</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">return_nbfc_score</span><span class="p">:</span>
+                <span class="n">closest_connection_score_</span><span class="p">[</span><span class="n">this_component_mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">closest_connection_score</span>
+                <span class="p">)</span>
+            <span class="n">psils_</span><span class="p">[</span><span class="n">this_component_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">psils</span>
+        <span class="n">closest_connection_score</span> <span class="o">=</span> <span class="n">closest_connection_score_</span>
+        <span class="n">closest_connecting_label</span> <span class="o">=</span> <span class="n">closest_connecting_label_</span>
+        <span class="n">psils</span> <span class="o">=</span> <span class="n">psils_</span>
+    <span class="c1"># Single Connected Component</span>
+    <span class="k">elif</span> <span class="n">closest</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">psils</span> <span class="o">=</span> <span class="n">sk</span><span class="o">.</span><span class="n">silhouette_samples</span><span class="p">(</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_nbfc</span> <span class="ow">or</span> <span class="n">return_nbfc_score</span><span class="p">:</span>
+            <span class="n">closest_connecting_label</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">closest_connection_score</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">all_pairs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">in_label</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">label</span>
+                <span class="n">masked_label</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># for observations in the row</span>
+                <span class="n">masked_label</span><span class="p">[</span><span class="n">in_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>  <span class="c1"># make those in cluster infinite</span>
+                <span class="n">nearest_not_in_cluster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">masked_label</span><span class="p">)</span>  <span class="c1"># find the closest</span>
+                <span class="n">nearest_not_in_cluster_label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">nearest_not_in_cluster</span><span class="p">]</span>  <span class="c1"># label</span>
+                <span class="n">nearest_not_in_cluster_score</span> <span class="o">=</span> <span class="n">masked_label</span><span class="p">[</span><span class="n">nearest_not_in_cluster</span><span class="p">]</span>
+                <span class="n">closest_connecting_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nearest_not_in_cluster_label</span><span class="p">)</span>
+                <span class="n">closest_connection_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nearest_not_in_cluster_score</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">psils</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">closest_connecting_label</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">closest_connection_score</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">all_pairs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">in_label</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">label</span>
+            <span class="c1"># required to make argmin pertain to N, not N - len(in_label)</span>
+            <span class="n">masked_label</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">masked_label</span><span class="p">[</span><span class="n">in_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="n">nearest_not_in_cluster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">masked_label</span><span class="p">)</span>
+            <span class="n">nearest_not_in_cluster_score</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">nearest_not_in_cluster</span><span class="p">]</span>
+            <span class="n">nearest_not_in_cluster_label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">nearest_not_in_cluster</span><span class="p">]</span>
+
+            <span class="n">average_interconnect_in_cluster</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">in_label</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">psil</span> <span class="o">=</span> <span class="n">nearest_not_in_cluster_score</span> <span class="o">-</span> <span class="n">average_interconnect_in_cluster</span>
+            <span class="n">psil</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span>
+                <span class="n">nearest_not_in_cluster_score</span><span class="p">,</span> <span class="n">average_interconnect_in_cluster</span>
+            <span class="p">)</span>
+            <span class="n">psils</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psil</span><span class="p">)</span>
+            <span class="n">closest_connecting_label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nearest_not_in_cluster_label</span><span class="p">)</span>
+            <span class="n">closest_connection_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nearest_not_in_cluster_score</span><span class="p">)</span>
+        <span class="n">psils</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">psils</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">return_nbfc</span> <span class="ow">or</span> <span class="n">return_nbfc_score</span><span class="p">)</span> <span class="ow">and</span> <span class="n">return_paths</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">return_nbfc_score</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">psils</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">closest_connecting_label</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">closest_connection_score</span><span class="p">),</span>
+                <span class="n">all_pairs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">psils</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">closest_connecting_label</span><span class="p">),</span> <span class="n">all_pairs</span>
+    <span class="k">elif</span> <span class="n">return_nbfc_score</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">psils</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">closest_connecting_label</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">closest_connection_score</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">return_nbfc</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">psils</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">closest_connecting_label</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">return_paths</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">psils</span><span class="p">,</span> <span class="n">all_pairs</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">psils</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="boundary_silhouette">
+<a class="viewcode-back" href="../../generated/esda.boundary_silhouette.html#esda.boundary_silhouette">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">boundary_silhouette</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">skp</span><span class="o">.</span><span class="n">euclidean_distances</span><span class="p">,</span> <span class="n">drop_islands</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the observation-level boundary silhouette</span>
+<span class="sd">    score :cite:`wolf2019geosilhouettes`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data    :   (N_obs,P) numpy array</span>
+<span class="sd">                an array of covariates to analyze. Each row should be one</span>
+<span class="sd">                observation, and each clumn should be one feature.</span>
+<span class="sd">    labels  :   (N_obs,) array of labels</span>
+<span class="sd">                the labels corresponding to the group each observation is assigned.</span>
+<span class="sd">    W       :   libpysal.weights.W | libpysal.graph.Graph</span>
+<span class="sd">                a spatial weights object containing the connectivity structure</span>
+<span class="sd">                for the data</span>
+<span class="sd">    metric  :   callable, array,</span>
+<span class="sd">                a function that takes an argument (data) and returns the all-pairs</span>
+<span class="sd">                distances/dissimilarity between observations.</span>
+<span class="sd">    drop_islands : bool (default True)</span>
+<span class="sd">        Whether or not to preserve islands as entries in the adjacency</span>
+<span class="sd">        list. By default, observations with no neighbors do not appear</span>
+<span class="sd">        in the adjacency list. If islands are kept, they are coded as</span>
+<span class="sd">        self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (N_obs,) array of boundary silhouette values for each observation</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The boundary silhouette is the silhouette score using only spatially-proximate</span>
+<span class="sd">    clusters as candidates for the next-best-fit distance function (the</span>
+<span class="sd">    b(i) function in :cite:`Rousseeuw1987`.</span>
+<span class="sd">    This restricts the next-best-fit cluster to be the set of clusters on which</span>
+<span class="sd">    an observation neighbors.</span>
+<span class="sd">    So, instead of considering *all* clusters when finding the next-best-fit cluster,</span>
+<span class="sd">    only clusters that `i` borders are considered.</span>
+<span class="sd">    This is supposed to model the fact that, in spatially-constrained clustering,</span>
+<span class="sd">    observation i can only be reassigned from cluster c to cluster k if</span>
+<span class="sd">    some observation j neighbors i and also resides in k.</span>
+
+<span class="sd">    If an observation only neighbors its own cluster, i.e. is not on the boundary</span>
+<span class="sd">     of a cluster, this value is zero.</span>
+
+<span class="sd">    If a cluster has exactly one observation, this value is zero.</span>
+
+<span class="sd">    If an observation is on the boundary of more than one cluster, then the</span>
+<span class="sd">    best candidate is chosen from the set of clusters on which the observation borders.</span>
+
+<span class="sd">    metric is a callable mapping an (N,P) data into an (N,N) distance matrix OR</span>
+<span class="sd">    an (N,N) distance matrix already.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_REQUIREMENTS</span><span class="p">:</span>
+        <span class="n">_raise_initial_error</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">weights</span><span class="o">.</span><span class="n">W</span><span class="p">):</span>
+        <span class="n">alist</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">to_adjlist</span><span class="p">(</span><span class="n">drop_islands</span><span class="o">=</span><span class="n">drop_islands</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">id_order</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">drop_islands</span><span class="p">:</span>
+            <span class="n">alist</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">adjacency</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">isolates</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alist</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">adjacancy</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">unique_ids</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
+        <span class="n">full_distances</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">n_obs</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">n_obs</span><span class="p">):</span>
+            <span class="n">full_distances</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Precomputed metric is supplied, but is not the right shape.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; The dissimilarity matrix should be of shape (</span><span class="si">{</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">W</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2">), &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; but was of shape (</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The provided metric is neither a dissmilarity function&quot;</span>
+            <span class="s2">&quot; nor a dissimilarity matrix.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">full_distances</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="s2">&quot;Distance metric has negative values, &quot;</span> <span class="s2">&quot;which is not supported&quot;</span>
+    <span class="p">)</span>
+    <span class="n">label_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
+    <span class="n">alist</span> <span class="o">=</span> <span class="n">alist</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">label_frame</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;focal&quot;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">label_frame</span><span class="p">,</span>
+        <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;neighbor&quot;</span><span class="p">,</span>
+        <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+        <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;_focal&quot;</span><span class="p">,</span> <span class="s2">&quot;_neighbor&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">alist</span><span class="p">[</span><span class="s2">&quot;boundary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alist</span><span class="o">.</span><span class="n">label_focal</span> <span class="o">!=</span> <span class="n">alist</span><span class="o">.</span><span class="n">label_neighbor</span>
+    <span class="n">focals</span> <span class="o">=</span> <span class="n">alist</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;focal&quot;</span><span class="p">)</span>
+    <span class="n">bmask</span> <span class="o">=</span> <span class="n">focals</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">bnd</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bmask</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bnd</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">continue</span>
+        <span class="n">sil_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">])</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">focal_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">focal_mask</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># the candidate is singleton</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">continue</span>
+        <span class="n">neighbors</span> <span class="o">=</span> <span class="n">alist</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;focal == </span><span class="si">{</span><span class="n">ix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">label_neighbor</span>
+        <span class="n">mean_dissim</span> <span class="o">=</span> <span class="n">full_distances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">focal_mask</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">focal_mask</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">mean_dissim</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;A non-finite mean dissimilarity between groups &quot;</span>
+                <span class="s2">&quot;and the boundary observation occurred. Please ensure &quot;</span>
+                <span class="s2">&quot;the data &amp; labels are formatted and shaped correctly.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">neighbor_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">label</span><span class="p">]):</span>
+            <span class="n">other_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">neighbor</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">other_score</span> <span class="o">=</span> <span class="n">full_distances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">other_mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">neighbor_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">neighbor_score</span><span class="p">,</span> <span class="n">other_score</span><span class="p">,</span> <span class="n">neighbor_score</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">neighbor_score</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;A negative neighborhood similarity value occurred. This should &quot;</span>
+                    <span class="s2">&quot;not happen. Please create a bug report on &quot;</span>
+                    <span class="s2">&quot;https://github.com/pysal/esda/issues&quot;</span>
+                <span class="p">)</span>
+        <span class="n">sil_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">neighbor_score</span> <span class="o">-</span> <span class="n">mean_dissim</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span>
+            <span class="n">neighbor_score</span><span class="p">,</span> <span class="n">mean_dissim</span>
+        <span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sil_score</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The number of boundary silhouettes does not match the number of &quot;</span>
+            <span class="s2">&quot;observations. This should not happen. Please create a bug report on &quot;</span>
+            <span class="s2">&quot;https://github.com/pysal/esda/issues&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">silhouette_alist</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">alist</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">skp</span><span class="o">.</span><span class="n">euclidean_distances</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the silhouette for each edge in an adjacency graph. Given the alist</span>
+<span class="sd">    containing `focal` id, `neighbor` id, and `label_focal`, and `label_neighbor`,</span>
+<span class="sd">    this computes:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        d(i,label_neighbor) - d(i,label_focal)</span>
+<span class="sd">        / (max(d(i,label_neighbor), d(i,label_focal)))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : (N,P) array to cluster on or DataFrame indexed on the same values as</span>
+<span class="sd">           that in alist.focal/alist.neighbor</span>
+<span class="sd">    labels: (N,) array containing classifications, indexed on the same values</span>
+<span class="sd">                 as that in alist.focal/alist.neighbor</span>
+<span class="sd">    alist: adjacency list containing columns focal &amp; neighbor,</span>
+<span class="sd">           describing one edge of the graph.</span>
+<span class="sd">    indices: (N,) array containing the &quot;name&quot; for observations in</span>
+<span class="sd">           alist to be linked to data. indices should be:</span>
+<span class="sd">           1. aligned with data by iteration order</span>
+<span class="sd">           2. include all values in the alist.focal set.</span>
+<span class="sd">           if alist.focal and alist.neighbor are strings, then indices should be</span>
+<span class="sd">           a list/array of strings aligned with the rows of data.</span>
+<span class="sd">           if not provided and labels is a series/dataframe,</span>
+<span class="sd">           then its index will be used.</span>
+<span class="sd">    metric  :   callable, array,</span>
+<span class="sd">                a function that takes an argument (data) and returns the all-pairs</span>
+<span class="sd">                distances/dissimilarity between observations.</span>
+
+<span class="sd">    Results</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame, copy of the adjacency list `alist`, with an additional</span>
+<span class="sd">    column called `silhouette` that contains the pseudo-silhouette values</span>
+<span class="sd">    expressing the relative dissimilarity between neighboring observations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_REQUIREMENTS</span><span class="p">:</span>
+        <span class="n">_raise_initial_error</span><span class="p">()</span>
+
+    <span class="n">n_obs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
+        <span class="n">full_distances</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">metric</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">n_obs</span><span class="p">):</span>
+        <span class="n">full_distances</span> <span class="o">=</span> <span class="n">metric</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="ow">and</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">index</span>
+    <span class="k">elif</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">indices</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">alist</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;focal&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;focal&quot;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">labels</span><span class="p">,</span>
+        <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;neighbor&quot;</span><span class="p">,</span>
+        <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+        <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;_focal&quot;</span><span class="p">,</span> <span class="s2">&quot;_neighbor&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">self_dcache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">sils</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">focal</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">label_focal</span>
+        <span class="n">neighbor_label</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">label_neighbor</span>
+        <span class="k">if</span> <span class="n">neighbor_label</span> <span class="o">==</span> <span class="n">label</span><span class="p">:</span>
+            <span class="n">sils</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">i_Xc</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">label</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">within_cluster</span> <span class="o">=</span> <span class="n">self_dcache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">i_Xc</span><span class="p">,</span> <span class="n">label</span><span class="p">),</span> <span class="n">full_distances</span><span class="p">[</span><span class="n">i_Xc</span><span class="p">,</span> <span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">self_dcache</span><span class="p">[(</span><span class="n">i_Xc</span><span class="p">,</span> <span class="n">label</span><span class="p">)]</span> <span class="o">=</span> <span class="n">within_cluster</span>
+        <span class="n">neighbor_mask</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">neighbor_label</span>
+        <span class="n">neighbor_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">neighbor_mask</span><span class="o">.</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbor_mask</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sils</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;A link (</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">focal</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">neighbor</span><span class="si">}</span><span class="s2">) has been found to have an empty &quot;</span>
+                <span class="s2">&quot;set of neighbors. This may happen when a label assignment is &quot;</span>
+                <span class="s2">&quot;missing for the neighbor unit. Check that no labels are missing.&quot;</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">outer_distance</span> <span class="o">=</span> <span class="n">full_distances</span><span class="p">[</span><span class="n">i_Xc</span><span class="p">,</span> <span class="n">neighbor_mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">dist_diff</span> <span class="o">=</span> <span class="n">outer_distance</span> <span class="o">-</span> <span class="n">within_cluster</span>
+        <span class="n">dist_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">outer_distance</span><span class="p">,</span> <span class="n">within_cluster</span><span class="p">)</span>
+        <span class="n">sils</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist_diff</span> <span class="o">/</span> <span class="n">dist_max</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;silhouette&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sils</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;focal&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="nearest_label">
+<a class="viewcode-back" href="../../generated/esda.silhouettes.nearest_label.html#esda.nearest_label">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nearest_label</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">skp</span><span class="o">.</span><span class="n">euclidean_distances</span><span class="p">,</span> <span class="n">return_distance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keep_self</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the nearest label in attribute space.</span>
+
+<span class="sd">    Given the data and a set of labels in labels, this finds the label</span>
+<span class="sd">    whose mean center is closest to the observation in data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : (N,P) array to cluster on or DataFrame indexed on the same values as</span>
+<span class="sd">        that in alist.focal/alist.neighbor</span>
+<span class="sd">    labels : (N,) array containing classifications, indexed on the same values</span>
+<span class="sd">        as that in alist.focal/alist.neighbor</span>
+<span class="sd">    metric : callable, array,</span>
+<span class="sd">        a function that takes an argument (data) and returns the all-pairs</span>
+<span class="sd">        distances/dissimilarity between observations.</span>
+<span class="sd">    return_distance: bool</span>
+<span class="sd">        Whether to return the distance from the observation to its nearest</span>
+<span class="sd">        cluster in feature space. If True, the tuple of (nearest_label, dissim)</span>
+<span class="sd">        is returned. If False, only the nearest_label array is returned.</span>
+<span class="sd">    keep_self:  bool</span>
+<span class="sd">        whether to allow observations to use their current cluster as their</span>
+<span class="sd">        nearest label. If True, an observation&#39;s existing cluster assignment can</span>
+<span class="sd">        also be the cluster it is closest to. If False, an observation&#39;s existing</span>
+<span class="sd">        cluster assignment cannot be the cluster it is closest to. This would mean</span>
+<span class="sd">        the function computes the nearest *alternative* cluster.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (N_obs,) array of assignments reflect each observation&#39;s nearest label.</span>
+
+<span class="sd">    If return_distance is True, a tuple of ((N,) and (N,)) where the first</span>
+<span class="sd">        array is the assignment, and the second is the distance to the centroid</span>
+<span class="sd">        of that assignment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_REQUIREMENTS</span><span class="p">:</span>
+        <span class="n">_raise_initial_error</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
+        <span class="n">dissim</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">metric</span><span class="o">.</span><span class="n">lower</span> <span class="o">==</span> <span class="s2">&quot;precomputed&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">),</span> <span class="s2">&quot;Dissimilarity matrix is malformed!&quot;</span>
+        <span class="n">dissim</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">metric</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">),</span> <span class="s2">&quot;Dissimilarity matrix is malformed!&quot;</span>
+        <span class="n">dissim</span> <span class="o">=</span> <span class="n">metric</span>
+    <span class="n">unique_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">nearest_label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">nearest_label_dissim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">unique_labels</span><span class="p">:</span>
+        <span class="n">this_label_mask</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">label</span>
+        <span class="n">this_label_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">this_label_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">next_best_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">this_label_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">next_best_label</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">this_label_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">unique_labels</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">neighbor</span> <span class="o">==</span> <span class="n">label</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="ow">not</span> <span class="n">keep_self</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">neighbor_label_mask</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">==</span> <span class="n">neighbor</span>
+            <span class="n">n_in_neighbor</span> <span class="o">=</span> <span class="n">neighbor_label_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">neighbor_label_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">neighbor_label_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># Need to account for the fact that the self-distance</span>
+            <span class="c1"># is not included in the silhouette; in small clusters,</span>
+            <span class="c1"># this extra zero can bring down the average, resulting in a case</span>
+            <span class="c1"># where the silhouette is negative, but the &quot;nearest&quot; cluster would</span>
+            <span class="c1"># be the current cluster if we take averages including i in C.</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">dissim</span><span class="p">[</span>
+                <span class="n">this_label_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">neighbor_label_mask</span>  <span class="c1"># these rows</span>
+            <span class="p">]</span>  <span class="c1"># and these columns</span>
+            <span class="n">neighbor_distance</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span>
+                <span class="n">n_in_neighbor</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+            <span class="p">)</span>  <span class="c1"># and sum across rows</span>
+            <span class="n">next_best_label</span><span class="p">[</span><span class="n">neighbor_distance</span> <span class="o">&lt;</span> <span class="n">next_best_fit</span><span class="p">]</span> <span class="o">=</span> <span class="n">neighbor</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">next_best_fit</span><span class="p">,</span> <span class="n">neighbor_distance</span><span class="p">,</span> <span class="n">next_best_fit</span><span class="p">)</span>
+        <span class="n">nearest_label</span><span class="p">[</span><span class="n">this_label_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_best_label</span>
+        <span class="n">nearest_label_dissim</span><span class="p">[</span><span class="n">this_label_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_best_fit</span>
+    <span class="k">if</span> <span class="n">return_distance</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nearest_label</span><span class="p">,</span> <span class="n">nearest_label_dissim</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nearest_label</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.1.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
