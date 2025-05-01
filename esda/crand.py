@@ -207,7 +207,7 @@ def crand(
             n_jobs = 1
 
     if n_jobs == 1:
-        count_extreme, rlocals = compute_chunk(
+        p_sims, rlocals = compute_chunk(
             0,  # chunk start
             z,  # chunked z, for serial this is the entire data
             z,  # all z, for serial this is also the entire data
@@ -228,7 +228,7 @@ def crand(
         if n_jobs > len(z):
             n_jobs = len(z)
         # Parallel implementation
-        count_extreme, rlocals = parallel_crand(
+        p_sims, rlocals = parallel_crand(
             z,
             observed,
             cardinalities,
@@ -243,7 +243,7 @@ def crand(
             alternative=alternative
         )
 
-    return (count_extreme+1) / (permutations + 1), rlocals
+    return p_sims, rlocals
 
 
 @njit(parallel=False, fastmath=True)
@@ -323,14 +323,15 @@ def compute_chunk(
         the null of spatial randomness
     """
     chunk_n = z_chunk.shape[0]
-    n = z.shape[0]
+    n_samples = z.shape[0]
+    p_permutations, k_max_card = permuted_ids.shape
     count_extreme = np.zeros((chunk_n,), dtype=np.int64)
     if keep:
         rlocals = np.empty((chunk_n, permuted_ids.shape[0]))
     else:
         rlocals = np.empty((1, 1))
 
-    mask = np.ones((n,), dtype=np.int8) == 1
+    mask = np.ones((n_samples,), dtype=np.int8) == 1
     wloc = 0
 
     for i in range(chunk_n):
@@ -370,7 +371,7 @@ def compute_chunk(
         if keep:
             rlocals[i] = rstats
 
-    return count_extreme, rlocals
+    return (count_extreme + 1)/(p_permutations+1), rlocals
 
 
 #######################################################################
@@ -589,10 +590,10 @@ def parallel_crand(
             )
             for pars in chunks
         )
-    count_extreme, rlocals = zip(*worker_out)
-    count_extreme = np.hstack(count_extreme).squeeze()
+    p_sims, rlocals = zip(*worker_out)
+    p_sims = np.hstack(p_sims).squeeze()
     rlocals = np.row_stack(rlocals).squeeze()
-    return count_extreme, rlocals
+    return p_sims, rlocals
 
 
 #######################################################################
