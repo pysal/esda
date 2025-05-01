@@ -1,8 +1,25 @@
 import numpy as np
-from scipy import stats
+import warnings
+
+try:
+    from numba import njit
+except (ImportError, ModuleNotFoundError):
+
+    def jit(*dec_args, **dec_kwargs):
+        """
+        decorator mimicking numba.jit
+        """
+
+        def intercepted_function(f, *f_args, **f_kwargs):
+            return f
+
+        return intercepted_function
+
+    njit = jit
 
 
-def calculate_significance(test_stat, reference_distribution, method="two-sided"):
+
+def calculate_significance(test_stat, reference_distribution, alternative="two-sided"):
     """
     Calculate a pseudo p-value from a reference distribution.
 
@@ -15,7 +32,7 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
         The observed test statistic, or a vector of observed test statistics
     reference_distribution: numpy.ndarray
         A numpy array containing simulated test statistics as a result of conditional permutation.
-    method: string
+    alternative: string
         One of 'two-sided', 'lesser', 'greater', 'folded', or 'directed'. Indicates the alternative hypothesis.
         - 'two-sided': the observed test statistic is in either tail of the reference distribution. This is an un-directed alternative hypothesis.
         - 'folded': the observed test statistic is an extreme value of the reference distribution folded about its mean. This is an un-directed alternative hypothesis.
@@ -33,20 +50,40 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
     reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
     test_stat = np.atleast_2d(test_stat).reshape(n_samples, -1)
-    if method == "directed":
+    if alternative not in (
+        'folded',
+        'two-sided',
+        'greater',
+        'lesser',
+        'directed'
+    ):
+        raise ValueError(
+            f"alternative='{alternative}' provided, but is not"
+            f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
+            )
+    return _permutation_significance(
+        test_stat, 
+        reference_distribution,
+        alternative=alternative
+        )
+
+@njit(parallel=False, fastmath=False)
+def _permutation_significance(test_stat, reference_distribution, alternative='two-sided'):
+    n_samples, p_permutations = reference_distribution.shape
+    if alternative == "directed":
         larger = (reference_distribution >= test_stat).sum(axis=1)
         low_extreme = (p_permutations - larger) < larger
         larger[low_extreme] = p_permutations - larger[low_extreme]
         p_value = (larger + 1.0) / (p_permutations + 1.0)
-    elif method == "lesser":
+    elif alternative == "lesser":
         p_value = (np.sum(reference_distribution <= test_stat, axis=1) + 1) / (
             p_permutations + 1
         )
-    elif method == "greater":
+    elif alternative == "greater":
         p_value = (np.sum(reference_distribution >= test_stat, axis=1) + 1) / (
             p_permutations + 1
         )
-    elif method == "two-sided":
+    elif alternative == "two-sided":
         # find percentile p at which the test statistic sits
         # find "synthetic" test statistic at 1-p
         # count how many observations are outisde of (p, 1-p)
@@ -58,7 +95,7 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
         n_outside = (reference_distribution <= lows[:,None]).sum(axis=1)
         n_outside += (reference_distribution >= highs[:,None]).sum(axis=1)
         p_value = (n_outside + 1) / (p_permutations + 1)
-    elif method == "folded":
+    elif alternative == "folded":
         means = reference_distribution.mean(axis=1, keepdims=True)
         test_stat = np.abs(test_stat - means)
         reference_distribution = np.abs(reference_distribution - means)
@@ -66,9 +103,7 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
             p_permutations + 1
         )
     else:
-        raise ValueError(
-            f"Unknown p-value method: {method}. Generally, 'two-sided' is a good default!"
-        )
+        p_value = np.ones((n_samples, 1))*np.nan
     return p_value
 
 
