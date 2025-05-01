@@ -4,7 +4,7 @@ Centralised conditional randomisation engine. Numba accelerated.
 
 import os
 import warnings
-
+from .significance import _permutation_significance
 import numpy as np
 
 try:
@@ -325,7 +325,7 @@ def compute_chunk(
     chunk_n = z_chunk.shape[0]
     n_samples = z.shape[0]
     p_permutations, k_max_card = permuted_ids.shape
-    count_extreme = np.zeros((chunk_n,), dtype=np.int64)
+    p_sims = np.zeros((chunk_n,), dtype=np.float32)
     if keep:
         rlocals = np.empty((chunk_n, permuted_ids.shape[0]))
     else:
@@ -348,30 +348,13 @@ def compute_chunk(
         wloc += cardinality
         mask[chunk_start + i] = False
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
-        if alternative == 'two-sided':
-            count_extreme[i] = np.minimum(
-                (rstats >= observed[i]).sum(), 
-                (rstats <= observed[i]).sum()
-            ) * 2
-        elif alternative == "directed":
-            count_extreme[i] = np.minimum(
-                (rstats >= observed[i]).sum(), 
-                (rstats <= observed[i]).sum()
-            )
-        elif alternative == 'greater':
-            count_extreme[i] = (rstats >= observed[i]).sum()
-        elif alternative == 'lesser':
-            count_extreme[i] = (rstats <= observed[i]).sum()
-        elif alternative=='folded':
-            count_extreme[i] = (
-                np.abs(
-                    rstats - rstats.mean()
-                ) >= observed[i]
-            ).sum()
+        p_sims[i] = _permutation_significance(
+            observed[i], rstats, alternative=alternative
+        )
         if keep:
             rlocals[i] = rstats
 
-    return (count_extreme + 1)/(p_permutations+1), rlocals
+    return p_sims, rlocals
 
 
 #######################################################################

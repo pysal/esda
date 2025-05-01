@@ -69,6 +69,7 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
 
 @njit(parallel=False, fastmath=False)
 def _permutation_significance(test_stat, reference_distribution, alternative='two-sided'):
+    reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
     if alternative == "directed":
         larger = (reference_distribution >= test_stat).sum(axis=1)
