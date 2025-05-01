@@ -16,17 +16,19 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
     reference_distribution: numpy.ndarray
         A numpy array containing simulated test statistics as a result of conditional permutation.
     method: string
-        One of 'two-sided', 'lesser', or 'greater'. Indicates the alternative hypothesis.
-        - 'two-sided': the observed test-statistic is an extreme value of the reference distribution.
-        - 'lesser': the observed test-statistic is small relative to the reference distribution.
-        - 'greater': the observed test-statistic is large relative to the reference distribution.
-        - 'directed': the observed test statistic is either small or large reltaive to the reference distribution.
+        One of 'two-sided', 'lesser', 'greater', 'folded', or 'directed'. Indicates the alternative hypothesis.
+        - 'two-sided': the observed test statistic is in either tail of the reference distribution. This is an un-directed alternative hypothesis.
+        - 'folded': the observed test statistic is an extreme value of the reference distribution folded about its mean. This is an un-directed alternative hypothesis.
+        - 'lesser': the observed test statistic is small relative to the reference distribution. This is a directed alternative hypothesis.
+        - 'greater': the observed test statistic is large relative to the reference distribution. This is a directed alternative hypothesis. 
+        - 'directed': the observed test statistic is in either tail of the reference distribution, but the tail is selected depending on the test statistic. This is a directed alternative hypothesis, but the direction is chosen dependent on the data. This is not advised, and included solely to reproduce past results.
 
     Notes
     -----
 
     the directed p-value is half of the two-sided p-value, and corresponds to running the
-    lesser and greater tests, then picking the smaller significance value. This is not advised.
+    lesser and greater tests, then picking the smaller significance value. This is not advised, 
+    since the p-value will be uniformly too small. 
     """
     reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
@@ -45,17 +47,16 @@ def calculate_significance(test_stat, reference_distribution, method="two-sided"
             p_permutations + 1
         )
     elif method == "two-sided":
-        percentile = (reference_distribution < test_stat).mean(axis=1)
-        bounds = np.column_stack((1 - percentile, percentile)) * 100
-        bounds.sort(axis=1)
-        lows, highs = np.row_stack(
-            [
-                stats.scoreatpercentile(r, per=p)
-                for r, p in zip(reference_distribution, bounds)
-            ]
+        # find percentile p at which the test statistic sits
+        # find "synthetic" test statistic at 1-p
+        # count how many observations are outisde of (p, 1-p)
+        # including the test statistic and its synthetic pair
+        percentile = (reference_distribution <= test_stat).mean()*100
+        lows, highs = numpy.percentile(
+            reference_distribution, (percentile, 100-percentile), axis=1
         ).T
-        n_outside = (reference_distribution < lows[:, None]).sum(axis=1)
-        n_outside += (reference_distribution > highs[:, None]).sum(axis=1)
+        n_outside = (reference_distribution <= lows[:,None]).sum(axis=1)
+        n_outside += (reference_distribution >= highs[:,None]).sum(axis=1)
         p_value = (n_outside + 1) / (p_permutations + 1)
     elif method == "folded":
         means = reference_distribution.mean(axis=1, keepdims=True)
