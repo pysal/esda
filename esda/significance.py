@@ -4,19 +4,7 @@ import warnings
 try:
     from numba import njit
 except (ImportError, ModuleNotFoundError):
-
-    def jit(*dec_args, **dec_kwargs):
-        """
-        decorator mimicking numba.jit
-        """
-
-        def intercepted_function(f, *f_args, **f_kwargs):
-            return f
-
-        return intercepted_function
-
-    njit = jit
-
+    from libpysal.common import jit as njit
 
 
 def calculate_significance(test_stat, reference_distribution, alternative="two-sided"):
@@ -108,57 +96,3 @@ def _permutation_significance(test_stat, reference_distribution, alternative='tw
     return p_value
 
 
-if __name__ == "__main__":
-    import numpy
-    import esda
-    import pandas
-    from libpysal.weights import Voronoi
-
-    coordinates = numpy.random.random(size=(2000, 2))
-    x = numpy.random.normal(size=(2000,))
-    w = Voronoi(coordinates, clip="bbox")
-    w.transform = "r"
-    stat = esda.Moran_Local(x, w)
-
-    ts = calculate_significance(stat.Is, stat.rlisas, method="two-sided")
-    di = calculate_significance(stat.Is, stat.rlisas, method="directed")
-    lt = calculate_significance(stat.Is, stat.rlisas, method="lesser")
-    gt = calculate_significance(stat.Is, stat.rlisas, method="greater")
-    fo = calculate_significance(stat.Is, stat.rlisas, method="folded")
-
-    numpy.testing.assert_array_equal(
-        numpy.minimum(lt, gt), di
-    )  # di is just the minimum of the two tests
-
-    print(
-        f"directed * 2 is the same as two-sided {(di*2 == ts).mean()*100}% of the time"
-    )
-
-    print(
-        pandas.DataFrame(
-            numpy.column_stack((ts, di, fo, lt, gt)),
-            columns=["two-sided", "directed", "folded", "lt", "gt"],
-        ).corr()
-    )
-
-    answer = input("run big simulation? [y/n]")
-    if answer.lower().startswith("y"):
-        all_correlations = []
-        for i in range(1000):
-            x = numpy.random.normal(size=(2000,))
-            stat = esda.Moran_Local(x, w)
-            ts = calculate_significance(stat.Is, stat.rlisas, method="two-sided")
-            di = calculate_significance(stat.Is, stat.rlisas, method="directed")
-            lt = calculate_significance(stat.Is, stat.rlisas, method="lesser")
-            gt = calculate_significance(stat.Is, stat.rlisas, method="greater")
-            fo = calculate_significance(stat.Is, stat.rlisas, method="folded")
-            corrs = (
-                pandas.DataFrame(
-                    numpy.column_stack((ts, di, fo, lt, gt)),
-                    columns=["two-sided", "directed", "folded", "lt", "gt"],
-                )
-                .corr()
-                .assign(repno=i)
-            )
-            all_correlations.append(corrs)
-        all_correlations = pandas.concat(all_correlations)

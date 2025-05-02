@@ -8,21 +8,9 @@ from .significance import _permutation_significance
 import numpy as np
 
 try:
-    from numba import boolean, jit, njit, prange
+    from numba import boolean, njit, prange
 except (ImportError, ModuleNotFoundError):
-
-    def jit(*dec_args, **dec_kwargs):
-        """
-        decorator mimicking numba.jit
-        """
-
-        def intercepted_function(f, *f_args, **f_kwargs):
-            return f
-
-        return intercepted_function
-
-    njit = jit
-
+    from libpysal.common import jit as njit
     prange = range
     boolean = bool
 
