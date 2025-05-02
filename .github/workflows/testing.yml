@@ -19,8 +19,8 @@
  jobs:
    unittests:
      env:
-       FETCH_DATA: python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "sids2", "stl"]]'
-       RUN_TEST: pytest esda -v -r a -n auto --cov esda --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
+       FETCH_DATA: python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "sids2", "stl", "Sacramento1"]]'
+       RUN_TEST: pytest esda -v -r a -n auto --cov esda --cov-report xml --color yes --cov-append --cov-report term-missing
      name: CI (${{ matrix.os }}, ${{ matrix.environment-file }})
      runs-on: ${{ matrix.os }}
      timeout-minutes: 25
@@ -28,26 +28,21 @@
        matrix:
          os: [ubuntu-latest]
          environment-file:
-           - ci/38-minimal.yaml
-           - ci/38-minimal-numba.yaml
-           - ci/39.yaml
-           - ci/39-numba.yaml
-           - ci/310.yaml
-           - ci/310-numba.yaml
-           - ci/310-DEV.yaml
-           - ci/310-numba-DEV.yaml
-           - ci/311.yaml
-           - ci/311-numba.yaml
-           - ci/311-DEV.yaml
-           - ci/311-numba-DEV.yaml
+           - ci/310-oldest.yaml
+           - ci/310-numba-oldest.yaml
+           - ci/311-latest.yaml
+           - ci/311-numba-latest.yaml
+           - ci/312-min.yaml
+           - ci/312-latest.yaml
+           - ci/312-dev.yaml
+           - ci/312-numba-latest.yaml
+           - ci/312-numba-dev.yaml
          include:
-           - environment-file: ci/310-numba.yaml
-             os: macos-latest
-           - environment-file: ci/311.yaml
-             os: macos-latest
-           - environment-file: ci/310-numba.yaml
-             os: windows-latest
-           - environment-file: ci/311.yaml
+           - environment-file: ci/312-numba-latest.yaml
+             os: macos-13 # Intel
+           - environment-file: ci/312-numba-latest.yaml
+             os: macos-14 # Apple Silicon
+           - environment-file: ci/312-numba-latest.yaml
              os: windows-latest
        fail-fast: false
      defaults:
@@ -58,15 +53,10 @@
        - name: checkout repo
          uses: actions/checkout@v4
        - name: setup micromamba
-         uses: mamba-org/setup-micromamba@v1
+         uses: mamba-org/setup-micromamba@v2
          with:
             micromamba-version: 'latest'
             environment-file: ${{ matrix.environment-file }}
-
-       - name: install bleeding edge libpysal (Ubuntu / Python 3.10)
-         run: |
-           pip install git+https://github.com/pysal/libpysal.git@main
-         if: matrix.os == 'ubuntu-latest' && contains(matrix.environment-file, 'DEV')
 
        - name: environment info
          run: |
@@ -82,7 +72,7 @@
            ${{ env.RUN_TEST }}
 
        - name: ${{ matrix.os }}, ${{ matrix.environment-file }}
-         uses: codecov/codecov-action@v4
+         uses: codecov/codecov-action@v5
          with:
            token: ${{ secrets.CODECOV_TOKEN }}
            file: ./coverage.xml

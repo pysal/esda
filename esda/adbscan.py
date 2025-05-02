@@ -156,7 +156,7 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
         self.pct_thr = pct_thr
         self.keep_solus = keep_solus
 
-    def fit(self, X, y=None, sample_weight=None, xy=["X", "Y"]):
+    def fit(self, X, y=None, sample_weight=None, xy=["X", "Y"]):  # noqa: ARG002
         """
         Perform ADBSCAN clustering from fetaures
         ...
@@ -181,14 +181,16 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
         solus = pandas.DataFrame(
             np.zeros((X.shape[0], self.reps), dtype=str),
             index=X.index,
-            columns=["rep-%s" % str(i).zfill(zfiller) for i in range(self.reps)],
+            columns=[f"rep-{str(i).zfill(zfiller)}" for i in range(self.reps)],
         )
         # Multi-core implementation of parallel draws
         if (self.n_jobs == -1) or (self.n_jobs > 1):
             # Set different parallel seeds!!!
             warnings.warn(
                 "Multi-core implementation only works on relabelling solutions. "
-                "Execution of draws is still sequential."
+                "Execution of draws is still sequential.",
+                UserWarning,
+                stacklevel=2,
             )
             for i in range(self.reps):
                 pars = (
@@ -346,7 +348,7 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
         remapped_solus.loc[:, ref] = solus.loc[:, ref]
         return remapped_solus.fillna(lbl_type(-1)).astype(lbl_type)
     else:
-        warnings.warn("No clusters identified.")
+        warnings.warn("No clusters identified.", UserWarning, stacklevel=2)
         return solus
 
 
@@ -418,7 +420,9 @@ def ensemble(solus_relabelled):
     """
 
     counts = np.array(
-        list(map(lambda a: Counter(a).most_common(1)[0], solus_relabelled.values))
+        list(  # noqa: C417
+            map(lambda a: Counter(a).most_common(1)[0], solus_relabelled.values)
+        )
     )
     winner = counts[:, 0]
     votes = counts[:, 1].astype(int) / solus_relabelled.shape[1]
@@ -441,11 +445,7 @@ def _setup_pool(n_jobs):
     """
     import multiprocessing as mp
 
-    if n_jobs == -1:
-        pool = mp.Pool(mp.cpu_count())
-    else:
-        pool = mp.Pool(n_jobs)
-    return pool
+    return mp.Pool(mp.cpu_count()) if n_jobs == -1 else mp.Pool(n_jobs)
 
 
 def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1):
@@ -503,13 +503,13 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     >>> polys = get_cluster_boundary(labels, db)
     >>> polys[0].wkt
     'POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))'
-    """  # noqa E501
+    """  # noqa: E501
 
     try:
         from geopandas import GeoSeries
     except ModuleNotFoundError:
 
-        def GeoSeries(data, index=None, crs=None):
+        def GeoSeries(data, index=None, crs=None):  # noqa: ARG001, N802
             return list(data)
 
     lbl_type = type(labels.iloc[0])

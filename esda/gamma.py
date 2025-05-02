@@ -3,12 +3,14 @@ Gamma index for spatial autocorrelation
 
 
 """
+
 __author__ = "Luc Anselin <luc.anselin@asu.edu> Serge Rey <sjsrey@gmail.com>"
 
 import warnings
 
 import numpy as np
-from libpysal.weights.spatial_lag import lag_spatial
+import pandas as pd
+from libpysal.weights import W, lag_spatial
 
 from .crand import _prepare_univariate
 from .crand import njit as _njit
@@ -19,7 +21,7 @@ __all__ = ["Gamma"]
 PERMUTATIONS = 999
 
 
-class Gamma(object):
+class Gamma:
     """Gamma index for spatial autocorrelation
 
 
@@ -28,8 +30,8 @@ class Gamma(object):
 
     y               : array
                       variable measured across n spatial units
-    w               : W
-                      spatial weights instance
+    w               : W | Graph
+                      spatial weights instance as W or Graph aligned with y
                       can be binary or row-standardized
     operation       : {'c', 's', 'a'}
                       attribute similarity function where,
@@ -166,12 +168,6 @@ class Gamma(object):
     def __init__(
         self, y, w, operation="c", standardize=False, permutations=PERMUTATIONS
     ):
-        if isinstance(standardize, str):
-            standardize = standardize.lower() == "yes"
-            warnings.warn(
-                "Use True/False for standardize. The option to"
-                ' provide "yes"/"no" will be deprecated in PySAL 2.2.'
-            )
         y = np.asarray(y).flatten()
         self.w = w
         self.y = y
@@ -183,11 +179,12 @@ class Gamma(object):
             ysd = np.std(self.y)
             ys = (self.y - ym) / ysd
             self.y = ys
-        self.g = self.__calc(self.y, self.op)
+        calc = self.__calc_w if isinstance(self.w, W) else self.__calc_g
+        self.g = calc(self.y, self.op)
 
         if permutations:
             sim = [
-                self.__calc(np.random.permutation(self.y), self.op)
+                calc(np.random.permutation(self.y), self.op)
                 for i in range(permutations)
             ]
             self.sim_g = np.array(sim)
@@ -207,7 +204,7 @@ class Gamma(object):
         """new name to fit with Moran module"""
         return self.p_sim_g
 
-    def __calc(self, z, op):
+    def __calc_w(self, z, op):
         if op == "c":  # cross-product
             zl = lag_spatial(self.w, z)
             g = (z * zl).sum()
@@ -217,7 +214,7 @@ class Gamma(object):
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = list(zip(neighbors, wijs))
+                zw = list(zip(neighbors, wijs, strict=True))
                 zs[i] = sum(
                     [wij * (z2[i] - 2.0 * z[i] * z[j] + z2[j]) for j, wij in zw]
                 )
@@ -227,7 +224,7 @@ class Gamma(object):
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = list(zip(neighbors, wijs))
+                zw = list(zip(neighbors, wijs, strict=True))
                 zs[i] = sum([wij * abs(z[i] - z[j]) for j, wij in zw])
             g = zs.sum()
         else:  # any previously defined function op
@@ -235,9 +232,38 @@ class Gamma(object):
             for i, i0 in enumerate(self.w.id_order):
                 neighbors = self.w.neighbor_offsets[i0]
                 wijs = self.w.weights[i0]
-                zw = list(zip(neighbors, wijs))
+                zw = list(zip(neighbors, wijs, strict=True))
                 zs[i] = sum([wij * op(z, i, j) for j, wij in zw])
             g = zs.sum()
+
+        return g
+
+    def __calc_g(self, z, op):
+        if op == "c":  # cross-product
+            zl = self.w.lag(z)
+            g = (z * zl).sum()
+        elif op == "s":  # squared difference
+            z = pd.Series(z, index=self.w.unique_ids)
+            z2 = z**2
+            focal, neighbour = self.w.index_pairs
+            g = (
+                self.w._adjacency.values
+                * (
+                    z2[focal].values
+                    - 2.0 * z[focal].values * z[neighbour].values
+                    + z2[neighbour].values
+                )
+            ).sum()
+        elif op == "a":  # absolute difference
+            z = pd.Series(z, index=self.w.unique_ids)
+            focal, neighbour = self.w.index_pairs
+            g = (
+                self.w._adjacency.values
+                * (np.abs(z[focal].values - z[neighbour].values))
+            ).sum()
+        else:  # any previously defined function op
+            raise NotImplementedError
+
         return g
 
     def __pseudop(self, sim, g):
@@ -252,12 +278,11 @@ class Gamma(object):
     def by_col(
         cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
     ):
-
         msg = (
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,
@@ -268,7 +293,7 @@ class Gamma(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
         )
 
 

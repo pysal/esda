@@ -10,8 +10,7 @@ from esda.crand import njit as _njit
 PERMUTATIONS = 999
 
 
-class Join_Counts_Local(BaseEstimator):
-
+class Join_Counts_Local(BaseEstimator):  # noqa: N801
     """Univariate Local Join Count Statistic"""
 
     def __init__(
@@ -29,10 +28,8 @@ class Join_Counts_Local(BaseEstimator):
 
         Parameters
         ----------
-        connectivity : scipy.sparse matrix object
-            the connectivity structure describing
-            the relationships between observed units.
-            Need not be row-standardized.
+        connectivity : W | Graph
+            spatial weights instance as W or Graph aligned with y
         permutations : int
             number of random permutations for calculation of pseudo
             p_values
@@ -119,8 +116,11 @@ class Join_Counts_Local(BaseEstimator):
 
         w = self.connectivity
         # Fill the diagonal with 0s
-        w = weights.util.fill_diagonal(w, val=0)
-        w.transform = "b"
+        if isinstance(w, weights.W):
+            w = weights.util.fill_diagonal(w, val=0)
+            w.transform = "b"
+        else:
+            w = w.assign_self_weight(0).eliminate_zeros().transform("b")
 
         keep_simulations = self.keep_simulations
         n_jobs = self.n_jobs
@@ -152,8 +152,15 @@ class Join_Counts_Local(BaseEstimator):
     def _statistic(y, w, drop_islands):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
-        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
-        zseries = pd.Series(y, index=w.id_order)
+        if isinstance(w, weights.W):
+            adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
+            zseries = pd.Series(y, index=w.id_order)
+        else:
+            if drop_islands:
+                adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                adj_list = w.adjacency.reset_index()
+            zseries = pd.Series(y, index=w.unique_ids)
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values
         LJC = (focal == 1) & (neighbor == 1)
@@ -174,7 +181,7 @@ class Join_Counts_Local(BaseEstimator):
 
 
 @_njit(fastmath=True)
-def _ljc_uni(i, z, permuted_ids, weights_i, scaling):
+def _ljc_uni(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     # self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
