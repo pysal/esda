@@ -154,8 +154,7 @@ def crand(
         raise ValueError(
             f"alternative='{alternative}' provided, but is not"
             f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
-            )
-
+        )
 
     # paralellise over permutations?
     if seed is None:
@@ -338,7 +337,7 @@ def compute_chunk(
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
         p_sims[i] = _permutation_significance(
             observed[i], rstats, alternative=alternative
-        )
+        ).item()
         if keep:
             rlocals[i] = rstats
 
