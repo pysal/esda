@@ -77,10 +77,19 @@ def _permutation_significance(test_stat, reference_distribution, alternative='tw
         # find "synthetic" test statistic at 1-p
         # count how many observations are outisde of (p, 1-p)
         # including the test statistic and its synthetic pair
-        percentile = (reference_distribution <= test_stat).mean()*100
-        lows, highs = numpy.percentile(
-            reference_distribution, (percentile, 100-percentile), axis=1
-        ).T
+        percentile = (reference_distribution <= test_stat).mean(axis=1)*100
+        lows = np.empty(n_samples)
+        highs = np.empty(n_samples)
+        for i in range(n_samples):
+            p_low = np.minimum(percentile[i], 100-percentile[i])
+            lows[i] = np.percentile(
+                reference_distribution[i], 
+                p_low
+            )
+            highs[i] = np.percentile(
+                reference_distribution[i], 
+                100 - p_low
+            )
         n_outside = (reference_distribution <= lows[:,None]).sum(axis=1)
         n_outside += (reference_distribution >= highs[:,None]).sum(axis=1)
         p_value = (n_outside + 1) / (p_permutations + 1)
