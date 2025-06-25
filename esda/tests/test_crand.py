@@ -8,9 +8,9 @@ def test_vec_permutations_basic():
     """Test vec_permutations with basic input."""
     result = vec_permutations(5, 24, 10, seed=12345)
     assert len(result) == 10, "Should create 10 permutations"
-    assert all(
-        isinstance(item, np.ndarray) for item in result
-    ), "Each permutation should be an array"
+    assert all(isinstance(item, np.ndarray) for item in result), (
+        "Each permutation should be an array"
+    )
     expected = np.array(
         [
             [10, 19, 8, 17, 3],
