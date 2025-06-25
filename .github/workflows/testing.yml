@@ -32,17 +32,19 @@
            - ci/310-numba-oldest.yaml
            - ci/311-latest.yaml
            - ci/311-numba-latest.yaml
-           - ci/312-min.yaml
            - ci/312-latest.yaml
-           - ci/312-dev.yaml
            - ci/312-numba-latest.yaml
-           - ci/312-numba-dev.yaml
+           - ci/313-min.yaml
+           - ci/313-latest.yaml
+           - ci/313-dev.yaml
+           - ci/313-numba-latest.yaml
+           - ci/313-numba-dev.yaml
          include:
-           - environment-file: ci/312-numba-latest.yaml
+           - environment-file: ci/313-numba-latest.yaml
              os: macos-13 # Intel
-           - environment-file: ci/312-numba-latest.yaml
+           - environment-file: ci/313-numba-latest.yaml
              os: macos-14 # Apple Silicon
-           - environment-file: ci/312-numba-latest.yaml
+           - environment-file: ci/313-numba-latest.yaml
              os: windows-latest
        fail-fast: false
      defaults:

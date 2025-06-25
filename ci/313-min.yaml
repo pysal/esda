@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.12
+  - python=3.13
   # required
   - geopandas
   - libpysal>=4.12
@@ -15,10 +15,6 @@ dependencies:
   - codecov
   - folium
   - mapclassify
-  - matplotlib
-  - seaborn
   - pytest
   - pytest-cov
   - pytest-xdist
-  # optional
-  - rtree
