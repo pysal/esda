@@ -1,7 +1,7 @@
 import numpy as np
-from libpysal.weights.util import lat2W
-from libpysal import graph
 import pytest
+from libpysal import graph
+from libpysal.weights.util import lat2W
 
 from ..join_counts import Join_Counts
 
@@ -9,12 +9,11 @@ parametrize_w = pytest.mark.parametrize(
     "w",
     [
         lat2W(4, 4),
-        graph.Graph.from_W(
-             lat2W(4, 4)
-        ),
+        graph.Graph.from_W(lat2W(4, 4)),
     ],
     ids=["W", "Graph"],
 )
+
 
 class TestJoinCounts:
     """Unit test for Join Counts"""
@@ -24,7 +23,7 @@ class TestJoinCounts:
         self.y[0:8] = 0
 
     @parametrize_w
-    def test_Join_Counts(self, w):
+    def test_default(self, w):
         """Test method"""
         np.random.seed(12345)
         jc = Join_Counts(self.y, w)
