@@ -1,10 +1,8 @@
+import libpysal
+import numpy as np
 import pytest
 
-import numpy as np
-import libpysal
-
 from ..gamma import Gamma
-
 
 parametrize_lat = pytest.mark.parametrize(
     "w",
@@ -25,8 +23,7 @@ class TestGamma:
         np.random.seed(12345)
 
     @parametrize_lat
-    def test_Gamma(self, w):
-        """Test method"""
+    def test_default(self, w):
         g = Gamma(self.y, w)
 
         np.testing.assert_allclose(g.g, 20.0)
@@ -37,7 +34,7 @@ class TestGamma:
         np.testing.assert_allclose(g.mean_g, 11.093093093093094)
 
     @parametrize_lat
-    def test_Gamma_s(self, w):
+    def test_s(self, w):
         np.random.seed(12345)
         g1 = Gamma(self.y, w, operation="s")
         np.testing.assert_allclose(g1.g, 8.0)
@@ -48,7 +45,7 @@ class TestGamma:
         np.testing.assert_allclose(g1.mean_g, 25.623623623623622)
 
     @parametrize_lat
-    def test_Gamma_a(self, w):
+    def test_a(self, w):
         np.random.seed(12345)
         g2 = Gamma(self.y, w, operation="a")
         np.testing.assert_allclose(g2.g, 8.0)
@@ -59,7 +56,7 @@ class TestGamma:
         np.testing.assert_allclose(g2.mean_g, 25.623623623623622)
 
     @parametrize_lat
-    def test_Gamma_standardize(self, w):
+    def test_standardize(self, w):
         np.random.seed(12345)
         g3 = Gamma(self.y, w, standardize=True)
         np.testing.assert_allclose(g3.g, 32.0)
@@ -70,7 +67,7 @@ class TestGamma:
         np.testing.assert_allclose(g3.mean_g, -3.2472472472472473)
 
     @parametrize_lat
-    def test_Gamma_op(self, w):
+    def test_op(self, w):
         np.random.seed(12345)
         if isinstance(w, libpysal.graph.Graph):
             pytest.skip("Calleble not supported with Graph")
