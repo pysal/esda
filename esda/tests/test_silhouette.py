@@ -1,6 +1,6 @@
-import pytest
 import libpysal
 import numpy
+import pytest
 from sklearn.metrics import pairwise
 
 from .. import silhouettes
@@ -16,6 +16,7 @@ parametrize_w = pytest.mark.parametrize(
     ],
     ids=["W", "Graph"],
 )
+
 
 class TestSilhouette:
     def setup_method(self):
@@ -119,9 +120,7 @@ class TestSilhouette:
         )
         numpy.testing.assert_allclose(known, test, rtol=RTOL, atol=ATOL)
         with pytest.raises(TypeError):
-            silhouettes.path_silhouette(
-                self.X, self.groups, w, metric=self.precomputed
-            )
+            silhouettes.path_silhouette(self.X, self.groups, w, metric=self.precomputed)
         with pytest.raises(AssertionError):
             silhouettes.path_silhouette(
                 self.X, self.groups, w, metric=lambda d: -self.altmetric(d)
@@ -199,7 +198,5 @@ class TestSilhouette:
             alist = w.to_adjlist(drop_islands=True)
         else:
             alist = w.adjacency.drop(w.isolates).reset_index()
-        test = silhouettes.silhouette_alist(
-            self.X, self.groups, alist
-        )
+        test = silhouettes.silhouette_alist(self.X, self.groups, alist)
         numpy.testing.assert_allclose(known, test.silhouette, rtol=RTOL, atol=ATOL)
