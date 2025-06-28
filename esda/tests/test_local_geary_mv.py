@@ -24,7 +24,7 @@ class TestGearyLocalMV:
         self.y2 = np.array(f.by_col["HC8488"])
 
     @parametrize_w
-    def test_local_geary_mv(self, w):
+    def test_defaults(self, w):
         lG_mv = Geary_Local_MV(connectivity=w).fit([self.y1, self.y2])
         print(lG_mv.p_sim[0])
         np.testing.assert_allclose(lG_mv.localG[0], 0.4096931479581422)
