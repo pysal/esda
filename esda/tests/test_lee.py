@@ -5,8 +5,6 @@ from libpysal.common import ATOL, RTOL, pandas
 
 from .. import lee
 
-PANDAS_EXTINCT = pandas is None
-
 
 class TestLee:
     def setup_method(self):
