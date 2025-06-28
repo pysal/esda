@@ -97,7 +97,7 @@ lint.ignore = [
     "N999",
     "UP007"
 ]
-exclude = ["esda/tests/*", "docs/*"]
+exclude = ["docs/*"]
 
 [tool.coverage.run]
 source = ["./esda"]
