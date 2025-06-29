@@ -11,5 +11,5 @@ Tutorial
     notebooks/geosilhouettes.ipynb
     notebooks/adbscan_berlin_example.ipynb
     notebooks/shape-measures.ipynb
-    notebooks/Spatial Autocorrelation for Areal Unit Data.ipynb
+    notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb
 
