@@ -1,6 +1,0 @@
-﻿esda.shape.boundary\_amplitude
-==============================
-
-.. currentmodule:: esda.shape
-
-.. autofunction:: boundary_amplitude
