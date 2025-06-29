@@ -82,6 +82,7 @@ include = ["esda", "esda.*"]
 
 [tool.ruff]
 line-length = 88
+extend-include = ["*.ipynb"]
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 lint.ignore = [
     "B006",
@@ -98,6 +99,11 @@ lint.ignore = [
     "UP007"
 ]
 exclude = ["docs/*"]
+
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = [
+    "E402",  # Module level import not at top of cell
+]
 
 [tool.coverage.run]
 source = ["./esda"]
