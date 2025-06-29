@@ -38,7 +38,7 @@ $ pip install git+https://github.com/pysal/esda@main
 
 ## Requirements
 
-* see currently supported versions in [`pyproject.toml[dependencies]`](https://github.com/pysal/esda/blob/main/pyproject.toml)
+*see currently supported versions in [`pyproject.toml[dependencies]`](https://github.com/pysal/esda/blob/main/pyproject.toml)*
 
 - `geopandas`
 - `libpysal`
@@ -50,7 +50,7 @@ $ pip install git+https://github.com/pysal/esda@main
 
 ## Optional dependencies
 
-* see currently supported versions in [`pyproject.toml[project.optional-dependencies]`](https://github.com/pysal/esda/blob/main/pyproject.toml)
+*see currently supported versions in [`pyproject.toml[project.optional-dependencies]`](https://github.com/pysal/esda/blob/main/pyproject.toml)*
 
 - `matplotlib` - required for `esda.moran.explore()`
 - `numba` - used to accelerate computational geometry and permutation-based statistical inference.
