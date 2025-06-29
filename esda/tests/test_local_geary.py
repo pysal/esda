@@ -23,7 +23,7 @@ class TestGearyLocal:
         self.y = np.array(f.by_col["HR8893"])
 
     @parametrize_w
-    def test_local_geary(self, w):
+    def test_defaults(self, w):
         lG = Geary_Local(connectivity=w).fit(self.y)
         np.testing.assert_allclose(lG.localG[0], 0.696703432)
         np.testing.assert_allclose(lG.p_sim[0], 0.19)
