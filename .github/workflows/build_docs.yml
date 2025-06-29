@@ -12,6 +12,7 @@
          description: Manual Doc Build Reason
          default: test
          required: false
+ 
  jobs:
    docs:
      name: Build and Push Docs (${{ matrix.os }}-${{ matrix.environment-file }})
@@ -46,7 +47,7 @@
        - name: push to gh-pages
          uses: ad-m/github-push-action@master
          with:
-            branch: gh-pages
-            directory: gh-pages
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            force: true
+           branch: gh-pages
+           directory: gh-pages
+           github_token: ${{ secrets.GITHUB_TOKEN }}
+           force: true
