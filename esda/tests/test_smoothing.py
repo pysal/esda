@@ -410,56 +410,6 @@ class TestKernelAgeAdjSM:
         kr = sm.Kernel_Smoother(self.e, self.b, self.kw)
         np.testing.assert_allclose(kr.r.flatten(), self.kernel_exp)
 
-    """ see gh#369
-    @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
-    def test_Kernel_Smoother_tabular(self):
-        dfa, dfb = self.dfa, self.dfb
-        kr = sm.Kernel_Smoother(dfa["e"], dfa["b"], self.kw)
-        np.testing.assert_allclose(kr.r.flatten(), kernel_exp)
-
-        kr = sm.Kernel_Smoother.by_col(dfa, "e", "b", w=self.kw)
-        colname = "e_b_kernel_smoother"
-        np.testing.assert_allclose(kr[colname].values, kernel_exp)
-
-        kr = sm.Kernel_Smoother.by_col(dfb, ["e", "s"], "b", w=self.kw)
-        outcols = ["{}-b_kernel_smoother".format(l) for l in ["e", "s"]]  # noqa E741
-
-        exp_eb = np.array(
-            [
-                0.08276363,
-                0.08096262,
-                0.03636364,
-                0.0704302,
-                0.07996067,
-                0.1287226,
-                0.09831286,
-                0.0952105,
-                0.02857143,
-                0.06671039,
-                0.07129231,
-                0.08078792,
-            ]
-        )
-        exp_sb = np.array(
-            [
-                1.00575463,
-                0.99597005,
-                0.96363636,
-                0.99440132,
-                0.98468399,
-                1.07912333,
-                1.03376267,
-                1.02759815,
-                0.95428572,
-                0.99716186,
-                0.98277235,
-                1.03906155,
-            ]
-        )
-        for name, answer in zip(outcols, [exp_eb, exp_sb]):
-            np.testing.assert_allclose(kr[name].values, answer, rtol=RTOL, atol=ATOL)
-    """
-
     def test_age_adjusted_smoother(self):
         ar = sm.Age_Adjusted_Smoother(self.e1, self.b1, self.kw, self.s)
         np.testing.assert_allclose(ar.r, self.ageadj_exp)
