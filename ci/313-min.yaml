@@ -1,4 +1,4 @@
-name: esda
+name: test
 channels:
   - conda-forge
 dependencies:
@@ -11,9 +11,10 @@ dependencies:
   - scikit-learn
   - scipy
   - shapely
-  # optional, testing, etc.
+  # testing
+  - codecov
   - folium
   - mapclassify
-  - matplotlib
-  - numba
-  - rtree
+  - pytest
+  - pytest-cov
+  - pytest-xdist
