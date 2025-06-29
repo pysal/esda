@@ -1,9 +1,9 @@
 files: "esda\/"
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.5.3"
+    rev: "v0.12.1"
     hooks:
-      - id: ruff
+      - id: ruff-check
       - id: ruff-format
 
 ci:
