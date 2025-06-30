@@ -1,0 +1,6 @@
+﻿esda.shape.form\_factor
+=======================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: form_factor

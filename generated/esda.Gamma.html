@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>esda.Gamma &#8212; esda v2.7.1.dev14+g88383d8 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../_static/documentation_options.js?v=3203814d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="esda.Geary" href="esda.Geary.html" />
+    <link rel="prev" title="esda.adbscan.ADBSCAN" href="esda.adbscan.ADBSCAN.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.1.dev14+g88383d8</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">esda.Gamma</a><ul>
+<li><a class="reference internal" href="#esda.Gamma"><code class="docutils literal notranslate"><span class="pre">Gamma</span></code></a><ul>
+<li><a class="reference internal" href="#esda.Gamma.__init__"><code class="docutils literal notranslate"><span class="pre">Gamma.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#esda.Gamma.by_col"><code class="docutils literal notranslate"><span class="pre">Gamma.by_col()</span></code></a></li>
+<li><a class="reference internal" href="#esda.Gamma.p_sim"><code class="docutils literal notranslate"><span class="pre">Gamma.p_sim</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="esda-gamma">
+<h1>esda.Gamma<a class="headerlink" href="#esda-gamma" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="esda.Gamma">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'c'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">standardize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/gamma.html#Gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Gamma" title="Link to this definition">¶</a></dt>
+<dd><p>Gamma index for spatial autocorrelation</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>variable measured across n spatial units</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with y
+can be binary or row-standardized</p>
+</dd>
+<dt><strong>operation</strong><span class="classifier">{‘c’, ‘s’, ‘a’}</span></dt><dd><p>attribute similarity function where,
+‘c’ cross product
+‘s’ squared difference
+‘a’ absolute difference</p>
+</dd>
+<dt><strong>standardize</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>}</span></dt><dd><p>standardize variables first
+False, keep as is
+True, standardize to mean zero and variance one</p>
+</dd>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
+</dd>
+<dt><strong>op</strong><span class="classifier">{‘c’, ‘s’, ‘a’}</span></dt><dd><p>attribute similarity function, as per parameters
+attribute similarity function</p>
+</dd>
+<dt><strong>stand</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>}</span></dt><dd><p>standardization</p>
+</dd>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
+</dd>
+<dt><strong>gamma</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>value of Gamma index</p>
+</dd>
+<dt><strong>sim_g</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
+vector of Gamma index values for permuted samples</p>
+</dd>
+<dt><strong>p_sim_g</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
+p-value based on permutations (one-sided)
+null: spatial randomness
+alternative: the observed Gamma is more extreme than under randomness
+implemented as a two-sided test</p>
+</dd>
+<dt><strong>mean_g</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted Gamma values</p>
+</dd>
+<dt><strong>min_g</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted Gamma values</p>
+</dd>
+<dt><strong>max_g</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted Gamma values</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For further technical details see <span id="id1">[<a class="reference internal" href="../references.html#id11" title="L. J. Hubert, R. G. Golledge, and C. M. Costanzo. Generalized procedures for evaluating spatial autocorrelation. Geographical Analysis, 13(3):224–233, Sep 1981. URL: http://dx.doi.org/10.1111/j.1538-4632.1981.tb00731.x, doi:10.1111/j.1538-4632.1981.tb00731.x.">HGC81</a>]</span>.</p>
+<p class="rubric">Examples</p>
+<p>use same example as for join counts to show similarity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span><span class="o">,</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.gamma</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gamma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">g</span>
+<span class="go">20.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">3.188</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">p_sim_g</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.003</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">min_g</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">max_g</span>
+<span class="go">20.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">mean_g</span>
+<span class="go">11.093093093093094</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">g</span>
+<span class="go">8.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g1</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">-3.706</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">p_sim_g</span>
+<span class="go">0.001</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">min_g</span>
+<span class="go">14.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">max_g</span>
+<span class="go">48.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">mean_g</span>
+<span class="go">25.623623623623622</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">g</span>
+<span class="go">8.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g2</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">-3.706</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">p_sim_g</span>
+<span class="go">0.001</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">min_g</span>
+<span class="go">14.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">max_g</span>
+<span class="go">48.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">mean_g</span>
+<span class="go">25.623623623623622</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">standardize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">g</span>
+<span class="go">32.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g3</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">3.706</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">p_sim_g</span>
+<span class="go">0.001</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">min_g</span>
+<span class="go">-48.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">max_g</span>
+<span class="go">20.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">mean_g</span>
+<span class="go">-3.2472472472472473</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">q</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">q</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g4</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g4</span><span class="o">.</span><span class="n">g</span>
+<span class="go">20.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g4</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">3.188</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g4</span><span class="o">.</span><span class="n">p_sim_g</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.003</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="esda.Gamma.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'c'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">standardize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/gamma.html#Gamma.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Gamma.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#esda.Gamma.__init__" title="esda.Gamma.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(y, w[, operation, standardize, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#esda.Gamma.by_col" title="esda.Gamma.by_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code></a>(df, cols[, w, inplace, pvalue, outvals])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#esda.Gamma.p_sim" title="esda.Gamma.p_sim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">p_sim</span></code></a></p></td>
+<td><p>new name to fit with Moran module</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="esda.Gamma.by_col">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">by_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">stat_kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/gamma.html#Gamma.by_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Gamma.by_col" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="esda.Gamma.p_sim">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">p_sim</span></span><a class="headerlink" href="#esda.Gamma.p_sim" title="Link to this definition">¶</a></dt>
+<dd><p>new name to fit with Moran module</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/esda.Gamma.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

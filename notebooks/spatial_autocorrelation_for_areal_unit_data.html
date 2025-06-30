@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Exploratory Analysis of Spatial Data: Spatial Autocorrelation &#8212; esda v2.7.1.dev14+g88383d8 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=3203814d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="References" href="../references.html" />
+    <link rel="prev" title="Measures of shape" href="shape-measures.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.1.dev14+g88383d8</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a><ul>
+<li><a class="reference internal" href="#Imports">Imports</a></li>
+<li><a class="reference internal" href="#Spatial-Autocorrelation">Spatial Autocorrelation</a><ul>
+<li><a class="reference internal" href="#Spatial-Similarity">Spatial Similarity</a></li>
+<li><a class="reference internal" href="#Attribute-Similarity">Attribute Similarity</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Global-Spatial-Autocorrelation">Global Spatial Autocorrelation</a><ul>
+<li><a class="reference internal" href="#Binary-Case">Binary Case</a></li>
+<li><a class="reference internal" href="#Join-counts">Join counts</a></li>
+<li><a class="reference internal" href="#Continuous-Case">Continuous Case</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Local-Autocorrelation:-Hot-Spots,-Cold-Spots,-and-Spatial-Outliers">Local Autocorrelation: Hot Spots, Cold Spots, and Spatial Outliers</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda//home/runner/work/esda/esda/docs/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb">/home/runner/work/esda/esda/docs/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath=/home/runner/work/esda/esda/docs/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Exploratory-Analysis-of-Spatial-Data:-Spatial-Autocorrelation">
+<h1>Exploratory Analysis of Spatial Data: Spatial Autocorrelation<a class="headerlink" href="#Exploratory-Analysis-of-Spatial-Data:-Spatial-Autocorrelation" title="Link to this heading">¶</a></h1>
+<p>In this notebook we introduce methods of <em>exploratory spatial data analysis</em> that are intended to complement geovizualization through formal univariate and multivariate statistical tests for spatial clustering.</p>
+<section id="Imports">
+<h2>Imports<a class="headerlink" href="#Imports" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas as gpd
+import libpysal as lps
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from geopandas import GeoDataFrame
+from shapely.geometry import Point
+
+import esda
+</pre></div>
+</div>
+</div>
+<p>Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the <a class="reference external" href="https://github.com/ljwolf/geopython">GeoPython 2018 workshop</a> by <a class="reference external" href="https://ljwolf.org">Levi Wolf</a> and <a class="reference external" href="https://sergerey.org">Serge Rey</a>. As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = gpd.read_file(&quot;data/berlin-neighbourhoods.geojson&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bl_df = pd.read_csv(&quot;data/berlin-listings.csv&quot;)
+geometry = [Point(xy) for xy in zip(bl_df.longitude, bl_df.latitude, strict=True)]
+crs = 4326
+bl_gdf = GeoDataFrame(bl_df, crs=crs, geometry=geometry)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bl_gdf[&quot;price&quot;] = bl_gdf[&quot;price&quot;].astype(&quot;float32&quot;)
+sj_gdf = gpd.sjoin(
+    gdf, bl_gdf, how=&quot;inner&quot;, predicate=&quot;intersects&quot;, lsuffix=&quot;left&quot;, rsuffix=&quot;right&quot;
+)
+median_price_gb = sj_gdf[&quot;price&quot;].groupby([sj_gdf[&quot;neighbourhood_group&quot;]]).mean()
+median_price_gb
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+neighbourhood_group
+Charlottenburg-Wilm.        58.556408
+Friedrichshain-Kreuzberg    55.492809
+Lichtenberg                 44.584270
+Marzahn - Hellersdorf       54.246754
+Mitte                       60.387890
+Neukölln                    45.135948
+Pankow                      60.282516
+Reinickendorf               43.682465
+Spandau                     48.236561
+Steglitz - Zehlendorf       54.445683
+Tempelhof - Schöneberg      53.704407
+Treptow - Köpenick          51.222004
+Name: price, dtype: float32
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf = gdf.join(median_price_gb, on=&quot;neighbourhood_group&quot;)
+gdf.rename(columns={&quot;price&quot;: &quot;median_pri&quot;}, inplace=True)
+gdf.head(15)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>neighbourhood</th>
+      <th>neighbourhood_group</th>
+      <th>geometry</th>
+      <th>median_pri</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Blankenfelde/Niederschönhausen</td>
+      <td>Pankow</td>
+      <td>MULTIPOLYGON (((13.41191 52.61487, 13.41183 52...</td>
+      <td>60.282516</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Helmholtzplatz</td>
+      <td>Pankow</td>
+      <td>MULTIPOLYGON (((13.41405 52.54929, 13.41422 52...</td>
+      <td>60.282516</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Wiesbadener Straße</td>
+      <td>Charlottenburg-Wilm.</td>
+      <td>MULTIPOLYGON (((13.30748 52.46788, 13.30743 52...</td>
+      <td>58.556408</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Schmöckwitz/Karolinenhof/Rauchfangswerder</td>
+      <td>Treptow - Köpenick</td>
+      <td>MULTIPOLYGON (((13.70973 52.3963, 13.70926 52....</td>
+      <td>51.222004</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Müggelheim</td>
+      <td>Treptow - Köpenick</td>
+      <td>MULTIPOLYGON (((13.73762 52.4085, 13.73773 52....</td>
+      <td>51.222004</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Biesdorf</td>
+      <td>Marzahn - Hellersdorf</td>
+      <td>MULTIPOLYGON (((13.56643 52.5351, 13.56697 52....</td>
+      <td>54.246754</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Nord 1</td>
+      <td>Reinickendorf</td>
+      <td>MULTIPOLYGON (((13.33669 52.62265, 13.33663 52...</td>
+      <td>43.682465</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>West 5</td>
+      <td>Reinickendorf</td>
+      <td>MULTIPOLYGON (((13.28138 52.59958, 13.28158 52...</td>
+      <td>43.682465</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Frankfurter Allee Nord</td>
+      <td>Friedrichshain-Kreuzberg</td>
+      <td>MULTIPOLYGON (((13.4532 52.51682, 13.45321 52....</td>
+      <td>55.492809</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Buch</td>
+      <td>Pankow</td>
+      <td>MULTIPOLYGON (((13.4645 52.65055, 13.46457 52....</td>
+      <td>60.282516</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Kaulsdorf</td>
+      <td>Marzahn - Hellersdorf</td>
+      <td>MULTIPOLYGON (((13.62135 52.52704, 13.62196 52...</td>
+      <td>54.246754</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((13.61659 52.58154, 13.61458 52...</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((13.61668 52.57868, 13.60703 52...</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>nördliche Luisenstadt</td>
+      <td>Friedrichshain-Kreuzberg</td>
+      <td>MULTIPOLYGON (((13.4443 52.50066, 13.44266 52....</td>
+      <td>55.492809</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Nord 2</td>
+      <td>Reinickendorf</td>
+      <td>MULTIPOLYGON (((13.3068 52.58606, 13.30667 52....</td>
+      <td>43.682465</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>We have an <code class="docutils literal notranslate"><span class="pre">nan</span></code> to first deal with:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pd.isnull(gdf[&quot;median_pri&quot;]).sum()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.int64(2)
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf[&quot;median_pri&quot;] = gdf[&quot;median_pri&quot;].fillna(gdf[&quot;median_pri&quot;].mean())
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>gdf.plot(column=&quot;median_pri&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_10_1.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_10_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={&quot;aspect&quot;: &quot;equal&quot;})
+gdf.plot(column=&quot;median_pri&quot;, scheme=&quot;Quantiles&quot;, k=5, cmap=&quot;GnBu&quot;, legend=True, ax=ax)
+# ax.set_xlim(150000, 160000)
+# ax.set_ylim(208000, 215000)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_11_1.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_11_1.png" />
+</div>
+</div>
+</section>
+<section id="Spatial-Autocorrelation">
+<h2>Spatial Autocorrelation<a class="headerlink" href="#Spatial-Autocorrelation" title="Link to this heading">¶</a></h2>
+<p>Visual inspection of the map pattern for the prices allows us to search for spatial structure. If the spatial distribution of the prices was random, then we should not see any clustering of similar values on the map. However, our visual system is drawn to the darker clusters in the south west as well as the center, and a concentration of the lighter hues (lower prices) in the north central and south east.</p>
+<p>Our brains are very powerful pattern recognition machines. However, sometimes they can be too powerful and lead us to detect false positives, or patterns where there are no statistical patterns. This is a particular concern when dealing with visualization of irregular polygons of differning sizes and shapes.</p>
+<p>The concept of <em>spatial autocorrelation</em> relates to the combination of two types of similarity: spatial similarity and attribute similarity. Although there are many different measures of spatial autocorrelation, they all combine these two types of simmilarity into a summary measure.</p>
+<p>Let’s use PySAL to generate these two types of similarity measures.</p>
+<section id="Spatial-Similarity">
+<h3>Spatial Similarity<a class="headerlink" href="#Spatial-Similarity" title="Link to this heading">¶</a></h3>
+<p>We have already encountered spatial weights in a previous notebook. In spatial autocorrelation analysis, the spatial weights are used to formalize the notion of spatial similarity. As we have seen there are many ways to define spatial weights, here we will use queen contiguity:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = gdf
+wq = lps.weights.Queen.from_dataframe(df, use_index=False, silence_warnings=True)
+wq.transform = &quot;r&quot;
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Attribute-Similarity">
+<h3>Attribute Similarity<a class="headerlink" href="#Attribute-Similarity" title="Link to this heading">¶</a></h3>
+<p>So the spatial weight between neighborhoods <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> indicates if the two are neighbors (i.e., geographically similar). What we also need is a measure of attribute similarity to pair up with this concept of spatial similarity. The <strong>spatial lag</strong> is a derived variable that accomplishes this for us. For neighborhood <span class="math notranslate nohighlight">\(i\)</span> the spatial lag is defined as:</p>
+<div class="math notranslate nohighlight">
+\[ylag_i = \sum_j w_{i,j} y_j\]</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y = df[&quot;median_pri&quot;]
+ylag = lps.weights.lag_spatial(wq, y)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ylag
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([56.9625061 , 60.28251648, 56.37749926, 51.22200394, 51.22200394,
+       50.52180099, 43.6824646 , 45.63422012, 52.65491422, 60.28251648,
+       53.64180374, 52.73586273, 52.73586273, 56.47182541, 47.83247757,
+       58.58870177, 60.33520317, 59.60296903, 60.38788986, 60.02159348,
+       51.80624199, 57.94034958, 52.84482813, 53.40314266, 57.90522512,
+       60.28251648, 60.28251648, 55.79730334, 56.79401737, 50.81182589,
+       59.01427841, 60.29756982, 60.28251648, 50.86356888, 60.3220315 ,
+       60.28251648, 55.48057556, 54.42881557, 60.32466583, 59.50179418,
+       54.42846909, 58.55640793, 58.55640793, 57.73426285, 57.47818544,
+       57.74774106, 56.13040733, 48.23656082, 48.23656082, 53.74621709,
+       55.11957245, 45.95951271, 51.67650986, 54.1985906 , 51.45368042,
+       52.36880302, 54.44568253, 54.44568253, 50.84825389, 56.50104523,
+       53.92108345, 55.9956289 , 50.49590378, 49.14499828, 48.61369433,
+       49.70049   , 49.32550866, 51.22200394, 51.22200394, 47.80509822,
+       49.70049   , 51.22200394, 45.13594818, 47.57037048, 51.22200394,
+       51.22200394, 51.22200394, 51.22200394, 49.60257785, 51.57007762,
+       51.42743301, 51.22200394, 51.22200394, 52.43339348, 49.41551208,
+       51.58891296, 44.58427048, 51.58891296, 51.42743301, 49.82624902,
+       48.947686  , 48.40726217, 45.95951271, 47.57037048, 43.6824646 ,
+       47.02354965, 45.95951271, 58.55640793, 56.30865606, 58.09966066,
+       47.34497997, 46.40236028, 58.05298805, 59.24321365, 58.55640793,
+       47.83247757, 49.49497332, 50.74955784, 48.6149381 , 55.97644615,
+       57.95624052, 57.87081385, 58.75619634, 60.37283652, 48.23656082,
+       49.389711  , 54.00091705, 54.26036358, 57.54238828, 55.61980756,
+       51.97116137, 48.92101212, 50.97179985, 54.07504463, 47.45824547,
+       49.42017746, 45.13594818, 45.13594818, 48.61369433, 49.41551208,
+       51.22200394, 50.20766131, 48.72533471, 54.24675369, 54.24675369,
+       54.24675369, 53.23850377, 56.1851902 , 49.23337746, 43.6824646 ])
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import mapclassify as mc
+
+ylagq5 = mc.Quantiles(ylag, k=5)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(1, figsize=(9, 9))
+df.assign(cl=ylagq5.yb).plot(
+    column=&quot;cl&quot;,
+    categorical=True,
+    k=5,
+    cmap=&quot;GnBu&quot;,
+    linewidth=0.1,
+    ax=ax,
+    edgecolor=&quot;white&quot;,
+    legend=True,
+)
+ax.set_axis_off()
+plt.title(&quot;Spatial Lag Median Price (Quintiles)&quot;)
+
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_18_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_18_0.png" />
+</div>
+</div>
+<p>The quintile map for the spatial lag tends to enhance the impression of value similarity in space. It is, in effect, a local smoother.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df[&quot;lag_median_pri&quot;] = ylag
+f, ax = plt.subplots(1, 2, figsize=(2.16 * 4, 4))
+df.plot(
+    column=&quot;median_pri&quot;, ax=ax[0], edgecolor=&quot;k&quot;, scheme=&quot;quantiles&quot;, k=5, cmap=&quot;GnBu&quot;
+)
+ax[0].axis(df.total_bounds[np.asarray([0, 2, 1, 3])])
+ax[0].set_title(&quot;Price&quot;)
+df.plot(
+    column=&quot;lag_median_pri&quot;,
+    ax=ax[1],
+    edgecolor=&quot;k&quot;,
+    scheme=&quot;quantiles&quot;,
+    cmap=&quot;GnBu&quot;,
+    k=5,
+)
+ax[1].axis(df.total_bounds[np.asarray([0, 2, 1, 3])])
+ax[1].set_title(&quot;Spatial Lag Price&quot;)
+ax[0].axis(&quot;off&quot;)
+ax[1].axis(&quot;off&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_20_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_20_0.png" />
+</div>
+</div>
+<p>However, we still have the challenge of visually associating the value of the prices in a neighborhod with the value of the spatial lag of values for the focal unit. The latter is a weighted average of list prices in the focal county’s neighborhood.</p>
+<p>To complement the geovisualization of these associations we can turn to formal statistical measures of spatial autocorrelation.</p>
+</section>
+</section>
+<section id="Global-Spatial-Autocorrelation">
+<h2>Global Spatial Autocorrelation<a class="headerlink" href="#Global-Spatial-Autocorrelation" title="Link to this heading">¶</a></h2>
+<p>We begin with a simple case where the variable under consideration is binary. This is useful to unpack the logic of spatial autocorrelation tests. So even though our attribute is a continuously valued one, we will convert it to a binary case to illustrate the key concepts:</p>
+<section id="Binary-Case">
+<h3>Binary Case<a class="headerlink" href="#Binary-Case" title="Link to this heading">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y.median()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float32(53.704407)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>yb = y &gt; y.median()
+sum(yb)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+68
+</pre></div></div>
+</div>
+<p>We have 68 neighborhoods with list prices above the median and 70 below the median (recall the issue with ties).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>yb = y &gt; y.median()
+labels = [&quot;0 Low&quot;, &quot;1 High&quot;]
+yb = [labels[i] for i in 1 * yb]
+df[&quot;yb&quot;] = yb
+</pre></div>
+</div>
+</div>
+<p>The spatial distribution of the binary variable immediately raises questions about the juxtaposition of the “black” and “white” areas.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={&quot;aspect&quot;: &quot;equal&quot;})
+df.plot(column=&quot;yb&quot;, cmap=&quot;binary&quot;, edgecolor=&quot;grey&quot;, legend=True, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_27_1.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_27_1.png" />
+</div>
+</div>
+</section>
+<section id="Join-counts">
+<h3>Join counts<a class="headerlink" href="#Join-counts" title="Link to this heading">¶</a></h3>
+<p>One way to formalize a test for spatial autocorrelation in a binary attribute is to consider the so-called <em>joins</em>. A join exists for each neighbor pair of observations, and the joins are reflected in our binary spatial weights object <code class="docutils literal notranslate"><span class="pre">wq</span></code>.</p>
+<p>Each unit can take on one of two values “Black” or “White”, and so for a given pair of neighboring locations there are three different types of joins that can arise:</p>
+<ul class="simple">
+<li><p>Black Black (BB)</p></li>
+<li><p>White White (WW)</p></li>
+<li><p>Black White (or White Black) (BW)</p></li>
+</ul>
+<p>Given that we have 68 Black polygons on our map, what is the number of Black Black (BB) joins we could expect if the process were such that the Black polygons were randomly assigned on the map? This is the logic of join count statistics.</p>
+<p>We can use the <code class="docutils literal notranslate"><span class="pre">esda</span></code> package from PySAL to carry out join count analysis:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>yb = 1 * (y &gt; y.median())  # convert back to binary
+wq = lps.weights.Queen.from_dataframe(df, use_index=False, silence_warnings=True)
+wq.transform = &quot;b&quot;
+np.random.seed(12345)
+jc = esda.join_counts.Join_Counts(yb, wq)
+</pre></div>
+</div>
+</div>
+<p>The resulting object stores the observed counts for the different types of joins:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.bb
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(164.0)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.ww
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(149.0)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.bw
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(73.0)
+</pre></div></div>
+</div>
+<p>Note that the three cases exhaust all possibilities:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.bb + jc.ww + jc.bw
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(386.0)
+</pre></div></div>
+</div>
+<p>and</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wq.s0 / 2
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(386.0)
+</pre></div></div>
+</div>
+<p>which is the unique number of joins in the spatial weights object.</p>
+<p>Our object tells us we have observed 164 BB joins:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.bb
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(164.0)
+</pre></div></div>
+</div>
+<p>The critical question for us, is whether this is a departure from what we would expect if the process generating the spatial distribution of the Black polygons were a completely random one? To answer this, PySAL uses random spatial permutations of the observed attribute values to generate a realization under the null of <em>complete spatial randomness</em> (CSR). This is repeated a large number of times (999 default) to construct a reference distribution to evaluate the statistical significance of our
+observed counts.</p>
+<p>The average number of BB joins from the synthetic realizations is:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.mean_bb
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(90.70170170170171)
+</pre></div></div>
+</div>
+<p>which is less than our observed count. The question is whether our observed value is so different from the expectation that we would reject the null of CSR?</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import seaborn as sbn
+
+sbn.kdeplot(jc.sim_bb, fill=True)
+plt.vlines(jc.bb, 0, 0.075, color=&quot;r&quot;)
+plt.vlines(jc.mean_bb, 0, 0.075)
+plt.xlabel(&quot;BB Counts&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;BB Counts&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_43_1.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_43_1.png" />
+</div>
+</div>
+<p>The density portrays the distribution of the BB counts, with the black vertical line indicating the mean BB count from the synthetic realizations and the red line the observed BB count for our prices. Clearly our observed value is extremely high. A pseudo p-value summarizes this:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>jc.p_sim_bb
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(0.001)
+</pre></div></div>
+</div>
+<p>Since this is below conventional significance levels, we would reject the null of complete spatial randomness in favor of spatial autocorrelation in market prices.</p>
+</section>
+<section id="Continuous-Case">
+<h3>Continuous Case<a class="headerlink" href="#Continuous-Case" title="Link to this heading">¶</a></h3>
+<p>The join count analysis is based on a binary attribute, which can cover many interesting empirical applications where one is interested in presence and absence type phenomena. In our case, we artificially created the binary variable, and in the process we throw away a lot of information in our originally continuous attribute. Turning back to the original variable, we can explore other tests for spatial autocorrelation for the continuous case.</p>
+<p>First, we transform our weights to be row-standardized, from the current binary state:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wq.transform = &quot;r&quot;
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y = df[&quot;median_pri&quot;]
+</pre></div>
+</div>
+</div>
+<p>Moran’s I is a test for global autocorrelation for a continuous attribute:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>np.random.seed(12345)
+mi = esda.moran.Moran(y, wq)
+mi.I
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(0.6563069331329718)
+</pre></div></div>
+</div>
+<p>Again, our value for the statistic needs to be interpreted against a reference distribution under the null of CSR. PySAL uses a similar approach as we saw in the join count analysis: random spatial permutations.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import seaborn as sbn
+
+sbn.kdeplot(mi.sim, fill=True)
+plt.vlines(mi.I, 0, 1, color=&quot;r&quot;)
+plt.vlines(mi.EI, 0, 1)
+plt.xlabel(&quot;Moran&#39;s I&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#34;Moran&#39;s I&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_52_1.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_52_1.png" />
+</div>
+</div>
+<p>Here our observed value is again in the upper tail, although visually it does not look as extreme relative to the binary case. Yet, it is still statistically significant:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mi.p_sim
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.float64(0.001)
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Local-Autocorrelation:-Hot-Spots,-Cold-Spots,-and-Spatial-Outliers">
+<h2>Local Autocorrelation: Hot Spots, Cold Spots, and Spatial Outliers<a class="headerlink" href="#Local-Autocorrelation:-Hot-Spots,-Cold-Spots,-and-Spatial-Outliers" title="Link to this heading">¶</a></h2>
+<p>In addition to the Global autocorrelation statistics, PySAL has many local autocorrelation statistics. Let’s compute a local Moran statistic for the same d</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>np.random.seed(12345)
+import esda
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>wq.transform = &quot;r&quot;
+lag_price = lps.weights.lag_spatial(wq, df[&quot;median_pri&quot;])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>price = df[&quot;median_pri&quot;]
+b, a = np.polyfit(price, lag_price, 1)
+f, ax = plt.subplots(1, figsize=(9, 9))
+
+plt.plot(price, lag_price, &quot;.&quot;, color=&quot;firebrick&quot;)
+
+# dashed vert at mean of the price
+plt.vlines(price.mean(), lag_price.min(), lag_price.max(), linestyle=&quot;--&quot;)
+# dashed horizontal at mean of lagged price
+plt.hlines(lag_price.mean(), price.min(), price.max(), linestyle=&quot;--&quot;)
+
+# red line of best fit using global I as slope
+plt.plot(price, a + b * price, &quot;r&quot;)
+plt.title(&quot;Moran Scatterplot&quot;)
+plt.ylabel(&quot;Spatial Lag of Price&quot;)
+plt.xlabel(&quot;Price&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_58_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_58_0.png" />
+</div>
+</div>
+<p>Now, instead of a single <span class="math notranslate nohighlight">\(I\)</span> statistic, we have an <em>array</em> of local <span class="math notranslate nohighlight">\(I_i\)</span> statistics, stored in the <code class="docutils literal notranslate"><span class="pre">.Is</span></code> attribute, and p-values from the simulation are in <code class="docutils literal notranslate"><span class="pre">p_sim</span></code>.</p>
+<p><em>the following cell may error if ``numba`` is installed – see</em> <a class="reference external" href="https://github.com/pysal/esda/issues/376">esda#376</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
+    warnings.filterwarnings(
+        &quot;ignore&quot;,
+        category=RuntimeWarning,
+        message=&quot;invalid value encountered in divide&quot;,
+    )
+
+    li = esda.moran.Moran_Local(y, wq)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>li.q
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([1, 1, 1, 3, 3, 4, 3, 3, 4, 1, 1, 3, 3, 1, 3, 1, 1, 1, 1, 1, 4, 1,
+       1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 3, 3, 1, 1, 3, 3, 1, 3, 3, 1, 1, 4, 1, 1, 1, 3, 3, 3, 3,
+       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3,
+       3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 3, 3, 1, 1, 1, 3, 3, 4, 3, 1,
+       1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 4, 3, 4, 1, 3, 3, 3, 3, 3, 4, 3, 3,
+       4, 1, 1, 1, 1, 2, 3, 3])
+</pre></div></div>
+</div>
+<p>We can again test for local clustering using permutations, but here we use conditional random permutations (different distributions for each focal location)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(li.p_sim &lt; 0.05).sum()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+np.int64(68)
+</pre></div></div>
+</div>
+<p>We can distinguish the specific type of local spatial association reflected in the four quadrants of the Moran Scatterplot above:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sig = li.p_sim &lt; 0.05
+hotspot = sig * li.q == 1
+coldspot = sig * li.q == 3
+doughnut = sig * li.q == 2
+diamond = sig * li.q == 4
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spots = [&quot;n.sig.&quot;, &quot;hot spot&quot;]
+labels = [spots[i] for i in hotspot * 1]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = df
+from matplotlib import colors
+
+hmap = colors.ListedColormap([&quot;red&quot;, &quot;lightgrey&quot;])
+f, ax = plt.subplots(1, figsize=(9, 9))
+df.assign(cl=labels).plot(
+    column=&quot;cl&quot;,
+    categorical=True,
+    k=2,
+    cmap=hmap,
+    linewidth=0.1,
+    ax=ax,
+    edgecolor=&quot;white&quot;,
+    legend=True,
+)
+ax.set_axis_off()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_67_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_67_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spots = [&quot;n.sig.&quot;, &quot;cold spot&quot;]
+labels = [spots[i] for i in coldspot * 1]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = df
+from matplotlib import colors
+
+hmap = colors.ListedColormap([&quot;blue&quot;, &quot;lightgrey&quot;])
+f, ax = plt.subplots(1, figsize=(9, 9))
+df.assign(cl=labels).plot(
+    column=&quot;cl&quot;,
+    categorical=True,
+    k=2,
+    cmap=hmap,
+    linewidth=0.1,
+    ax=ax,
+    edgecolor=&quot;white&quot;,
+    legend=True,
+)
+ax.set_axis_off()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_69_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_69_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spots = [&quot;n.sig.&quot;, &quot;doughnut&quot;]
+labels = [spots[i] for i in doughnut * 1]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = df
+from matplotlib import colors
+
+hmap = colors.ListedColormap([&quot;lightblue&quot;, &quot;lightgrey&quot;])
+f, ax = plt.subplots(1, figsize=(9, 9))
+df.assign(cl=labels).plot(
+    column=&quot;cl&quot;,
+    categorical=True,
+    k=2,
+    cmap=hmap,
+    linewidth=0.1,
+    ax=ax,
+    edgecolor=&quot;white&quot;,
+    legend=True,
+)
+ax.set_axis_off()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_71_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_71_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spots = [&quot;n.sig.&quot;, &quot;diamond&quot;]
+labels = [spots[i] for i in diamond * 1]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = df
+from matplotlib import colors
+
+hmap = colors.ListedColormap([&quot;pink&quot;, &quot;lightgrey&quot;])
+f, ax = plt.subplots(1, figsize=(9, 9))
+df.assign(cl=labels).plot(
+    column=&quot;cl&quot;,
+    categorical=True,
+    k=2,
+    cmap=hmap,
+    linewidth=0.1,
+    ax=ax,
+    edgecolor=&quot;white&quot;,
+    legend=True,
+)
+ax.set_axis_off()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_73_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_73_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sig = 1 * (li.p_sim &lt; 0.05)
+hotspot = 1 * (sig * li.q == 1)
+coldspot = 3 * (sig * li.q == 3)
+doughnut = 2 * (sig * li.q == 2)
+diamond = 4 * (sig * li.q == 4)
+spots = hotspot + coldspot + doughnut + diamond
+spots
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([1, 1, 0, 0, 0, 0, 3, 3, 0, 1, 0, 3, 3, 0, 3, 1, 1, 1, 1, 1, 0, 1,
+       0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1,
+       1, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 3, 0,
+       3, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 3, 0,
+       0, 3, 0, 3, 3, 3, 3, 3, 3, 1, 0, 1, 3, 3, 1, 1, 1, 3, 0, 0, 3, 0,
+       1, 1, 1, 1, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0, 3, 3, 3, 0, 0, 0,
+       4, 0, 0, 0, 0, 0, 3, 3])
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>spot_labels = [&quot;0 ns&quot;, &quot;1 hot spot&quot;, &quot;2 doughnut&quot;, &quot;3 cold spot&quot;, &quot;4 diamond&quot;]
+labels = [spot_labels[i] for i in spots]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from matplotlib import colors
+
+hmap = colors.ListedColormap([&quot;lightgrey&quot;, &quot;red&quot;, &quot;lightblue&quot;, &quot;blue&quot;, &quot;pink&quot;])
+f, ax = plt.subplots(1, figsize=(9, 9))
+df.assign(cl=labels).plot(
+    column=&quot;cl&quot;,
+    categorical=True,
+    k=2,
+    cmap=hmap,
+    linewidth=0.1,
+    ax=ax,
+    edgecolor=&quot;white&quot;,
+    legend=True,
+)
+ax.set_axis_off()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_76_0.png" src="../_images/notebooks_spatial_autocorrelation_for_areal_unit_data_76_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

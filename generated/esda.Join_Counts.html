@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>esda.Join_Counts &#8212; esda v2.7.1.dev14+g88383d8 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../_static/documentation_options.js?v=3203814d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="esda.Join_Counts_Local" href="esda.Join_Counts_Local.html" />
+    <link rel="prev" title="esda.G_Local" href="esda.G_Local.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.1.dev14+g88383d8</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">esda.Join_Counts</a><ul>
+<li><a class="reference internal" href="#esda.Join_Counts"><code class="docutils literal notranslate"><span class="pre">Join_Counts</span></code></a><ul>
+<li><a class="reference internal" href="#esda.Join_Counts.__init__"><code class="docutils literal notranslate"><span class="pre">Join_Counts.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#esda.Join_Counts.by_col"><code class="docutils literal notranslate"><span class="pre">Join_Counts.by_col()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="esda-join-counts">
+<h1>esda.Join_Counts<a class="headerlink" href="#esda-join-counts" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="esda.Join_Counts">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Join_Counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts" title="Link to this definition">¶</a></dt>
+<dd><p>Binary Join Counts</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>binary variable measured across n spatial units</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with y</p>
+</dd>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of random permutations for calculation of pseudo-p_values</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
+</dd>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of permutations</p>
+</dd>
+<dt><strong>bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-black joins</p>
+</dd>
+<dt><strong>ww</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of white-white joins</p>
+</dd>
+<dt><strong>bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of black-white joins</p>
+</dd>
+<dt><strong>J</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>number of joins</p>
+</dd>
+<dt><strong>sim_bb</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
+vector of bb values for permuted samples</p>
+</dd>
+<dt><strong>p_sim_bb</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><dl class="simple">
+<dt>(if permutations&gt;0)</dt><dd><p>p-value based on permutations (one-sided)
+null: spatial randomness
+alternative: the observed bb is greater than under randomness</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>mean_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bb values</p>
+</dd>
+<dt><strong>min_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bb values</p>
+</dd>
+<dt><strong>max_bb</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bb values</p>
+</dd>
+<dt><strong>sim_bw</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
+vector of bw values for permuted samples</p>
+</dd>
+<dt><strong>p_sim_bw</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(if permutations&gt;0)
+p-value based on permutations (one-sided)
+null: spatial randomness
+alternative: the observed bw is greater than under randomness</p>
+</dd>
+<dt><strong>mean_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>average of permuted bw values</p>
+</dd>
+<dt><strong>min_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimum of permuted bw values</p>
+</dd>
+<dt><strong>max_bw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximum of permuted bw values</p>
+</dd>
+<dt><strong>chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Chi-square statistic on contingency table for join counts</p>
+</dd>
+<dt><strong>chi2_p</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Analytical p-value for chi2</p>
+</dd>
+<dt><strong>chi2_dof</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Degrees of freedom for analytical chi2</p>
+</dd>
+<dt><strong>crosstab</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataFrame</span></code></span></dt><dd><p>Contingency table for observed join counts</p>
+</dd>
+<dt><strong>expected</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataFrame</span></code></span></dt><dd><p>Expected contingency table for the null</p>
+</dd>
+<dt><strong>p_sim_chi2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>p-value for chi2 under random spatial permutations</p>
+</dd>
+<dt><strong>drop_islands</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.13)"><span class="xref std std-ref">bool</span></a> (default <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>)</span></dt><dd><p>Whether or not to preserve islands as entries in the adjacency
+list. By default, observations with no neighbors do not appear
+in the adjacency list. If islands are kept, they are coded as
+self-neighbors with zero weight. See <code class="docutils literal notranslate"><span class="pre">libpysal.weights.to_adjlist()</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Technical details and derivations can be found in <span id="id1">[<a class="reference internal" href="../references.html#id7" title="A.D. Cliff and J.K. Ord. Spatial Processes: Models and Applications. Pion, London, 1981.">CO81</a>]</span>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.join_counts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span> <span class="o">=</span> <span class="n">Join_Counts</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span>
+<span class="go">4.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">J</span>
+<span class="go">24.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
+<span class="go">999</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bb</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.003</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">5.547</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">999</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bw</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">12.811811811811811</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">24.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">7.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">chi2_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.004</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_chi2</span>
+<span class="go">0.002</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="esda.Join_Counts.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#esda.Join_Counts.__init__" title="esda.Join_Counts.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(y, w[, permutations, drop_islands])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#esda.Join_Counts.by_col" title="esda.Join_Counts.by_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code></a>(df, cols[, w, inplace, pvalue, outvals])</p></td>
+<td><p>Function to compute a Join_Count statistic on a dataframe</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="esda.Join_Counts.by_col">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">by_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">stat_kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.by_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts.by_col" title="Link to this definition">¶</a></dt>
+<dd><p>Function to compute a Join_Count statistic on a dataframe</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a></span></dt><dd><p>a pandas dataframe with a geometry column</p>
+</dd>
+<dt><strong>cols</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>name or list of names of columns to use to compute the statistic</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with the dataframe. If not
+provided, this is searched for in the dataframe’s metadata</p>
+</dd>
+<dt><strong>inplace</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.13)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>a boolean denoting whether to operate on the dataframe inplace or to
+return a series contaning the results of the computation. If
+operating inplace, the derived columns will be named
+‘column_join_count’</p>
+</dd>
+<dt><strong>pvalue</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>a string denoting which pvalue should be returned. Refer to the
+the Join_Count statistic’s documentation for available p-values</p>
+</dd>
+<dt><strong>outvals</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">strings</span></code></span></dt><dd><p>list of arbitrary attributes to return as columns from the
+Join_Count statistic</p>
+</dd>
+<dt><strong>**stat_k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>options to pass to the underlying statistic. For this, see the
+documentation for the Join_Count statistic.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">If</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">and</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">is</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">conducted</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">on</span></code></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> memory. <code class="xref py py-obj docutils literal notranslate"><span class="pre">Otherwise</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">returns</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3/library/copy.html#module-copy" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">relevant</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">columns</span></code> attached.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/esda.Join_Counts.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
