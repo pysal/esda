@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = PACKAGE_NAME
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -25,8 +25,7 @@ github:
 
 sync:
 
-	@rsync -avh --exclude '.nojekyll' _build/html/ ../docs/ --delete
-	@rsync -avh --exclude '.nojekyll' figs/ ../docs/figs/ --delete
+	@rsync -avh --exclude '.nojekyll' build/html/ ../docs/ --delete
 	@make clean
 	touch ../docs/.nojekyll
 
