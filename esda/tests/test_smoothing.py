@@ -234,42 +234,38 @@ class TestSRate:
             out_smr2[outcol].values[:5], self.smr2, rtol=RTOL, atol=ATOL
         )
 
-    """ see gh#340
-        @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
-        def test_Spatial_Smoother_multicol(self):
-            # test that specifying multiple columns works correctly. Since the
-            # function is shared over all spatial smoothers, we can only test one.
-            enames = [self.ename, "SID79"]
-            bnames = [self.bname, "BIR79"]
-            out_df = sm.Spatial_Median_Rate.by_col(self.df, enames, bnames, self.w)
-            outcols = [
-                "{}-{}_spatial_median_rate".format(e, b) for e, b in zip(enames, bnames)
-            ]
-            smr79 = np.array(
-                [0.00122129, 0.00176924, 0.00176924, 0.00240964, 0.00272035]
+    @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
+    def test_Spatial_Smoother_multicol(self):
+        # test that specifying multiple columns works correctly. Since the
+        # function is shared over all spatial smoothers, we can only test one.
+        enames = [self.ename, "SID79"]
+        bnames = [self.bname, "BIR79"]
+        out_df = sm.Spatial_Median_Rate.by_col(self.df, enames, bnames, self.w)
+        outcols = [
+            "{}-{}_spatial_median_rate".format(e, b) for e, b in zip(enames, bnames)
+        ]
+        smr79 = np.array(
+            [0.00122129, 0.00176924, 0.00176924, 0.00240964, 0.00272035]
+        )
+        answers = [self.smr, smr79]
+        for col, answer in zip(outcols, answers):
+            np.testing.assert_allclose(
+                out_df[col].values[:5], answer, rtol=1e-4, atol=1e-6
             )
-            answers = [self.smr, smr79]
-            for col, answer in zip(outcols, answer):
-                self.assertIn(out_df.columns, col)
-                np.testing.assert_allclose(
-                    out_df[col].values[:5], answer, rtol=RTOL, atol=ATOL
-                )
 
-        @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
-        def test_Smoother_multicol(self):
-            # test that non-spatial smoothers work with multicolumn queries
-            enames = [self.ename, "SID79"]
-            bnames = [self.bname, "BIR79"]
-            out_df = sm.Excess_Risk.by_col(self.df, enames, bnames)
-            outcols = ["{}-{}_excess_risk".format(e, b) for e, b in zip(enames, bnames)]
-            er79 = np.array([0.000000, 2.796607, 0.8383863, 1.217479, 0.943811])
-            answers = [self.er, er79]
-            for col, answer in zip(outcols, answer):
-                self.assertIn(out_df.columns, col)
-                np.testing.assert_allclose(
-                    out_df[col].values[:5], answer, rtol=RTOL, atol=ATOL
-                )
-    """
+    @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
+    def test_Smoother_multicol(self):
+        # test that non-spatial smoothers work with multicolumn queries
+        enames = [self.ename, "SID79"]
+        bnames = [self.bname, "BIR79"]
+        out_df = sm.Excess_Risk.by_col(self.df, enames, bnames)
+        outcols = ["{}-{}_excess_risk".format(e, b) for e, b in zip(enames, bnames)]
+        er79 = np.array([0.000000, 2.796607, 0.8383863, 1.217479, 0.943811])
+        answers = [self.er, er79]
+        for col, answer in zip(outcols, answers):
+            np.testing.assert_allclose(
+                out_df[col].values[:5], answer, rtol=1e-4, atol=1e-7
+            )
 
 
 class TestHB:
