@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Topological Measures of Geographical Surfaces &#8212; esda v2.7.1.dev14+g88383d8 Manual</title>
+    <title>Topological Measures of Geographical Surfaces &#8212; esda v2.7.1 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=3203814d"></script>
+    <script src="../_static/documentation_options.js?v=7b940564"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.7.1.dev14+g88383d8</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.7.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -211,7 +211,9 @@ Interactive online version:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas
 import matplotlib.pyplot as plt
 import numpy
 from libpysal import weights
@@ -237,7 +239,9 @@ of height <span class="math notranslate nohighlight">\(h_i\)</span> and <span cl
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth = geopandas.read_file(geopandas.datasets.get_path(&quot;naturalearth_lowres&quot;))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth = geopandas.read_file(
+    &quot;https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip&quot;
+)
 </pre></div>
 </div>
 </div>
@@ -246,7 +250,7 @@ of height <span class="math notranslate nohighlight">\(h_i\)</span> and <span cl
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth.sort_values(&quot;pop_est&quot;, ascending=False).head()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth.sort_values(&quot;POP_EST&quot;, ascending=False).head()
 </pre></div>
 </div>
 </div>
@@ -273,62 +277,153 @@ of height <span class="math notranslate nohighlight">\(h_i\)</span> and <span cl
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>pop_est</th>
-      <th>continent</th>
-      <th>name</th>
-      <th>iso_a3</th>
-      <th>gdp_md_est</th>
+      <th>featurecla</th>
+      <th>scalerank</th>
+      <th>LABELRANK</th>
+      <th>SOVEREIGNT</th>
+      <th>SOV_A3</th>
+      <th>ADM0_DIF</th>
+      <th>LEVEL</th>
+      <th>TYPE</th>
+      <th>TLC</th>
+      <th>ADMIN</th>
+      <th>...</th>
+      <th>FCLASS_TR</th>
+      <th>FCLASS_ID</th>
+      <th>FCLASS_PL</th>
+      <th>FCLASS_GR</th>
+      <th>FCLASS_IT</th>
+      <th>FCLASS_NL</th>
+      <th>FCLASS_SE</th>
+      <th>FCLASS_BD</th>
+      <th>FCLASS_UA</th>
       <th>geometry</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>139</th>
-      <td>1379302771</td>
-      <td>Asia</td>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
       <td>China</td>
-      <td>CHN</td>
-      <td>21140000.0</td>
-      <td>MULTIPOLYGON (((109.47521 18.19770, 108.65521 ...</td>
+      <td>CH1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Country</td>
+      <td>1</td>
+      <td>China</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((109.47521 18.1977, 108.65521 1...</td>
     </tr>
     <tr>
       <th>98</th>
-      <td>1281935911</td>
-      <td>Asia</td>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
       <td>India</td>
       <td>IND</td>
-      <td>8721000.0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>India</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
       <td>POLYGON ((97.32711 28.26158, 97.40256 27.88254...</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>326625791</td>
-      <td>North America</td>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
       <td>United States of America</td>
-      <td>USA</td>
-      <td>18560000.0</td>
-      <td>MULTIPOLYGON (((-122.84000 49.00000, -120.0000...</td>
+      <td>US1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Country</td>
+      <td>1</td>
+      <td>United States of America</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((-122.84 49, -120 49, -117.0312...</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>260580739</td>
-      <td>Asia</td>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
       <td>Indonesia</td>
       <td>IDN</td>
-      <td>3028000.0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Indonesia</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
       <td>MULTIPOLYGON (((141.00021 -2.60015, 141.01706 ...</td>
     </tr>
     <tr>
-      <th>29</th>
-      <td>207353391</td>
-      <td>South America</td>
-      <td>Brazil</td>
-      <td>BRA</td>
-      <td>3081000.0</td>
-      <td>POLYGON ((-53.37366 -33.76838, -53.65054 -33.2...</td>
+      <th>102</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Pakistan</td>
+      <td>PAK</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Pakistan</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((77.83745 35.49401, 76.87172 34.65354...</td>
     </tr>
   </tbody>
 </table>
+<p>5 rows × 169 columns</p>
 </div></div>
 </div>
 <p>This is a perfect dataset to think about isolation/prominence, since we have big gaps between the highest population points in each continent.</p>
@@ -337,7 +432,7 @@ of height <span class="math notranslate nohighlight">\(h_i\)</span> and <span cl
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(1, 1, figsize=(12, 6))
-natearth.plot(&quot;pop_est&quot;, ax=ax)
+natearth.plot(&quot;POP_EST&quot;, ax=ax)
 </pre></div>
 </div>
 </div>
@@ -347,7 +442,7 @@ natearth.plot(&quot;pop_est&quot;, ax=ax)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f6e6fdee460&gt;
+&lt;Axes: &gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -358,30 +453,27 @@ natearth.plot(&quot;pop_est&quot;, ax=ax)
 </div>
 </div>
 <p>To simplify things, we’ll just consider the Euclidean distances between country centroids, but we could (in theory) use any kind of distance we want in this function by specifying the <code class="docutils literal notranslate"><span class="pre">metric</span></code> argument.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coordinates = numpy.column_stack((natearth.centroid.x, natearth.centroid.y))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
+    warnings.filterwarnings(
+        &quot;ignore&quot;,
+        category=UserWarning,
+        message=&quot;Geometry is in a geographic CRS&quot;,
+    )
+
+    coordinates = numpy.column_stack((natearth.centroid.x, natearth.centroid.y))
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-&lt;ipython-input-5-c7f3e5869dee&gt;:1: UserWarning: Geometry is in a geographic CRS. Results from &#39;centroid&#39; are likely incorrect. Use &#39;GeoSeries.to_crs()&#39; to re-project geometries to a projected CRS before this operation.
-
-  coordinates = numpy.column_stack((natearth.centroid.x, natearth.centroid.y))
-</pre></div></div>
 </div>
 <p>To get a bit more information on the result, we can use <code class="docutils literal notranslate"><span class="pre">return_all</span></code> to get the rank and distance for the isolated peak. This also returns the gap between the peak and its nearest higher peak.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>iso = topo.isolation(natearth.pop_est, coordinates, return_all=True)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>iso = topo.isolation(natearth[&quot;POP_EST&quot;], coordinates, return_all=True)
 </pre></div>
 </div>
 </div>
@@ -402,8 +494,8 @@ China. Last, you see Brazil, 5th most populous country, has US as a parent, with
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth[
-    [&quot;continent&quot;, &quot;name&quot;, &quot;rank&quot;, &quot;pop_est&quot;, &quot;parent_rank&quot;, &quot;isolation&quot;, &quot;gap&quot;]
-].sort_values(&quot;pop_est&quot;, ascending=False).head()
+    [&quot;CONTINENT&quot;, &quot;NAME&quot;, &quot;rank&quot;, &quot;POP_EST&quot;, &quot;parent_rank&quot;, &quot;isolation&quot;, &quot;gap&quot;]
+].sort_values(&quot;POP_EST&quot;, ascending=False).head()
 </pre></div>
 </div>
 </div>
@@ -430,10 +522,10 @@ China. Last, you see Brazil, 5th most populous country, has US as a parent, with
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>continent</th>
-      <th>name</th>
+      <th>CONTINENT</th>
+      <th>NAME</th>
       <th>rank</th>
-      <th>pop_est</th>
+      <th>POP_EST</th>
       <th>parent_rank</th>
       <th>isolation</th>
       <th>gap</th>
@@ -445,7 +537,7 @@ China. Last, you see Brazil, 5th most populous country, has US as a parent, with
       <td>Asia</td>
       <td>China</td>
       <td>0.0</td>
-      <td>1379302771</td>
+      <td>1.397715e+09</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -455,40 +547,40 @@ China. Last, you see Brazil, 5th most populous country, has US as a parent, with
       <td>Asia</td>
       <td>India</td>
       <td>1.0</td>
-      <td>1281935911</td>
+      <td>1.366418e+09</td>
       <td>0.0</td>
       <td>27.852795</td>
-      <td>9.736686e+07</td>
+      <td>3.129725e+07</td>
     </tr>
     <tr>
       <th>4</th>
       <td>North America</td>
       <td>United States of America</td>
       <td>2.0</td>
-      <td>326625791</td>
+      <td>3.282395e+08</td>
       <td>1.0</td>
       <td>193.538522</td>
-      <td>9.553101e+08</td>
+      <td>1.038178e+09</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Asia</td>
       <td>Indonesia</td>
       <td>3.0</td>
-      <td>260580739</td>
+      <td>2.706256e+08</td>
       <td>0.0</td>
       <td>41.072699</td>
-      <td>1.118722e+09</td>
+      <td>1.127089e+09</td>
     </tr>
     <tr>
-      <th>29</th>
-      <td>South America</td>
-      <td>Brazil</td>
+      <th>102</th>
+      <td>Asia</td>
+      <td>Pakistan</td>
       <td>4.0</td>
-      <td>207353391</td>
-      <td>2.0</td>
-      <td>82.093057</td>
-      <td>1.192724e+08</td>
+      <td>2.165653e+08</td>
+      <td>1.0</td>
+      <td>12.381725</td>
+      <td>1.149852e+09</td>
     </tr>
   </tbody>
 </table>
@@ -519,25 +611,14 @@ plt.show()
 </div>
 <p>Next, to see <code class="docutils literal notranslate"><span class="pre">prominence</span></code>, we’ll use the same arguments. However, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> can also take a graph/<code class="docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code> object that specifies the connections between sampled locations. If no pre-existing graph or surface is provided, the Delaunay Triangulation is used between the coordinates provided, which is a common triangulation in digital elevation models. Here, I’ll use the Rook contiguity graph, just for ease of interpretation. This means that some islands will automatically be
 considered as “peaks” because they don’t share any borders with any higher observations.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w_rook = weights.Rook.from_dataframe(natearth)
-prominence = topo.prominence(natearth.pop_est, w_rook, return_all=True)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w_rook = weights.Rook.from_dataframe(natearth, use_index=False, silence_warnings=True)
+prominence = topo.prominence(natearth[&quot;POP_EST&quot;], w_rook, return_all=True)
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/lw17329/anaconda3/envs/analysis/lib/python3.8/site-packages/libpysal/weights/weights.py:172: UserWarning: The weights matrix is not fully connected:
- There are 25 disconnected components.
- There are 21 islands with ids: 0, 19, 20, 22, 23, 45, 46, 47, 78, 89, 134, 135, 136, 137, 138, 140, 144, 147, 155, 159, 175.
-  warnings.warn(message)
-</pre></div></div>
 </div>
 <p>Under the hood, this algorithm may take a bit longer for big data, so you can use the <code class="docutils literal notranslate"><span class="pre">progressbar</span></code> option to visualize the progress.</p>
 <p>The actual algorithm entails sorting the data and determining whether we “connect” peaks together each time we introduce a new observation as equal to the declining sea level <span class="math notranslate nohighlight">\(w\)</span>. We <em>avoid</em> re-computing <code class="docutils literal notranslate"><span class="pre">scipy.sparse.connected_components</span></code> each iteration by creating a <code class="docutils literal notranslate"><span class="pre">set</span></code> of neighbors for each “peak.” When two (or more) peaks merge, we replace the independent peaks <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> (where <span class="math notranslate nohighlight">\(h_i &gt; h_j\)</span>) with peak <code class="docutils literal notranslate"><span class="pre">(i,j)</span></code>. Each merge, the new peak gets the union of the sub-peaks
@@ -560,9 +641,9 @@ neighbors, and are then treated as a single “peak” from then on.</p>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth[
     [
-        &quot;continent&quot;,
-        &quot;name&quot;,
-        &quot;pop_est&quot;,
+        &quot;CONTINENT&quot;,
+        &quot;NAME&quot;,
+        &quot;POP_EST&quot;,
         &quot;rank&quot;,
         &quot;parent_rank&quot;,
         &quot;isolation&quot;,
@@ -570,7 +651,7 @@ neighbors, and are then treated as a single “peak” from then on.</p>
         &quot;keycol&quot;,
         &quot;prominence&quot;,
     ]
-].sort_values(&quot;pop_est&quot;, ascending=False).head(20)
+].sort_values(&quot;POP_EST&quot;, ascending=False).head(20)
 </pre></div>
 </div>
 </div>
@@ -597,9 +678,9 @@ neighbors, and are then treated as a single “peak” from then on.</p>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>continent</th>
-      <th>name</th>
-      <th>pop_est</th>
+      <th>CONTINENT</th>
+      <th>NAME</th>
+      <th>POP_EST</th>
       <th>rank</th>
       <th>parent_rank</th>
       <th>isolation</th>
@@ -613,241 +694,241 @@ neighbors, and are then treated as a single “peak” from then on.</p>
       <th>139</th>
       <td>Asia</td>
       <td>China</td>
-      <td>1379302771</td>
+      <td>1.397715e+09</td>
       <td>0.0</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>139</td>
-      <td>93</td>
-      <td>1.324179e+09</td>
+      <td>139.0</td>
+      <td>107.0</td>
+      <td>1.314801e+09</td>
     </tr>
     <tr>
       <th>98</th>
       <td>Asia</td>
       <td>India</td>
-      <td>1281935911</td>
+      <td>1.366418e+09</td>
       <td>1.0</td>
       <td>0.0</td>
       <td>27.852795</td>
-      <td>139</td>
-      <td>-1</td>
+      <td>139.0</td>
+      <td>-1.0</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>4</th>
       <td>North America</td>
       <td>United States of America</td>
-      <td>326625791</td>
+      <td>3.282395e+08</td>
       <td>2.0</td>
       <td>1.0</td>
       <td>193.538522</td>
-      <td>139</td>
-      <td>33</td>
-      <td>3.228726e+08</td>
+      <td>139.0</td>
+      <td>33.0</td>
+      <td>3.239931e+08</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Asia</td>
       <td>Indonesia</td>
-      <td>260580739</td>
+      <td>2.706256e+08</td>
       <td>3.0</td>
       <td>0.0</td>
       <td>41.072699</td>
-      <td>4</td>
-      <td>148</td>
-      <td>2.291987e+08</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>South America</td>
-      <td>Brazil</td>
-      <td>207353391</td>
       <td>4.0</td>
-      <td>2.0</td>
-      <td>82.093057</td>
-      <td>8</td>
-      <td>43</td>
-      <td>1.402472e+08</td>
+      <td>148.0</td>
+      <td>2.386758e+08</td>
     </tr>
     <tr>
       <th>102</th>
       <td>Asia</td>
       <td>Pakistan</td>
-      <td>204924861</td>
-      <td>5.0</td>
+      <td>2.165653e+08</td>
+      <td>4.0</td>
       <td>1.0</td>
       <td>12.381725</td>
-      <td>139</td>
-      <td>-1</td>
+      <td>139.0</td>
+      <td>-1.0</td>
       <td>NaN</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>South America</td>
+      <td>Brazil</td>
+      <td>2.110495e+08</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>82.093057</td>
+      <td>8.0</td>
+      <td>43.0</td>
+      <td>1.439896e+08</td>
     </tr>
     <tr>
       <th>56</th>
       <td>Africa</td>
       <td>Nigeria</td>
-      <td>190632261</td>
+      <td>2.009636e+08</td>
       <td>6.0</td>
-      <td>4.0</td>
+      <td>5.0</td>
       <td>64.353456</td>
-      <td>29</td>
-      <td>55</td>
-      <td>1.713869e+08</td>
+      <td>29.0</td>
+      <td>55.0</td>
+      <td>1.776529e+08</td>
     </tr>
     <tr>
       <th>99</th>
       <td>Asia</td>
       <td>Bangladesh</td>
-      <td>157826578</td>
+      <td>1.630462e+08</td>
       <td>7.0</td>
       <td>1.0</td>
       <td>10.713323</td>
-      <td>139</td>
-      <td>-1</td>
+      <td>139.0</td>
+      <td>-1.0</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>18</th>
       <td>Europe</td>
       <td>Russia</td>
-      <td>142257519</td>
+      <td>1.443735e+08</td>
       <td>8.0</td>
       <td>0.0</td>
       <td>26.374718</td>
-      <td>139</td>
-      <td>-1</td>
+      <td>139.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>North America</td>
+      <td>Mexico</td>
+      <td>1.275755e+08</td>
+      <td>9.0</td>
+      <td>2.0</td>
+      <td>23.966775</td>
+      <td>4.0</td>
+      <td>-1.0</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>155</th>
       <td>Asia</td>
       <td>Japan</td>
-      <td>126451398</td>
-      <td>9.0</td>
+      <td>1.262649e+08</td>
+      <td>10.0</td>
       <td>0.0</td>
       <td>34.199305</td>
-      <td>56</td>
-      <td>-1</td>
-      <td>1.264513e+08</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>North America</td>
-      <td>Mexico</td>
-      <td>124574795</td>
-      <td>10.0</td>
-      <td>2.0</td>
-      <td>23.966775</td>
-      <td>4</td>
-      <td>-1</td>
-      <td>NaN</td>
+      <td>56.0</td>
+      <td>-1.0</td>
+      <td>1.262648e+08</td>
     </tr>
     <tr>
       <th>165</th>
       <td>Africa</td>
       <td>Ethiopia</td>
-      <td>105350020</td>
+      <td>1.120787e+08</td>
       <td>11.0</td>
       <td>6.0</td>
       <td>31.568798</td>
-      <td>155</td>
-      <td>13</td>
-      <td>5.773428e+07</td>
+      <td>155.0</td>
+      <td>13.0</td>
+      <td>5.950476e+07</td>
     </tr>
     <tr>
       <th>147</th>
       <td>Asia</td>
       <td>Philippines</td>
-      <td>104256076</td>
+      <td>1.081166e+08</td>
       <td>12.0</td>
       <td>3.0</td>
       <td>15.020572</td>
-      <td>165</td>
-      <td>-1</td>
-      <td>1.042559e+08</td>
+      <td>165.0</td>
+      <td>-1.0</td>
+      <td>1.081165e+08</td>
     </tr>
     <tr>
       <th>163</th>
       <td>Africa</td>
       <td>Egypt</td>
-      <td>97041072</td>
+      <td>1.003881e+08</td>
       <td>13.0</td>
       <td>11.0</td>
       <td>20.320874</td>
-      <td>147</td>
-      <td>14</td>
-      <td>5.969514e+07</td>
+      <td>147.0</td>
+      <td>14.0</td>
+      <td>5.757484e+07</td>
     </tr>
     <tr>
       <th>94</th>
       <td>Asia</td>
       <td>Vietnam</td>
-      <td>96160163</td>
+      <td>9.646211e+07</td>
       <td>14.0</td>
       <td>12.0</td>
       <td>17.322577</td>
-      <td>139</td>
-      <td>-1</td>
+      <td>139.0</td>
+      <td>-1.0</td>
       <td>NaN</td>
     </tr>
     <tr>
       <th>11</th>
       <td>Africa</td>
       <td>Dem. Rep. Congo</td>
-      <td>83301151</td>
+      <td>8.679057e+07</td>
       <td>15.0</td>
       <td>11.0</td>
       <td>19.680827</td>
-      <td>163</td>
-      <td>13</td>
-      <td>3.568541e+07</td>
-    </tr>
-    <tr>
-      <th>107</th>
-      <td>Asia</td>
-      <td>Iran</td>
-      <td>82021564</td>
-      <td>16.0</td>
-      <td>5.0</td>
-      <td>15.341195</td>
-      <td>139</td>
-      <td>-1</td>
-      <td>NaN</td>
+      <td>163.0</td>
+      <td>13.0</td>
+      <td>3.421659e+07</td>
     </tr>
     <tr>
       <th>124</th>
       <td>Asia</td>
       <td>Turkey</td>
-      <td>80845215</td>
-      <td>17.0</td>
+      <td>8.342962e+07</td>
+      <td>16.0</td>
       <td>13.0</td>
       <td>13.623370</td>
-      <td>139</td>
-      <td>-1</td>
-      <td>NaN</td>
+      <td>11.0</td>
+      <td>107.0</td>
+      <td>5.157090e+05</td>
     </tr>
     <tr>
       <th>121</th>
       <td>Europe</td>
       <td>Germany</td>
-      <td>80594017</td>
-      <td>18.0</td>
+      <td>8.313280e+07</td>
       <td>17.0</td>
+      <td>16.0</td>
       <td>27.604762</td>
-      <td>11</td>
-      <td>43</td>
-      <td>1.348786e+07</td>
+      <td>124.0</td>
+      <td>43.0</td>
+      <td>1.607291e+07</td>
+    </tr>
+    <tr>
+      <th>107</th>
+      <td>Asia</td>
+      <td>Iran</td>
+      <td>8.291391e+07</td>
+      <td>18.0</td>
+      <td>4.0</td>
+      <td>15.341195</td>
+      <td>124.0</td>
+      <td>-1.0</td>
+      <td>0.000000e+00</td>
     </tr>
     <tr>
       <th>91</th>
       <td>Asia</td>
       <td>Thailand</td>
-      <td>68414135</td>
+      <td>6.962558e+07</td>
       <td>19.0</td>
       <td>14.0</td>
       <td>5.528840</td>
-      <td>121</td>
-      <td>93</td>
-      <td>1.329032e+07</td>
+      <td>121.0</td>
+      <td>93.0</td>
+      <td>1.558016e+07</td>
     </tr>
   </tbody>
 </table>
@@ -864,7 +945,7 @@ neighbors, and are then treated as a single “peak” from then on.</p>
 ax = ax.flatten()
 for ix, rank in enumerate(range(5, 31, 5)):
     natearth.plot(&quot;classification&quot;, ax=ax[ix], cmap=&quot;Accent&quot;)
-    natearth.sort_values(&quot;pop_est&quot;, ascending=False).iloc[0:rank].boundary.plot(
+    natearth.sort_values(&quot;POP_EST&quot;, ascending=False).iloc[0:rank].boundary.plot(
         color=&quot;salmon&quot;, ax=ax[ix]
     )
     ax[ix].set_title(f&quot;# of countries included: {rank}&quot;)
