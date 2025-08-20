@@ -30,8 +30,15 @@ class Join_Counts_Local_BV(BaseEstimator):  # noqa: N801
         ----------
         connectivity : W | Graph
             spatial weights instance as W or Graph aligned with y
-        permutations : int
-            number of random permutations for calculation of pseudo p_values
+        permutations : int, np.ndarray
+            Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+            conditional random null hypothesis for each site. Permutations
+            might be specified as an array of indices if the user needs to add
+            structure to this conditional permutation null hypothesis. Common
+            reasons to do this include exchangeability violations, which might
+            then require us to shuffle observations within (but not between)
+            groups, or linearity constraints, which may require certain
+            sequences of observation relationships to be preserved.
         n_jobs : int
             Number of cores to be used in the conditional randomisation.
             If -1, all available cores are used.
