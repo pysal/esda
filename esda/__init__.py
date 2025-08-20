@@ -8,6 +8,7 @@ import contextlib
 from importlib.metadata import PackageNotFoundError, version
 
 from . import adbscan, shape  # noqa F401
+from .correlogram import correlogram  # noqa F401
 from .gamma import Gamma  # noqa F401
 from .geary import Geary  # noqa F401
 from .geary_local import Geary_Local  # noqa F401
