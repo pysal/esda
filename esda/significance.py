@@ -77,11 +77,11 @@ def _permutation_significance(test_stat, reference_distribution, alternative='tw
         # find "synthetic" test statistic at 1-p
         # count how many observations are outisde of (p, 1-p)
         # including the test statistic and its synthetic pair
-        percentile = (reference_distribution <= test_stat).mean(axis=1)*100
-        lows = np.empty(n_samples)
-        highs = np.empty(n_samples)
+        lows = np.empty(n_samples).astype(reference_distribution.dtype)
+        highs = np.empty(n_samples).astype(reference_distribution.dtype)
         for i in range(n_samples):
-            p_low = np.minimum(percentile[i], 100-percentile[i])
+            percentile_i = (reference_distribution[i] <= test_stat).mean()*100
+            p_low = np.minimum(percentile_i, 100-percentile_i)
             lows[i] = np.percentile(
                 reference_distribution[i], 
                 p_low
@@ -94,14 +94,16 @@ def _permutation_significance(test_stat, reference_distribution, alternative='tw
         n_outside += (reference_distribution >= highs[:,None]).sum(axis=1)
         p_value = (n_outside + 1) / (p_permutations + 1)
     elif alternative == "folded":
-        means = reference_distribution.mean(axis=1, keepdims=True)
+        means = np.empty(n_samples).astype(reference_distribution.dtype)
+        for i in range(n_samples):
+            means[i] = reference_distribution[i].mean()
         test_stat = np.abs(test_stat - means)
         reference_distribution = np.abs(reference_distribution - means)
         p_value = ((reference_distribution >= test_stat).sum(axis=1) + 1) / (
             p_permutations + 1
         )
     else:
-        p_value = np.ones((n_samples, 1))*np.nan
+        p_value = np.ones((n_samples, ))*np.nan
     return p_value
 
 
