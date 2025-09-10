@@ -172,7 +172,7 @@ def crand(
         adj_matrix.setdiag(0)
         adj_matrix.eliminate_zeros()
     # extract the weights from a now no-self-weighted adj_matrix
-    other_weights = adj_matrix.data
+    other_weights = adj_matrix.data.astype(z.dtype) # cast is forced by @ in numba
     # use the non-self weight as the cardinality, since
     # this is the set we have to randomize.
     # if there is a self-neighbor, we need to *not* shuffle the
