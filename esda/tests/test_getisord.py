@@ -24,7 +24,7 @@ class TestGetisG:
         np.random.seed(10)
 
     @parametrize_w
-    def test_G(self, w):
+    def test_default(self, w):
         g = getisord.G(self.y, w)
         np.testing.assert_allclose(g.G, 0.55709779, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(g.p_norm, 0.172936, rtol=RTOL, atol=ATOL)
@@ -50,20 +50,20 @@ class TestGLocal:
         np.random.seed(10)
 
     @parametrize_w
-    def test_G_Local_Binary(self, w):
+    def test_binary(self, w):
         lg = getisord.G_Local(self.y, w, transform="B", seed=10)
         np.testing.assert_allclose(lg.Zs[0], -1.0136729, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_z_sim[0], 0.153923, rtol=RTOL, atol=ATOL)
 
     @parametrize_w
-    def test_G_Local_Row_Standardized(self, w):
+    def test_row_standardized(self, w):
         lg = getisord.G_Local(self.y, w, transform="R", seed=10)
         np.testing.assert_allclose(lg.Zs[0], -0.62074534, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
 
     @parametrize_w
-    def test_G_star_Local_Binary(self, w):
+    def test_star_binary(self, w):
         lg = getisord.G_Local(self.y, w, transform="B", star=True, seed=10)
         np.testing.assert_allclose(lg.Zs[0], -1.39727626, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
@@ -72,12 +72,12 @@ class TestGLocal:
     @pytest.mark.xfail(
         reason="Intermittently does not warn for W param; reason unknown; see gh#331"
     )
-    def test_G_star_Row_Standardized_warning(self, w):
+    def test_star_row_standardized_warning(self, w):
         with pytest.warns(UserWarning, match="Gi\\* requested, but"):
-            lg = getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
+            getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
 
     @parametrize_w
-    def test_G_star_Row_Standardized_values(self, w):
+    def test_star_row_standardized_values(self, w):
         lg = getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
         np.testing.assert_allclose(lg.Zs[0], -0.62488094, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)

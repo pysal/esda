@@ -427,9 +427,9 @@ def _check_connectivity(connectivity_or_coordinates):
 
     if issparse(connectivity_or_coordinates):
         shape = connectivity_or_coordinates.shape
-        assert (
-            shape[0] == shape[1]
-        ), f"Connectivity matrix must be square, but is {shape}."
+        assert shape[0] == shape[1], (
+            f"Connectivity matrix must be square, but is {shape}."
+        )
         return connectivity_or_coordinates
     if issubclass(type(connectivity_or_coordinates), weights.W):
         return connectivity_or_coordinates.sparse

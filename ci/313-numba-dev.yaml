@@ -1,0 +1,27 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  # optional
+  - numba
+  - rtree
+  # testing
+  - codecov
+  - folium
+  - mapclassify
+  - matplotlib
+  - seaborn
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  - pip:
+      - --pre \
+        --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple \
+        --extra-index-url https://pypi.org/simple
+      - scikit-learn
+      - scipy
+      - shapely
+      - pandas
+      - git+https://github.com/pysal/libpysal@main
+      - git+https://github.com/geopandas/geopandas@main

@@ -38,18 +38,23 @@ $ pip install git+https://github.com/pysal/esda@main
 
 ## Requirements
 
-- `geopandas>=0.12`
-- `libpysal>=4.12`
-- `numpy>=1.24`
-- `pandas>1.5`
-- `scikit-learn>=1.2`
-- `scipy>=1.9`
-- `shapely>=2.0`
+*see currently supported versions in [`pyproject.toml[dependencies]`](https://github.com/pysal/esda/blob/main/pyproject.toml)*
 
-### Optional dependencies
+- `geopandas`
+- `libpysal`
+- `numpy`
+- `pandas`
+- `scikit-learn`
+- `scipy`
+- `shapely`
 
-- `numba>=0.57` - used to accelerate computational geometry and permutation-based statistical inference.
-- `rtree>=1.0` - required for `esda.topo.isolation()`
+## Optional dependencies
+
+*see currently supported versions in [`pyproject.toml[project.optional-dependencies]`](https://github.com/pysal/esda/blob/main/pyproject.toml)*
+
+- `matplotlib` - required for `esda.moran.explore()`
+- `numba` - used to accelerate computational geometry and permutation-based statistical inference.
+- `rtree` - required for `esda.topo.isolation()`
 
 ## Contribute
 

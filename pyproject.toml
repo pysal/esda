@@ -28,15 +28,15 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    "geopandas>=0.12",
+    "geopandas>=0.14",
     "libpysal>=4.12",
-    "numpy>=1.24",
-    "pandas>1.5",
-    "scikit-learn>=1.2",
-    "scipy>=1.9",
-    "shapely>=2.0",
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scikit-learn>=1.4",
+    "scipy>=1.12",
+    "shapely>=2.1",
 ]
 
 
@@ -46,14 +46,15 @@ Repository = "https://github.com/pysal/esda"
 
 [project.optional-dependencies]
 plus = [
-    "numba>=0.57",
-    "rtree>=1.0",
+    "matplotlib>=3.8",
+    "numba>=0.58",
+    "rtree>=1.1",
+    "seaborn>=0.12",
 ]
 tests = [
     "codecov",
-    "folium",
-    "mapclassify",
-    "matplotlib",
+    "folium>=0.15",
+    "mapclassify>=2.6",
     "pytest",
     "pytest-cov",
     "pytest-xdist",
@@ -72,7 +73,6 @@ docs = [
 ]
 notebooks = [
     "matplotlib-scalebar",
-    "seaborn",
     "watermark",
 ]
 
@@ -82,6 +82,7 @@ include = ["esda", "esda.*"]
 
 [tool.ruff]
 line-length = 88
+extend-include = ["*.ipynb"]
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 lint.ignore = [
     "B006",
@@ -97,7 +98,12 @@ lint.ignore = [
     "N999",
     "UP007"
 ]
-exclude = ["esda/tests/*", "docs/*"]
+exclude = ["docs/*"]
+
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = [
+    "E402",  # Module level import not at top of cell
+]
 
 [tool.coverage.run]
 source = ["./esda"]
