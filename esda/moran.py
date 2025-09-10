@@ -9,7 +9,7 @@ __author__ = (
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
 
-from warnings import simplefilter
+from warnings import simplefilter, warn
 
 import numpy as np
 import pandas as pd
@@ -65,12 +65,13 @@ class Moran:
                       variable measured across n spatial units
     w               : W | Graph
                       spatial weights instance as W or Graph aligned with y
-    transformation  : string
-                      weights transformation,  default is row-standardized "r".
-                      Other options include "B": binary,  "D":
-                      doubly-standardized,  "O": restore original transformation 
-                      (applicable only if ``w`` is  passed as ``W``)
-                      (general weights), "V": variance-stabilizing.
+    transformation  : {'R', 'B', 'D', 'U', 'V'}
+                  weights transformation, default is row-standardized "r".
+                  Other options include
+                  "B": binary,
+                  "D": doubly-standardized,
+                  "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
+                  "V": variance-stabilizing.
     permutations    : int
                       number of random permutations for calculation of
                       pseudo-p_values
@@ -177,7 +178,7 @@ class Moran:
     >>> round(mi_1.p_norm, 4)
     0.0001
 
-    """
+    """  # noqa: E501
 
     def __init__(
         self, y, w, transformation="r", permutations=PERMUTATIONS, two_tailed=True
@@ -510,7 +511,7 @@ class Moran_BV:  # noqa: N801
     0.001
 
 
-    """
+    """  # noqa: E501
 
     def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS):
         x = np.asarray(x).flatten()
@@ -1000,7 +1001,7 @@ class Moran_Rate(Moran):  # noqa: N801
     '0.1662'
     >>> "%6.4f" % mi.p_norm
     '0.0042'
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -1285,7 +1286,7 @@ class Moran_Local:  # noqa: N801
     Note random components result is slightly different values across
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures.
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -1755,7 +1756,7 @@ class Moran_Local_BV:  # noqa: N801
     Note random components result is slightly different values across
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures.
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -2201,7 +2202,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures
 
-    """
+    """  # noqa: E501
 
     def __init__(
         self,

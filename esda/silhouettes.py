@@ -103,9 +103,9 @@ def path_silhouette(
     if D is None:
         D = metric(data)
     # polymorphic for sparse & dense input
-    assert (
-        D < 0
-    ).sum() == 0, "Distance metric has negative values, which is not supported."
+    assert (D < 0).sum() == 0, (
+        "Distance metric has negative values, which is not supported."
+    )
     off_diag_zeros = (D + np.eye(D.shape[0])) == 0
     D[off_diag_zeros] = -1
     Wm = sp.csr_matrix(W.sparse)
@@ -337,7 +337,7 @@ def boundary_silhouette(
             " nor a dissimilarity matrix."
         )
     assert (full_distances < 0).sum() == 0, (
-        "Distance metric has negative values, " "which is not supported"
+        "Distance metric has negative values, which is not supported"
     )
     label_frame = pd.DataFrame(labels, index=index, columns=["label"])
     alist = alist.merge(

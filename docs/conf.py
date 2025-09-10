@@ -266,7 +266,7 @@ def setup(app):
 intersphinx_mapping = {
     project: (f"https://pysal.org/{project}/", None),
     "geopandas": ("https://geopandas.org/en/latest/", None),
-    "giddy": ("https://giddy.readthedocs.io/en/latest/", None),
+    "giddy": ("https://pysal.org/giddy/", None),
     "hdbscan": ("https://hdbscan.readthedocs.io/en/latest/", None),
     "libpysal": ("https://pysal.org/libpysal/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),

@@ -1,0 +1,26 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  # required
+  - libpysal=4.12
+  - geopandas=0.12
+  - numpy=1.24
+  - pandas<1.6
+  - scikit-learn=1.2
+  - scipy=1.9
+  - shapely=2.0
+  - fiona<1.9
+  # optional
+  - numba=0.57
+  - rtree=1.0
+  # testing
+  - codecov
+  - folium
+  - mapclassify
+  - matplotlib
+  - seaborn
+  - pytest
+  - pytest-cov
+  - pytest-xdist

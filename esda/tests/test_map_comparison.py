@@ -1,4 +1,4 @@
-import os
+import pathlib
 
 import geopandas
 import numpy
@@ -8,7 +8,7 @@ from .. import map_comparison as mc
 
 shapely = pytest.importorskip("shapely")
 
-filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "regions.zip")
+filepath = pathlib.Path(__file__).parent / "regions.zip"
 
 r1 = geopandas.read_file(filepath, layer="regions1")
 r1a = mc._cast(r1.geometry)
