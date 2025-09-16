@@ -1,10 +1,10 @@
 """Geary Unittest."""
 
 import numpy as np
+import pytest
 from libpysal import examples, graph
 from libpysal.io import open as popen
 from libpysal.weights import Rook
-import pytest
 
 from .. import geary
 
@@ -29,7 +29,7 @@ class TestGeary:
         self.y = np.array(f.by_col["CRIME"])
 
     @parametrize_w
-    def test_Geary(self, w):
+    def test_default(self, w):
         c = geary.Geary(self.y, w, permutations=0)
         np.testing.assert_allclose(c.C, 0.5154408058652411)
         np.testing.assert_allclose(c.EC, 1.0)
@@ -65,10 +65,10 @@ class TestGeary:
         import pandas as pd
 
         df = pd.DataFrame(self.y, columns=["y"])
+        np.random.seed(12345)
         r1 = geary.Geary.by_col(df, ["y"], w=w, permutations=999)
         this_geary = np.unique(r1.y_geary.values)
         this_pval = np.unique(r1.y_p_sim.values)
-        np.random.seed(12345)
         c = geary.Geary(self.y, w, permutations=999)
         np.testing.assert_allclose(this_geary, c.C)
         np.testing.assert_allclose(this_pval, c.p_sim)

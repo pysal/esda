@@ -103,7 +103,7 @@ class TestMoran:
         # m4 = moran.Moran_Local_BV(self.x, self.y, self.w)
         np.testing.assert_allclose(m1.z, m3.z, atol=ATOL, rtol=RTOL)
 
-    @unittest.skip("This function is being deprecated in the next release.")
+    @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         from libpysal.io import geotable as pdio
 
@@ -114,6 +114,148 @@ class TestMoran:
         pval = np.unique(mi.SIDR74_p_sim.values).item()
         np.testing.assert_allclose(sidr, 0.24772519320480135, atol=ATOL, rtol=RTOL)
         np.testing.assert_allclose(pval, 0.001)
+
+    @parametrize_sac
+    def test_plot_simulation(self, w):
+        pytest.importorskip("seaborn")
+
+        m = moran.Moran(sac1.WHITE, w=w)
+        ax = m.plot_simulation()
+
+        assert len(ax.collections) == 3
+
+        kde = ax.collections[0]
+        np.testing.assert_array_almost_equal(
+            kde.get_facecolor(),
+            [[0.7294117647058823, 0.7294117647058823, 0.7294117647058823, 0.25]],
+        )
+        assert kde.get_fill()
+        assert len(kde.get_paths()[0]) == 403
+
+        i_vline = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            i_vline.get_color(),
+            [[0.8392156862745098, 0.3764705882352941, 0.30196078431372547, 1.0]],
+        )
+        assert i_vline.get_label() == "Moran's I"
+        np.testing.assert_array_almost_equal(
+            i_vline.get_paths()[0].vertices,
+            np.array([[m.I, 0.0], [m.I, 1.0]]),
+        )
+
+        ei_vline = ax.collections[2]
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_color(),
+            [[0.12156863, 0.46666667, 0.70588235, 1.0]],
+        )
+        assert ei_vline.get_label() == "Expected I"
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_paths()[0].vertices,
+            np.array([[m.EI, 0.0], [m.EI, 1.0]]),
+        )
+
+    @parametrize_sac
+    def test_plot_simulation_custom(self, w):
+        pytest.importorskip("seaborn")
+        plt = pytest.importorskip("matplotlib.pyplot")
+
+        m = moran.Moran(sac1.WHITE, w=w)
+
+        _, ax = plt.subplots(figsize=(12, 12))
+        ax = m.plot_simulation(
+            ax=ax, fitline_kwds={"color": "red"}, color="pink", shade=False, legend=True
+        )
+
+        assert len(ax.collections) == 2
+        assert len(ax.lines) == 1
+
+        kde = ax.lines[0]
+        np.testing.assert_array_almost_equal(
+            kde.get_color(),
+            [1.0, 0.75294118, 0.79607843, 1],
+        )
+        assert len(kde.get_path()) == 200
+
+        i_vline = ax.collections[0]
+        np.testing.assert_array_almost_equal(
+            i_vline.get_color(),
+            [[1.0, 0.0, 0.0, 1.0]],
+        )
+        assert i_vline.get_label() == "Moran's I"
+        np.testing.assert_array_almost_equal(
+            i_vline.get_paths()[0].vertices,
+            np.array([[m.I, 0.0], [m.I, 1.0]]),
+        )
+
+        ei_vline = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_color(),
+            [[0.12156863, 0.46666667, 0.70588235, 1.0]],
+        )
+        assert ei_vline.get_label() == "Expected I"
+        np.testing.assert_array_almost_equal(
+            ei_vline.get_paths()[0].vertices,
+            np.array([[m.EI, 0.0], [m.EI, 1.0]]),
+        )
+
+        assert ax.get_legend_handles_labels()[1] == [
+            "Distribution of simulated Is",
+            "Moran's I",
+            "Expected I",
+        ]
+
+    @parametrize_sac
+    def test_plot_scatter(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatter()
+
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0.729412, 0.729412, 0.729412, 0.6]]),
+        )
+
+        # test fitline
+        l_ = ax.lines[2]
+        x, y = l_.get_data()
+        np.testing.assert_almost_equal(x.min(), -1.8236414387225368)
+        np.testing.assert_almost_equal(x.max(), 3.893056527659032)
+        np.testing.assert_almost_equal(y.min(), -0.7371749399524187)
+        np.testing.assert_almost_equal(y.max(), 1.634939204358587)
+        assert l_.get_color() == "#d6604d"
+
+    @parametrize_sac
+    def test_plot_scatter_args(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatter(
+            scatter_kwds=dict(color="blue"), fitline_kwds=dict(color="pink")
+        )
+
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0, 0, 1, 0.6]]),
+        )
+
+        # test fitline
+        l_ = ax.lines[2]
+        assert l_.get_color() == "pink"
 
 
 class TestMoranRate:
@@ -128,7 +270,7 @@ class TestMoranRate:
         np.testing.assert_allclose(mi.I, 0.16622343552567395, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(mi.p_norm, 0.004191499504892171)
 
-    @unittest.skip("This function is being deprecated in the next release.")
+    @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         from libpysal.io import geotable as pdio
 
@@ -147,14 +289,34 @@ class TestMoranBVmatrix:
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
         varnames = ["SIDR74", "SIDR79", "NWR74", "NWR79"]
         self.names = varnames
-        vars = [np.array(f.by_col[var]) for var in varnames]
-        self.vars = vars
+        vars_ = [np.array(f.by_col[var]) for var in varnames]
+        self.vars_ = vars_
 
     @parametrize_sids
-    def test_Moran_BV_matrix(self, w):
-        res = moran.Moran_BV_matrix(self.vars, w, varnames=self.names)
+    def test_defaults(self, w):
+        res = moran.Moran_BV_matrix(self.vars_, w, varnames=self.names)
         np.testing.assert_allclose(res[(0, 1)].I, 0.19362610652874668)
         np.testing.assert_allclose(res[(3, 0)].I, 0.37701382542927858)
+
+    @parametrize_sids
+    def test_plot_moran_facet(self, w):
+        matrix = moran.Moran_BV_matrix(self.vars_, w, varnames=self.names)
+        axes = moran.plot_moran_facet(matrix)
+        assert axes.shape == (4, 4)
+
+        assert axes[0][0].spines["left"].get_visible()
+        assert not axes[0][0].spines["bottom"].get_visible()
+        assert axes[3][0].spines["left"].get_visible()
+        assert axes[3][0].spines["bottom"].get_visible()
+        assert not axes[3][1].spines["left"].get_visible()
+        assert axes[3][1].spines["bottom"].get_visible()
+        assert not axes[1][1].spines["left"].get_visible()
+        assert not axes[1][1].spines["bottom"].get_visible()
+
+        np.testing.assert_array_almost_equal(
+            axes[1][1].get_facecolor(),
+            (0.8509803921568627, 0.8509803921568627, 0.8509803921568627, 1.0),
+        )
 
 
 class TestMoranLocal:
@@ -163,7 +325,7 @@ class TestMoranLocal:
         self.y = np.array(f.by_col["z"])
 
     @parametrize_desmith
-    def test_Moran_Local(self, w):
+    def test_defaults(self, w):
         lm = moran.Moran_Local(
             self.y,
             w,
@@ -176,7 +338,7 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
     @parametrize_sac
-    def test_Moran_Local_labels(self, w):
+    def test_labels(self, w):
         lm = moran.Moran_Local(
             sac1.HSG_VAL.values,
             w,
@@ -206,7 +368,7 @@ class TestMoranLocal:
         )
 
     @parametrize_sac
-    def test_Moran_Local_explore(self, w):
+    def test_explore(self, w):
         lm = moran.Moran_Local(
             sac1.HSG_VAL.values,
             w,
@@ -236,8 +398,116 @@ class TestMoranLocal:
         assert out_str.count("#fdae61") == 6
         assert out_str.count("#d3d3d3") == 280
 
+    @parametrize_sac
+    def test_plot(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.HSG_VAL.values,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        ax = lm.plot(sac1)
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 1.0],
+                    [0.5372549, 0.81176471, 0.94117647, 1.0],
+                    [0.82745098, 0.82745098, 0.82745098, 1.0],
+                    [0.84313725, 0.09803922, 0.10980392, 1.0],
+                    [0.99215686, 0.68235294, 0.38039216, 1.0],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
+
+    @parametrize_sac
+    def test_plot_scatter(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+
+        ax = lm.plot_scatter()
+
+        # test scatter
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 0.6],
+                    [0.5372549, 0.81176471, 0.94117647, 0.6],
+                    [0.82745098, 0.82745098, 0.82745098, 0.6],
+                    [0.84313725, 0.09803922, 0.10980392, 0.6],
+                    [0.99215686, 0.68235294, 0.38039216, 0.6],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([73, 12, 261, 52, 5]))
+
+        # test fitline
+        l_ = ax.lines[2]
+        x, y = l_.get_data()
+        np.testing.assert_almost_equal(x.min(), -1.8236414387225368)
+        np.testing.assert_almost_equal(x.max(), 3.893056527659032)
+        np.testing.assert_almost_equal(y.min(), -0.7371749399524187)
+        np.testing.assert_almost_equal(y.max(), 1.634939204358587)
+        assert l_.get_color() == "k"
+
+    @parametrize_sac
+    def test_plot_scatter_args(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+
+        ax = lm.plot_scatter(
+            crit_value=None,
+            scatter_kwds={"s": 10},
+            fitline_kwds={"linewidth": 4},
+        )
+        # test scatter
+        np.testing.assert_array_almost_equal(
+            ax.collections[0].get_facecolors(),
+            np.array([[0.729412, 0.729412, 0.729412, 0.6]]),
+        )
+        assert ax.collections[0].get_sizes()[0] == 10
+
+        # test fitline
+        l_ = ax.lines[2]
+        assert l_.get_color() == "#d6604d"
+        assert l_.get_linewidth() == 4.0
+
     @parametrize_desmith
-    def test_Moran_Local_parallel(self, w):
+    def test_parallel(self, w):
         lm = moran.Moran_Local(
             self.y,
             w,
@@ -250,7 +520,7 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
-    @unittest.skip("This function is being deprecated in the next release.")
+    @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         import pandas as pd
 
@@ -335,15 +605,55 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.EI, EI, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lm.VI, VI, rtol=RTOL, atol=ATOL)
 
+    @parametrize_sac
+    def test_plot_combination(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local(
+            sac1.WHITE,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        axs = lm.plot_combination(
+            sac1,
+            "WHITE",
+            legend_kwds=dict(loc="lower right"),
+            region_column="FIPS",
+            mask=["06067009504", "06067009503"],
+            quadrant=1,
+        )
+
+        assert len(axs) == 3
+        assert len(axs[0].patches) == 1
+        assert len(axs[1].collections) == 4
+        assert len(axs[2].collections) == 4
+
+        axs2 = lm.plot_combination(
+            sac1,
+            "WHITE",
+            legend_kwds=dict(loc="lower right"),
+        )
+
+        assert len(axs2) == 3
+        assert len(axs2[0].patches) == 0
+        assert len(axs2[1].collections) == 1
+        assert len(axs2[2].collections) == 1
+
 
 class TestMoranLocalBV:
     def setup_method(self):
         f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
+        self.gdf = gpd.read_file(libpysal.examples.get_path("sids2.shp"))
         self.x = np.array(f.by_col["SIDR79"])
         self.y = np.array(f.by_col["SIDR74"])
 
     @parametrize_sids
-    def test_Moran_Local_BV(self, w):
+    def test_defaults(self, w):
         lm = moran.Moran_Local_BV(
             self.x,
             self.y,
@@ -357,7 +667,7 @@ class TestMoranLocalBV:
         np.testing.assert_allclose(lm.z_sim[0], 1.330673752886702)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.09164819151535242)
 
-    @unittest.skip("This function is being deprecated in the next release.")
+    @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         from libpysal.io import geotable as pdio
 
@@ -380,6 +690,132 @@ class TestMoranLocalBV:
         np.testing.assert_allclose(bvz[0], 1.7900932313425777, 5)
         np.testing.assert_allclose(bvzp[0], 0.036719462378528744, 5)
 
+    @parametrize_sids
+    def test_labels(self, w):
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        expected_labels = np.array(
+            [
+                "Insignificant",
+                "Insignificant",
+                "Low-Low",
+                "High-Low",
+                "Low-High",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+                "Insignificant",
+            ]
+        )
+        assert_array_equal(lm.get_cluster_labels()[:10], expected_labels)
+        assert_array_equal(
+            pd.Series(lm.get_cluster_labels(0.05)).value_counts().values,
+            np.array([80, 7, 6, 5, 2]),
+        )
+
+    @parametrize_sids
+    def test_explore(self, w):
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        m = lm.explore(self.gdf)
+        np.testing.assert_array_equal(
+            m.get_bounds(),
+            [
+                [33.88199234008789, -84.3238525390625],
+                [36.58964920043945, -75.45697784423828],
+            ],
+        )
+        assert len(m.to_dict()["children"]) == 2
+
+        out_str = _fetch_map_string(m)
+
+        assert '"High-High","__folium_color":"#d7191c"' in out_str
+        assert '"Low-High","__folium_color":"#89cff0"' in out_str
+        assert '"Low-Low","__folium_color":"#2c7bb6"' in out_str
+        assert '"High-Low","__folium_color":"#fdae61"' in out_str
+        assert '"Insignificant","__folium_color":"#d3d3d3"' in out_str
+
+        assert out_str.count("#d7191c") == 10
+        assert out_str.count("#89cff0") == 5
+        assert out_str.count("#2c7bb6") == 9
+        assert out_str.count("#fdae61") == 8
+        assert out_str.count("#d3d3d3") == 83
+
+    @parametrize_sids
+    def test_plot(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        ax = lm.plot(self.gdf)
+        unique, counts = np.unique(
+            ax.collections[0].get_facecolors(), axis=0, return_counts=True
+        )
+        np.testing.assert_array_almost_equal(
+            unique,
+            np.array(
+                [
+                    [0.17254902, 0.48235294, 0.71372549, 1.0],
+                    [0.5372549, 0.81176471, 0.94117647, 1.0],
+                    [0.82745098, 0.82745098, 0.82745098, 1.0],
+                    [0.84313725, 0.09803922, 0.10980392, 1.0],
+                    [0.99215686, 0.68235294, 0.38039216, 1.0],
+                ]
+            ),
+        )
+        np.testing.assert_array_equal(counts, np.array([6, 2, 86, 7, 7]))
+
+    @parametrize_sids
+    def test_plot_combination(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        lm = moran.Moran_Local_BV(
+            self.x,
+            self.y,
+            w,
+            transformation="r",
+            permutations=99,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        axs = lm.plot_combination(
+            self.gdf,
+            "SIDR79",
+            legend_kwds=dict(loc="lower right"),
+            quadrant=1,
+        )
+
+        assert len(axs) == 3
+        assert len(axs[0].patches) == 1
+        assert len(axs[1].collections) == 3
+        assert len(axs[2].collections) == 3
+
 
 class TestMoranLocalRate:
     def setup_method(self):
@@ -395,7 +831,7 @@ class TestMoranLocalRate:
         np.testing.assert_allclose(lm.z_sim[0], 0.02702781851384379, 7)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.4892187730835096)
 
-    @unittest.skip("This function is being deprecated in the next release.")
+    @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         from libpysal.io import geotable as pdio
 
