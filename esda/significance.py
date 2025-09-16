@@ -94,14 +94,14 @@ def _permutation_significance(test_stat, reference_distribution, alternative='tw
         n_outside += (reference_distribution >= highs[:,None]).sum(axis=1)
         p_value = (n_outside + 1) / (p_permutations + 1)
     elif alternative == "folded":
-        means = np.empty(n_samples).astype(reference_distribution.dtype)
+        means = np.empty((n_samples,1)).astype(reference_distribution.dtype)
         for i in range(n_samples):
             means[i] = reference_distribution[i].mean()
-        test_stat = np.abs(test_stat - means)
-        reference_distribution = np.abs(reference_distribution - means)
-        p_value = ((reference_distribution >= test_stat).sum(axis=1) + 1) / (
+        folded_test_stat = np.abs(test_stat - means)
+        folded_reference_distribution = np.abs(reference_distribution - means)
+        p_value = ((folded_reference_distribution >= folded_test_stat).sum(axis=1) + 1) / (
             p_permutations + 1
-        )
+    	) 
     else:
         p_value = np.ones((n_samples, ))*np.nan
     return p_value

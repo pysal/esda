@@ -55,6 +55,6 @@ def test_alternative_relationships():
     assert (directed <= two_sided).all(), "directed is bigger than two_sided and should not be"
     one_or_the_other = (directed == lesser) | (directed == greater)
     assert one_or_the_other.all(), "some directed p-value is neither the greater nor lesser p-value"
-    assert numpy.abs(two_sided - folded).mean() < numpy.abs(lesser - folded).mean(), (
-        "folded p-values should be more similar to the two-sided variant than the directed"
+    assert (two_sided < folded).mean() < (directed < folded).mean(), (
+	"Directed p-values should tend to be much smaller than two_sided p-values or folded p-values."
     )
