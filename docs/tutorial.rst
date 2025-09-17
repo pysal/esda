@@ -12,4 +12,4 @@ Tutorial
     notebooks/adbscan_berlin_example.ipynb
     notebooks/shape-measures.ipynb
     notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb
-
+    notebooks/multivariable_moran.ipynb

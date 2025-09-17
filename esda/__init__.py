@@ -36,6 +36,10 @@ from .moran import (
     Moran_Rate,
     plot_moran_facet,
 )
+from .moran_local_mv import (
+    MoranLocalPartial,
+    MoranLocalConditional
+)
 from .silhouettes import boundary_silhouette, path_silhouette  # noqa F401
 from .smaup import Smaup  # noqa F401
 from .topo import isolation, prominence  # noqa F401

@@ -105,6 +105,8 @@ Moran Statistics
     esda.Moran_Rate
     esda.Moran_Local_Rate
     esda.plot_moran_facet
+    esda.MoranLocalPartial
+    esda.MoranLocalConditional
 
 
 Shape Statistics
@@ -142,7 +144,7 @@ Silhouette Statistics
     esda.boundary_silhouette
     esda.path_silhouette
     esda.silhouettes.nearest_label
-    esda.silhouette_alist
+    esda.silhouettes.silhouette_alist
 
 
 Spatial Pearson Statistics
@@ -152,7 +154,7 @@ Spatial Pearson Statistics
    :toctree: generated/
 
     esda.Spatial_Pearson
-    esda.Local_Spatial_Pearson
+    esda.Spatial_Pearson_Local
 
 
 Utility Functions

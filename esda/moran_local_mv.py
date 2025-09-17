@@ -1,5 +1,5 @@
 import numpy as np
-import esda
+from .moran import Moran_Local
 from libpysal.weights import lag_spatial
 from libpysal.graph import Graph
 
@@ -33,24 +33,24 @@ def _calc_quad(x,y):
     neg_y = (y<0)
     return off_sign + neg_y*2 + 1
 
-class Partial_Moran_Local(object):
+class MoranLocalPartial(object):
     def __init__(
         self, permutations=999, unit_scale=True, partial_labels=True
     ):
         """
-        Compute the Multivariable Local Moran statistics under partial dependence, as defined by :cite:`wolf2024confounded`
+        Compute the Multivariable Local Moran statistics under partial dependence :cite:`wolf2024confounded`
 
-        Arguments
+        Parameters
         ---------
-        permutations    : int
+        permutations : int
             the number of permutations to run for the inference,
             driven by conditional randomization.
-        unit_scale  : bool
+        unit_scale : bool
             whether to enforce unit variance in the local statistics. This
             normalizes the variance of the data at inupt, ensuring that
             the covariance statistics are not overwhelmed by any single
             covariate's large variance.
-        partial_labels : bool
+        partial_labels : bool, default=True
             whether to calculate the classification based on the part-regressive 
             quadrant classification or the univariate quadrant classification,
             like a classical Moran's I. When mvquads is True, the variables are labelled as:
@@ -58,38 +58,40 @@ class Partial_Moran_Local(object):
             - label 2: observations with small y - rho * x values that also have large Wy values.
             - label 3: observations with small y - rho * x values that also have small Wy values. 
             - label 4: observations with large y - rho * x values that have small Wy values.
-            Defaults to part-regressive quadrants
 
         Attributes
         ----------
         connectivity : The weights matrix inputted, but row standardized
-        D      : The "design" matrix used in computation. If X is
-                      not None, this will be [1 y X]
-        R      : the "response" matrix used in computation. Will
-                      always be the same shape as D and contain [1, Wy, Wy, ....]
-        DtDi   : empirical parameter covariance matrix
-                      the P x P matrix describing the variance and covariance
-                      of y and X.
-        P      : the number of parameters. 1 if X is not provided.
-        lmos_   : the N,P matrix of multivariable LISA statistics.
-                      the first column, lmos[:,1] is the LISAs corresponding
-                      to the relationship between Wy and y conditioning on X.
-        rlmos_  : the (N, permutations, P+1) realizations from the conditional
-                  randomization to generate reference distributions for
-                  each Local Moran statistic. rlmos_[:,:,1] pertain to
-                  the reference distribution of y and Wy.
-        quads_  : the (N, P) matrix of quadrant classifications for the
-                  part-regressive relationships. quads[:,0] pertains to
-                  the relationship between y and Wy. The mean is not classified,
-                  since it's just binary above/below mean usually.
+        D : The "design" matrix used in computation. If X is
+            not None, this will be [1 y X]
+        R : the "response" matrix used in computation. Will
+            always be the same shape as D and contain [1, Wy, Wy, ....]
+        DtDi : empirical parameter covariance matrix
+            the P x P matrix describing the variance and covariance
+            of y and X.
+        P : the number of parameters. 1 if X is not provided.
+        association_ : the N,P matrix of multivariable LISA statistics.
+            the first column, lmos[:,1] is the LISAs corresponding
+            to the relationship between Wy and y conditioning on X.
+        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional
+            randomization to generate reference distributions for
+            each Local Moran statistic. rlmos_[:,:,1] pertain to
+            the reference distribution of y and Wy.
+        significance_  : the (N, P) matrix of quadrant classifications for the
+            part-regressive relationships. quads[:,0] pertains to
+            the relationship between y and Wy. The mean is not classified,
+            since it's just binary above/below mean usually.
         partials_: the (N,2,P+1) matrix of part-regressive contributions.
-                    The ith slice of partials_[:,:,i] contains the
-                    partial regressive contribution of that covariate, with
-                    the first column indicating the part-regressive outcome
-                    and the second indicating the part-regressive design.
-                    The partial regression matrix starts at zero, so
-                    partials_[:,:,0] corresponds to the partial regression
-                    describing the relationship between y and Wy.
+            The ith slice of partials_[:,:,i] contains the
+            partial regressive contribution of that covariate, with
+            the first column indicating the part-regressive outcome
+            and the second indicating the part-regressive design.
+            The partial regression matrix starts at zero, so
+            partials_[:,:,0] corresponds to the partial regression
+            describing the relationship between y and Wy.
+        labels_ : the (N,) array of quadrant classifications for the
+            part-regressive relationships. See the partial_labels argument
+            for more information. 
         """
         self.permutations = permutations
         self.unit_scale = unit_scale
@@ -113,7 +115,7 @@ class Partial_Moran_Local(object):
         Returns
         -------
         self    :   object
-            this Partial_Moran_Local() statistic after fitting to data
+            this MoranLocalPartial() statistic after fitting to data
         """
         y = np.asarray(y).reshape(-1, 1)
         if isinstance(W, Graph):
@@ -241,7 +243,7 @@ class Partial_Moran_Local(object):
         self._rlmos_ = lmos  # nobs, nperm, nvars
 
     @property
-    def associations_(self):
+    def association_(self):
         """
         The association between y and the local average of y,
         removing the correlation due to x and the local average of y
@@ -249,7 +251,7 @@ class Partial_Moran_Local(object):
         return self._lmos_[:, 1]
 
     @property
-    def significances_(self):
+    def significance_(self):
         """
         The pseudo-p-value built using map randomization for the
         structural relationship between y and its local average,
@@ -270,7 +272,7 @@ class Partial_Moran_Local(object):
     @property
     def reference_distribution_(self):
         """
-        Simulated distribution of associations_, assuming that there is
+        Simulated distribution of association_, assuming that there is
           - no structural relationship between y and its local average;
           - the same observed structural relationship between y and x.
         """
@@ -280,7 +282,7 @@ class Partial_Moran_Local(object):
     def labels_(self):
         """
         The classifications (in terms of cluster-type and outlier-type)
-        for the associations_ statistics. If the quads requested are
+        for the association_ statistics. If the quads requested are
         *mvquads*, then the classification is done with respect to the
         left and right components (first and second columns of partials_).
 
@@ -302,11 +304,11 @@ class Partial_Moran_Local(object):
             return self._uvquads_[:, 1]
 
 
-class Auxiliary_Moran_Local(esda.Moran_Local):
+class MoranLocalConditional(Moran_Local):
     """
     Fit a local moran statistic for y after regressing out the
     effects of confounding X on y. A "stronger" version of the
-    Partial_Moran statistic, as defined by :cite:`wolf2024confounded`
+    MoranLocalPartial statistic, as defined by :cite:`wolf2024confounded`
     """
 
     def __init__(
@@ -318,7 +320,8 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         """
         Initialize a local Moran statistic on the regression residuals
 
-
+        Parameters
+        ---------
         permutations    : int (default: 999)
                           the number of permutations to run for the inference,
                           driven by conditional randomization.
@@ -327,6 +330,33 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         transformer     : callable (default: scikit regression)
                           should transform X into a predicted y. If not provided, will use
                           the standard scikit OLS regression of y on X.
+
+        Attributes
+        ----------
+        connectivity : The weights matrix inputted, but row standardized
+        y_filtered_ : the (N,1) array of y after removing the effect of X
+        association_ : the N,P matrix of multivariable LISA statistics.
+            the first column, lmos[:,1] is the LISAs corresponding
+            to the relationship between Wy and y conditioning on X.
+        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional
+            randomization to generate reference distributions for
+            each Local Moran statistic. rlmos_[:,:,1] pertain to
+            the reference distribution of y and Wy.
+        significance_ : the (N, P) matrix of quadrant classifications for the
+            part-regressive relationships. quads[:,0] pertains to
+            the relationship between y and Wy. The mean is not classified,
+            since it's just binary above/below mean usually.
+        partials_ : the (N,2,P+1) matrix of part-regressive contributions.
+            The ith slice of partials_[:,:,i] contains the
+            partial regressive contribution of that covariate, with
+            the first column indicating the part-regressive outcome
+            and the second indicating the part-regressive design.
+            The partial regression matrix starts at zero, so
+            partials_[:,:,0] corresponds to the partial regression
+            describing the relationship between y and Wy.
+        labels_ : the (N,) array of quadrant classifications for the
+            part-regressive relationships. See the partial_labels argument
+            for more information. 
         """
         self.permutations = permutations
         self.unit_scale = unit_scale
@@ -334,20 +364,20 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
 
     def fit(self, X, y, W):
         """
-        Arguments
+        Parameters
         ---------
-        y               : (N,1) array
-                        array of data that is the targeted "outcome" covariate
-                        to compute the multivariable Moran's I
-        X               : (N,3) array
-                        array of data that is used as "confounding factors"
-                        to account for their covariance with Y.
-        W               : (N,N) weights object
-                        a PySAL weights object. Immediately row-standardized.
+        y : (N,1) array
+            array of data that is the targeted "outcome" covariate
+            to compute the multivariable Moran's I
+        X : (N,3) array
+            array of data that is used as "confounding factors"
+            to account for their covariance with Y.
+        W : (N,N) weights object
+            a PySAL weights or graph object. Immediately row-standardized.
         
         Returns
         -------
-        A fitted Auxiliary_Moran_Local() estimator
+        A fitted MoranLocalConditional() estimator
         """
         y = y - y.mean()
         X = X - X.mean(axis=0)
@@ -366,14 +396,14 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         self.connectivity = W
         self.partials_ = np.column_stack((y_filtered_, Wyf))
         y_out = self.y_filtered_
-        self.associations_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
+        self.association_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
         if self.permutations > 0:
             self._crand()
         # TODO: use the general p-value framework
-            p_sim = (self.reference_distribution_ < self.associations_[:, None]).mean(
+            p_sim = (self.reference_distribution_ < self.association_[:, None]).mean(
                 axis=1
             )
-            self.significances_ = np.minimum(p_sim, 1 - p_sim)
+            self.significance_ = np.minimum(p_sim, 1 - p_sim)
         quads = np.array([[3,2,4,1]]).reshape(2,2)
         left_component_cluster = (y_filtered_ > 0).astype(int)
         right_component_cluster = (Wyf > 0).astype(int)
@@ -429,6 +459,6 @@ class Auxiliary_Moran_Local(esda.Moran_Local):
         self.reference_distribution_ = (n_1 / (z * z).sum()) * lisas
 
 
-Auxiliary_Moran_Local.__init__.__doc__ = Partial_Moran_Local.__init__.__doc__.replace(
-    "Partial", "Auxiliary"
+MoranLocalConditional.__init__.__doc__ = MoranLocalPartial.__init__.__doc__.replace(
+    "Partial", "Conditional"
 )
