@@ -217,7 +217,8 @@ class Moran:
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
-            self.z_sim = (self.I - self.EI_sim) / self.seI_sim
+            with np.errstate(divide='ignore'):
+                self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
                 self.p_z_sim = stats.norm.sf(self.z_sim)
             else:
@@ -539,7 +540,8 @@ class Moran_BV:  # noqa: N801
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
-            self.z_sim = (self.I - self.EI_sim) / self.seI_sim
+            with np.errstate(divide='ignore'):
+                self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
                 self.p_z_sim = stats.norm.sf(self.z_sim)
             else:
@@ -1348,7 +1350,8 @@ class Moran_Local:  # noqa: N801
                 self.EI_sim = self.sim.mean(axis=0)
                 self.seI_sim = self.sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
-                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                with np.errstate(divide='ignore'):
+                    self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
             else:
                 self.sim = self.rlisas = None
@@ -1825,7 +1828,8 @@ class Moran_Local_BV:  # noqa: N801
                 self.EI_sim = sim.mean(axis=0)
                 self.seI_sim = sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
-                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                with np.errstate(divide='ignore'):
+                    self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     def __calc(self):
