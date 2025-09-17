@@ -1,5 +1,6 @@
 import numpy as np
 from .moran import Moran_Local
+from .significance import calculate_significance
 from libpysal.weights import lag_spatial
 from libpysal.graph import Graph
 
@@ -35,7 +36,7 @@ def _calc_quad(x,y):
 
 class MoranLocalPartial(object):
     def __init__(
-        self, permutations=999, unit_scale=True, partial_labels=True
+        self, permutations=999, unit_scale=True, partial_labels=True, alternative='two-sided'
     ):
         """
         Compute the Multivariable Local Moran statistics under partial dependence :cite:`wolf2024confounded`
@@ -58,6 +59,11 @@ class MoranLocalPartial(object):
             - label 2: observations with small y - rho * x values that also have large Wy values.
             - label 3: observations with small y - rho * x values that also have small Wy values. 
             - label 4: observations with large y - rho * x values that have small Wy values.
+        alternative : str (default: 'two-sided')
+            the alternative hypothesis for the inference. One of
+            'two-sided', 'greater', 'lesser', 'directed', or 'folded'.
+            See the esda.significance.calculate_significance() documentation
+            for more information.
 
         Attributes
         ----------
@@ -96,6 +102,7 @@ class MoranLocalPartial(object):
         self.permutations = permutations
         self.unit_scale = unit_scale
         self.partial_labels = partial_labels
+        self.alternative = alternative
     
     def fit(self, X, y, W):
         """
@@ -144,17 +151,8 @@ class MoranLocalPartial(object):
         if self.permutations is not None:  # NOQA necessary to avoid None > 0
             if self.permutations > 0:
                 self._crand(y, X, W)
-
-
                 self._rlmos_ *= self.N - 1
-                self._p_sim_ = np.zeros((self.N, self.P + 1))
-                # TODO: this should be changed to the general p-value framework
-                for permutation in range(self.permutations):
-                    self._p_sim_ += (
-                        self._rlmos_[:, permutation, :] < self._lmos_
-                    ).astype(int)
-                self._p_sim_ /= self.permutations
-                self._p_sim_ = np.minimum(self._p_sim_, 1 - self._p_sim_)
+                self._p_sim_ = calculate_significance(self._lmos_, self._rlmos_, alternative=self.alternative)
 
         component_quads = []
         for i, left in enumerate(self._left_component_.T):
@@ -316,6 +314,7 @@ class MoranLocalConditional(Moran_Local):
         permutations=999,
         unit_scale=True,
         transformer=None,
+        alternative='two-sided'
     ):
         """
         Initialize a local Moran statistic on the regression residuals
@@ -330,6 +329,11 @@ class MoranLocalConditional(Moran_Local):
         transformer     : callable (default: scikit regression)
                           should transform X into a predicted y. If not provided, will use
                           the standard scikit OLS regression of y on X.
+        alternative     : str (default: 'two-sided')
+                          the alternative hypothesis for the inference. One of
+                          'two-sided', 'greater', 'lesser', 'directed', or 'folded'.
+                          See the esda.significance.calculate_significance() documentation
+                          for more information.
 
         Attributes
         ----------
@@ -361,6 +365,7 @@ class MoranLocalConditional(Moran_Local):
         self.permutations = permutations
         self.unit_scale = unit_scale
         self.transformer = transformer
+        self.alternative = alternative
 
     def fit(self, X, y, W):
         """
@@ -399,11 +404,7 @@ class MoranLocalConditional(Moran_Local):
         self.association_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
         if self.permutations > 0:
             self._crand()
-        # TODO: use the general p-value framework
-            p_sim = (self.reference_distribution_ < self.association_[:, None]).mean(
-                axis=1
-            )
-            self.significance_ = np.minimum(p_sim, 1 - p_sim)
+            self.significance_ = calculate_significance(self.association_, self.reference_distribution_, alternative=self.alternative)
         quads = np.array([[3,2,4,1]]).reshape(2,2)
         left_component_cluster = (y_filtered_ > 0).astype(int)
         right_component_cluster = (Wyf > 0).astype(int)
