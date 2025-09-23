@@ -107,7 +107,7 @@ def correlogram(
         W = KNN
     else:
         with NotImplementedError as e:
-            raise e("distance_type must be either `band` or `knn` ")
+            raise e("distance_type must be either `band` or `knn`")
 
     # there's a faster way to do this by building the largest tree first, then subsetting...
     pts = get_points_array(gdf[gdf.geometry.name])
