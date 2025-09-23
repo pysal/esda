@@ -152,7 +152,13 @@ class MoranLocalPartial(object):
             if self.permutations > 0:
                 self._crand(y, X, W)
                 self._rlmos_ *= self.N - 1
-                self._p_sim_ = calculate_significance(self._lmos_, self._rlmos_, alternative=self.alternative)
+                self._p_sim_ = np.zeros((self.N, self.P + 1))
+                for i in range(self.P + 1):
+                    self._p_sim_[:,i] = calculate_significance(
+                        self._lmos_[:,i], 
+                        self._rlmos_[:,:,i], 
+                        alternative=self.alternative
+                    )
 
         component_quads = []
         for i, left in enumerate(self._left_component_.T):
