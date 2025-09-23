@@ -49,16 +49,22 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
             f"alternative='{alternative}' provided, but is not"
             f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
             )
-    return _permutation_significance(
+    result = _permutation_significance(
         test_stat, 
         reference_distribution,
         alternative=alternative
         )
+    if test_stat.size == 1:
+        return result.item()
+    else:
+        return result
 
 @njit(parallel=False, fastmath=False)
 def _permutation_significance(test_stat, reference_distribution, alternative='two-sided'):
     reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
+    if isinstance(test_stat, (int, float)):
+        test_stat = np.ones((n_samples,))*test_stat
     if alternative == "directed":
         larger = (reference_distribution >= test_stat).sum(axis=1)
         low_extreme = (p_permutations - larger) < larger
@@ -80,7 +86,7 @@ def _permutation_significance(test_stat, reference_distribution, alternative='tw
         lows = np.empty(n_samples).astype(reference_distribution.dtype)
         highs = np.empty(n_samples).astype(reference_distribution.dtype)
         for i in range(n_samples):
-            percentile_i = (reference_distribution[i] <= test_stat).mean()*100
+            percentile_i = (reference_distribution[i] <= test_stat[i]).mean()*100
             p_low = np.minimum(percentile_i, 100-percentile_i)
             lows[i] = np.percentile(
                 reference_distribution[i], 
