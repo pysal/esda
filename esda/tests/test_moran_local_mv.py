@@ -106,7 +106,7 @@ def test_conditional_accuracy(data, graph):
     manual = numpy.asarray(mean * scale).squeeze()
     # check values, may not be identical because of the 
     # matrix inversion least squares estimator used in scikit
-    numpy.testing.assert_allclose(manual, a.associations_)
+    numpy.testing.assert_allclose(manual, a.association_)
 
     # check significances
     numpy.testing.assert_equal((a.significance_ < .01).sum(), 18)
