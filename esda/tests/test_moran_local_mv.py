@@ -2,14 +2,14 @@ import numpy
 import geodatasets
 import geopandas
 import pytest
-from libpysal.weights import Queen
+from libpysal.weights import Rook
 from libpysal.graph import Graph
 from sklearn.linear_model import TheilSenRegressor
 from esda.moran_local_mv import MoranLocalPartial, MoranLocalConditional
 from esda.moran import Moran_Local_BV
 
-def rsqueen(df):
-    w_classic = Queen.from_dataframe(df) 
+def rsrook(df):
+    w_classic = Rook.from_dataframe(df) 
     w_classic.transform = 'r'
     return w_classic
 
@@ -24,7 +24,7 @@ def data():
 
 @pytest.fixture(scope='module', 
                 params = [
-                        rsqueen,
+                        rsrook,
                         lambda df: Graph.build_contiguity(df.reset_index(drop=True)).transform('r')
                         ],
                 ids=['W', 'Graph']
@@ -111,8 +111,8 @@ def test_conditional_accuracy(data, graph):
     numpy.testing.assert_allclose(manual, a.association_)
 
     # check significances
-    numpy.testing.assert_equal((a.significance_ < .4).sum(), 28)
-    numpy.testing.assert_equal((a.significance_[:5] < .4), [False, False, True, False, False])
+    numpy.testing.assert_equal((a.significance_ < .4).sum(), 31)
+    numpy.testing.assert_equal((a.significance_[:5] < .4), [False, False, True, True, False])
 
     is_cluster = numpy.prod(a.partials_, axis=1) >= 0
     is_odd_label = (a.labels_ % 2).astype(bool)
