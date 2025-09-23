@@ -1,0 +1,11 @@
+files: "esda\/|notebooks\/"
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.12.1"
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+
+ci:
+  autofix_prs: false
+  autoupdate_schedule: quarterly

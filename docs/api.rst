@@ -104,6 +104,7 @@ Moran Statistics
     esda.Moran_Local_BV
     esda.Moran_Rate
     esda.Moran_Local_Rate
+    esda.plot_moran_facet
 
 
 Shape Statistics

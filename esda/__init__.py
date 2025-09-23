@@ -35,6 +35,7 @@ from .moran import (
     Moran_Local_BV,
     Moran_Local_Rate,
     Moran_Rate,
+    plot_moran_facet,
 )
 from .silhouettes import boundary_silhouette, path_silhouette  # noqa F401
 from .smaup import Smaup  # noqa F401

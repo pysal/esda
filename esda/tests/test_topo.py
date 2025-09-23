@@ -1,18 +1,17 @@
-from unittest import TestCase
-
 import numpy
 import pandas
+import pytest
 
 from ..topo import isolation, prominence, to_elevation, weights
 
 
-class TopoTester(TestCase):
-    def setUp(self):
+class TestTopo:
+    def setup_method(self):
         self.points = numpy.array(
             [[0, 0], [0, 1], [1, 1], [2, 0.5], [0.5, 0.5], [0.75, 0]]
         )
         self.marks = numpy.array([-1, 0.5, 1, 2, 3, 1.25])
-        self.cxn = weights.Voronoi(self.points)
+        self.cxn = weights.Voronoi(self.points, use_index=False)
 
     def test_prominence_valid(self):
         w = self.cxn
@@ -48,6 +47,8 @@ class TopoTester(TestCase):
         assert not numpy.allclose(default, middle)
 
     def test_isolation_options(self):
+        pytest.importorskip("rtree")
+
         marks = self.marks
         points = self.points
         default = isolation(marks, points)
@@ -64,6 +65,8 @@ class TopoTester(TestCase):
     def test_isolation_valid(self):
         # results should be valid
 
+        pytest.importorskip("rtree")
+
         marks = self.marks
         points = self.points
 
@@ -73,9 +76,8 @@ class TopoTester(TestCase):
         assert numpy.isnan(iso.loc[4, "parent_rank"])
         assert (iso.dropna().parent_index == 4).all()
         assert (
-            iso.sort_values("marks", ascending=False).index == (
-                iso.sort_values("rank").index
-            )
+            iso.sort_values("marks", ascending=False).index
+            == (iso.sort_values("rank").index)
         ).all()
         assert iso.loc[3, "isolation"] == 1.5
         assert iso.loc[2, "gap"] == (
@@ -91,9 +93,8 @@ class TopoTester(TestCase):
         assert numpy.isnan(iso.loc[3, "parent_index"])
         assert (iso.dropna().parent_index == [4, 2, 5, 5, 3]).all()
         assert (
-            iso.sort_values("marks", ascending=False).index == (
-                iso.sort_values("rank").index
-            )
+            iso.sort_values("marks", ascending=False).index
+            == (iso.sort_values("rank").index)
         ).all()
         assert iso.loc[1, "isolation"] == 1
         assert iso.loc[2, "gap"] == (

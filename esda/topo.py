@@ -54,8 +54,8 @@ def _resolve_metric(X, coordinates, metric):
 
         def lookup_distance(a, b):
             """Find location of points a,b in X and return precomputed distances"""
-            (aloc,) = (X == a).all(axis=1).nonzero()
-            (bloc,) = (X == b).all(axis=1).nonzero()
+            (aloc,) = (a == X).all(axis=1).nonzero()
+            (bloc,) = (b == X).all(axis=1).nonzero()
             if (len(aloc) > 1) or (len(bloc) > 1):
                 raise NotImplementedError(
                     "Precomputed distances cannot disambiguate coincident points."
@@ -76,7 +76,7 @@ def _resolve_metric(X, coordinates, metric):
             raise KeyError(
                 f"Metric '{metric}' not understood. Choose "
                 "something available in scipy.spatial.distance."
-            )
+            ) from None
     return distance_func
 
 
@@ -123,7 +123,7 @@ def isolation(
     except ImportError:
         raise ImportError(
             "rtree library must be installed to use the prominence measure"
-        )
+        ) from None
     distance_func = _resolve_metric(X, coordinates, metric)
     sort_order = numpy.argsort(-X)
     tree = SpatialIndex()
@@ -141,9 +141,7 @@ def isolation(
     for iter_ix, ix in pbar(enumerate(sort_order[1:])):
         rank = iter_ix + 1
         value = X[ix]
-        location = coordinates[
-            ix,
-        ]
+        location = coordinates[ix,]
         (match,) = tree.nearest(tuple(location), objects=True)
         higher_rank = match.id
         higher_value = match.object
@@ -215,7 +213,7 @@ def prominence(
     X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
 
-    if not isinstance(verbose, (bool, int)):
+    if not isinstance(verbose, bool | int):
         gdf = verbose
         verbose = True
     else:
@@ -264,7 +262,7 @@ def prominence(
         # need to keep ordering in this sublist to preserve hierarchy
         this_unique_preds = [p for p in peaks if ((p in this_preds) & (p >= 0))]
         joins_new_subgraph = not set(this_unique_preds).issubset(assessed_peaks)
-        if tuple(this_unique_preds) in key_cols.keys():
+        if tuple(this_unique_preds) in key_cols:
             classification = "slope"
         elif len(this_unique_preds) == 0:
             classification = "peak"
@@ -304,7 +302,7 @@ def prominence(
                 previous_peak = peaks[-1]
             except IndexError:
                 previous_peak = this_full_ix
-            if not (this_full_ix in peaks):
+            if this_full_ix not in peaks:
                 peaks.append(this_full_ix)
             dominating_peak[this_full_ix] = previous_peak
             predecessors[this_full_ix] = this_full_ix
@@ -331,11 +329,9 @@ def prominence(
 
         if verbose:
             print(
-                (
-                    "--------------------------------------------\n"
-                    f"at the {rank} iteration:\n{msg}\n\tpeaks\t{peaks}\n"
-                    f"\tprominence\t{prominence}\n\tkey_cols\t{key_cols}\n"
-                )
+                "--------------------------------------------\n"
+                f"at the {rank} iteration:\n{msg}\n\tpeaks\t{peaks}\n"
+                f"\tprominence\t{prominence}\n\tkey_cols\t{key_cols}\n"
             )
         if gdf is not None:
             peakframe = gdf.iloc[peaks]
@@ -412,7 +408,7 @@ def to_elevation(X, middle="mean", metric="euclidean"):
                 raise KeyError(
                     f"numpy has no '{middle}' function to "
                     "compute the middle of a point cloud."
-                )
+                ) from None
         distance_from_center = distance.cdist(
             X, middle_point.reshape(1, -1), metric=metric
         )
@@ -431,9 +427,9 @@ def _check_connectivity(connectivity_or_coordinates):
 
     if issparse(connectivity_or_coordinates):
         shape = connectivity_or_coordinates.shape
-        assert (
-            shape[0] == shape[1]
-        ), f"Connectivity matrix must be square, but is {shape}."
+        assert shape[0] == shape[1], (
+            f"Connectivity matrix must be square, but is {shape}."
+        )
         return connectivity_or_coordinates
     if issubclass(type(connectivity_or_coordinates), weights.W):
         return connectivity_or_coordinates.sparse
@@ -446,8 +442,8 @@ def _check_connectivity(connectivity_or_coordinates):
 if __name__ == "__main__":
     import geopandas
     import matplotlib.pyplot as plt
-    import pandas  # noqa F811
-    from libpysal import examples, weights  # noqa F811
+    import pandas  # noqa: F811
+    from libpysal import examples, weights  # noqa: F811
     from matplotlib import cm
 
     current_cmap = cm.get_cmap()

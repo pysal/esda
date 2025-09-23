@@ -20,7 +20,7 @@ from scipy.stats import poisson
 __all__ = ["NP_Mixture_Smoother"]
 
 
-class NP_Mixture_Smoother(object):
+class NP_Mixture_Smoother:  # noqa: N801
     """Empirical Bayesian Rate Smoother Using Mixture Prior Distributions
     It goes through 1) defining an initial set of subpopulations,
     2) VEM algorithm to determine the number of major subpopulations,
@@ -118,7 +118,7 @@ class NP_Mixture_Smoother(object):
     >>> mixture.getRateEstimates()
     (array([0.0911574, 0.0911574, 0.0911574, 0.0911574]), array([1, 1, 1, 1]))
 
-    """  # noqa E501
+    """  # noqa: E501
 
     def __init__(self, e, b, k=50, acc=1.0e-7, numiter=5000, limit=0.01):
         self.e = np.asarray(e).flatten()
@@ -134,7 +134,7 @@ class NP_Mixture_Smoother(object):
         self.t = r["grid"]
         self.r, self.category = self.getRateEstimates()
 
-    def getSeed(self):
+    def getSeed(self):  # noqa: N802
         self.raw_r = self.e * 1.0 / self.b
         r_max, r_min = self.raw_r.max(), self.raw_r.min()
         r_diff = r_max - r_min
@@ -143,14 +143,14 @@ class NP_Mixture_Smoother(object):
         p = np.ones(self.k) * 1.0 / self.k
         return p, grid
 
-    def getMixedProb(self, grid):
+    def getMixedProb(self, grid):  # noqa: N802
         mix = np.zeros((self.n, self.k))
         for i in range(self.n):
             for j in range(self.k):
                 mix[i, j] = poisson.pmf(self.e[i], self.b[i] * grid[j])
         return mix
 
-    def getGradient(self, mix, p):
+    def getGradient(self, mix, p):  # noqa: N802
         mix_p = mix * p
         mix_den = mix_p.sum(axis=1)
         obs_id = mix_den > 1.0e-13
@@ -163,14 +163,14 @@ class NP_Mixture_Smoother(object):
             gradient.append(mix_p[:, i][obs_id].sum())
         return np.array(gradient), mix_den
 
-    def getMaxGradient(self, gradient):
+    def getMaxGradient(self, gradient):  # noqa: N802
         grad_max = gradient.max()
         grad_max_inx = gradient.argmax()
         if grad_max <= 0:
             return (0, 1)
         return (grad_max, grad_max_inx)
 
-    def getMinGradient(self, gradient, p):
+    def getMinGradient(self, gradient, p):  # noqa: N802
         p_fil = p > 1.0e-8
         grad_fil = gradient[p_fil]
         grad_min = grad_fil.min()
@@ -179,7 +179,7 @@ class NP_Mixture_Smoother(object):
             return (1.0e7, 1)
         return (grad_min, grad_min_inx)
 
-    def getStepsize(self, mix_den, ht):
+    def getStepsize(self, mix_den, ht):  # noqa: N802
         ##############################################################################
         # Something seems off in this function
         # - a & b are defined twice
@@ -195,7 +195,7 @@ class NP_Mixture_Smoother(object):
         # s0 = (w * ht).sum()
 
         step, oldstep = 0.0, 0.0
-        for i in range(50):
+        for _ in range(50):
             grad1, grad2 = 0.0, 0.0
             for j in range(self.n):
                 a = mix_den[j] + step * ht[j]
@@ -246,7 +246,7 @@ class NP_Mixture_Smoother(object):
         return new_p, new_grid
 
     def em(self, nstep, grid, p):
-        l = self.k - 1  # noqa E741
+        l = self.k - 1  # noqa: E741
         w, n, e, b = self.w, self.n, self.e, self.b
         if self.k == 1:
             s11 = (w * b / np.ones(n)).sum()
@@ -296,7 +296,7 @@ class NP_Mixture_Smoother(object):
                     break
         return res
 
-    def getLikelihood(self, mix_den):
+    def getLikelihood(self, mix_den):  # noqa: N802
         mix_den_fil = mix_den > 0
         r = np.log(mix_den[mix_den_fil]).sum()
         return r
@@ -320,12 +320,12 @@ class NP_Mixture_Smoother(object):
                         # `a` is not defined anywhere... what is it?
                         # -- seems like the condition is never met
                         #       (bp_seeds[i] - bp_seeds[i - 1] > 1)
-                        bp.append(a[i])  # noqa F821
+                        bp.append(a[i])  # noqa: F821
                         ##############################################################
             new_grid, new_p = [], []
             for i in range(len(bp) - 1):
                 new_grid.append(grid[bp[i]])
-                new_p.append(p[bp[i] : bp[i + 1]].sum())  # noqa E203
+                new_p.append(p[bp[i] : bp[i + 1]].sum())  # noqa: E203
             self.k = len(new_p)
             new_grid, new_p = np.array(new_grid), np.array(new_p)
             mix = self.getMixedProb(new_grid)
@@ -345,7 +345,7 @@ class NP_Mixture_Smoother(object):
         com_res = self.combine(em_res)
         return com_res
 
-    def getRateEstimates(self):
+    def getRateEstimates(self):  # noqa: N802
         mix = self.getMixedProb(self.t)
         mix_p = mix * self.p
         denom = mix_p.sum(axis=1)

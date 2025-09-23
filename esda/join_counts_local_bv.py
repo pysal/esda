@@ -10,8 +10,7 @@ from esda.crand import njit as _njit
 PERMUTATIONS = 999
 
 
-class Join_Counts_Local_BV(BaseEstimator):
-
+class Join_Counts_Local_BV(BaseEstimator):  # noqa: N801
     """Univariate Local Join Count Statistic"""
 
     def __init__(
@@ -29,10 +28,8 @@ class Join_Counts_Local_BV(BaseEstimator):
 
         Parameters
         ----------
-        connectivity : scipy.sparse matrix object
-            the connectivity structure describing
-            the relationships between observed units.
-            Need not be row-standardized.
+        connectivity : W | Graph
+            spatial weights instance as W or Graph aligned with y
         permutations : int
             number of random permutations for calculation of pseudo p_values
         n_jobs : int
@@ -132,8 +129,11 @@ class Join_Counts_Local_BV(BaseEstimator):
 
         w = self.connectivity
         # Fill the diagonal with 0s
-        w = weights.util.fill_diagonal(w, val=0)
-        w.transform = "b"
+        if isinstance(w, weights.W):
+            w = weights.util.fill_diagonal(w, val=0)
+            w.transform = "b"
+        else:
+            w = w.assign_self_weight(0).eliminate_zeros().transform("b")
 
         self.x = x
         self.z = z
@@ -183,11 +183,19 @@ class Join_Counts_Local_BV(BaseEstimator):
     def _statistic(x, z, w, case, drop_islands):
         # Create adjacency list. Note that remove_symmetric=False - this is
         # different from the esda.Join_Counts() function.
-        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
-
-        # First, set up a series that maps the values to the weights table
-        zseries_x = pd.Series(x, index=w.id_order)
-        zseries_z = pd.Series(z, index=w.id_order)
+        if isinstance(w, weights.W):
+            adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
+            # First, set up a series that maps the values to the weights table
+            zseries_x = pd.Series(x, index=w.id_order)
+            zseries_z = pd.Series(z, index=w.id_order)
+        else:
+            if drop_islands:
+                adj_list = w.adjacency.drop(w.isolates).reset_index()
+            else:
+                adj_list = w.adjacency.reset_index()
+            # First, set up a series that maps the values to the weights table
+            zseries_x = pd.Series(x, index=w.unique_ids)
+            zseries_z = pd.Series(z, index=w.unique_ids)
 
         # Map the values to the focal (i) values
         focal_x = zseries_x.loc[adj_list.focal].values
@@ -231,7 +239,7 @@ class Join_Counts_Local_BV(BaseEstimator):
 
 
 @_njit(fastmath=True)
-def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
+def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     zx = z[:, 0]
     zy = z[:, 1]
     other_weights = weights_i[1:]
@@ -240,7 +248,7 @@ def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):
 
 
 @_njit(fastmath=True)
-def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):
+def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     zy = z[:, 1]
     other_weights = weights_i[1:]
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, other_weights)

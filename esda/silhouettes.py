@@ -1,6 +1,7 @@
 import warnings
 
 import numpy as np
+from libpysal import weights
 from scipy import sparse as sp
 from scipy.sparse import csgraph as cg
 
@@ -8,7 +9,7 @@ try:
     import pandas as pd
     import sklearn.metrics as sk
     import sklearn.metrics.pairwise as skp
-    from sklearn.preprocessing import LabelEncoder  # noqa F401
+    from sklearn.preprocessing import LabelEncoder  # noqa: F401
 
     HAS_REQUIREMENTS = True
 except ImportError:
@@ -18,16 +19,16 @@ except ImportError:
 def _raise_initial_error():
     missing = []
     try:
-        import sklearn  # noqa F401
+        import sklearn  # noqa: F401
     except ImportError:
         missing.append("scikit-learn")
     try:
-        import pandas  # noqa F401
+        import pandas  # noqa: F401
     except ImportError:
         missing.append("pandas")
     raise ImportError(
         "This function requires scikit-learn and "
-        "pandas to be installed. Missing {','.join(missing)}."
+        f"pandas to be installed. Missing {','.join(missing)}."
     )
 
 
@@ -62,7 +63,7 @@ def path_silhouette(
                 matrix of data with N observations and P covariates.
     labels  :   np.ndarray (N,)
                 flat vector of the L labels assigned over N observations.
-    W       :   pysal.W object
+    W       :   libpysal.weights.W | libpysal.graph.Graph
                 spatial weights object reflecting the spatial connectivity
                 in the problem under analysis
     D       :   np.ndarray (N,N)
@@ -102,16 +103,16 @@ def path_silhouette(
     if D is None:
         D = metric(data)
     # polymorphic for sparse & dense input
-    assert (
-        0 == (D < 0).sum()
-    ), "Distance metric has negative values, which is not supported."
+    assert (D < 0).sum() == 0, (
+        "Distance metric has negative values, which is not supported."
+    )
     off_diag_zeros = (D + np.eye(D.shape[0])) == 0
     D[off_diag_zeros] = -1
     Wm = sp.csr_matrix(W.sparse)
     DW = sp.csr_matrix(Wm.multiply(D))
     DW.eliminate_zeros()
     DW[DW < 0] = 0
-    assert 0 == (DW < 0).sum()
+    assert (DW < 0).sum() == 0
     all_pairs = cg.shortest_path(DW, directed=directed)
     labels = np.asarray(labels)
     if W.n_components > 1:
@@ -176,13 +177,13 @@ def path_silhouette(
                 else:
                     psils = subgraph_solutions
             if return_nbfc:
-                closest_connecting_label_[
-                    this_component_mask
-                ] = closest_connecting_label
+                closest_connecting_label_[this_component_mask] = (
+                    closest_connecting_label
+                )
             if return_nbfc_score:
-                closest_connection_score_[
-                    this_component_mask
-                ] = closest_connection_score
+                closest_connection_score_[this_component_mask] = (
+                    closest_connection_score
+                )
             psils_[this_component_mask] = psils
         closest_connection_score = closest_connection_score_
         closest_connecting_label = closest_connecting_label_
@@ -265,7 +266,7 @@ def boundary_silhouette(
                 observation, and each clumn should be one feature.
     labels  :   (N_obs,) array of labels
                 the labels corresponding to the group each observation is assigned.
-    W       :   pysal.weights.W object
+    W       :   libpysal.weights.W | libpysal.graph.Graph
                 a spatial weights object containing the connectivity structure
                 for the data
     metric  :   callable, array,
@@ -308,7 +309,15 @@ def boundary_silhouette(
     if not HAS_REQUIREMENTS:
         _raise_initial_error()
 
-    alist = W.to_adjlist(drop_islands=drop_islands)
+    if isinstance(W, weights.W):
+        alist = W.to_adjlist(drop_islands=drop_islands)
+        index = W.id_order
+    else:
+        if drop_islands:
+            alist = W.adjacency.drop(W.isolates).reset_index()
+        else:
+            alist = W.adjacancy.reset_index()
+        index = W.unique_ids
     labels = np.asarray(labels)
     if callable(metric):
         full_distances = metric(data)
@@ -327,10 +336,10 @@ def boundary_silhouette(
             "The provided metric is neither a dissmilarity function"
             " nor a dissimilarity matrix."
         )
-    assert 0 == (full_distances < 0).sum(), (
-        "Distance metric has negative values, " "which is not supported"
+    assert (full_distances < 0).sum() == 0, (
+        "Distance metric has negative values, which is not supported"
     )
-    label_frame = pd.DataFrame(labels, index=W.id_order, columns=["label"])
+    label_frame = pd.DataFrame(labels, index=index, columns=["label"])
     alist = alist.merge(
         label_frame, left_on="focal", right_index=True, how="left"
     ).merge(
@@ -355,7 +364,7 @@ def boundary_silhouette(
         if len(focal_mask) == 1:  # the candidate is singleton
             result.append(np.array([0]))
             continue
-        neighbors = alist.query("focal == {}".format(ix)).label_neighbor
+        neighbors = alist.query(f"focal == {ix}").label_neighbor
         mean_dissim = full_distances[i, focal_mask].sum() / (len(focal_mask) - 1)
         if not np.isfinite(mean_dissim).all():
             raise ValueError(
@@ -430,16 +439,15 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
     n_obs = data.shape[0]
     if callable(metric):
         full_distances = metric(data)
-    elif isinstance(metric, np.ndarray):
-        if metric.shape == (n_obs, n_obs):
-            full_distances = metric
+    elif isinstance(metric, np.ndarray) and metric.shape == (n_obs, n_obs):
+        full_distances = metric
     if isinstance(data, pd.DataFrame):
         indices = data.index
-    if isinstance(labels, (pd.DataFrame, pd.Series)) and indices is None:
+    if isinstance(labels, pd.DataFrame | pd.Series) and indices is None:
         indices = labels.index
-    elif indices is not None and not isinstance(labels, (pd.DataFrame, pd.Series)):
+    elif indices is not None and not isinstance(labels, pd.DataFrame | pd.Series):
         labels = pd.Series(labels, index=indices)
-    elif indices is None and not isinstance(labels, (pd.DataFrame, pd.Series)):
+    elif indices is None and not isinstance(labels, pd.DataFrame | pd.Series):
         indices = np.arange(len(labels))
         labels = pd.Series(labels, index=indices)
     if isinstance(labels, pd.DataFrame):
@@ -460,7 +468,7 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
     self_dcache = dict()
     sils = []
     indices = list(indices)
-    for i_alist, row in result.iterrows():
+    for _, row in result.iterrows():
         name = row.focal
         label = row.label_focal
         neighbor_label = row.label_neighbor
@@ -481,7 +489,9 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
             warnings.warn(
                 f"A link ({row.focal},{row.neighbor}) has been found to have an empty "
                 "set of neighbors. This may happen when a label assignment is "
-                "missing for the neighbor unit. Check that no labels are missing."
+                "missing for the neighbor unit. Check that no labels are missing.",
+                UserWarning,
+                stacklevel=2,
             )
             continue
         outer_distance = full_distances[i_Xc, neighbor_mask].mean()

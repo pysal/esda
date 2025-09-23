@@ -2,17 +2,20 @@
 Moran's I Spatial Autocorrelation Statistics
 
 """
+
 __author__ = (
     "Sergio J. Rey <srey@asu.edu>, "
     "Dani Arribas-Bel <daniel.arribas.bel@gmail.com>, "
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
 
-from warnings import simplefilter
+from warnings import simplefilter, warn
 
 import numpy as np
+import pandas as pd
 import scipy.stats as stats
-from libpysal.weights.spatial_lag import lag_spatial as slag
+from libpysal.weights import W
+from libpysal.weights.spatial_lag import lag_spatial
 from scipy import sparse
 
 from .crand import _prepare_univariate
@@ -29,12 +32,30 @@ __all__ = [
     "Moran_Local_BV",
     "Moran_Rate",
     "Moran_Local_Rate",
+    "plot_moran_facet",
 ]
 
 PERMUTATIONS = 999
 
 
-class Moran(object):
+def _slag(w, y):
+    """Helper to compute lag either for W or for Graph"""
+    if isinstance(w, W):
+        return lag_spatial(w, y)
+    else:
+        return w.lag(y)
+
+
+def _transform(w, transformation):
+    """Helper to transform W or Graph"""
+    if isinstance(w, W):
+        w.transform = transformation
+        return w
+    else:
+        return w.transform(transformation)
+
+
+class Moran:
     """Moran's I Global Autocorrelation Statistic
 
     Parameters
@@ -42,13 +63,15 @@ class Moran(object):
 
     y               : array
                       variable measured across n spatial units
-    w               : W
-                      spatial weights instance
-    transformation  : string
-                      weights transformation,  default is row-standardized "r".
-                      Other options include "B": binary,  "D":
-                      doubly-standardized,  "U": untransformed
-                      (general weights), "V": variance-stabilizing.
+    w               : W | Graph
+                      spatial weights instance as W or Graph aligned with y
+    transformation  : {'R', 'B', 'D', 'U', 'V'}
+                  weights transformation, default is row-standardized "r".
+                  Other options include
+                  "B": binary,
+                  "D": doubly-standardized,
+                  "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
+                  "V": variance-stabilizing.
     permutations    : int
                       number of random permutations for calculation of
                       pseudo-p_values
@@ -60,8 +83,10 @@ class Moran(object):
     ----------
     y            : array
                    original variable
-    w            : W
+    w            : W | Graph
                    original w object
+    z            : array
+                   zero-mean, unit standard deviation normalized y
     permutations : int
                    number of permutations
     I            : float
@@ -135,6 +160,7 @@ class Moran(object):
     0.00027147862770937614
 
     SIDS example replicating OpenGeoda
+
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
     >>> SIDR = np.array(f.by_col("SIDR74"))
@@ -152,18 +178,18 @@ class Moran(object):
     >>> round(mi_1.p_norm, 4)
     0.0001
 
-    """
+    """  # noqa: E501
 
     def __init__(
         self, y, w, transformation="r", permutations=PERMUTATIONS, two_tailed=True
     ):
         y = np.asarray(y).flatten()
         self.y = y
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
         self.__moments()
-        self.I = self.__calc(self.z)  # noqa E741
+        self.I = self.__calc(self.z)  # noqa: E741
         self.z_norm = (self.I - self.EI) / self.seI_norm
         self.z_rand = (self.I - self.EI) / self.seI_rand
 
@@ -191,7 +217,8 @@ class Moran(object):
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
-            self.z_sim = (self.I - self.EI_sim) / self.seI_sim
+            with np.errstate(divide='ignore'):
+                self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
                 self.p_z_sim = stats.norm.sf(self.z_sim)
             else:
@@ -210,9 +237,15 @@ class Moran(object):
         self.EI = -1.0 / (self.n - 1)
         n = self.n
         n2 = n * n
-        s1 = self.w.s1
-        s0 = self.w.s0
-        s2 = self.w.s2
+        if isinstance(self.w, W):
+            s1 = self.w.s1
+            s0 = self.w.s0
+            s2 = self.w.s2
+        else:
+            self.summary = self.w.summary()
+            s1 = self.summary.s1
+            s0 = self.summary.s0
+            s2 = self.summary.s2
         s02 = s0 * s0
         v_num = n2 * s1 - n * s2 + 3 * s02
         v_den = (n - 1) * (n + 1) * s02
@@ -233,9 +266,10 @@ class Moran(object):
         self.seI_rand = VIR ** (1 / 2.0)
 
     def __calc(self, z):
-        zl = slag(self.w, z)
+        zl = _slag(self.w, z)
         inum = (z * zl).sum()
-        return self.n / self.w.s0 * inum / self.z2ss
+        s0 = self.w.s0 if isinstance(self.w, W) else self.summary.s0
+        return self.n / s0 * inum / self.z2ss
 
     @property
     def _statistic(self):
@@ -255,9 +289,9 @@ class Moran(object):
             a pandas dataframe with a geometry column
         cols : string or list of string
             name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -288,11 +322,94 @@ class Moran(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
+        )
+
+    def plot_scatter(
+        self,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        return _scatterplot(
+            self,
+            crit_value=None,
+            ax=ax,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+        )
+
+    def plot_simulation(self, ax=None, legend=False, fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        legend : bool, optional
+            Plot a legend, by default False
+        fitline_kwds : dict, optional
+            Additional keyword arguments for vertical Moran fit line, by default None.
+        **kwargs : keyword arguments, optional
+            Additional keyword arguments for KDE plot passed to ``seaborn.kdeplot``,
+            by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+
+        Notes
+        -----
+        This requires optional dependencies ``matplotlib`` and ``seaborn``.
+
+        Examples
+        --------
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
+        >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
+        >>> y = np.array(f.by_col['HR8893'])
+        >>> from esda.moran import Moran
+        >>> mi = Moran(y,  w)
+
+        Default plot:
+
+        >>> mi.plot_simulation()
+
+        Customized styling that turns the distribution into a pink line and line
+        indicating I to a black line:
+
+        >>> mi.plot_simulation(fitline_kwds={"color": "k"}, color="pink", shade=False)
+        """
+        return _simulation_plot(
+            self,
+            ax=ax,
+            legend=legend,
+            bivariate=False,
+            fitline_kwds=fitline_kwds,
+            **kwargs,
         )
 
 
-class Moran_BV(object):
+class Moran_BV:  # noqa: N801
     """
     Bivariate Moran's I
 
@@ -302,14 +419,14 @@ class Moran_BV(object):
         x-axis variable
     y : array
         wy will be on y axis
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with x and y
     transformation  : {'R', 'B', 'D', 'U', 'V'}
                       weights transformation, default is row-standardized "r".
                       Other options include
                       "B": binary,
                       "D": doubly-standardized,
-                      "U": untransformed (general weights),
+                      "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
                       "V": variance-stabilizing.
     permutations    : int
                       number of random permutations for calculation of pseudo
@@ -321,7 +438,7 @@ class Moran_BV(object):
                     original x variable standardized by mean and std
     zy            : array
                     original y variable standardized by mean and std
-    w             : W
+    w             : W | Graph
                     original w object
     permutation   : int
                     number of permutations
@@ -380,7 +497,7 @@ class Moran_BV(object):
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
 
     Create an instance of Moran_BV
-    
+
     >>> from esda.moran import Moran_BV
     >>> mbi = Moran_BV(SIDR79,  SIDR74,  w)
 
@@ -395,7 +512,7 @@ class Moran_BV(object):
     0.001
 
 
-    """
+    """  # noqa: E501
 
     def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS):
         x = np.asarray(x).flatten()
@@ -408,9 +525,9 @@ class Moran_BV(object):
         self.zy = zy
         n = x.shape[0]
         self.den = n - 1.0  # zx'zx = zy'zy = n-1
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
-        self.I = self.__calc(zy)  # noqa E741
+        self.I = self.__calc(zy)  # noqa: E741
         if permutations:
             nrp = np.random.permutation
             sim = [self.__calc(nrp(zy)) for i in range(permutations)]
@@ -423,14 +540,15 @@ class Moran_BV(object):
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
-            self.z_sim = (self.I - self.EI_sim) / self.seI_sim
+            with np.errstate(divide='ignore'):
+                self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
                 self.p_z_sim = stats.norm.sf(self.z_sim)
             else:
                 self.p_z_sim = stats.norm.cdf(self.z_sim)
 
     def __calc(self, zy):
-        wzy = slag(self.w, zy)
+        wzy = _slag(self.w, zy)
         self.num = (self.zx * wzy).sum()
         return self.num / self.den
 
@@ -449,7 +567,7 @@ class Moran_BV(object):
         inplace=False,
         pvalue="sim",
         outvals=None,
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_BV statistic on a dataframe
@@ -466,9 +584,9 @@ class Moran_BV(object):
             column name or list of column names to use as Y values to compute
             the bivariate statistic. if no Y is provided, pariwise comparisons
             among the X variates are used instead.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -501,11 +619,77 @@ class Moran_BV(object):
             outvals=outvals,
             swapname=cls.__name__.lower(),
             stat=cls,
-            **stat_kws
+            **stat_kws,
+        )
+
+    def plot_scatter(
+        self,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        return _scatterplot(
+            self,
+            crit_value=None,
+            bivariate=True,
+            ax=ax,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+        )
+
+    def plot_simulation(self, ax=None, legend=False, fitline_kwds=None, **kwargs):
+        """
+        Global Moran's I simulated reference distribution.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        legend : bool, optional
+            Plot a legend, by default False
+        fitline_kwds : dict, optional
+            Additional keyword arguments for vertical Moran fit line, by default None.
+        **kwargs : keyword arguments, optional
+            Additional keyword arguments for KDE plot passed to ``seaborn.kdeplot``,
+            by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+
+        Notes
+        -----
+        This requires optional dependencies ``matplotlib`` and ``seaborn``.
+        """
+        return _simulation_plot(
+            self,
+            ax=ax,
+            legend=legend,
+            bivariate=True,
+            fitline_kwds=fitline_kwds,
+            **kwargs,
         )
 
 
-def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
+def Moran_BV_matrix(variables, w, permutations=0, varnames=None):  # noqa: N802
     """
     Bivariate Moran Matrix
 
@@ -515,8 +699,8 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     ----------
     variables    : array or pandas.DataFrame
                    sequence of variables to be assessed
-    w            : W
-                   a spatial weights object
+    w            : W | Graph
+                   spatial weights instance as W or Graph aligned with variables
     permutations : int
                    number of permutations
     varnames     : list, optional if variables is an array
@@ -582,7 +766,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     return results
 
 
-def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
+def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):  # noqa: N802
     """
     Base calculation for MORAN_BV_Matrix
     """
@@ -604,7 +788,116 @@ def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     return results
 
 
-class Moran_Rate(Moran):
+def plot_moran_facet(
+    moran_matrix,
+    figsize=(16, 12),
+    scatter_bv_kwds=None,
+    fitline_bv_kwds=None,
+    scatter_glob_kwds=dict(color="#737373"),
+    fitline_glob_kwds=None,
+):
+    """
+    Moran Facet visualization.
+
+    A matrix containing bivariate Moran plots between all pairs of variables present in
+    the ``moran_matrix`` dictionary. On the diagonal contains global Moran plot.
+
+    Parameters
+    ----------
+    moran_matrix : dict
+        Dictionary of Moran_BV objects returned by Moran_BV_matrix
+    figsize : tuple, optional
+        Size of the figure. Default is (16,12)
+    scatter_bv_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points of
+        off-diagonal Moran_BV plots.
+        Default =None.
+    fitline_bv_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline of
+        off-diagonal Moran_BV plots.
+        Default =None.
+    scatter_glob_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points of
+        diagonal Moran plots.
+        Default =None.
+    fitline_glob_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline of
+        diagonal Moran plots.
+        Default =None.
+
+    Returns
+    -------
+    ax : matplotlib Axes instance
+        Axes in which the figure is plotted
+    """
+    try:
+        from matplotlib import pyplot as plt
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib must be installed to plot the simulation."
+        ) from err
+
+    nrows = int(np.sqrt(len(moran_matrix))) + 1
+    ncols = nrows
+
+    fig, axarr = plt.subplots(nrows, ncols, figsize=figsize, sharey=True, sharex=True)
+    fig.suptitle("Moran Facet")
+
+    for row in range(nrows):
+        for col in range(ncols):
+            if row == col:
+                global_m = Moran(
+                    moran_matrix[row, (row + 1) % 4].zy,
+                    moran_matrix[row, (row + 1) % 4].w,
+                )
+                _scatterplot(
+                    global_m,
+                    crit_value=None,
+                    ax=axarr[row, col],
+                    scatter_kwds=scatter_glob_kwds,
+                    fitline_kwds=fitline_glob_kwds,
+                )
+                axarr[row, col].set_facecolor("#d9d9d9")
+            else:
+                _scatterplot(
+                    moran_matrix[row, col],
+                    bivariate=True,
+                    crit_value=None,
+                    ax=axarr[row, col],
+                    scatter_kwds=scatter_bv_kwds,
+                    fitline_kwds=fitline_bv_kwds,
+                )
+
+            axarr[row, col].spines[["left", "right", "top", "bottom"]].set_visible(
+                False
+            )
+            if row == nrows - 1:
+                axarr[row, col].set_xlabel(
+                    str(moran_matrix[(col + 1) % 4, col].varnames["x"]).format(col)
+                )
+                axarr[row, col].spines["bottom"].set_visible(True)
+            else:
+                axarr[row, col].set_xlabel("")
+
+            if col == 0:
+                axarr[row, col].set_ylabel(
+                    (
+                        "Spatial Lag of "
+                        + str(moran_matrix[row, (row + 1) % 4].varnames["y"])
+                    ).format(row)
+                )
+                axarr[row, col].spines["left"].set_visible(True)
+            else:
+                axarr[row, col].set_ylabel("")
+
+            axarr[row, col].set_title("")
+
+    plt.tight_layout()
+
+    return axarr
+
+
+class Moran_Rate(Moran):  # noqa: N801
     """
     Adjusted Moran's I Global Autocorrelation Statistic for Rate
     Variables :cite:`Assuncao1999`
@@ -617,8 +910,8 @@ class Moran_Rate(Moran):
     b               : array
                       a population-at-risk variable measured across n spatial
                       units
-    w               : W
-                      spatial weights instance
+    w               : W | Graph
+                      spatial weights instance as W or Graph aligned with e and b
     adjusted        : boolean
                       whether or not Moran's I needs to be adjusted for rate
                       variable
@@ -627,7 +920,7 @@ class Moran_Rate(Moran):
                       Other options include
                       "B": binary,
                       "D": doubly-standardized,
-                      "U": untransformed (general weights),
+                      "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
                       "V": variance-stabilizing.
     two_tailed      : boolean
                       If True (default), analytical p-values for Moran's I are
@@ -642,7 +935,9 @@ class Moran_Rate(Moran):
                    rate variable computed from parameters e and b
                    if adjusted is True, y is standardized rates
                    otherwise, y is raw rates
-    w            : W
+    z            : array
+                   zero-mean, unit standard deviation normalized y
+    w            : W | Graph
                    original w object
     permutations : int
                    number of permutations
@@ -708,7 +1003,7 @@ class Moran_Rate(Moran):
     '0.1662'
     >>> "%6.4f" % mi.p_norm
     '0.0042'
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -722,10 +1017,7 @@ class Moran_Rate(Moran):
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
-        if adjusted:
-            y = assuncao_rate(e, b)
-        else:
-            y = e * 1.0 / b
+        y = assuncao_rate(e, b) if adjusted else e * 1.0 / b
         Moran.__init__(
             self,
             y,
@@ -746,7 +1038,7 @@ class Moran_Rate(Moran):
         pvalue="sim",
         outvals=None,
         swapname="",
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_Rate statistic on a dataframe
@@ -763,9 +1055,9 @@ class Moran_Rate(Moran):
             used for all event columns. If more than one population column
             is provided but there is not a population for every event
             column, an exception will be raised.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -799,7 +1091,7 @@ class Moran_Rate(Moran):
                 pvalue=pvalue,
                 outvals=outvals,
                 swapname=swapname,
-                **stat_kws
+                **stat_kws,
             )
             return new
         if isinstance(events, str):
@@ -822,12 +1114,12 @@ class Moran_Rate(Moran):
 
         rates = [
             assuncao_rate(df[e], df[pop]) if adj else df[e].astype(float) / df[pop]
-            for e, pop, adj in zip(events, populations, adjusted)
+            for e, pop, adj in zip(events, populations, adjusted, strict=True)
         ]
-        names = ["-".join((e, p)) for e, p in zip(events, populations)]
+        names = ["-".join((e, p)) for e, p in zip(events, populations, strict=True)]
         out_df = df.copy()
         rate_df = out_df.from_dict(
-            dict(zip(names, rates))
+            dict(zip(names, rates, strict=True))
         )  # trick to avoid importing pandas
         stat_df = _univariate_handler(
             rate_df,
@@ -838,7 +1130,7 @@ class Moran_Rate(Moran):
             outvals=outvals,
             swapname=swapname,
             stat=Moran,  # how would this get done w/super?
-            **stat_kws
+            **stat_kws,
         )
         for col in stat_df.columns:
             df[col] = stat_df[col]
@@ -849,7 +1141,7 @@ class Moran_Rate(Moran):
 # -----------------------------------------------------------------------------#
 
 
-class Moran_Local(object):
+class Moran_Local:  # noqa: N801
     """Local Moran Statistics.
 
 
@@ -857,14 +1149,14 @@ class Moran_Local(object):
     ----------
     y : array
         (n,1), attribute array
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
          weights transformation,  default is row-standardized "r".
          Other options include
          "B": binary,
          "D": doubly-standardized,
-         "U": untransformed (general weights),
+         "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
          "V": variance-stabilizing.
     permutations : int
         number of random permutations for calculation of pseudo
@@ -896,8 +1188,10 @@ class Moran_Local(object):
 
     y : array
         original variable
-    w : W
+    w : W | Graph
         original w object
+    z : array
+        zero-mean, unit standard deviation normalized y
     permutations : int
         number of random permutations for calculation of pseudo p_values
     Is : array
@@ -994,7 +1288,7 @@ class Moran_Local(object):
     Note random components result is slightly different values across
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures.
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -1006,7 +1300,7 @@ class Moran_Local(object):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,
+        island_weight=0,  # noqa: ARG002
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1021,7 +1315,7 @@ class Moran_Local(object):
         z /= sy
         np.seterr(**orig_settings)
         self.z = z
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
         self.den = (z * z).sum()
@@ -1056,7 +1350,8 @@ class Moran_Local(object):
                 self.EI_sim = self.sim.mean(axis=0)
                 self.seI_sim = self.sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
-                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                with np.errstate(divide='ignore'):
+                    self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
             else:
                 self.sim = self.rlisas = None
@@ -1067,11 +1362,11 @@ class Moran_Local(object):
                 self.p_z_sim = np.nan
 
     def __calc(self, w, z):
-        zl = slag(w, z)
+        zl = _slag(w, z)
         return self.n_1 * self.z * zl / self.den
 
     def __quads(self):
-        zl = slag(self.w, self.z)
+        zl = _slag(self.w, self.z)
         zp = self.z > 0
         lp = zl > 0
         pp = zp * lp
@@ -1098,9 +1393,9 @@ class Moran_Local(object):
         # ---------------------------------------------------------
         expectation = -(z**2 * wi) / ((n - 1) * m2)
         var_term1 = (z / m2) ** 2
-        var_term2 = (n / (n - 2))
-        var_term3 = (wi2 - (wi**2 / (n - 1)))
-        var_term4 = (m2 - (z**2 / (n - 1)))
+        var_term2 = n / (n - 2)
+        var_term3 = wi2 - (wi**2 / (n - 1))
+        var_term4 = m2 - (z**2 / (n - 1))
         variance = var_term1 * var_term2 * var_term3 * var_term4
 
         self.EIc = expectation
@@ -1146,9 +1441,9 @@ class Moran_Local(object):
             a pandas dataframe with a geometry column
         cols : string or list of string
             name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -1180,11 +1475,183 @@ class Moran_Local(object):
             outvals=outvals,
             stat=cls,
             swapname=cls.__name__.lower(),
-            **stat_kws
+            **stat_kws,
+        )
+
+    def get_cluster_labels(self, crit_value=0.05):
+        """Return LISA cluster labels for each observation.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            crititical significance value for statistical inference, by default 0.05
+
+        Returns
+        -------
+        numpy.array
+            an array of cluster labels aligned with the input data used to conduct the
+            local Moran analysis
+        """
+        return _get_cluster_labels(self, crit_value)
+
+    def explore(self, gdf, crit_value=0.05, **kwargs):
+        """Create interactive map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        Folium.Map
+            interactive map with LISA clusters
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "explore", **kwargs)
+
+    def plot(self, gdf, crit_value=0.05, **kwargs):
+        """Create static map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        ax
+            matplotlib axis
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
+
+    def plot_scatter(
+        self,
+        crit_value=0.05,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            Critical value to determine statistical significance, by default 0.05.
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        return _scatterplot(
+            self,
+            crit_value=crit_value,
+            ax=ax,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+        )
+
+    def plot_combination(
+        self,
+        gdf,
+        attribute,
+        crit_value=0.05,
+        region_column=None,
+        mask=None,
+        mask_color="#636363",
+        quadrant=None,
+        legend=True,
+        scheme="Quantiles",
+        cmap="YlGnBu",
+        figsize=(15, 4),
+        scatter_kwds=None,
+        fitline_kwds=None,
+        legend_kwds=None,
+    ):
+        """
+        Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
+        and Choropleth maps, with Local Moran region and quadrant masking
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        attribute : str
+            Column name of attribute which should be depicted in Choropleth map.
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        region_column: string, optional
+            Column name containing mask region of interest, by default None
+        mask: str, float, int, optional
+            Identifier or name of the region to highlight, by default None
+            Use the same dtype to specifiy as in original dataset.
+        mask_color: str, optional
+            Color of mask, by default '#636363'.
+        quadrant : int, optional
+            Quadrant 1-4 in scatterplot masking values in LISA cluster and
+            Choropleth maps, by default None
+        figsize: tuple, optional
+            W, h of figure, by default (15,4)
+        legend: boolean, optional
+            If True, legend for maps will be depicted, by default True
+        scheme: str, optional
+            Name of mapclassify classifier to be used, by default 'Quantiles'
+        cmap: str, optional
+            Name of matplotlib colormap used for plotting the Choropleth.
+            By default 'YlGnBu'.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points, by default
+            None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            in the scatterplot, by default None.
+        legend_kwds : dict
+            Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds``
+            allowing repositioning of the legend in LISA cluster plot and choropleth.
+
+        Returns
+        -------
+        axs : array of Matplotlib axes
+        """
+        return _plot_combination(
+            self,
+            gdf,
+            attribute,
+            crit_value=crit_value,
+            region_column=region_column,
+            mask=mask,
+            mask_color=mask_color,
+            quadrant=quadrant,
+            legend=legend,
+            scheme=scheme,
+            cmap=cmap,
+            figsize=figsize,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+            legend_kwds=legend_kwds,
         )
 
 
-class Moran_Local_BV(object):
+class Moran_Local_BV:  # noqa: N801
     """Bivariate Local Moran Statistics.
 
 
@@ -1194,14 +1661,14 @@ class Moran_Local_BV(object):
         x-axis variable
     y : array
         (n,1), wy will be on y axis
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     transformation : {'R', 'B', 'D', 'U', 'V'}
         weights transformation,  default is row-standardized "r".
         Other options include
         "B": binary,
         "D": doubly-standardized,
-        "U": untransformed (general weights),
+        "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
         "V": variance-stabilizing.
     permutations   : int
         number of random permutations for calculation of pseudo
@@ -1234,7 +1701,7 @@ class Moran_Local_BV(object):
         original x variable standardized by mean and std
     zy : array
         original y variable standardized by mean and std
-    w : W
+    w : W | Graph
         original w object
     permutations : int
         number of random permutations for calculation of pseudo p_values
@@ -1292,7 +1759,7 @@ class Moran_Local_BV(object):
     Note random components result is slightly different values across
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures.
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -1305,7 +1772,7 @@ class Moran_Local_BV(object):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,
+        island_weight=0,  # noqa: ARG002
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1327,11 +1794,11 @@ class Moran_Local_BV(object):
         np.seterr(**orig_settings)
         self.zx = zx
         self.zy = zy
-        w.transform = transformation
+        w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
         self.den = (zx * zx).sum()
-        self.Is = self.__calc(self.w, self.zx, self.zy)
+        self.Is = self.__calc()
         self.geoda_quads = geoda_quads
         quads = [1, 2, 3, 4]
         if geoda_quads:
@@ -1361,15 +1828,16 @@ class Moran_Local_BV(object):
                 self.EI_sim = sim.mean(axis=0)
                 self.seI_sim = sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
-                self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
+                with np.errstate(divide='ignore'):
+                    self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
-    def __calc(self, w, zx, zy):
-        zly = slag(w, zy)
+    def __calc(self):
+        zly = _slag(self.w, self.zy)
         return self.n_1 * self.zx * zly / self.den
 
     def __quads(self):
-        zl = slag(self.w, self.zy)
+        zl = _slag(self.w, self.zy)
         zp = self.zx > 0
         lp = zl > 0
         pp = zp * lp
@@ -1395,7 +1863,7 @@ class Moran_Local_BV(object):
         inplace=False,
         pvalue="sim",
         outvals=None,
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_Local_BV statistic on a dataframe
@@ -1412,9 +1880,9 @@ class Moran_Local_BV(object):
             column name or list of column names to use as Y values to compute
             the bivariate statistic. if no Y is provided, pariwise comparisons
             among the X variates are used instead.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -1447,11 +1915,184 @@ class Moran_Local_BV(object):
             outvals=outvals,
             swapname=cls.__name__.lower(),
             stat=cls,
-            **stat_kws
+            **stat_kws,
+        )
+
+    def get_cluster_labels(self, crit_value=0.05):
+        """Return LISA cluster labels for each observation.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            crititical significance value for statistical inference, by default 0.05
+
+        Returns
+        -------
+        numpy.array
+            an array of cluster labels aligned with the input data used to conduct the
+            local Moran analysis
+        """
+        return _get_cluster_labels(self, crit_value)
+
+    def explore(self, gdf, crit_value=0.05, **kwargs):
+        """Create interactive map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        Folium.Map
+            interactive map with LISA clusters
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "explore", **kwargs)
+
+    def plot(self, gdf, crit_value=0.05, **kwargs):
+        """Create static map of LISA indicators
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        kwargs : dict, optional
+            additional keyword arguments passed to the geopandas `explore` method
+
+        Returns
+        -------
+        ax
+            matplotlib axis
+        """
+        gdf = gdf.copy()
+        gdf["Moran Cluster"] = self.get_cluster_labels(crit_value)
+        return _viz_local_moran(self, gdf, crit_value, "plot", **kwargs)
+
+    def plot_scatter(
+        self,
+        crit_value=0.05,
+        ax=None,
+        scatter_kwds=None,
+        fitline_kwds=None,
+    ):
+        """
+        Plot a Moran scatterplot with optional coloring for significant points.
+
+        Parameters
+        ----------
+        crit_value : float, optional
+            Critical value to determine statistical significance, by default 0.05.
+        ax : matplotlib.axes.Axes, optional
+            Pre-existing axes for the plot, by default None.
+        scatter_kwds : dict, optional
+            Additional keyword arguments for scatter plot, by default None.
+        fitline_kwds : dict, optional
+            Additional keyword arguments for fit line, by default None.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes object with the Moran scatterplot.
+        """
+        return _scatterplot(
+            self,
+            crit_value=crit_value,
+            bivariate=True,
+            ax=ax,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+        )
+
+    def plot_combination(
+        self,
+        gdf,
+        attribute,
+        crit_value=0.05,
+        region_column=None,
+        mask=None,
+        mask_color="#636363",
+        quadrant=None,
+        legend=True,
+        scheme="Quantiles",
+        cmap="YlGnBu",
+        figsize=(15, 4),
+        scatter_kwds=None,
+        fitline_kwds=None,
+        legend_kwds=None,
+    ):
+        """
+        Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
+        and Choropleth maps, with Local Moran region and quadrant masking
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to conduct the local Moran analysis
+        attribute : str
+            Column name of attribute which should be depicted in Choropleth map.
+        crit_value : float, optional
+            critical value to determine statistical significance, by default 0.05
+        region_column: string, optional
+            Column name containing mask region of interest, by default None
+        mask: str, float, int, optional
+            Identifier or name of the region to highlight, by default None
+            Use the same dtype to specifiy as in original dataset.
+        mask_color: str, optional
+            Color of mask, by default '#636363'.
+        quadrant : int, optional
+            Quadrant 1-4 in scatterplot masking values in LISA cluster and
+            Choropleth maps, by default None
+        figsize: tuple, optional
+            W, h of figure, by default (15,4)
+        legend: boolean, optional
+            If True, legend for maps will be depicted, by default True
+        scheme: str, optional
+            Name of mapclassify classifier to be used, by default 'Quantiles'
+        cmap: str, optional
+            Name of matplotlib colormap used for plotting the Choropleth.
+            By default 'YlGnBu'.
+        scatter_kwds : keyword arguments, optional
+            Keywords used for creating and designing the scatter points, by default
+            None.
+        fitline_kwds : keyword arguments, optional
+            Keywords used for creating and designing the moran fitline
+            in the scatterplot, by default None.
+        legend_kwds : dict
+            Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds``
+            allowing repositioning of the legend in LISA cluster plot and choropleth.
+
+        Returns
+        -------
+        axs : array of Matplotlib axes
+        """
+        return _plot_combination(
+            self,
+            gdf,
+            attribute,
+            crit_value=crit_value,
+            region_column=region_column,
+            mask=mask,
+            mask_color=mask_color,
+            quadrant=quadrant,
+            legend=legend,
+            scheme=scheme,
+            cmap=cmap,
+            figsize=figsize,
+            scatter_kwds=scatter_kwds,
+            fitline_kwds=fitline_kwds,
+            legend_kwds=legend_kwds,
         )
 
 
-class Moran_Local_Rate(Moran_Local):
+class Moran_Local_Rate(Moran_Local):  # noqa: N801
     """
     Adjusted Local Moran Statistics for Rate Variables :cite:`Assuncao1999`.
 
@@ -1461,8 +2102,8 @@ class Moran_Local_Rate(Moran_Local):
         (n,1), an event variable across n spatial units
     b : array
         (n,1), a population-at-risk variable across n spatial units
-    w : W
-        weight instance assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     adjusted : boolean
         whether or not local Moran statistics need to be adjusted for
         rate variable
@@ -1471,7 +2112,7 @@ class Moran_Local_Rate(Moran_Local):
         Other options include
         "B": binary,
         "D": doubly-standardized,
-        "U": untransformed (general weights),
+        "O": restore original transformation (applicable only if ``w`` is  passed as ``W``),
         "V": variance-stabilizing.
     permutations : int
         number of random permutations for calculation of pseudo
@@ -1502,7 +2143,9 @@ class Moran_Local_Rate(Moran_Local):
         rate variables computed from parameters e and b
         if adjusted is True, y is standardized rates
         otherwise, y is raw rates
-    w : W
+    z : array
+        zero-mean, unit standard deviation normalized y
+    w : W | Graph
         original w object
     permutations : int
         number of random permutations for calculation of pseudo
@@ -1563,7 +2206,7 @@ class Moran_Local_Rate(Moran_Local):
     architectures so the results have been removed from doctests and will be
     moved into unittests that are conditional on architectures
 
-    """
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -1577,14 +2220,11 @@ class Moran_Local_Rate(Moran_Local):
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,
+        island_weight=0,  # noqa: ARG002
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
-        if adjusted:
-            y = assuncao_rate(e, b)
-        else:
-            y = e * 1.0 / b
+        y = assuncao_rate(e, b) if adjusted else e * 1.0 / b
         Moran_Local.__init__(
             self,
             y,
@@ -1608,7 +2248,7 @@ class Moran_Local_Rate(Moran_Local):
         pvalue="sim",
         outvals=None,
         swapname="",
-        **stat_kws
+        **stat_kws,
     ):
         """
         Function to compute a Moran_Local_Rate statistic on a dataframe
@@ -1625,9 +2265,9 @@ class Moran_Local_Rate(Moran_Local):
             used for all event columns. If more than one population column
             is provided but there is not a population for every event
             column, an exception will be raised.
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe
             inplace or to return a series contaning the results of
@@ -1661,7 +2301,7 @@ class Moran_Local_Rate(Moran_Local):
                 pvalue=pvalue,
                 outvals=outvals,
                 swapname=swapname,
-                **stat_kws
+                **stat_kws,
             )
             return new
         if isinstance(events, str):
@@ -1684,12 +2324,12 @@ class Moran_Local_Rate(Moran_Local):
 
         rates = [
             assuncao_rate(df[e], df[pop]) if adj else df[e].astype(float) / df[pop]
-            for e, pop, adj in zip(events, populations, adjusted)
+            for e, pop, adj in zip(events, populations, adjusted, strict=True)
         ]
-        names = ["-".join((e, p)) for e, p in zip(events, populations)]
+        names = ["-".join((e, p)) for e, p in zip(events, populations, strict=True)]
         out_df = df.copy()
         rate_df = out_df.from_dict(
-            dict(zip(names, rates))
+            dict(zip(names, rates, strict=True))
         )  # trick to avoid importing pandas
         _univariate_handler(
             rate_df,
@@ -1700,10 +2340,428 @@ class Moran_Local_Rate(Moran_Local):
             outvals=outvals,
             swapname=swapname,
             stat=Moran_Local,  # how would this get done w/super?
-            **stat_kws
+            **stat_kws,
         )
         for col in rate_df.columns:
             df[col] = rate_df[col]
+
+
+def _viz_local_moran(moran_local, gdf, crit_value, method, **kwargs):
+    """Common helper for local Moran's I vizualization
+
+    Parameters
+    ----------
+    moran_local : esda.Moran_Local
+        a fitted local Moran class from the PySAL esda module
+    gdf : geopandas.GeoDataFrame
+        geodataframe used to create the Moran_Local class
+    crit_value : float, optional
+        critical value for determining statistical significance, by default 0.05
+    method : str {"explore", "plot"}
+        GeoDataFrame method to be used
+    kwargs : dict, optional
+        additional keyword arguments are passed directly
+        to the plotting method, by default None
+
+    Returns
+    -------
+    m | ax
+        either folium.Map or maptlotlib.Axes
+    """
+
+    try:
+        from matplotlib import colors
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib library must be installed to use the vizualization feature"
+        ) from err
+
+    gdf = gdf.copy()
+    gdf["Moran Cluster"] = moran_local.get_cluster_labels(crit_value)
+    gdf["p-value"] = moran_local.p_sim
+
+    x = gdf["Moran Cluster"].values
+    y = np.unique(x)
+    colors5_mpl = {
+        "High-High": "#d7191c",
+        "Low-High": "#89cff0",
+        "Low-Low": "#2c7bb6",
+        "High-Low": "#fdae61",
+        "Insignificant": "lightgrey",
+    }
+    colors5 = [colors5_mpl[i] for i in y]  # for mpl
+    hmap = colors.ListedColormap(colors5)
+    if "cmap" not in kwargs:
+        kwargs["cmap"] = hmap
+
+    return getattr(gdf[["Moran Cluster", "p-value", "geometry"]], method)(
+        "Moran Cluster", **kwargs
+    )
+
+
+def _get_cluster_labels(moran_local, crit_value):
+    gdf = pd.DataFrame()
+    gdf["q"] = moran_local.q
+    gdf["p_sim"] = moran_local.p_sim
+    gdf["Moran Cluster"] = "Insignificant"
+
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 1), "Moran Cluster"] = (
+        "High-High"
+    )
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 2), "Moran Cluster"] = "Low-High"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 3), "Moran Cluster"] = "Low-Low"
+    gdf.loc[(gdf["p_sim"] < crit_value) & (gdf["q"] == 4), "Moran Cluster"] = "High-Low"
+
+    return gdf["Moran Cluster"].values
+
+
+def _scatterplot(
+    moran,
+    crit_value=0.05,
+    bivariate=False,
+    ax=None,
+    scatter_kwds=None,
+    fitline_kwds=None,
+):
+    """Generates a Moran Local or Global Scatterplot.
+
+    Parameters
+    ----------
+    moran : Moran object
+        An instance of a Moran or Moran_Local object.
+    crit_value : float, optional
+        The critical value for significance. Default is 0.05.
+    ax : matplotlib.axes.Axes, optional
+        The axes on which to draw the plot. If None, a new figure and axes are created.
+    scatter_kwds : dict, optional
+        Additional keyword arguments to pass to the scatter plot.
+    fitline_kwds : dict, optional
+        Additional keyword arguments to pass to the fit line plot.
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+        The axes with the Moran Scatterplot.
+
+    Raises
+    ------
+    ImportError
+        If matplotlib is not installed.
+    """
+
+    try:
+        from matplotlib import pyplot as plt
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib library must be installed to use the scatterplot feature"
+        ) from err
+
+    # to set default as an empty dictionary that is later filled with defaults
+    if scatter_kwds is None:
+        scatter_kwds = dict()
+    if fitline_kwds is None:
+        fitline_kwds = dict()
+
+    if crit_value is not None:
+        labels = _get_cluster_labels(moran, crit_value)
+        # TODO: allow customization of colors in here and in plot and explore
+        # TODO: in a way to keep them easily synced
+        colors5_mpl = {
+            "High-High": "#d7191c",
+            "Low-High": "#89cff0",
+            "Low-Low": "#2c7bb6",
+            "High-Low": "#fdae61",
+            "Insignificant": "lightgrey",
+        }
+        colors5 = [colors5_mpl[i] for i in labels]  # for mpl
+
+    # define customization
+    scatter_kwds.setdefault("alpha", 0.6)
+    fitline_kwds.setdefault("alpha", 0.9)
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    ax.set_title("Moran Scatterplot")
+
+    if bivariate:
+        x = moran.zx
+        lag = lag_spatial(moran.w, moran.zy)
+        ax.set_xlabel("Attribute X")
+        ax.set_ylabel("Spatial Lag of Y")
+    else:
+        x = moran.z
+        lag = lag_spatial(moran.w, moran.z)
+        ax.set_xlabel("Attribute")
+        ax.set_ylabel("Spatial Lag")
+
+    fit = stats.linregress(
+        x,
+        lag,
+    )
+    # v- and hlines
+    ax.axvline(0, alpha=0.5, color="k", linestyle="--")
+    ax.axhline(0, alpha=0.5, color="k", linestyle="--")
+    if crit_value is not None:
+        fitline_kwds.setdefault("color", "k")
+        scatter_kwds.setdefault("c", colors5)
+        ax.plot(x, fit.intercept + fit.slope * x, **fitline_kwds)
+        ax.scatter(x, lag, **scatter_kwds)
+    else:
+        scatter_kwds.setdefault("color", "#bababa")
+        fitline_kwds.setdefault("color", "#d6604d")
+        ax.plot(x, fit.intercept + fit.slope * x, **fitline_kwds)
+        ax.scatter(x, lag, **scatter_kwds)
+
+    ax.set_aspect("equal")
+
+    return ax
+
+
+def _simulation_plot(
+    moran, ax=None, legend=False, bivariate=False, fitline_kwds=None, **kwargs
+):
+    try:
+        import seaborn as sns
+        from matplotlib import pyplot as plt
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib and seaborn must be installed to plot the simulation."
+        ) from err
+    # to set default as an empty dictionary that is later filled with defaults
+    if fitline_kwds is None:
+        fitline_kwds = dict()
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    # plot distribution
+    shade = kwargs.pop("shade", True)
+    color = kwargs.pop("color", "#bababa")
+    sns.kdeplot(
+        moran.sim,
+        fill=shade,
+        color=color,
+        ax=ax,
+        label="Distribution of simulated Is",
+        **kwargs,
+    )
+
+    exp = moran.EI_sim if bivariate else moran.EI
+
+    # customize plot
+    fitline_kwds.setdefault("color", "#d6604d")
+    ax.vlines(moran.I, 0, 1, **fitline_kwds, label="Moran's I")
+    ax.vlines(exp, 0, 1, label="Expected I")
+    ax.set_title("Reference Distribution")
+    ax.set_xlabel(f"Moran's I: {moran.I:.2f}")
+
+    if legend:
+        ax.legend()
+    return ax
+
+
+def _plot_combination(
+    moran_loc,
+    gdf,
+    attribute,
+    crit_value=0.05,
+    region_column=None,
+    mask=None,
+    mask_color="#636363",
+    quadrant=None,
+    legend=True,
+    scheme="Quantiles",
+    cmap="YlGnBu",
+    figsize=(15, 4),
+    scatter_kwds=None,
+    fitline_kwds=None,
+    legend_kwds=None,
+):
+    """
+    Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
+    and Choropleth maps, with Local Moran region and quadrant masking
+
+    Parameters
+    ----------
+    moran_loc : esda.moran.Moran_Local or Moran_Local_BV instance
+        Values of Moran's Local Autocorrelation Statistic
+    gdf : geopandas dataframe
+        The Dataframe containing information to plot the two maps.
+    attribute : str
+        Column name of attribute which should be depicted in Choropleth map.
+    p : float, optional
+        The p-value threshold for significance. Points and polygons will
+        be colored by significance. Default = 0.05.
+    region_column: string, optional
+        Column name containing mask region of interest. Default = None
+    mask: str, float, int, optional
+        Identifier or name of the region to highlight. Default = None
+        Use the same dtype to specifiy as in original dataset.
+    mask_color: str, optional
+        Color of mask. Default = '#636363'
+    quadrant : int, optional
+        Quadrant 1-4 in scatterplot masking values in LISA cluster and
+        Choropleth maps. Default = None
+    figsize: tuple, optional
+        W, h of figure. Default = (15,4)
+    legend: boolean, optional
+        If True, legend for maps will be depicted. Default = True
+    scheme: str, optional
+        Name of PySAL classifier to be used. Default = 'Quantiles'
+    cmap: str, optional
+        Name of matplotlib colormap used for plotting the Choropleth.
+        Default = 'YlGnBu'
+    scatter_kwds : keyword arguments, optional
+        Keywords used for creating and designing the scatter points.
+        Default =None.
+    fitline_kwds : keyword arguments, optional
+        Keywords used for creating and designing the moran fitline
+        in the scatterplot. Default =None.
+    legend_kwds : dict
+        Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds`` allowing
+        repositioning of the legend in LISA cluster plot and choropleth.
+
+    Returns
+    -------
+    axs : array of Matplotlib axes
+    """
+    try:
+        from matplotlib import patches
+        from matplotlib import pyplot as plt
+
+    except ImportError as err:
+        raise ImportError(
+            "matplotlib library must be installed to use the scatterplot feature"
+        ) from err
+
+    _, axs = plt.subplots(
+        1, 3, figsize=figsize, subplot_kw={"aspect": "equal", "adjustable": "datalim"}
+    )
+    # Moran Scatterplot
+    moran_loc.plot_scatter(
+        crit_value=crit_value,
+        ax=axs[0],
+        scatter_kwds=scatter_kwds,
+        fitline_kwds=fitline_kwds,
+    )
+
+    # Lisa cluster map
+    moran_loc.plot(
+        gdf,
+        crit_value=crit_value,
+        ax=axs[1],
+        legend=legend,
+        legend_kwds=legend_kwds,
+    )
+
+    # Choropleth for attribute
+    gdf.plot(
+        column=attribute,
+        scheme=scheme,
+        cmap=cmap,
+        legend=legend,
+        legend_kwds=legend_kwds,
+        ax=axs[2],
+        alpha=1,
+    )
+    axs[2].set_axis_off()
+    axs[2].set_aspect("equal")
+
+    # MASKING QUADRANT VALUES
+    if quadrant is not None:
+        # Quadrant masking in Scatterplot
+        mask_angles = {1: 0, 2: 90, 3: 180, 4: 270}  # rectangle angles
+        # We don't want to change the axis data limits, so use the current ones
+        xmin, xmax = axs[0].get_xlim()
+        ymin, ymax = axs[0].get_ylim()
+        # We are rotating, so we start from 0 degrees and
+        # figured out the right dimensions for the rectangles for other angles
+        mask_width = {1: abs(xmax), 2: abs(ymax), 3: abs(xmin), 4: abs(ymin)}
+        mask_height = {1: abs(ymax), 2: abs(xmin), 3: abs(ymin), 4: abs(xmax)}
+        axs[0].add_patch(
+            patches.Rectangle(
+                (0, 0),
+                width=mask_width[quadrant],
+                height=mask_height[quadrant],
+                angle=mask_angles[quadrant],
+                color="#E5E5E5",
+                zorder=-1,
+                alpha=0.8,
+            )
+        )
+        # quadrant selection in maps
+        non_quadrant = ~(moran_loc.q == quadrant)
+        mask_quadrant = gdf[non_quadrant]
+        df_quadrant = gdf.iloc[~non_quadrant]
+        union2 = df_quadrant.dissolve().boundary
+
+        # LISA Cluster mask and cluster boundary
+        mask_quadrant.plot(
+            scheme=scheme,
+            color="white",
+            ax=axs[1],
+            alpha=0.7,
+            zorder=1,
+        )
+        union2.plot(linewidth=1, ax=axs[1], color="#E5E5E5")
+
+        # CHOROPLETH MASK
+        mask_quadrant.plot(
+            scheme=scheme,
+            color="white",
+            ax=axs[2],
+            alpha=0.7,
+            zorder=1,
+        )
+        union2.plot(linewidth=1, ax=axs[2], color="#E5E5E5")
+
+    # REGION MASKING
+    if region_column is not None:
+        # masking inside axs[0] or Moran Scatterplot
+        # enforce the same dtype of list and mask
+        if not isinstance(mask[0], type(gdf[region_column].iloc[0])):
+            warn(
+                "Values in `mask` are not the same dtype as"
+                + " values in `region_column`. Converting `mask` values"
+                + " to dtype of first observation in region_column.",
+                stacklevel=3,
+            )
+            data_type = type(gdf[region_column][0].item())
+            mask = list(map(data_type, mask))
+
+        ix = gdf[region_column].isin(mask)
+
+        if not ix.any():
+            raise ValueError(
+                f"Specified values {mask} in `mask` not in `region_column`"
+            )
+
+        df_mask = gdf[ix]
+        x_mask = moran_loc.z[ix]
+        y_mask = lag_spatial(moran_loc.w, moran_loc.z)[ix]
+        axs[0].plot(
+            x_mask,
+            y_mask,
+            color=mask_color,
+            marker="o",
+            markersize=14,
+            alpha=0.8,
+            linestyle="None",
+            zorder=-1,
+        )
+
+        # masking inside axs[1] or Lisa cluster map
+        union = df_mask.dissolve().boundary
+        union.plot(linewidth=2, ax=axs[1], color=mask_color)
+
+        # masking inside axs[2] or Chloropleth
+        union.plot(linewidth=2, ax=axs[2], color=mask_color)
+
+    axs[0].spines[["right", "top"]].set_visible(False)
+    axs[1].set_axis_off()
+
+    return axs
 
 
 # --------------------------------------------------------------
@@ -1794,10 +2852,9 @@ def _wikh_slow(W, sokal_correction=False):
                 # excluding wik * wii
                 if i == h:
                     continue
-                if sokal_correction:
+                if sokal_correction and h == k:
                     # excluding wih * wih
-                    if h == k:
-                        continue
+                    continue
                 acc += W[i, k] * W[i, h]
         result[i] = acc
     return result / 2

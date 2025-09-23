@@ -1,12 +1,14 @@
+import contextlib
+
 import numpy
 import pandas
-from scipy.special import entr
 from packaging.version import Version
+from scipy.special import entr
 
-try:
+with contextlib.suppress(ImportError, ModuleNotFoundError):
+    # gets handled in the _cast function.
     import shapely
-except (ImportError, ModuleNotFoundError):
-    pass  # gets handled in the _cast function.
+
 
 # from nowosad and stepinski
 # https://doi.org/10.1080/13658816.2018.1511794
@@ -33,15 +35,15 @@ def _cast(collection):
     except (ImportError, ModuleNotFoundError) as exception:
         raise type(exception)(
             "shapely and geopandas are required for map comparison statistics."
-        )
+        ) from None
 
     if Version(shapely.__version__) < Version("2"):
         raise ImportError("Shapely 2.0 or newer is required.")
 
-    if isinstance(collection, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+    if isinstance(collection, geopandas.GeoSeries | geopandas.GeoDataFrame):
         return numpy.asarray(collection.geometry.array)
     else:
-        if isinstance(collection, (numpy.ndarray, list)):
+        if isinstance(collection, numpy.ndarray | list):
             return numpy.asarray(collection)
         else:
             return numpy.array([collection])
@@ -275,12 +277,12 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
     >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
     >>> areal_entropy(polygons=r1)
     """
-    assert not (
-        (polygons is None) & (areas is None)
-    ), "Either polygons or precomputed areas must be provided."
-    assert not (
-        (polygons is not None) & (areas is not None)
-    ), "Only one of polygons or areas should be provided."
+    assert not ((polygons is None) & (areas is None)), (
+        "Either polygons or precomputed areas must be provided."
+    )
+    assert not ((polygons is not None) & (areas is not None)), (
+        "Only one of polygons or areas should be provided."
+    )
     if polygons is None:
         assert areas is not None, "If polygons are not provided, areas should be."
     if areas is None:

@@ -1,16 +1,17 @@
 """
 Getis and Ord G statistic for spatial autocorrelation
 """
+
 __author__ = "Sergio J. Rey <srey@asu.edu>, Myunghwa Hwang <mhwang4@gmail.com> "
 __all__ = ["G", "G_Local"]
 
 import warnings
 
 import numpy as np
-from scipy import stats
-
-from libpysal.weights.spatial_lag import lag_spatial as slag
+from libpysal.weights import W
+from libpysal.weights.spatial_lag import lag_spatial
 from libpysal.weights.util import fill_diagonal
+from scipy import stats
 
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
@@ -20,7 +21,7 @@ from .tabular import _univariate_handler
 PERMUTATIONS = 999
 
 
-class G(object):
+class G:
     """
     Global G Autocorrelation Statistic
 
@@ -28,8 +29,8 @@ class G(object):
     ----------
     y             : array (n,1)
                     Attribute values
-    w             : W
-                   DistanceBand W spatial weights based on distance band
+    w             : W | Graph
+                   spatial weights instance as W or Graph aligned with y
     permutations  : int
                     the number of random permutations for calculating pseudo p_values
 
@@ -38,7 +39,7 @@ class G(object):
     y : array
         original variable
     w : W
-        DistanceBand W spatial weights based on distance band
+        spatial weights instance as W or Graph aligned with y
     permutation : int
         the number of permutations
     G : float
@@ -115,7 +116,11 @@ class G(object):
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
-        w.transform = "B"
+        if isinstance(w, W):
+            w.transform = "B"
+        else:
+            w = w.transform("B")
+            self.summary = w.summary()
         self.w = w
         self.permutations = permutations
         self.__moments()
@@ -149,11 +154,11 @@ class G(object):
         n = self.n
         w = self.w
         n2 = n * n
-        s0 = w.s0
+        s0 = w.s0 if isinstance(w, W) else self.summary.s0
         self.EG = s0 / (n * (n - 1))
         s02 = s0 * s0
-        s1 = w.s1
-        s2 = w.s2
+        s1 = w.s1 if isinstance(w, W) else self.summary.s1
+        s2 = w.s2 if isinstance(w, W) else self.summary.s2
         b0 = (n2 - 3 * n + 3) * s1 - n * s2 + 3 * s02
         b1 = (-1.0) * ((n2 - n) * s1 - 2 * n * s2 + 6 * s02)
         b2 = (-1.0) * (2 * n * s1 - (n + 3) * s2 + 6 * s02)
@@ -175,7 +180,7 @@ class G(object):
         self.VG = self.EG2 - self.EG**2
 
     def __calc(self, y):
-        yl = slag(self.w, y)
+        yl = lag_spatial(self.w, y) if isinstance(self.w, W) else self.w.lag(y)
         self.num = y * yl
         return self.num.sum() / self.den_sum
 
@@ -225,7 +230,7 @@ class G(object):
             "The `.by_cols()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,
@@ -240,7 +245,7 @@ class G(object):
         )
 
 
-class G_Local(object):
+class G_Local:  # noqa: N801
     """
     Generalized Local G Autocorrelation
 
@@ -248,9 +253,8 @@ class G_Local(object):
     ----------
     y : array
         variable
-    w : W
-        DistanceBand, weights instance that is based on threshold distance
-        and is assumed to be aligned with y
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     transform : {'R', 'B'}
         the type of w, either 'B' (binary) or 'R' (row-standardized)
     permutations : int
@@ -271,8 +275,8 @@ class G_Local(object):
     ----------
     y : array
        original variable
-    w : DistanceBand W
-       original weights object
+    w : W | Graph
+        spatial weights instance as W or Graph aligned with y
     permutations : int
                   the number of permutations
     Gs : array
@@ -415,7 +419,10 @@ class G_Local(object):
         self.n = len(y)
         self.y = y
         w, star = _infer_star_and_structure_w(w, star, transform)
-        w.transform = transform
+        if isinstance(w, W):
+            w.transform = transform
+        else:
+            w = w.transform(transform)
         self.w_transform = transform
         self.w = w
         self.permutations = permutations
@@ -451,11 +458,14 @@ class G_Local(object):
         n_1 = self.n - 1
         rid = list(range(n_1))
         prange = list(range(self.permutations))
-        k = self.w.max_neighbors + 1
+        if isinstance(self.w, W):
+            k = self.w.max_neighbors + 1
+        else:
+            k = self.w.cardinalities.max()
         rids = np.array([np.random.permutation(rid)[0:k] for i in prange])
         ids = np.arange(self.w.n)
         wc = self.__getCardinalities()
-        if self.w_transform == "r":
+        if self.w_transform == "r":  # noqa: SIM108 -- keeping readability
             den = np.array(wc) + self.star
         else:
             den = np.ones(self.w.n)
@@ -475,9 +485,12 @@ class G_Local(object):
         larger[below] = self.permutations - larger[below]
         self.p_sim = (larger + 1) / (self.permutations + 1)
 
-    def __getCardinalities(self):
-        ido = self.w.id_order
-        self.wc = np.array([self.w.cardinalities[ido[i]] for i in range(self.n)])
+    def __getCardinalities(self):  # noqa: N802
+        if isinstance(self.w, W):
+            ido = self.w.id_order
+            self.wc = np.array([self.w.cardinalities[ido[i]] for i in range(self.n)])
+        else:
+            self.wc = self.w.cardinalities.values
         return self.wc
 
     def calc(self):
@@ -536,9 +549,9 @@ class G_Local(object):
             a pandas dataframe with a geometry column
         cols : string or list of string
             name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
+        w : W | Graph
+            spatial weights instance as W or Graph aligned with the dataframe. If not
+            provided, this is searched for in the dataframe's metadata
         inplace : bool
             a boolean denoting whether to operate on the dataframe inplace or to
             return a series contaning the results of the computation. If
@@ -566,7 +579,7 @@ class G_Local(object):
             "The `.by_col()` methods are deprecated and will be "
             "removed in a future version of `esda`."
         )
-        warnings.warn(msg, FutureWarning)
+        warnings.warn(msg, FutureWarning, stacklevel=2)
 
         return _univariate_handler(
             df,
@@ -583,8 +596,7 @@ class G_Local(object):
 
 def _infer_star_and_structure_w(weights, star, transform):
     assert transform.lower() in ("r", "b"), (
-        f'Transforms must be binary "b" or row-standardized "r".'
-        f"Recieved: {transform}"
+        f'Transforms must be binary "b" or row-standardized "r".Recieved: {transform}'
     )
     adj_matrix = weights.sparse
     diagonal = adj_matrix.diagonal()
@@ -595,9 +607,12 @@ def _infer_star_and_structure_w(weights, star, transform):
 
     # Want zero diagonal but do not have it
     if (not zero_diagonal) & (star is False):
-        weights = fill_diagonal(weights, 0)
+        if isinstance(weights, W):
+            weights = fill_diagonal(weights, 0)
+        else:
+            weights = weights.assign_self_weight(0).eliminate_zeros()
     # Want nonzero diagonal and have it
-    elif (not zero_diagonal) & (star is True):
+    elif (not zero_diagonal) & (star is True):  # noqa: SIM114 -- keeping readability
         weights = weights
     # Want zero diagonal and have it
     elif zero_diagonal & (star is False):
@@ -606,34 +621,51 @@ def _infer_star_and_structure_w(weights, star, transform):
     elif zero_diagonal & (star is True):
         # if the input is binary or requested transform is binary,
         # set the diagonal to 1.
-        if transform.lower() == "b" or weights.transform.lower() == "b":
-            weights = fill_diagonal(weights, 1)
-        # if we know the target is row-standardized, use the row max
-        # this works successfully for effectively binary but "O"-transformed input
-        elif transform.lower() == "r":
-            # This warning is presented in the documentation as well
-            warnings.warn(
-                "Gi* requested, but (a) weights are already row-standardized,"
-                " (b) no weights are on the diagonal, and"
-                " (c) no default value supplied to star. Assuming that the"
-                " self-weight is equivalent to the maximum weight in the"
-                " row. To use a different default (like, .5), set `star=.5`,"
-                " or use libpysal.weights.fill_diagonal() to set the diagonal"
-                " values of your weights matrix and use `star=None` in Gi_Local."
-            )
-            weights = fill_diagonal(
-                weights, np.asarray(adj_matrix.max(axis=1).todense()).flatten()
-            )
+        star_warn = (
+            "Gi* requested, but (a) weights are already row-standardized,"
+            " (b) no weights are on the diagonal, and"
+            " (c) no default value supplied to star. Assuming that the"
+            " self-weight is equivalent to the maximum weight in the"
+            " row. To use a different default (like, .5), set `star=.5`,"
+            " or use libpysal.weights.fill_diagonal() to set the diagonal"
+            " values of your weights matrix and use `star=None` in Gi_Local."
+        )
+        if isinstance(weights, W):
+            if transform.lower() == "b" or weights.transform.lower() == "b":
+                weights = fill_diagonal(weights, 1)
+
+            # if we know the target is row-standardized, use the row max
+            # this works successfully for effectively binary but "O"-transformed input
+            elif transform.lower() == "r":
+                # This warning is presented in the documentation as well
+                warnings.warn(star_warn, UserWarning, stacklevel=2)
+                weights = fill_diagonal(
+                    weights, np.asarray(adj_matrix.max(axis=1).todense()).flatten()
+                )
+        else:
+            if transform.lower() == "b" or weights.transformation.lower() == "b":
+                weights = weights.assign_self_weight(1)
+            elif transform.lower() == "r":
+                warnings.warn(star_warn, UserWarning, stacklevel=2)
+                weights = weights.assign_self_weight(
+                    np.asarray(adj_matrix.max(axis=1).todense()).flatten()
+                )
     else:  # star was something else, so try to fill the weights with it
         try:
-            weights = fill_diagonal(weights, star)
+            if isinstance(weights, W):
+                weights = fill_diagonal(weights, star)
+            else:
+                weights = weights.assign_self_weight(star)
         except TypeError:
             raise TypeError(
                 f"Type of star ({type(star)}) not understood."
                 f" Must be an integer, boolean, float, or numpy.ndarray."
-            )
+            ) from None
     star = (weights.sparse.diagonal() > 0).any()
-    weights.transform = transform
+    if isinstance(weights, W):
+        weights.transform = transform
+    else:
+        weights = weights.transform(transform)
 
     return weights, star
 
@@ -659,7 +691,6 @@ def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
 
 
 if __name__ == "__main__":
-
     import geopandas
     import numpy
     from libpysal import examples, weights

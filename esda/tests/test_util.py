@@ -1,13 +1,12 @@
-import unittest
-
 import libpysal
 import numpy as np
+import pytest
 
 from .. import moran, util
 
 
-class Fdr_Tester(unittest.TestCase):
-    def setUp(self):
+class TestFdr:
+    def setup_method(self):
         self.w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
         f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
         self.y = np.array(f.by_col["HR8893"])
@@ -16,16 +15,5 @@ class Fdr_Tester(unittest.TestCase):
         lm = moran.Moran_Local(
             self.y, self.w, transformation="r", permutations=999, seed=10
         )
-        self.assertAlmostEqual(util.fdr(lm.p_sim, 0.1), 0.002564102564102564)
-        self.assertAlmostEqual(util.fdr(lm.p_sim, 0.05), 0.001282051282051282)
-
-
-suite = unittest.TestSuite()
-test_classes = [Fdr_Tester]
-for i in test_classes:
-    a = unittest.TestLoader().loadTestsFromTestCase(i)
-    suite.addTest(a)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
+        assert pytest.approx(util.fdr(lm.p_sim, 0.1)) == 0.002564102564102564
+        assert pytest.approx(util.fdr(lm.p_sim, 0.05)) == 0.001282051282051282

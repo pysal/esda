@@ -7,7 +7,7 @@ from .crand import _prepare_bivariate
 from .crand import njit as _njit
 
 
-class Spatial_Pearson(BaseEstimator):
+class Spatial_Pearson(BaseEstimator):  # noqa: N801
     """Global Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):
@@ -75,9 +75,7 @@ class Spatial_Pearson(BaseEstimator):
             self.connectivity = sparse.eye(Z.shape[0])
         self.association_ = self._statistic(Z, self.connectivity)
 
-        if self.permutations is None:
-            return self
-        elif self.permutations < 1:
+        if self.permutations is None or self.permutations < 1:
             return self
 
         if self.permutations:
@@ -99,7 +97,7 @@ class Spatial_Pearson(BaseEstimator):
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
 
 
-class Spatial_Pearson_Local(BaseEstimator):
+class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
     """Local Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):
@@ -201,7 +199,7 @@ class Spatial_Pearson_Local(BaseEstimator):
             max_neighbors = (standard_connectivity != 0).sum(axis=1).max()
             random_ids = numpy.array(
                 [
-                    numpy.random.permutation(n - 1)[0 : max_neighbors + 1]  # noqa 208
+                    numpy.random.permutation(n - 1)[0 : max_neighbors + 1]
                     for i in range(self.permutations)
                 ]
             )

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from libpysal import weights
 from sklearn.base import BaseEstimator
 
 from esda.crand import _prepare_univariate
@@ -7,8 +8,7 @@ from esda.crand import crand as _crand_plus
 from esda.crand import njit as _njit
 
 
-class Geary_Local(BaseEstimator):
-
+class Geary_Local(BaseEstimator):  # noqa: N801
     """Local Geary - Univariate"""
 
     def __init__(
@@ -28,10 +28,8 @@ class Geary_Local(BaseEstimator):
 
         Parameters
         ----------
-        connectivity     : scipy.sparse matrix object
-                           the connectivity structure describing
-                           the relationships between observed units.
-                           Need not be row-standardized.
+        connectivity     : W | Graph
+                           spatial weights instance as W or Graph aligned with y
         labels           : boolean
                            (default=False)
                            If True use, label if an observation
@@ -126,7 +124,10 @@ class Geary_Local(BaseEstimator):
         x = np.asarray(x).flatten()
 
         w = self.connectivity
-        w.transform = "r"
+        if isinstance(w, weights.W):
+            w.transform = "r"
+        else:
+            w = w.transform("r")
 
         permutations = self.permutations
         sig = self.sig
@@ -170,8 +171,15 @@ class Geary_Local(BaseEstimator):
         # Caclulate z-scores for x
         zscore_x = (x - np.mean(x)) / np.std(x)
         # Create focal (xi) and neighbor (zi) values
-        adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
-        zseries = pd.Series(zscore_x, index=w.id_order)
+        if isinstance(w, weights.W):
+            adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
+            zseries = pd.Series(zscore_x, index=w.id_order)
+        else:
+            adj_list = w.adjacency
+            if drop_islands:
+                adj_list = adj_list.drop(w.isolates)
+            adj_list = adj_list.reset_index()
+            zseries = pd.Series(zscore_x, index=w.unique_ids)
         zi = zseries.loc[adj_list.focal].values
         zj = zseries.loc[adj_list.neighbor].values
         # Carry out local Geary calculation
@@ -180,9 +188,10 @@ class Geary_Local(BaseEstimator):
         adj_list_gs = pd.DataFrame(adj_list.focal.values, gs).reset_index()
         adj_list_gs.columns = ["gs", "ID"]
         adj_list_gs = adj_list_gs.groupby(by="ID").sum()
-        # Rearrange data based on w id order
-        adj_list_gs["w_order"] = w.id_order
-        adj_list_gs.sort_values(by="w_order", inplace=True)
+        if isinstance(w, weights.W):
+            # Rearrange data based on w id order
+            adj_list_gs["w_order"] = w.id_order
+            adj_list_gs.sort_values(by="w_order", inplace=True)
 
         localG = adj_list_gs.gs.values
 
@@ -197,7 +206,7 @@ class Geary_Local(BaseEstimator):
 
 
 @_njit(fastmath=True)
-def _local_geary(i, z, permuted_ids, weights_i, scaling):
+def _local_geary(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zi - zrand) ** 2 @ other_weights
