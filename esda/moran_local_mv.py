@@ -384,7 +384,7 @@ class MoranLocalConditional(Moran_Local):
             array of data that is used as "confounding factors"
             to account for their covariance with Y.
         W : (N,N) weights object
-            a PySAL weights or graph object. Immediately row-standardized.
+            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.
         
         Returns
         -------
