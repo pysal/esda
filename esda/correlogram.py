@@ -5,10 +5,9 @@ import pandas as pd
 from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
-from libpysal.graph import Graph
 from libpysal.weights.util import get_points_array
 from sklearn.metrics import pairwise_distances
-from scipy import spatial
+from scipy import spatial, linalg
 
 from .moran import Moran
 
@@ -183,15 +182,20 @@ def _nonparametric_correlogram(y,coordinates, metric, xvals, **lowess_args):
     z = (y - y.mean())/y.std()
     cov = numpy.multiply.outer(z,z)
 
-    row,col = numpy.triu_indices_from(cov)
-
     lowess_args.setdefault(
         'delta', .01 * d.max()
     )
     lowess_args.setdefault(
         'frac', .33
     )
-
-    smooth = lowess(cov[row,col], d[row,col], xvals=xvals, **lowess_args)
+    if metric != 'precomputed':
+        row,col = numpy.triu_indices_from(cov)
+        smooth = lowess(cov[row,col], d[row,col], xvals=xvals, **lowess_args)
+    else: # can't use upper triangle if d is not symmetric
+        if linalg.issymetric(d):
+            row,col = numpy.triu_indices_from(cov)
+            smooth = lowess(cov[row,col], d[row,col], xvals=xvals, **lowess_args)
+        else:
+            smooth = lowess(cov, d, xvals=xvals, **lowess_args)
 
     return pd.DataFrame(smooth, index=xvals, columns=['lowess'])
