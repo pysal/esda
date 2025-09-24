@@ -5,7 +5,10 @@ import pandas as pd
 from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
+from libpysal.graph import Graph
 from libpysal.weights.util import get_points_array
+from sklearn.metrics import pairwise_distances
+from scipy import spatial
 
 from .moran import Moran
 
@@ -45,13 +48,15 @@ def _get_stat(inputs):
 def correlogram(
     gdf: gpd.GeoDataFrame,
     variable: str,
-    distances: list,
+    distances: list | None = None,
     statistic: callable = Moran,
     distance_type: str = "band",
     weights_kwargs: dict = None,
     stat_kwargs: dict = None,
     select_numeric: bool = False,
     n_jobs: int = -1,
+    n_bins : int | None = 10,
+    parametric = True
 ):
     """Generate a spatial correlogram
 
@@ -65,7 +70,7 @@ def correlogram(
         geodataframe holding spatial and attribute data
     variable: str
         column on the geodataframe used to compute autocorrelation statistic
-    distances : list
+    distances : list or None
         list of distances to compute the autocorrelation statistic
     statistic : callable
         statistic to be computed for a range of libpysal.Graph specifications.
@@ -97,6 +102,7 @@ def correlogram(
         stat_kwargs = dict()
     if weights_kwargs is None:
         weights_kwargs = dict()
+        
 
     if distance_type == "band":
         W = DistanceBand
@@ -112,32 +118,71 @@ def correlogram(
     # there's a faster way to do this by building the largest tree first, then subsetting...
     pts = get_points_array(gdf[gdf.geometry.name])
     tree = KDTree(pts)
-    y = gdf[variable].values
 
-    inputs = [
-        (
-                y,
-                tree,
-                W,
-                statistic,
-                dist,
-                weights_kwargs,
-                stat_kwargs,
-            )
-        for dist in distances
-    ]
+    if distances is None:
+        stop = spatial.distance.cdist(t.maxes.reshape(1,2), t.mins.reshape(1,2), 'euclidean')
+        start = libpysal.weights.min_threshold_distances(tree) 
+        distances = numpy.linspace(start, stop, n_bins).tolist()
 
-    outputs = Parallel(n_jobs=n_jobs, backend="loky")(
-        delayed(_get_stat)(i) for i in inputs
-    )
+    if isinstance(variable, str):
+        y = gdf[variable].values
+    else:
+        y = numpy.asarray(variable).squeeze()
+        
+    if len(y) != gdf.shape[0]:
+        raise ValueError(f"variable is length {len(y)} but gdf has {gdf.shape[0]} rows")
+
+    if parametric:
+        inputs = [
+            (
+                    y,
+                    tree,
+                    W,
+                    statistic,
+                    dist,
+                    weights_kwargs,
+                    stat_kwargs,
+                )
+            for dist in distances
+        ]
+
+        outputs = Parallel(n_jobs=n_jobs, backend="loky")(
+            delayed(_get_stat)(i) for i in inputs
+        )
+    else:
+        # non-parametric correlogram
+        outputs = _nonparametric_correlogram(y, pts, metric=distance_type, xvals=distances, **stat_kwargs)
 
     df = pd.DataFrame(outputs)
     if select_numeric:
         df = df.select_dtypes(["number"])
     return df
 
+def _nonparametric_correlogram(y,coordinates, metric, xvals, **lowess_args):
+    """
+    Compute a nonparametric correlogram using a kernel regression 
+    on the spatial-covariation model:
+    
+        zi*zj = f(d_{ij}) + e_ij
+    
+    where f is a smooth function of distance d_{ij} between points i and j.
+    """
+    try:
+        from statsmodels.nonparametric import lowess
+    except ImportError as e:
+        raise ImportError("Nonparametric correlograms require statsmodels") from e
+    
+    # TODO: if metric='precomputed' then coordiantes is a distance matrix
+    # we have this somewhere else I know it... I wrote it! Where is it...
 
-## Note: To be implemented:
+    if metric=='precomputed':
+        d = coordinates # assume this is a distance matrix  
+    else:
+        d = pairwise_distances(coordinates, metric=metric)
 
-## non-parametric version used in geoda https://geodacenter.github.io/workbook/5a_global_auto/lab5a.html#spatial-correlogram
-## as given in https://link.springer.com/article/10.1023/A:1009601932481'
+    z = (y - y.mean())/y.std()
+    cov = numpy.multiply.outer(z,z)
+
+    smooth = lowess(cov.flatten(), d.flatten(), xvals=xvals, **lowess_args)
+
+    return smooth
