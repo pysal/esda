@@ -1,10 +1,12 @@
 # Spatial Correlograms
+from collections.abc import Callable
 
 import geopandas as gpd
 import pandas as pd
+import numpy as np
 from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
-from libpysal.weights import KNN, DistanceBand
+from libpysal.weights import KNN, DistanceBand, min_threshold_distance
 from libpysal.weights.util import get_points_array
 from sklearn.metrics import pairwise_distances
 from scipy import spatial, linalg
@@ -12,7 +14,7 @@ from scipy import spatial, linalg
 from .moran import Moran
 
 
-def _get_stat(inputs):
+def _get_stat(inputs: tuple) -> pd.Series:
     """helper function for computing parallel statistics at multiple Graph specifications
 
     Parameters
@@ -48,14 +50,14 @@ def correlogram(
     gdf: gpd.GeoDataFrame,
     variable: str | list | pd.Series | None,
     distances: list | None = None,
-    statistic: callable | str = Moran,
+    statistic: Callable | str = Moran,
     distance_type: str = "band",
     weights_kwargs: dict = None,
     stat_kwargs: dict = None,
     select_numeric: bool = False,
     n_jobs: int = -1,
     n_bins: int | None = 10,
-):
+) -> pd.DataFrame:
     """Generate a spatial correlogram
 
     A spatial profile is a set of spatial autocorrelation statistics calculated for
@@ -73,7 +75,7 @@ def correlogram(
     statistic : callable | str
         statistic to be computed for a range of libpysal.Graph specifications.
         This should be a class with a signature like `Statistic(y,w, **kwargs)`
-        where y is a numpy array and w is a libpysal.Graph.
+        where y is a  array and w is a libpysal.Graph.
         Generally, this is a class from pysal's `esda` package
         defaults to esda.Moran, which computes the Moran's I statistic. If
         'lowess' is provided, a non-parametric correlogram is computed using
@@ -119,32 +121,35 @@ def correlogram(
     if weights_kwargs is None:
         weights_kwargs = dict()
 
-    if distance_type == "band":
-        W = DistanceBand
-    elif distance_type == "knn":
-        if max(distances) > gdf.shape[0] - 1:
-            with ValueError as e:
-                raise e("max number of neighbors must be less than or equal to n-1")
-        W = KNN
-    else:
-        with NotImplementedError as e:
-            raise e("distance_type must be either `band` or `knn`")
-
     # there's a faster way to do this by building the largest tree first, then subsetting...
     pts = get_points_array(gdf[gdf.geometry.name])
     tree = KDTree(pts)
 
     if distances is None:
-        stop = spatial.distance.cdist(
-            t.maxes.reshape(1, 2), t.mins.reshape(1, 2), "euclidean"
-        )
-        start = libpysal.weights.min_threshold_distances(tree)
-        distances = numpy.linspace(start, stop, n_bins).tolist()
+        if distance_type == 'band':
+            stop = spatial.distance.cdist(
+                tree.maxes.reshape(1, 2), tree.mins.reshape(1, 2), "euclidean"
+            ).item()
+            start = min_threshold_distance(tree.data)
+            distances = np.linspace(start, stop, n_bins).squeeze().tolist()
+        else:
+            n_samples = gdf.shape[0]
+            step = n_samples // n_bins
+            # not guaranteed to be n_bins if n_samples not divisible by n_bins
+            distances = np.arange(1, n_samples, step).astype(int)
+    if distance_type == "band":
+        W = DistanceBand
+    elif distance_type == "knn":
+        if max(distances) > (gdf.shape[0] - 1):
+            raise ValueError("max number of neighbors must be less than or equal to n-1")
+        W = KNN
+    else:
+        raise ValueError("distance_type must be either `band` or `knn`")
 
     if isinstance(variable, str):
         y = gdf[variable].values
     else:
-        y = numpy.asarray(variable).squeeze()
+        y = np.asarray(variable).squeeze()
 
     if y.shape[0] != gdf.shape[0]:
         raise ValueError(f"variable is length {len(y)} but gdf has {gdf.shape[0]} rows")
@@ -166,9 +171,13 @@ def correlogram(
         outputs = Parallel(n_jobs=n_jobs, backend="loky")(
             delayed(_get_stat)(i) for i in inputs
         )
-    else:
+    elif statistic == "lowess":
         # lowess correlogram
         outputs = _lowess_correlogram(y, pts, xvals=distances, **stat_kwargs)
+    else:
+        raise ValueError(
+            f"statistic must be a callable or 'lowess', recieved {statistic}"
+        )
 
     df = pd.DataFrame(outputs)
     if select_numeric:
@@ -176,7 +185,13 @@ def correlogram(
     return df
 
 
-def _lowess_correlogram(y, coordinates, xvals, metric="euclidean", **lowess_args):
+def _lowess_correlogram(
+    y: np.ndarray,
+    coordinates: np.ndarray,
+    xvals: np.ndarray,
+    metric: str = "euclidean",
+    **lowess_args,
+) -> pd.DataFrame:
     """
     Compute a nonparametric correlogram using a kernel regression
     on the spatial-covariation model:
@@ -221,16 +236,15 @@ def _lowess_correlogram(y, coordinates, xvals, metric="euclidean", **lowess_args
         d = pairwise_distances(coordinates, metric=metric)
 
     z = (y - y.mean()) / y.std()
-    cov = numpy.multiply.outer(z, z)
+    cov = np.multiply.outer(z, z)
 
-    lowess_args.setdefault("delta", 0.01 * d.max())
     lowess_args.setdefault("frac", 0.33)
     if metric != "precomputed":
-        row, col = numpy.triu_indices_from(cov)
+        row, col = np.triu_indices_from(cov)
         smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
     else:  # can't use upper triangle if d is not symmetric
         if linalg.issymetric(d):
-            row, col = numpy.triu_indices_from(cov)
+            row, col = np.triu_indices_from(cov)
             smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
         else:
             smooth = lowess(cov, d, xvals=xvals, **lowess_args)
