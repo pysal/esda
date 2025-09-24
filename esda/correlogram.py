@@ -55,7 +55,6 @@ def correlogram(
     select_numeric: bool = False,
     n_jobs: int = -1,
     n_bins : int | None = 10,
-    parametric = True
 ):
     """Generate a spatial correlogram
 
@@ -128,10 +127,10 @@ def correlogram(
     else:
         y = numpy.asarray(variable).squeeze()
         
-    if len(y) != gdf.shape[0]:
+    if y.shape[0] != gdf.shape[0]:
         raise ValueError(f"variable is length {len(y)} but gdf has {gdf.shape[0]} rows")
 
-    if parametric:
+    if statistic != 'nonparametric':
         inputs = [
             (
                     y,
@@ -150,14 +149,14 @@ def correlogram(
         )
     else:
         # non-parametric correlogram
-        outputs = _nonparametric_correlogram(y, pts, metric=distance_type, xvals=distances, **stat_kwargs)
+        outputs = _lowess_correlogram(y, pts, xvals=distances, **stat_kwargs)
 
     df = pd.DataFrame(outputs)
     if select_numeric:
         df = df.select_dtypes(["number"])
     return df
 
-def _nonparametric_correlogram(y,coordinates, metric, xvals, **lowess_args):
+def _lowess_correlogram(y, coordinates, xvals, metric='euclidean', **lowess_args):
     """
     Compute a nonparametric correlogram using a kernel regression 
     on the spatial-covariation model:
