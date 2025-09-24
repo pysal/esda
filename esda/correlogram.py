@@ -164,15 +164,37 @@ def _lowess_correlogram(y, coordinates, xvals, metric='euclidean', **lowess_args
         zi*zj = f(d_{ij}) + e_ij
     
     where f is a smooth function of distance d_{ij} between points i and j.
+
+    Arguments
+    ---------
+    y : array-like
+        1D array of values to compute the correlogram on
+    coordinates : array-like
+        2D array of point coordinates or a precomputed distance matrix
+    xvals : array-like
+        1D array of distance values to evaluate the correlogram at
+    metric : str
+        distance metric to use. Any metric from sklearn.metrics.pairwise_distances
+        is allowed. If 'precomputed', then coordinates is assumed to be a distance matrix
+    lowess_args : keyword arguments
+        additional keyword arguments passed to statsmodels.nonparametric.smoothers_lowess.lowess
+    
+    Returns
+    -------
+    pandas.DataFrame
+        dataframe with index of xvals and a single column 'lowess' with the smoothed
+        correlogram values
+    
+    Notes
+    -----
+    This function requires the statsmodels package to be installed. Further, no
+    validation is done on the input parameters.
     """
     try:
         from statsmodels.nonparametric.smoothers_lowess import lowess
     except ImportError as e:
         raise ImportError("Nonparametric correlograms require statsmodels") from e
     
-    # TODO: if metric='precomputed' then coordiantes is a distance matrix
-    # we have this somewhere else I know it... I wrote it! Where is it...
-
     if metric=='precomputed':
         d = coordinates # assume this is a distance matrix  
     else:
