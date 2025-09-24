@@ -117,7 +117,7 @@ class MoranLocalPartial(object):
             array of data that is the targeted "outcome" covariate
             to compute the multivariable Moran's I
         W   : (N,N) weights object
-            a PySAL weights object. Immediately row-standardized.
+            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.
       
         Returns
         -------
