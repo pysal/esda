@@ -168,7 +168,7 @@ def _nonparametric_correlogram(y,coordinates, metric, xvals, **lowess_args):
     where f is a smooth function of distance d_{ij} between points i and j.
     """
     try:
-        from statsmodels.nonparametric import lowess
+        from statsmodels.nonparametric.smoothers_lowess import lowess
     except ImportError as e:
         raise ImportError("Nonparametric correlograms require statsmodels") from e
     
@@ -183,6 +183,15 @@ def _nonparametric_correlogram(y,coordinates, metric, xvals, **lowess_args):
     z = (y - y.mean())/y.std()
     cov = numpy.multiply.outer(z,z)
 
-    smooth = lowess(cov.flatten(), d.flatten(), xvals=xvals, **lowess_args)
+    row,col = numpy.triu_indices_from(cov)
 
-    return smooth
+    lowess_args.setdefault(
+        'delta', .01 * d.max()
+    )
+    lowess_args.setdefault(
+        'frac', .33
+    )
+
+    smooth = lowess(cov[row,col], d[row,col], xvals=xvals, **lowess_args)
+
+    return pd.DataFrame(smooth, index=xvals, columns=['lowess'])
