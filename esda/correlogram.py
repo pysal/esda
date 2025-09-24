@@ -46,15 +46,15 @@ def _get_stat(inputs):
 
 def correlogram(
     gdf: gpd.GeoDataFrame,
-    variable: str,
+    variable: str | list | pd.Series | None,
     distances: list | None = None,
-    statistic: callable = Moran,
+    statistic: callable | str = Moran,
     distance_type: str = "band",
     weights_kwargs: dict = None,
     stat_kwargs: dict = None,
     select_numeric: bool = False,
     n_jobs: int = -1,
-    n_bins : int | None = 10,
+    n_bins: int | None = 10,
 ):
     """Generate a spatial correlogram
 
@@ -69,13 +69,15 @@ def correlogram(
     variable: str
         column on the geodataframe used to compute autocorrelation statistic
     distances : list or None
-        list of distances to compute the autocorrelation statistic
-    statistic : callable
+        list of distances at which to compute the autocorrelation statistic
+    statistic : callable | str
         statistic to be computed for a range of libpysal.Graph specifications.
         This should be a class with a signature like `Statistic(y,w, **kwargs)`
         where y is a numpy array and w is a libpysal.Graph.
         Generally, this is a class from pysal's `esda` package
-        defaults to esda.Moran, which computes the Moran's I statistic
+        defaults to esda.Moran, which computes the Moran's I statistic. If
+        'lowess' is provided, a non-parametric correlogram is computed using
+        lowess regression on the spatial-covariation model, see Notes.
     distance_type : str, optional
         which concept of distance to increment. Options are {`band`, `knn`}.
         by default 'band' (for `libpysal.weights.DistanceBand` weights)
@@ -95,12 +97,27 @@ def correlogram(
     -------
     outputs : pandas.DataFrame
         table of autocorrelation statistics at increasing distance bandwidths
+
+    Notes
+    -----
+    The nonparametric correlogram uses a lowess regression
+    to estimate the spatial-covariation model:
+
+        zi*zj = f(d_{ij}) + e_ij
+
+    where f is a smooth function of distance d_{ij} between points i and j.
+    This function requires the statsmodels package to be installed.
+
+    For the nonparametric correlogram, a precomputed distance matrix can
+    be used. To do this, set
+    stat_kwargs={'metric':'precomputed', 'coordinates':distance_matrix}
+    where `distance_matrix` is a square matrix of pairwise distances that
+    aligns with the `gdf` rows.
     """
     if stat_kwargs is None:
         stat_kwargs = dict()
     if weights_kwargs is None:
         weights_kwargs = dict()
-        
 
     if distance_type == "band":
         W = DistanceBand
@@ -118,29 +135,31 @@ def correlogram(
     tree = KDTree(pts)
 
     if distances is None:
-        stop = spatial.distance.cdist(t.maxes.reshape(1,2), t.mins.reshape(1,2), 'euclidean')
-        start = libpysal.weights.min_threshold_distances(tree) 
+        stop = spatial.distance.cdist(
+            t.maxes.reshape(1, 2), t.mins.reshape(1, 2), "euclidean"
+        )
+        start = libpysal.weights.min_threshold_distances(tree)
         distances = numpy.linspace(start, stop, n_bins).tolist()
 
     if isinstance(variable, str):
         y = gdf[variable].values
     else:
         y = numpy.asarray(variable).squeeze()
-        
+
     if y.shape[0] != gdf.shape[0]:
         raise ValueError(f"variable is length {len(y)} but gdf has {gdf.shape[0]} rows")
 
-    if statistic != 'nonparametric':
+    if statistic != "lowess":
         inputs = [
             (
-                    y,
-                    tree,
-                    W,
-                    statistic,
-                    dist,
-                    weights_kwargs,
-                    stat_kwargs,
-                )
+                y,
+                tree,
+                W,
+                statistic,
+                dist,
+                weights_kwargs,
+                stat_kwargs,
+            )
             for dist in distances
         ]
 
@@ -148,7 +167,7 @@ def correlogram(
             delayed(_get_stat)(i) for i in inputs
         )
     else:
-        # non-parametric correlogram
+        # lowess correlogram
         outputs = _lowess_correlogram(y, pts, xvals=distances, **stat_kwargs)
 
     df = pd.DataFrame(outputs)
@@ -156,13 +175,14 @@ def correlogram(
         df = df.select_dtypes(["number"])
     return df
 
-def _lowess_correlogram(y, coordinates, xvals, metric='euclidean', **lowess_args):
+
+def _lowess_correlogram(y, coordinates, xvals, metric="euclidean", **lowess_args):
     """
-    Compute a nonparametric correlogram using a kernel regression 
+    Compute a nonparametric correlogram using a kernel regression
     on the spatial-covariation model:
-    
+
         zi*zj = f(d_{ij}) + e_ij
-    
+
     where f is a smooth function of distance d_{ij} between points i and j.
 
     Arguments
@@ -178,13 +198,13 @@ def _lowess_correlogram(y, coordinates, xvals, metric='euclidean', **lowess_args
         is allowed. If 'precomputed', then coordinates is assumed to be a distance matrix
     lowess_args : keyword arguments
         additional keyword arguments passed to statsmodels.nonparametric.smoothers_lowess.lowess
-    
+
     Returns
     -------
     pandas.DataFrame
         dataframe with index of xvals and a single column 'lowess' with the smoothed
         correlogram values
-    
+
     Notes
     -----
     This function requires the statsmodels package to be installed. Further, no
@@ -194,29 +214,25 @@ def _lowess_correlogram(y, coordinates, xvals, metric='euclidean', **lowess_args
         from statsmodels.nonparametric.smoothers_lowess import lowess
     except ImportError as e:
         raise ImportError("Nonparametric correlograms require statsmodels") from e
-    
-    if metric=='precomputed':
-        d = coordinates # assume this is a distance matrix  
+
+    if metric == "precomputed":
+        d = coordinates  # assume this is a distance matrix
     else:
         d = pairwise_distances(coordinates, metric=metric)
 
-    z = (y - y.mean())/y.std()
-    cov = numpy.multiply.outer(z,z)
+    z = (y - y.mean()) / y.std()
+    cov = numpy.multiply.outer(z, z)
 
-    lowess_args.setdefault(
-        'delta', .01 * d.max()
-    )
-    lowess_args.setdefault(
-        'frac', .33
-    )
-    if metric != 'precomputed':
-        row,col = numpy.triu_indices_from(cov)
-        smooth = lowess(cov[row,col], d[row,col], xvals=xvals, **lowess_args)
-    else: # can't use upper triangle if d is not symmetric
+    lowess_args.setdefault("delta", 0.01 * d.max())
+    lowess_args.setdefault("frac", 0.33)
+    if metric != "precomputed":
+        row, col = numpy.triu_indices_from(cov)
+        smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
+    else:  # can't use upper triangle if d is not symmetric
         if linalg.issymetric(d):
-            row,col = numpy.triu_indices_from(cov)
-            smooth = lowess(cov[row,col], d[row,col], xvals=xvals, **lowess_args)
+            row, col = numpy.triu_indices_from(cov)
+            smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
         else:
             smooth = lowess(cov, d, xvals=xvals, **lowess_args)
 
-    return pd.DataFrame(smooth, index=xvals, columns=['lowess'])
+    return pd.DataFrame(smooth, index=xvals, columns=["lowess"])
