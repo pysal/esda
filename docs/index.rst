@@ -9,35 +9,52 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
 
     <div class="container-fluid">
       <div class="row equal-height">
-        <div class="col-sm-1 col-xs-hidden">
-        </div>
-        <div class="col-md-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/main/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
-                <img src="_static/images/prices.png" class="img-responsive center-block">
+        <div class="col-12">
+            <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb" class="thumbnail">
+                <img src="_static/images/prices.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
-                <h6>Housing Prices Berlin</h6>
+                <h6>Spatial Autocorrelation for continuous and discrete data</h6>
                 </div>
             </a>
         </div>
-        <div class="col-sm-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/main/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
-                <img src="_static/images/joincount.png" class="img-responsive center-block">
+        </div>
+        <div class="row equal-height">
+        <div class="col-6">
+            <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/shape-measures.ipynb" class="thumbnail">
+                <img src="_static/images/missipq.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
-                <h6>Join Count Analysis</h6>
+                <h6>Shape Regularity Statistics</h6>
                 </div>
             </a>
         </div>
-        <div class="col-sm-3 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/esda/blob/main/notebooks/Spatial%20Autocorrelation%20for%20Areal%20Unit%20Data.ipynb" class="thumbnail">
-                <img src="_static/images/clustermap.png"
-                class="img-responsive center-block">
+        <div class="col-6">
+            <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/geosilhouettes.ipynb" class="thumbnail">
+                <img src="_static/images/silhouettes.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
-                <h6>Hot-Spot and Cold-Spot Analysis
+                <h6>Boundary and Region Statistics
                 </h6>
                 </div>
             </a>
         </div>
-        <div class="col-sm-2 col-xs-hidden">
+        </div>
+        <div class='row equal-height'>
+        <div class="col-6">
+        <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/multivariable_moran.ipynb" class="thumbnail">
+                <img src="_static/images/mvmoran.png" class="img-fluid center-block w-100">
+                <div class="caption text-center">
+                <h6>Multivariable Moran Statistics
+                </h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-6">
+        <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/localjoincounts.ipynb" class="thumbnail">
+                <img src="_static/images/joincount.png" class="img-fluid center-block w-100">
+                <div class="caption text-center">
+                <h6>Discrete Spatial Autocorrelation with Join Counts
+                </h6>
+                </div>
+            </a>
         </div>
       </div>
     </div>

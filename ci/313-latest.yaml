@@ -20,6 +20,7 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
+  - geodatasets
   # optional
   - rtree
   # doc build

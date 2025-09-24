@@ -12,6 +12,7 @@ dependencies:
   - scipy
   - shapely
   # testing
+  - geodatasets
   - codecov
   - folium
   - mapclassify
