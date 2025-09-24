@@ -5,7 +5,7 @@ from libpysal.weights import lag_spatial
 from libpysal.graph import Graph
 
 try:
-    from tqdm import tqdm
+    from tqdm.auto import tqdm
 except ImportError:
 
     def tqdm(x, **kwargs):
