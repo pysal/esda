@@ -255,18 +255,25 @@ def _lowess_correlogram(
     
     xvals = np.asarray(xvals)
     xvals.sort()
-    mean_bin_width = np.diff(xvals).mean()
-    lo = max(xvals.min() - mean_bin_width/2, 0) # clip to zero
-    hi = xvals.max() + mean_bin_width/2 
-    print(lo, hi, mean_bin_width)
-    frac_in_range = d[(d>=lo) & (d<=hi)].size / d[d>0].size  
-    bin_frac = frac_in_range/len(xvals)
-    print(bin_frac, frac_in_range, len(xvals))
+    n_samples = d.shape[0]
+    if len(xvals) == 1:
+        bin_frac = 1.0
+    else:
+        if len(xvals) == 2:
+            lo_width = hi_width = xvals[1] - xvals[0]
+        else:  # only one xval, so just use a default width
+            lo_width = xvals[1] - xvals[0]
+            hi_width = xvals[-1] - xvals[-2]
+        lo = max(xvals[0] - lo_width/2, 0) # clip to zero
+        hi = xvals[-1] + hi_width/2 
+        # fraction of off-diagonal values spanned by bins, handling co-location
+        frac_in_range = (d[(d>=lo) & (d<=hi)].size - n_samples) / (n_samples*(n_samples-1))
+        bin_frac = frac_in_range/len(xvals)
 
     lowess_args.setdefault("frac", bin_frac)
 
     if metric != "precomputed":
-        row, col = np.triu_indices_from(cov)
+        row, col = np.triu_indices_from(cov, k=1)
         smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
     else:  # can't use upper triangle if d is not symmetric
         if linalg.issymetric(d):
