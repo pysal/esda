@@ -9,12 +9,12 @@ import geopandas as gpd
 sac = gpd.read_file(examples.load_example("Sacramento1").get_path("sacramentot2.shp"))
 sac = sac.to_crs(sac.estimate_utm_crs())  # now in meters)
 
-distances = [i + 500 for i in range(0, 2000, 500)]
-kdists = list(range(1, 6))
+dsupport = [i + 500 for i in range(0, 2000, 500)]
+ksupport = list(range(1, 6))
 
 
 def test_distance_correlogram():
-    corr = correlogram(sac, "HH_INC", distances)
+    corr = correlogram(sac.geometry.centroid, sac.HH_INC, dsupport)
 
     test_data = np.array(
         [
@@ -29,38 +29,47 @@ def test_distance_correlogram():
 
 
 def test_k_distance_correlogram():
-    corr = correlogram(sac, "HH_INC", kdists, distance_type="knn")
+    corr = correlogram(sac.geometry.centroid, sac.HH_INC, ksupport, distance_type="knn")
 
     test_data = np.array([0.62411734, 0.59734846, 0.56958116, 0.54252517, 0.54093269])
     assert_array_almost_equal(corr.I, test_data)
 
 
 def test_unspecified_distances():
-    corr = correlogram(sac, "HH_INC", distance_type="knn")
+    corr = correlogram(sac.geometry.centroid, sac.HH_INC, distance_type="knn")
 
-    assert len(corr) == 11  # not divisible by n_bins, so near 10
+    assert len(corr) == 10  # not divisible by n_bins, so near 10
     assert_array_almost_equal(
         corr.I,
         [
-            0.62411734,
-            0.29078276,
-            0.19922394,
-            0.15656318,
-            0.11640395,
-            0.08748932,
-            0.05202192,
-            0.02162432,
-            0.00577212,
+            0.624117,
+            0.290783,
+            0.199224,
+            0.156563,
+            0.116404,
+            0.087489,
+            0.052022,
+            0.021624,
+            0.005772,
             0.0,
-            -0.0024899,
+            -0.00249,
         ],
     )
 
 
 def test_lowess_correlogram():
-    corr = correlogram(sac, "HH_INC", distances, statistic="lowess")
+    corr = correlogram(
+        sac.geometry.centroid, sac.HH_INC, support=dsupport, statistic="lowess"
+    )
 
-    test_data = np.array([0.290893, 0.278535, 0.266325, 0.254256])
+    test_data = np.array(
+        [
+            0.3199654642930986,
+            0.30436639449237,
+            0.2889810146728306,
+            0.27379084285868077,
+        ]
+    )
 
     assert_array_almost_equal(corr.lowess, test_data)
 
