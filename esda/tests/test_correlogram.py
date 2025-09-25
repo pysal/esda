@@ -1,4 +1,5 @@
 from libpysal import examples
+from libpysal.weights.util import get_points_array
 from esda import correlogram
 import numpy as np
 from numpy.testing import assert_array_almost_equal
@@ -68,7 +69,7 @@ def test_lowess_correlogram():
 
 
 def test_lowess_precomputed():
-    coords = sac.geometry.centroid.get_coordinates().values
+    coords = get_points_array(sac.geometry.centroid)
     n_samples = len(coords)
     D = np.zeros((n_samples, n_samples))
     upper_ix = np.triu_indices_from(D)
