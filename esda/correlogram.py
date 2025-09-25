@@ -68,7 +68,7 @@ def correlogram(
     ----------
     geometry : gpd.GeoSeries
         geodataframe holding spatial and attribute data
-    variable: pd.Series or list 
+    variable: pd.Series or list
         pandas series matching input geometries
     support : list or None
         list of values at which to compute the autocorrelation statistic
@@ -133,38 +133,46 @@ def correlogram(
     elif not isinstance(geometry, gpd.GeoSeries):
         raise ValueError("geometry must be a geopandas GeoDataFrame or GeoSeries")
 
-    if not (geometry.type == 'Point').all():
-        raise ValueError("geometry must be of type Point. Try sending geometry.centroid")
+    if not (geometry.type == "Point").all():
+        raise ValueError(
+            "geometry must be of type Point. Try sending geometry.centroid"
+        )
 
     tree = KDTree(geometry.get_coordinates().values)
 
     if support is None:
-        if distance_type == 'band':
-            stop = spatial.distance.cdist(
-                tree.maxes.reshape(1, 2), tree.mins.reshape(1, 2), "euclidean"
-            ).item() / 2
+        if distance_type == "band":
+            stop = (
+                spatial.distance.cdist(
+                    tree.maxes.reshape(1, 2), tree.mins.reshape(1, 2), "euclidean"
+                ).item()
+                / 2
+            )
             d, i = tree.query(tree.data, k=2)
-            start = d[d>0].min()
+            start = d[d > 0].min()
             support = np.linspace(start, stop, n_bins).squeeze().tolist()
         else:
             n_samples = geometry.shape[0]
-            step = (n_samples-1) / (n_bins-1)
+            step = (n_samples - 1) / (n_bins - 1)
             # not guaranteed to be n_bins if n_samples not divisible by n_bins
-            support = [*np.arange(1, n_samples-1, step).astype(int), n_samples-1]
+            support = [*np.arange(1, n_samples - 1, step).astype(int), n_samples - 1]
     if distance_type == "band":
         W = DistanceBand
     elif distance_type == "knn":
         if max(support) > (geometry.shape[0] - 1):
-            raise ValueError("max number of neighbors must be less than or equal to n-1")
+            raise ValueError(
+                "max number of neighbors must be less than or equal to n-1"
+            )
         W = KNN
     else:
         raise ValueError("distance_type must be either `band` or `knn`")
 
-    
     y = np.asarray(variable).squeeze()
 
     if y.shape[0] != geometry.shape[0]:
-        raise ValueError(f"variable is length {len(y)} but geometry has {geometry.shape[0]} rows")
+        raise ValueError(
+            f"variable is length {len(y)} but geometry has {geometry.shape[0]} rows"
+        )
 
     if statistic != "lowess":
         inputs = [
@@ -185,7 +193,8 @@ def correlogram(
         )
     elif statistic == "lowess":
         # lowess correlogram
-        outputs = _lowess_correlogram(y, tree.data, xvals=support, **stat_kwargs)
+        stat_kwargs.setdefault("coordinates", tree.data)
+        outputs = _lowess_correlogram(y, xvals=support, **stat_kwargs)
     else:
         raise ValueError(
             f"statistic must be a callable or 'lowess', recieved {statistic}"
@@ -251,8 +260,8 @@ def _lowess_correlogram(
     cov = np.multiply.outer(z, z)
 
     # this assumes that xvals are sorted and span the entire range of distances
-    # this is often not the case, so we need to calculate what the actual bin width is. 
-    
+    # this is often not the case, so we need to calculate what the actual bin width is.
+
     xvals = np.asarray(xvals)
     xvals.sort()
     n_samples = d.shape[0]
@@ -264,11 +273,13 @@ def _lowess_correlogram(
         else:  # only one xval, so just use a default width
             lo_width = xvals[1] - xvals[0]
             hi_width = xvals[-1] - xvals[-2]
-        lo = max(xvals[0] - lo_width/2, 0) # clip to zero
-        hi = xvals[-1] + hi_width/2 
+        lo = max(xvals[0] - lo_width / 2, 0)  # clip to zero
+        hi = xvals[-1] + hi_width / 2
         # fraction of off-diagonal values spanned by bins, handling co-location
-        frac_in_range = (d[(d>=lo) & (d<=hi)].size - n_samples) / (n_samples*(n_samples-1))
-        bin_frac = frac_in_range/len(xvals)
+        frac_in_range = (d[(d >= lo) & (d <= hi)].size - n_samples) / (
+            n_samples * (n_samples - 1)
+        )
+        bin_frac = frac_in_range / len(xvals)
 
     lowess_args.setdefault("frac", bin_frac)
 
@@ -276,10 +287,14 @@ def _lowess_correlogram(
         row, col = np.triu_indices_from(cov, k=1)
         smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
     else:  # can't use upper triangle if d is not symmetric
-        if linalg.issymetric(d):
+        if linalg.issymmetric(d):
             row, col = np.triu_indices_from(cov)
             smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
         else:
-            smooth = lowess(cov, d, xvals=xvals, **lowess_args)
+            smooth = lowess(
+                endog = cov.flatten(),
+                exog = d.flatten(),
+                xvals=xvals, **lowess_args
+            )
 
     return pd.DataFrame(smooth, index=xvals, columns=["lowess"])

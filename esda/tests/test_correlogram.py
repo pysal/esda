@@ -2,7 +2,7 @@ from libpysal import examples
 from esda import correlogram
 import numpy as np
 from numpy.testing import assert_array_almost_equal
-
+from scipy import spatial
 import geopandas as gpd
 
 
@@ -38,22 +38,22 @@ def test_k_distance_correlogram():
 def test_unspecified_distances():
     corr = correlogram(sac.geometry.centroid, sac.HH_INC, distance_type="knn")
 
-    assert len(corr) == 10  # not divisible by n_bins, so near 10
-    assert_array_almost_equal(
-        corr.I,
-        [
-            0.624117,
-            0.290783,
-            0.199224,
-            0.156563,
-            0.116404,
-            0.087489,
-            0.052022,
-            0.021624,
-            0.005772,
-            0.0,
-            -0.00249,
-        ],
+    assert len(corr) == 50
+    known = [
+        0.62411734,
+        0.48356077,
+        0.40204787,
+        0.36573375,
+        0.32139756,
+        -0.00165216,
+        -0.00217858,
+        -0.00237038,
+        -0.00260488,
+        -0.00248756,
+    ]
+    assert_array_almost_equal(  # check the first five and last five
+        [*corr.I[:5], *corr.I[-5:]],
+        known,
     )
 
 
@@ -62,17 +62,34 @@ def test_lowess_correlogram():
         sac.geometry.centroid, sac.HH_INC, support=dsupport, statistic="lowess"
     )
 
-    test_data = np.array(
-        [
-            0.3199654642930986,
-            0.30436639449237,
-            0.2889810146728306,
-            0.27379084285868077,
-        ]
-    )
+    test_data = np.array([0.586032, 0.377228, 0.268441, 0.336877])
 
     assert_array_almost_equal(corr.lowess, test_data)
 
 
 def test_lowess_precomputed():
-    raise NotImplementedError()
+    coords = sac.geometry.centroid.get_coordinates().values
+    n_samples = len(coords)
+    D = np.zeros((n_samples, n_samples))
+    upper_ix = np.triu_indices_from(D)
+    lower_ix = np.tril_indices_from(D)
+
+    # diff in x on top, diff in y on bottom
+    D[upper_ix] = spatial.distance_matrix(coords[:, 0, None], coords[:, 0, None])[
+        upper_ix
+    ]
+    D[lower_ix] = spatial.distance_matrix(coords[:, 1, None], coords[:, 1, None])[
+        lower_ix
+    ]
+
+    corr = correlogram(
+        sac.geometry.centroid,
+        sac.HH_INC,
+        statistic="lowess",
+        stat_kwargs=dict(metric="precomputed", coordinates=D),
+    )
+
+    assert_array_almost_equal(
+        corr.lowess.iloc[:5],
+        [0.07460634, 0.05469855, 0.02606339, 0.02323869, 0.01068146],
+    )
