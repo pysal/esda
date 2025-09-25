@@ -138,7 +138,7 @@ def correlogram(
             "geometry must be of type Point. Try sending geometry.centroid"
         )
 
-    tree = KDTree(geometry.get_coordinates().values)
+    tree = KDTree(get_points_array(geometry.values))
 
     if support is None:
         if distance_type == "band":
