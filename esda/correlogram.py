@@ -38,7 +38,7 @@ def _get_stat(inputs: tuple) -> pd.Series:
     ) = inputs
 
     w = W(tree, dist, silence_warnings=True, **weights_kwargs)
-    with warnings.catch_warnings(action='ignore', category=RuntimeWarning):
+    with warnings.catch_warnings(action="ignore", category=RuntimeWarning):
         autocorr = STATISTIC(y, w, **stat_kwargs)
     attrs = []
     all_attrs = list(dict(vars(autocorr)).keys())
@@ -75,21 +75,21 @@ def correlogram(
         list of values at which to compute the autocorrelation statistic
     statistic : callable or str
         statistic to be computed for a range of libpysal.Graph specifications.
-        This should be a class with a signature like `Statistic(y,w, **kwargs)`
-        where y is a  array and w is a libpysal.weights.W object
-        Generally, this is a class from pysal's `esda` package
-        defaults to esda.Moran, which computes the Moran's I statistic. If
-        'lowess' is provided, a non-parametric correlogram is computed using
+        This should be a class with a signature like ``Statistic(y,w, **kwargs)``
+        where ``y`` is a  array and ``w`` is a ``libpysal.weights.W`` object
+        Generally, this is a class from pysal's ``esda`` package
+        defaults to ``esda.Moran``, which computes the Moran's I statistic. If
+        ``'lowess'`` is provided, a non-parametric correlogram is computed using
         lowess regression on the spatial-covariation model, see Notes.
     distance_type : str, optional
-        which concept of distance to increment. Options are {`band`, `knn`}.
-        by default 'band' (for `libpysal.weights.DistanceBand` weights)
+        which concept of distance to increment. Options are ``{`band`, `knn`}``.
+        by default ``'band'`` (for ``libpysal.weights.DistanceBand`` weights)
     weights_kwargs : dict
-        additional keyword arguments passed to the libpysal.weights.W class
+        additional keyword arguments passed to the ``libpysal.weights.W`` class
     stat_kwargs : dict
-        additional keyword arguments passed to the `esda` autocorrelation statistic class.
+        additional keyword arguments passed to the ``esda`` autocorrelation statistic class.
         For example for faster results with no statistical inference, set the number
-        of permutations to zero with stat_kwargs={permutations: 0}
+        of permutations to zero with ``stat_kwargs={permutations: 0}``
     select_numeric : bool
         if True, only return numeric attributes from the original class. This is useful
         e.g. to prevent lists inside a "cell" of a dataframe
@@ -97,10 +97,10 @@ def correlogram(
         number of jobs to pass to joblib. If -1 (default), all cores will be used
     n_bins : int
         number of distance bands or k-nearest neighbor values to use if
-        `support` is not provided. Ignored if `support` is provided.
-        by default 10. If `distance_type` is 'knn', the number of neighbors
+        ``support`` is not provided. Ignored if ``support`` is provided.
+        by default 10. If ``distance_type`` is 'knn', the number of neighbors
         will be capped at n-1, where n is the number of observations. Further,
-        if n-1 is not divisible by `n_bins`, the actual number of bins will be
+        if n-1 is not divisible by ``n_bins``, the actual number of bins will be
         may be off by one bin.
 
     Returns
@@ -113,16 +113,19 @@ def correlogram(
     The nonparametric correlogram uses a lowess regression
     to estimate the spatial-covariation model:
 
+    .. math::
+
         zi*zj = f(d_{ij}) + e_ij
 
-    where f is a smooth function of distance d_{ij} between points i and j.
-    This function requires the statsmodels package to be installed.
+    where :math:`f` is a smooth function of distance :math:`d_{ij}` between points
+    :math:`i` and :math:`j`. This function requires the statsmodels package to be
+    installed.
 
     For the nonparametric correlogram, a precomputed distance matrix can
     be used. To do this, set
-    stat_kwargs={'metric':'precomputed', 'coordinates':distance_matrix}
-    where `distance_matrix` is a square matrix of pairwise distances that
-    aligns with the `geometry` rows.
+    ``stat_kwargs={'metric':'precomputed', 'coordinates':distance_matrix}``
+    where ``distance_matrix`` is a square matrix of pairwise distances that
+    aligns with the ``geometry`` rows.
     """
     if stat_kwargs is None:
         stat_kwargs = dict()
@@ -293,9 +296,7 @@ def _lowess_correlogram(
             smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
         else:
             smooth = lowess(
-                endog = cov.flatten(),
-                exog = d.flatten(),
-                xvals=xvals, **lowess_args
+                endog=cov.flatten(), exog=d.flatten(), xvals=xvals, **lowess_args
             )
 
     return pd.DataFrame(smooth, index=xvals, columns=["lowess"])
