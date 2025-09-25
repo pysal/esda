@@ -5,6 +5,7 @@ import numpy as np
 from numpy.testing import assert_array_almost_equal
 from scipy import spatial
 import geopandas as gpd
+import pytest
 
 
 sac = gpd.read_file(examples.load_example("Sacramento1").get_path("sacramentot2.shp"))
@@ -13,6 +14,10 @@ sac = sac.to_crs(sac.estimate_utm_crs())  # now in meters)
 dsupport = [i + 500 for i in range(0, 2000, 500)]
 ksupport = list(range(1, 6))
 
+try:
+    import statsmodels  # noqa F401
+except ImportError:
+    statsmodels = None
 
 def test_distance_correlogram():
     corr = correlogram(sac.geometry.centroid, sac.HH_INC, dsupport)
@@ -57,7 +62,7 @@ def test_unspecified_distances():
         known,
     )
 
-
+@pytest.mark.skipif(statsmodels is None, reason="lowess requires statsmodels")
 def test_lowess_correlogram():
     corr = correlogram(
         sac.geometry.centroid, sac.HH_INC, support=dsupport, statistic="lowess"
@@ -67,7 +72,7 @@ def test_lowess_correlogram():
 
     assert_array_almost_equal(corr.lowess, test_data)
 
-
+@pytest.mark.skipif(statsmodels is None, reason="lowess requires statsmodels")
 def test_lowess_precomputed():
     coords = get_points_array(sac.geometry.centroid)
     n_samples = len(coords)
