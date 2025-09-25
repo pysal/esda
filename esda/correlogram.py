@@ -142,8 +142,8 @@ def correlogram(
         if distance_type == 'band':
             stop = spatial.distance.cdist(
                 tree.maxes.reshape(1, 2), tree.mins.reshape(1, 2), "euclidean"
-            ).item()/2 # only go to a quarter of the bounding box
-            d, i = start = tree.query(tree.data, k=2)
+            ).item() / 2
+            d, i = tree.query(tree.data, k=2)
             start = d[d>0].min()
             support = np.linspace(start, stop, n_bins).squeeze().tolist()
         else:
