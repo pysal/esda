@@ -10,7 +10,7 @@ from libpysal.weights import KNN, DistanceBand
 from libpysal.weights.util import get_points_array
 from sklearn.metrics import pairwise_distances
 from scipy import spatial, linalg
-
+import warnings
 from .moran import Moran
 
 
@@ -38,7 +38,8 @@ def _get_stat(inputs: tuple) -> pd.Series:
     ) = inputs
 
     w = W(tree, dist, silence_warnings=True, **weights_kwargs)
-    autocorr = STATISTIC(y, w, **stat_kwargs)
+    with warnings.catch_warnings(action='ignore', category=RuntimeWarning):
+        autocorr = STATISTIC(y, w, **stat_kwargs)
     attrs = []
     all_attrs = list(dict(vars(autocorr)).keys())
     for attribute in all_attrs:
