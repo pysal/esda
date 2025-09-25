@@ -56,7 +56,7 @@ def correlogram(
     stat_kwargs: dict = None,
     select_numeric: bool = False,
     n_jobs: int = -1,
-    n_bins: int | None = 10,
+    n_bins: int | None = 50,
 ) -> pd.DataFrame:
     """Generate a spatial correlogram
 
@@ -88,12 +88,19 @@ def correlogram(
     stat_kwargs : dict
         additional keyword arguments passed to the `esda` autocorrelation statistic class.
         For example for faster results with no statistical inference, set the number
-        of permutations to zero with {permutations: 0}
+        of permutations to zero with stat_kwargs={permutations: 0}
     select_numeric : bool
         if True, only return numeric attributes from the original class. This is useful
         e.g. to prevent lists inside a "cell" of a dataframe
     n_jobs : int
         number of jobs to pass to joblib. If -1 (default), all cores will be used
+    n_bins : int
+        number of distance bands or k-nearest neighbor values to use if
+        `support` is not provided. Ignored if `support` is provided.
+        by default 10. If `distance_type` is 'knn', the number of neighbors
+        will be capped at n-1, where n is the number of observations. Further,
+        if n-1 is not divisible by `n_bins`, the actual number of bins will be
+        may be off by one bin.
 
     Returns
     -------
@@ -243,7 +250,21 @@ def _lowess_correlogram(
     z = (y - y.mean()) / y.std()
     cov = np.multiply.outer(z, z)
 
-    lowess_args.setdefault("frac", 0.33)
+    # this assumes that xvals are sorted and span the entire range of distances
+    # this is often not the case, so we need to calculate what the actual bin width is. 
+    
+    xvals = np.asarray(xvals)
+    xvals.sort()
+    mean_bin_width = np.diff(xvals).mean()
+    lo = max(xvals.min() - mean_bin_width/2, 0) # clip to zero
+    hi = xvals.max() + mean_bin_width/2 
+    print(lo, hi, mean_bin_width)
+    frac_in_range = d[(d>=lo) & (d<=hi)].size / d[d>0].size  
+    bin_frac = frac_in_range/len(xvals)
+    print(bin_frac, frac_in_range, len(xvals))
+
+    lowess_args.setdefault("frac", bin_frac)
+
     if metric != "precomputed":
         row, col = np.triu_indices_from(cov)
         smooth = lowess(cov[row, col], d[row, col], xvals=xvals, **lowess_args)
