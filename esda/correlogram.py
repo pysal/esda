@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
-from libpysal.weights import KNN, DistanceBand, min_threshold_distance
+from libpysal.weights import KNN, DistanceBand
 from libpysal.weights.util import get_points_array
 from sklearn.metrics import pairwise_distances
 from scipy import spatial, linalg
@@ -47,9 +47,9 @@ def _get_stat(inputs: tuple) -> pd.Series:
 
 
 def correlogram(
-    gdf: gpd.GeoDataFrame,
+    geometry: gpd.GeoSeries,
     variable: str | list | pd.Series | None,
-    distances: list | None = None,
+    support: list | None = None,
     statistic: Callable | str = Moran,
     distance_type: str = "band",
     weights_kwargs: dict = None,
@@ -66,16 +66,16 @@ def correlogram(
 
     Parameters
     ----------
-    gdf : gpd.GeoDataFrame
+    geometry : gpd.GeoSeries
         geodataframe holding spatial and attribute data
-    variable: str
-        column on the geodataframe used to compute autocorrelation statistic
-    distances : list or None
-        list of distances at which to compute the autocorrelation statistic
-    statistic : callable | str
+    variable: pd.Series or list 
+        pandas series matching input geometries
+    support : list or None
+        list of values at which to compute the autocorrelation statistic
+    statistic : callable or str
         statistic to be computed for a range of libpysal.Graph specifications.
         This should be a class with a signature like `Statistic(y,w, **kwargs)`
-        where y is a  array and w is a libpysal.Graph.
+        where y is a  array and w is a libpysal.weights.W object
         Generally, this is a class from pysal's `esda` package
         defaults to esda.Moran, which computes the Moran's I statistic. If
         'lowess' is provided, a non-parametric correlogram is computed using
@@ -114,45 +114,50 @@ def correlogram(
     be used. To do this, set
     stat_kwargs={'metric':'precomputed', 'coordinates':distance_matrix}
     where `distance_matrix` is a square matrix of pairwise distances that
-    aligns with the `gdf` rows.
+    aligns with the `geometry` rows.
     """
     if stat_kwargs is None:
         stat_kwargs = dict()
     if weights_kwargs is None:
         weights_kwargs = dict()
 
-    # there's a faster way to do this by building the largest tree first, then subsetting...
-    pts = get_points_array(gdf[gdf.geometry.name])
-    tree = KDTree(pts)
+    if isinstance(geometry, gpd.GeoDataFrame):
+        geometry = geometry.geometry
+    elif not isinstance(geometry, gpd.GeoSeries):
+        raise ValueError("geometry must be a geopandas GeoDataFrame or GeoSeries")
 
-    if distances is None:
+    if not (geometry.type == 'Point').all():
+        raise ValueError("geometry must be of type Point. Try sending geometry.centroid")
+
+    tree = KDTree(geometry.get_coordinates().values)
+
+    if support is None:
         if distance_type == 'band':
             stop = spatial.distance.cdist(
                 tree.maxes.reshape(1, 2), tree.mins.reshape(1, 2), "euclidean"
-            ).item()
-            start = min_threshold_distance(tree.data)
-            distances = np.linspace(start, stop, n_bins).squeeze().tolist()
+            ).item()/2 # only go to a quarter of the bounding box
+            d, i = start = tree.query(tree.data, k=2)
+            start = d[d>0].min()
+            support = np.linspace(start, stop, n_bins).squeeze().tolist()
         else:
-            n_samples = gdf.shape[0]
-            step = n_samples // n_bins
+            n_samples = geometry.shape[0]
+            step = (n_samples-1) / (n_bins-1)
             # not guaranteed to be n_bins if n_samples not divisible by n_bins
-            distances = np.arange(1, n_samples, step).astype(int)
+            support = [*np.arange(1, n_samples-1, step).astype(int), n_samples-1]
     if distance_type == "band":
         W = DistanceBand
     elif distance_type == "knn":
-        if max(distances) > (gdf.shape[0] - 1):
+        if max(support) > (geometry.shape[0] - 1):
             raise ValueError("max number of neighbors must be less than or equal to n-1")
         W = KNN
     else:
         raise ValueError("distance_type must be either `band` or `knn`")
 
-    if isinstance(variable, str):
-        y = gdf[variable].values
-    else:
-        y = np.asarray(variable).squeeze()
+    
+    y = np.asarray(variable).squeeze()
 
-    if y.shape[0] != gdf.shape[0]:
-        raise ValueError(f"variable is length {len(y)} but gdf has {gdf.shape[0]} rows")
+    if y.shape[0] != geometry.shape[0]:
+        raise ValueError(f"variable is length {len(y)} but geometry has {geometry.shape[0]} rows")
 
     if statistic != "lowess":
         inputs = [
@@ -165,7 +170,7 @@ def correlogram(
                 weights_kwargs,
                 stat_kwargs,
             )
-            for dist in distances
+            for dist in support
         ]
 
         outputs = Parallel(n_jobs=n_jobs, backend="loky")(
@@ -173,7 +178,7 @@ def correlogram(
         )
     elif statistic == "lowess":
         # lowess correlogram
-        outputs = _lowess_correlogram(y, pts, xvals=distances, **stat_kwargs)
+        outputs = _lowess_correlogram(y, tree.data, xvals=support, **stat_kwargs)
     else:
         raise ValueError(
             f"statistic must be a callable or 'lowess', recieved {statistic}"
