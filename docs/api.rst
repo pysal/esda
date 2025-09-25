@@ -15,7 +15,15 @@ A-DBSCAN
 
     esda.adbscan.ADBSCAN
 
+.. _correlogram_api:
 
+Correlogram
+-----------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.correlogram
 
 .. _gamma_api:
 
