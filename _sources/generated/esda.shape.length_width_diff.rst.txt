@@ -1,0 +1,6 @@
+﻿esda.shape.length\_width\_diff
+==============================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: length_width_diff

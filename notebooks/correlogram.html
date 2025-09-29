@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Distance Bands &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=6b84fd01"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Distance Bands</a></li>
+<li><a class="reference internal" href="#KNN-Distance">KNN Distance</a><ul>
+<li><a class="reference internal" href="#Nonparametric">Nonparametric</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda//home/runner/work/esda/esda/docs/notebooks/correlogram.ipynb">/home/runner/work/esda/esda/docs/notebooks/correlogram.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath=/home/runner/work/esda/esda/docs/notebooks/correlogram.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%load_ext watermark
+%watermark -a &#39;eli knaap&#39;
+%load_ext autoreload
+%autoreload 2
+
+from libpysal import examples
+from esda import correlogram
+
+import geopandas as gpd
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Author: eli knaap
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sac = gpd.read_file(examples.load_example(&quot;Sacramento1&quot;).get_path(&quot;sacramentot2.shp&quot;))
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sac = sac.to_crs(sac.estimate_utm_crs())  # now in meters)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>correlogram?
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">Signature:</span>
+correlogram(
+    geometry: geopandas.geoseries.GeoSeries,
+    variable: str | list | pandas.core.series.Series | <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    support: list | <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> = <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    statistic: collections.abc.Callable | str = &lt;<span class="ansi-bold" style="color: rgb(0,135,0)">class</span> <span class="ansi-yellow-fg">&#39;esda.moran.Moran&#39;</span>&gt;,
+    distance_type: str = <span class="ansi-yellow-fg">&#39;band&#39;</span>,
+    weights_kwargs: dict = <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    stat_kwargs: dict = <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>,
+    select_numeric: bool = <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>,
+    n_jobs: int = -<span class="ansi-green-fg">1</span>,
+    n_bins: int | <span class="ansi-bold" style="color: rgb(0,135,0)">None</span> = <span class="ansi-green-fg">50</span>,
+) -&gt; pandas.core.frame.DataFrame
+<span class="ansi-red-fg">Docstring:</span>
+Generate a spatial correlogram
+
+A spatial profile is a set of spatial autocorrelation statistics calculated for
+a set of increasing distances. It is a useful exploratory tool for examining
+how the relationship between spatial units changes over different notions of scale.
+
+Parameters
+----------
+geometry : gpd.GeoSeries
+    geodataframe holding spatial and attribute data
+variable: pd.Series or list
+    pandas series matching input geometries
+support : list or None
+    list of values at which to compute the autocorrelation statistic
+statistic : callable or str
+    statistic to be computed for a range of libpysal.Graph specifications.
+    This should be a class with a signature like `Statistic(y,w, **kwargs)`
+    where y is a  array and w is a libpysal.weights.W object
+    Generally, this is a class from pysal&#39;s `esda` package
+    defaults to esda.Moran, which computes the Moran&#39;s I statistic. If
+    &#39;lowess&#39; is provided, a non-parametric correlogram is computed using
+    lowess regression on the spatial-covariation model, see Notes.
+distance_type : str, optional
+    which concept of distance to increment. Options are {`band`, `knn`}.
+    by default &#39;band&#39; (for `libpysal.weights.DistanceBand` weights)
+weights_kwargs : dict
+    additional keyword arguments passed to the libpysal.weights.W class
+stat_kwargs : dict
+    additional keyword arguments passed to the `esda` autocorrelation statistic class.
+    For example for faster results with no statistical inference, set the number
+    of permutations to zero with stat_kwargs={permutations: 0}
+select_numeric : bool
+    if True, only return numeric attributes from the original class. This is useful
+    e.g. to prevent lists inside a &#34;cell&#34; of a dataframe
+n_jobs : int
+    number of jobs to pass to joblib. If -1 (default), all cores will be used
+n_bins : int
+    number of distance bands or k-nearest neighbor values to use if
+    `support` is not provided. Ignored if `support` is provided.
+    by default 10. If `distance_type` is &#39;knn&#39;, the number of neighbors
+    will be capped at n-1, where n is the number of observations. Further,
+    if n-1 is not divisible by `n_bins`, the actual number of bins will be
+    may be off by one bin.
+
+Returns
+-------
+outputs : pandas.DataFrame
+    table of autocorrelation statistics at increasing distance bandwidths
+
+Notes
+-----
+The nonparametric correlogram uses a lowess regression
+to estimate the spatial-covariation model:
+
+    zi*zj = f(d_{ij}) + e_ij
+
+where f is a smooth function of distance d_{ij} between points i and j.
+This function requires the statsmodels package to be installed.
+
+For the nonparametric correlogram, a precomputed distance matrix can
+be used. To do this, set
+stat_kwargs={&#39;metric&#39;:&#39;precomputed&#39;, &#39;coordinates&#39;:distance_matrix}
+where `distance_matrix` is a square matrix of pairwise distances that
+aligns with the `geometry` rows.
+<span class="ansi-red-fg">File:</span>      ~/Dropbox/work/dev/esda/esda/correlogram.py
+<span class="ansi-red-fg">Type:</span>      function
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from esda import Moran, Geary, G
+</pre></div>
+</div>
+</div>
+<section id="Distance-Bands">
+<h1>Distance Bands<a class="headerlink" href="#Distance-Bands" title="Link to this heading">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Create a liste of distances between 500 and 5000 (meters, here) in increments of 500
+
+distances = [i+500 for i in range(0,5000, 500)]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>distances
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
+</pre></div></div>
+</div>
+<p>The correlogram will compute an autocorrelation statistic (Moran’s <span class="math notranslate nohighlight">\(I\)</span> by default) at each distance threshold. Plotting this statistic against distance reveals how spatial similarity changes over distance (similar in concept to a variogram)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prof = correlogram(
+    sac.centroid,
+    sac.HH_INC,
+    distances,
+    Moran
+)
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">prof</span></code> is a dataframe of autocorrelation statistics indexed by distance. It includes all attributes created by the esda autocorrelation statistic class (e.g. <a class="reference external" href="https://pysal.org/esda/generated/esda.Moran.html#esda.Moran">Moran</a>, <a class="reference external" href="https://pysal.org/esda/generated/esda.Geary.html#esda.Geary">Geary</a>, or <a class="reference external" href="https://pysal.org/esda/generated/esda.G.html#esda.G">Geits-Ord G</a>). The row index for each statistic is the distance at which it was computed</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prof.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>y</th>
+      <th>w</th>
+      <th>permutations</th>
+      <th>n</th>
+      <th>z</th>
+      <th>z2ss</th>
+      <th>EI</th>
+      <th>VI_norm</th>
+      <th>seI_norm</th>
+      <th>VI_rand</th>
+      <th>...</th>
+      <th>z_rand</th>
+      <th>p_norm</th>
+      <th>p_rand</th>
+      <th>sim</th>
+      <th>p_sim</th>
+      <th>EI_sim</th>
+      <th>seI_sim</th>
+      <th>VI_sim</th>
+      <th>z_sim</th>
+      <th>p_z_sim</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>500</th>
+      <td>[52941, 51958, 32992, 54556, 50815, 60167, 490...</td>
+      <td>&lt;libpysal.weights.distance.DistanceBand object...</td>
+      <td>999</td>
+      <td>403</td>
+      <td>[0.27506115837390277, 0.21948138443207246, -0....</td>
+      <td>1.260604e+11</td>
+      <td>-0.002488</td>
+      <td>0.497534</td>
+      <td>0.705361</td>
+      <td>0.496239</td>
+      <td>...</td>
+      <td>0.086188</td>
+      <td>9.314058e-01</td>
+      <td>9.313166e-01</td>
+      <td>[-0.041149125017795225, 0.8047828919464444, 0....</td>
+      <td>0.465</td>
+      <td>-0.017506</td>
+      <td>0.693436</td>
+      <td>0.480854</td>
+      <td>0.109214</td>
+      <td>4.565164e-01</td>
+    </tr>
+    <tr>
+      <th>1000</th>
+      <td>[52941, 51958, 32992, 54556, 50815, 60167, 490...</td>
+      <td>&lt;libpysal.weights.distance.DistanceBand object...</td>
+      <td>999</td>
+      <td>403</td>
+      <td>[0.27506115837390277, 0.21948138443207246, -0....</td>
+      <td>1.260604e+11</td>
+      <td>-0.002488</td>
+      <td>0.014259</td>
+      <td>0.119409</td>
+      <td>0.014221</td>
+      <td>...</td>
+      <td>4.147088</td>
+      <td>3.447621e-05</td>
+      <td>3.367309e-05</td>
+      <td>[0.01407910066509541, -0.09399265148441757, -0...</td>
+      <td>0.001</td>
+      <td>-0.007273</td>
+      <td>0.120349</td>
+      <td>0.014484</td>
+      <td>4.149132</td>
+      <td>1.668694e-05</td>
+    </tr>
+    <tr>
+      <th>1500</th>
+      <td>[52941, 51958, 32992, 54556, 50815, 60167, 490...</td>
+      <td>&lt;libpysal.weights.distance.DistanceBand object...</td>
+      <td>999</td>
+      <td>403</td>
+      <td>[0.27506115837390277, 0.21948138443207246, -0....</td>
+      <td>1.260604e+11</td>
+      <td>-0.002488</td>
+      <td>0.004586</td>
+      <td>0.067719</td>
+      <td>0.004574</td>
+      <td>...</td>
+      <td>6.763620</td>
+      <td>1.430242e-11</td>
+      <td>1.345857e-11</td>
+      <td>[-0.028776580865062164, 0.07946937157388524, 0...</td>
+      <td>0.001</td>
+      <td>-0.003352</td>
+      <td>0.067581</td>
+      <td>0.004567</td>
+      <td>6.781418</td>
+      <td>5.950106e-12</td>
+    </tr>
+    <tr>
+      <th>2000</th>
+      <td>[52941, 51958, 32992, 54556, 50815, 60167, 490...</td>
+      <td>&lt;libpysal.weights.distance.DistanceBand object...</td>
+      <td>999</td>
+      <td>403</td>
+      <td>[0.27506115837390277, 0.21948138443207246, -0....</td>
+      <td>1.260604e+11</td>
+      <td>-0.002488</td>
+      <td>0.002164</td>
+      <td>0.046515</td>
+      <td>0.002158</td>
+      <td>...</td>
+      <td>12.164298</td>
+      <td>5.846476e-34</td>
+      <td>4.815656e-34</td>
+      <td>[-0.0566559868640034, 0.06456200403436937, -0....</td>
+      <td>0.001</td>
+      <td>-0.000508</td>
+      <td>0.047756</td>
+      <td>0.002281</td>
+      <td>11.791263</td>
+      <td>2.164994e-32</td>
+    </tr>
+    <tr>
+      <th>2500</th>
+      <td>[52941, 51958, 32992, 54556, 50815, 60167, 490...</td>
+      <td>&lt;libpysal.weights.distance.DistanceBand object...</td>
+      <td>999</td>
+      <td>403</td>
+      <td>[0.27506115837390277, 0.21948138443207246, -0....</td>
+      <td>1.260604e+11</td>
+      <td>-0.002488</td>
+      <td>0.001481</td>
+      <td>0.038483</td>
+      <td>0.001477</td>
+      <td>...</td>
+      <td>13.102771</td>
+      <td>3.974924e-39</td>
+      <td>3.174519e-39</td>
+      <td>[-0.03272028047068946, -0.025327634962963246, ...</td>
+      <td>0.001</td>
+      <td>-0.002785</td>
+      <td>0.039315</td>
+      <td>0.001546</td>
+      <td>12.816543</td>
+      <td>6.623787e-38</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 23 columns</p>
+</div></div>
+</div>
+<p>Often, it is easiest to visualize the statistic, and the pandas <code class="docutils literal notranslate"><span class="pre">plot</span></code> function will plot a column against the dataframe’s index by default</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = prof.I.plot()
+ax.set_xlabel(&quot;distance (m)&quot;)
+ax.set_ylabel(&quot;Moran&#39;s I&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_correlogram_13_1.png" src="../_images/notebooks_correlogram_13_1.png" />
+</div>
+</div>
+<p>Autocorrelation statistics differ in concept, so the shape of the spatial correlogram statistic will vary considerably, based on which statistic is created. For example, we can also plot Geary’s <span class="math notranslate nohighlight">\(C\)</span></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prof = correlogram(
+    sac.centroid,
+    sac.HH_INC,
+    distances,
+    statistic=Geary
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = prof.C.plot()
+ax.set_xlabel(&quot;distance (m)&quot;)
+ax.set_ylabel(&quot;Geary&#39;s C&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_correlogram_16_1.png" src="../_images/notebooks_correlogram_16_1.png" />
+</div>
+</div>
+<p>…Or Getis-Ord <span class="math notranslate nohighlight">\(G\)</span></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prof = correlogram(
+    sac.centroid,
+    sac.HH_INC,
+    distances,
+    statistic=G
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = prof.G.plot()
+ax.set_xlabel(&quot;distance (m)&quot;)
+ax.set_ylabel(&quot;Getis-Ord G&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_correlogram_19_1.png" src="../_images/notebooks_correlogram_19_1.png" />
+</div>
+</div>
+<p>You can also leave the distance thresholds unspecified, and the correlogram will estimate over a reasonable range of distances:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prof = correlogram(
+    sac.centroid,
+    sac.HH_INC,
+    statistic=G
+)
+ax = prof.G.plot()
+ax.set_xlabel(&quot;distance (m)&quot;)
+ax.set_ylabel(&quot;Getis-Ord G&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_correlogram_21_1.png" src="../_images/notebooks_correlogram_21_1.png" />
+</div>
+</div>
+</section>
+<section id="KNN-Distance">
+<h1>KNN Distance<a class="headerlink" href="#KNN-Distance" title="Link to this heading">¶</a></h1>
+<p>It is also possible to consider different concepts of <em>distance</em>. For example, rather than stepping through increments of Euclidean distance/length at each interval, we could instead step through increments of nearest-neighbors.</p>
+<p>Instead of adding neighbors using sequential distances of 500 meters, here we will step through the 50 nearest neighbors, adding one neighbor at a time</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>kdists = list(range(1,50))
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>kcorr = correlogram(sac.centroid, sac.HH_INC, kdists, distance_type=&#39;knn&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = kcorr.I.plot()
+ax.set_xlabel(&quot;number of nearest neighbors&quot;)
+ax.set_ylabel(&quot;Moran&#39;s I&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_correlogram_26_1.png" src="../_images/notebooks_correlogram_26_1.png" />
+</div>
+</div>
+<section id="Nonparametric">
+<h2>Nonparametric<a class="headerlink" href="#Nonparametric" title="Link to this heading">¶</a></h2>
+<p>Finally it is also possible to fit a non-parametric curve to estimate spatial autocorrelation as a function of distance. This is done using a LOWESS smoother, which fits a locally-weighted polynomial regression to the data based on the following regression:</p>
+<div class="math notranslate nohighlight">
+\[z_iz_j = f(d_{ij}) + u_{ij}\]</div>
+<p>where <span class="math notranslate nohighlight">\(z_i\)</span> and <span class="math notranslate nohighlight">\(z_j\)</span> are standardized values of the variable of interest at locations <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, <span class="math notranslate nohighlight">\(d_{ij}\)</span> is the distance between locations <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, and <span class="math notranslate nohighlight">\(u_{ij}\)</span> is an error term. The function <span class="math notranslate nohighlight">\(f\)</span> is estimated using a LOWESS smoother, which fits a locally-weighted polynomial regression to the data.</p>
+<p>This can be interpreted as the correlation between observations separated by <em>approximately</em> the distance on the horizontal axis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nonparametric = correlogram(sac.centroid, sac.HH_INC, statistic=&#39;lowess&#39;)
+ax = nonparametric.lowess.plot()
+ax.set_xlabel(&quot;Distance (m)&quot;)
+ax.set_ylabel(&quot;Correlation between pairs\napproximately this separation&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Correlation between pairs\napproximately this separation&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_correlogram_29_1.png" src="../_images/notebooks_correlogram_29_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {}, "version_major": 2, "version_minor": 0}
+</script></section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/correlogram.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

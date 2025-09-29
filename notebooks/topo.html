@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Topological Measures of Geographical Surfaces &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=6b84fd01"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Topological Measures of Geographical Surfaces</a><ul>
+<li><a class="reference internal" href="#Isolation-and-Prominence-of-country-populations">Isolation and Prominence of country populations</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda//home/runner/work/esda/esda/docs/notebooks/topo.ipynb">/home/runner/work/esda/esda/docs/notebooks/topo.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath=/home/runner/work/esda/esda/docs/notebooks/topo.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Topological-Measures-of-Geographical-Surfaces">
+<h1>Topological Measures of Geographical Surfaces<a class="headerlink" href="#Topological-Measures-of-Geographical-Surfaces" title="Link to this heading">¶</a></h1>
+<p><a class="reference external" href="https://github.com/ljwolf">Levi John Wolf</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+
+import geopandas
+import matplotlib.pyplot as plt
+import numpy
+from libpysal import weights
+
+from esda import topo
+</pre></div>
+</div>
+</div>
+<p>This notebook explains the usage and meaning of the <code class="docutils literal notranslate"><span class="pre">topo</span></code> functions, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> and <code class="docutils literal notranslate"><span class="pre">isolation</span></code>. Both of these concepts arise from <em>topography</em>, the study of the forms and features of a surface.</p>
+<p>In this sense, topographical measures focus on the shape of a surface. In physical geography, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> and <code class="docutils literal notranslate"><span class="pre">isolation</span></code> are both topographical measures that refer to how high (or how “dominant”) a mountain is relative to its landscape. Mathematically, if we represent “elevation” with a surface (like a Digital Elevation Model, or DEM), then this becomes a way to characterize the local maxima, minima, and/or saddle points of a given surface. In this way, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> (and <code class="docutils literal notranslate"><span class="pre">isolation</span></code>)
+are intricately connected to the local extrema and concavity/convexity of a surface, and provide useful ways to think about the structure of a geographical distribution. In a physical sense, the <code class="docutils literal notranslate"><span class="pre">isolation</span></code> of a mountain peak is <em>the distance you have to travel to find a higher point on the surface.</em> So, the common example given, say, on Wikipedia, is that Mount Everest has an “infinite” isolation, since it is the highest point on Earth’s surface. The nearby peak K2, the second-highest
+mountain on Earth is relatively close to Everest, so K2 has quite a low isolation. However, Aconcauga, the tallest peak in the Western Hemisphere, is about 1,000 meters shorter than K2, but <em>way more isolated</em>, since the distance from it to the nearest highest point is very large. So, <code class="docutils literal notranslate"><span class="pre">isolation</span></code> is a measure of <em>horizontal</em> distance.</p>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> is a measure of <em>vertical</em> distance, describing the <em>gap between the peak’s elevation and the “highest” low point between it and its parent peak</em>. Conceptually, imagine that the whole world is flooded, all the way to the top of Mount Everest. Let’s denote the height of mountain <span class="math notranslate nohighlight">\(i\)</span> as <span class="math notranslate nohighlight">\(h_i\)</span>, and the water level as <span class="math notranslate nohighlight">\(w\)</span>. So, starting with <span class="math notranslate nohighlight">\(max(h_i) = w\)</span>, we lower the water. When <span class="math notranslate nohighlight">\(h_i = w\)</span>, a peak “emerges” from the water. Imagine two peaks
+of height <span class="math notranslate nohighlight">\(h_i\)</span> and <span class="math notranslate nohighlight">\(h_j\)</span> (such that <span class="math notranslate nohighlight">\(h_i &gt; h_j\)</span>). Then, imagine that <span class="math notranslate nohighlight">\(w\)</span> falls to a point <span class="math notranslate nohighlight">\(w^* &lt; h_j &lt; h_i\)</span> where <span class="math notranslate nohighlight">\(h_i\)</span> and <span class="math notranslate nohighlight">\(h_j\)</span> become “connected” together as part of a single landmass. Then, the <em>prominence</em> of <span class="math notranslate nohighlight">\(h_j\)</span> is computed as <span class="math notranslate nohighlight">\(p_j = h_i - w^*\)</span>, the <em>relative</em> height between peak <span class="math notranslate nohighlight">\(j\)</span> and the lowest point connecting <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(i\)</span>. In this model, it makes sense to <em>then</em> consider <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(i\)</span> the same peak
+<span class="math notranslate nohighlight">\((ij)\)</span>, and measure the next peak’s prominence as the lowest point between <span class="math notranslate nohighlight">\(k\)</span> and <span class="math notranslate nohighlight">\((ij)\)</span>. We use <code class="docutils literal notranslate"><span class="pre">prominence</span></code> because it tells you how high a peak/local maxima is <em>relative</em> to its surroundings.</p>
+<p>Things are complicated somewhat when we’re dealing with irregular or dis-continuous relief. When dealing with mountains and elevation, we know that elevation is a <em>surface</em> that changes (relatively) smoothly. In contrast, most of our <em>vector</em> data does not change smoothly. Despite this, we can still use these notions of <code class="docutils literal notranslate"><span class="pre">isolation</span></code> and <code class="docutils literal notranslate"><span class="pre">prominence</span></code> to measure the relative contrasts between parts of a geographcial surface.</p>
+<p>So, for what happens next, we’ll refer to the natural earth dataset baked into <code class="docutils literal notranslate"><span class="pre">geopandas</span></code>. We’ll use the population estmate (<code class="docutils literal notranslate"><span class="pre">pop_est</span></code>) as a kind of “elevation,” <em>a la</em> <a class="reference external" href="https://twitter.com/undertheraedar">&#64;undertheraedar</a>’s excellent population topography:</p>
+<p><img alt="this is a picture of global population like it's a surface" src="https://pbs.twimg.com/media/Ej0HeVoXsAEmShV?format=jpg&amp;name=4096x4096" /></p>
+<section id="Isolation-and-Prominence-of-country-populations">
+<h2>Isolation and Prominence of country populations<a class="headerlink" href="#Isolation-and-Prominence-of-country-populations" title="Link to this heading">¶</a></h2>
+<p>Let’s start with a natural example: isolation of population of countries.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth = geopandas.read_file(
+    &quot;https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip&quot;
+)
+</pre></div>
+</div>
+</div>
+<p>To start, we know that China, India, and the US are the three most populous countries in the world:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth.sort_values(&quot;POP_EST&quot;, ascending=False).head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>featurecla</th>
+      <th>scalerank</th>
+      <th>LABELRANK</th>
+      <th>SOVEREIGNT</th>
+      <th>SOV_A3</th>
+      <th>ADM0_DIF</th>
+      <th>LEVEL</th>
+      <th>TYPE</th>
+      <th>TLC</th>
+      <th>ADMIN</th>
+      <th>...</th>
+      <th>FCLASS_TR</th>
+      <th>FCLASS_ID</th>
+      <th>FCLASS_PL</th>
+      <th>FCLASS_GR</th>
+      <th>FCLASS_IT</th>
+      <th>FCLASS_NL</th>
+      <th>FCLASS_SE</th>
+      <th>FCLASS_BD</th>
+      <th>FCLASS_UA</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>139</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>China</td>
+      <td>CH1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Country</td>
+      <td>1</td>
+      <td>China</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((109.47521 18.1977, 108.65521 1...</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>India</td>
+      <td>IND</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>India</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((97.32711 28.26158, 97.40256 27.88254...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>United States of America</td>
+      <td>US1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Country</td>
+      <td>1</td>
+      <td>United States of America</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((-122.84 49, -120 49, -117.0312...</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Indonesia</td>
+      <td>IDN</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Indonesia</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((141.00021 -2.60015, 141.01706 ...</td>
+    </tr>
+    <tr>
+      <th>102</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Pakistan</td>
+      <td>PAK</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Pakistan</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((77.83745 35.49401, 76.87172 34.65354...</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 169 columns</p>
+</div></div>
+</div>
+<p>This is a perfect dataset to think about isolation/prominence, since we have big gaps between the highest population points in each continent.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(1, 1, figsize=(12, 6))
+natearth.plot(&quot;POP_EST&quot;, ax=ax)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_topo_10_1.png" src="../_images/notebooks_topo_10_1.png" />
+</div>
+</div>
+<p>To simplify things, we’ll just consider the Euclidean distances between country centroids, but we could (in theory) use any kind of distance we want in this function by specifying the <code class="docutils literal notranslate"><span class="pre">metric</span></code> argument.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
+    warnings.filterwarnings(
+        &quot;ignore&quot;,
+        category=UserWarning,
+        message=&quot;Geometry is in a geographic CRS&quot;,
+    )
+
+    coordinates = numpy.column_stack((natearth.centroid.x, natearth.centroid.y))
+</pre></div>
+</div>
+</div>
+<p>To get a bit more information on the result, we can use <code class="docutils literal notranslate"><span class="pre">return_all</span></code> to get the rank and distance for the isolated peak. This also returns the gap between the peak and its nearest higher peak.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>iso = topo.isolation(natearth[&quot;POP_EST&quot;], coordinates, return_all=True)
+</pre></div>
+</div>
+</div>
+<p>Under the hood, this algorithm uses <code class="docutils literal notranslate"><span class="pre">rtree</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy.sort</span></code> to insert observations into a <code class="docutils literal notranslate"><span class="pre">SpatialIndex()</span></code> in rank-order. Iterating down the ranks, the nearest higher observation is found in the <code class="docutils literal notranslate"><span class="pre">SpatialIndex()</span></code>, and that becomes the parent of that observation. As we iterate, <code class="docutils literal notranslate"><span class="pre">pop_est</span></code> gets smaller and smaller, and more and more entries are added to the <code class="docutils literal notranslate"><span class="pre">rtree</span></code>.</p>
+<p>Merging this back to the data we have will let us visualize it.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth = natearth.merge(iso, left_index=True, right_index=True)
+</pre></div>
+</div>
+</div>
+<p>So, you can see that the <em>isolation</em> for China is infinite, since there is no country with a larger population. However, the isolation for India is only the distance from China to India (27). The isolation for the US, however, is much larger, and reflects the distance from the US to India (which just happens to be closer than China). The fourth-most populous country, Indonesia, is closer to China than India, so its <code class="docutils literal notranslate"><span class="pre">parent_rank</span></code> is 0, and its <code class="docutils literal notranslate"><span class="pre">isolation</span></code> is the distance from Indonesia to
+China. Last, you see Brazil, 5th most populous country, has US as a parent, with an isolation <code class="docutils literal notranslate"><span class="pre">distance</span></code> of 82.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth[
+    [&quot;CONTINENT&quot;, &quot;NAME&quot;, &quot;rank&quot;, &quot;POP_EST&quot;, &quot;parent_rank&quot;, &quot;isolation&quot;, &quot;gap&quot;]
+].sort_values(&quot;POP_EST&quot;, ascending=False).head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CONTINENT</th>
+      <th>NAME</th>
+      <th>rank</th>
+      <th>POP_EST</th>
+      <th>parent_rank</th>
+      <th>isolation</th>
+      <th>gap</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>139</th>
+      <td>Asia</td>
+      <td>China</td>
+      <td>0.0</td>
+      <td>1.397715e+09</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>Asia</td>
+      <td>India</td>
+      <td>1.0</td>
+      <td>1.366418e+09</td>
+      <td>0.0</td>
+      <td>27.852795</td>
+      <td>3.129725e+07</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>North America</td>
+      <td>United States of America</td>
+      <td>2.0</td>
+      <td>3.282395e+08</td>
+      <td>1.0</td>
+      <td>193.538522</td>
+      <td>1.038178e+09</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Asia</td>
+      <td>Indonesia</td>
+      <td>3.0</td>
+      <td>2.706256e+08</td>
+      <td>0.0</td>
+      <td>41.072699</td>
+      <td>1.127089e+09</td>
+    </tr>
+    <tr>
+      <th>102</th>
+      <td>Asia</td>
+      <td>Pakistan</td>
+      <td>4.0</td>
+      <td>2.165653e+08</td>
+      <td>1.0</td>
+      <td>12.381725</td>
+      <td>1.149852e+09</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Visualizing this below, we get the following:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(2, 1, figsize=(12, 12))
+for i in range(2):
+    natearth.plot(color=&quot;grey&quot;, ax=ax[i])
+natearth.plot(&quot;isolation&quot;, ax=ax[0])
+natearth.plot(&quot;gap&quot;, ax=ax[1])
+ax[0].set_title(&quot;how far do you have to go to find a country with more people?&quot;)
+ax[1].set_title(&quot;how any extra people does this place need to swap with its parent?&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_topo_20_0.png" src="../_images/notebooks_topo_20_0.png" />
+</div>
+</div>
+<p>Next, to see <code class="docutils literal notranslate"><span class="pre">prominence</span></code>, we’ll use the same arguments. However, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> can also take a graph/<code class="docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code> object that specifies the connections between sampled locations. If no pre-existing graph or surface is provided, the Delaunay Triangulation is used between the coordinates provided, which is a common triangulation in digital elevation models. Here, I’ll use the Rook contiguity graph, just for ease of interpretation. This means that some islands will automatically be
+considered as “peaks” because they don’t share any borders with any higher observations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w_rook = weights.Rook.from_dataframe(natearth, use_index=False, silence_warnings=True)
+prominence = topo.prominence(natearth[&quot;POP_EST&quot;], w_rook, return_all=True)
+</pre></div>
+</div>
+</div>
+<p>Under the hood, this algorithm may take a bit longer for big data, so you can use the <code class="docutils literal notranslate"><span class="pre">progressbar</span></code> option to visualize the progress.</p>
+<p>The actual algorithm entails sorting the data and determining whether we “connect” peaks together each time we introduce a new observation as equal to the declining sea level <span class="math notranslate nohighlight">\(w\)</span>. We <em>avoid</em> re-computing <code class="docutils literal notranslate"><span class="pre">scipy.sparse.connected_components</span></code> each iteration by creating a <code class="docutils literal notranslate"><span class="pre">set</span></code> of neighbors for each “peak.” When two (or more) peaks merge, we replace the independent peaks <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> (where <span class="math notranslate nohighlight">\(h_i &gt; h_j\)</span>) with peak <code class="docutils literal notranslate"><span class="pre">(i,j)</span></code>. Each merge, the new peak gets the union of the sub-peaks
+neighbors, and are then treated as a single “peak” from then on.</p>
+<p>We merge it back onto our data in the same fashion as before:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth = natearth.merge(
+    prominence, left_index=True, right_index=True, suffixes=(&quot;&quot;, &quot;_prom&quot;)
+)
+</pre></div>
+</div>
+</div>
+<p>This gives us the following table. I’m going to show a bit more rows than usual so we can interpret it more clearly.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>natearth[
+    [
+        &quot;CONTINENT&quot;,
+        &quot;NAME&quot;,
+        &quot;POP_EST&quot;,
+        &quot;rank&quot;,
+        &quot;parent_rank&quot;,
+        &quot;isolation&quot;,
+        &quot;dominating_peak&quot;,
+        &quot;keycol&quot;,
+        &quot;prominence&quot;,
+    ]
+].sort_values(&quot;POP_EST&quot;, ascending=False).head(20)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CONTINENT</th>
+      <th>NAME</th>
+      <th>POP_EST</th>
+      <th>rank</th>
+      <th>parent_rank</th>
+      <th>isolation</th>
+      <th>dominating_peak</th>
+      <th>keycol</th>
+      <th>prominence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>139</th>
+      <td>Asia</td>
+      <td>China</td>
+      <td>1.397715e+09</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>139.0</td>
+      <td>107.0</td>
+      <td>1.314801e+09</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>Asia</td>
+      <td>India</td>
+      <td>1.366418e+09</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>27.852795</td>
+      <td>139.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>North America</td>
+      <td>United States of America</td>
+      <td>3.282395e+08</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>193.538522</td>
+      <td>139.0</td>
+      <td>33.0</td>
+      <td>3.239931e+08</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Asia</td>
+      <td>Indonesia</td>
+      <td>2.706256e+08</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>41.072699</td>
+      <td>4.0</td>
+      <td>148.0</td>
+      <td>2.386758e+08</td>
+    </tr>
+    <tr>
+      <th>102</th>
+      <td>Asia</td>
+      <td>Pakistan</td>
+      <td>2.165653e+08</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>12.381725</td>
+      <td>139.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>South America</td>
+      <td>Brazil</td>
+      <td>2.110495e+08</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>82.093057</td>
+      <td>8.0</td>
+      <td>43.0</td>
+      <td>1.439896e+08</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>Africa</td>
+      <td>Nigeria</td>
+      <td>2.009636e+08</td>
+      <td>6.0</td>
+      <td>5.0</td>
+      <td>64.353456</td>
+      <td>29.0</td>
+      <td>55.0</td>
+      <td>1.776529e+08</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>Asia</td>
+      <td>Bangladesh</td>
+      <td>1.630462e+08</td>
+      <td>7.0</td>
+      <td>1.0</td>
+      <td>10.713323</td>
+      <td>139.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Europe</td>
+      <td>Russia</td>
+      <td>1.443735e+08</td>
+      <td>8.0</td>
+      <td>0.0</td>
+      <td>26.374718</td>
+      <td>139.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>North America</td>
+      <td>Mexico</td>
+      <td>1.275755e+08</td>
+      <td>9.0</td>
+      <td>2.0</td>
+      <td>23.966775</td>
+      <td>4.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>155</th>
+      <td>Asia</td>
+      <td>Japan</td>
+      <td>1.262649e+08</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>34.199305</td>
+      <td>56.0</td>
+      <td>-1.0</td>
+      <td>1.262648e+08</td>
+    </tr>
+    <tr>
+      <th>165</th>
+      <td>Africa</td>
+      <td>Ethiopia</td>
+      <td>1.120787e+08</td>
+      <td>11.0</td>
+      <td>6.0</td>
+      <td>31.568798</td>
+      <td>155.0</td>
+      <td>13.0</td>
+      <td>5.950476e+07</td>
+    </tr>
+    <tr>
+      <th>147</th>
+      <td>Asia</td>
+      <td>Philippines</td>
+      <td>1.081166e+08</td>
+      <td>12.0</td>
+      <td>3.0</td>
+      <td>15.020572</td>
+      <td>165.0</td>
+      <td>-1.0</td>
+      <td>1.081165e+08</td>
+    </tr>
+    <tr>
+      <th>163</th>
+      <td>Africa</td>
+      <td>Egypt</td>
+      <td>1.003881e+08</td>
+      <td>13.0</td>
+      <td>11.0</td>
+      <td>20.320874</td>
+      <td>147.0</td>
+      <td>14.0</td>
+      <td>5.757484e+07</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>Asia</td>
+      <td>Vietnam</td>
+      <td>9.646211e+07</td>
+      <td>14.0</td>
+      <td>12.0</td>
+      <td>17.322577</td>
+      <td>139.0</td>
+      <td>-1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Africa</td>
+      <td>Dem. Rep. Congo</td>
+      <td>8.679057e+07</td>
+      <td>15.0</td>
+      <td>11.0</td>
+      <td>19.680827</td>
+      <td>163.0</td>
+      <td>13.0</td>
+      <td>3.421659e+07</td>
+    </tr>
+    <tr>
+      <th>124</th>
+      <td>Asia</td>
+      <td>Turkey</td>
+      <td>8.342962e+07</td>
+      <td>16.0</td>
+      <td>13.0</td>
+      <td>13.623370</td>
+      <td>11.0</td>
+      <td>107.0</td>
+      <td>5.157090e+05</td>
+    </tr>
+    <tr>
+      <th>121</th>
+      <td>Europe</td>
+      <td>Germany</td>
+      <td>8.313280e+07</td>
+      <td>17.0</td>
+      <td>16.0</td>
+      <td>27.604762</td>
+      <td>124.0</td>
+      <td>43.0</td>
+      <td>1.607291e+07</td>
+    </tr>
+    <tr>
+      <th>107</th>
+      <td>Asia</td>
+      <td>Iran</td>
+      <td>8.291391e+07</td>
+      <td>18.0</td>
+      <td>4.0</td>
+      <td>15.341195</td>
+      <td>124.0</td>
+      <td>-1.0</td>
+      <td>0.000000e+00</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>Asia</td>
+      <td>Thailand</td>
+      <td>6.962558e+07</td>
+      <td>19.0</td>
+      <td>14.0</td>
+      <td>5.528840</td>
+      <td>121.0</td>
+      <td>93.0</td>
+      <td>1.558016e+07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>These are the top 20 countries in terms of population. Walking down the rows, you see that China has a isolation of <code class="docutils literal notranslate"><span class="pre">NaN</span></code> and a prominence that is exactly equal to its population. India shares a border with China. So, when we “lower the sea level” to where India emerges from the water level, it’s already connected to the highest peak, China. So, its <em>prominence</em> is not very large. In fact, it’s considered a “slope” of the “China” mountain, and its <code class="docutils literal notranslate"><span class="pre">dominating_peak</span></code> is 139, the index for
+“China.” However, the US’s prominence is (confusingly) computed as the height relative to the population of Panama, sin ce Panama connects it to Sough America, where French Guyana then connects between NA/SA and Eurasia in this graph. Indonesia, likewise, has a prominence measured starting from Malaysia, which connects it to Asia, where it encounters the China-based subgraph.</p>
+<p>For a visual on what the “key-cols” are, we’re thinking about the points at which the disconnected countries become connected in the following sequences of graphs. In each graph, only the “red” outlined countries are above the “water line” <span class="math notranslate nohighlight">\(w\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(3, 2, figsize=(20, 20), sharex=True, sharey=True)
+ax = ax.flatten()
+for ix, rank in enumerate(range(5, 31, 5)):
+    natearth.plot(&quot;classification&quot;, ax=ax[ix], cmap=&quot;Accent&quot;)
+    natearth.sort_values(&quot;POP_EST&quot;, ascending=False).iloc[0:rank].boundary.plot(
+        color=&quot;salmon&quot;, ax=ax[ix]
+    )
+    ax[ix].set_title(f&quot;# of countries included: {rank}&quot;)
+f.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_topo_28_0.png" src="../_images/notebooks_topo_28_0.png" />
+</div>
+</div>
+<p>You can see that the first “key col” country, France, is included around the 25-country mark, wheras before that most included countries are “peaks,” disconnected from one another. Below, you can see the full map of classifications, alongside the prominence of each country.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(2, 1, figsize=(12, 12))
+natearth.plot(&quot;classification&quot;, ax=ax[0], legend=True, cmap=&quot;Accent&quot;)
+natearth.plot(color=&quot;grey&quot;, ax=ax[1])
+natearth.plot(&quot;prominence&quot;, ax=ax[1])
+ax[0].set_ylabel(&quot;Population&quot;)
+ax[1].set_ylabel(&quot;Prominence&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_topo_30_0.png" src="../_images/notebooks_topo_30_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/topo.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

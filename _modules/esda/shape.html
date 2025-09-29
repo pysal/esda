@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.shape &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../../_static/documentation_options.js?v=6b84fd01"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for esda.shape</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">Version</span>
+
+<span class="c1"># gets handled at the _cast level.</span>
+<span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.crand</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span><span class="p">,</span> <span class="n">prange</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;Martin Fleischmann &lt;martin@fleischmann.net&gt;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Levi John Wolf &lt;levi.john.wolf@gmail.com&gt;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Alan Murray &lt;amurray@ucsb.edu&gt;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Jiwan Baik &lt;jiwon.baik@geog.ucsb.edu&gt;&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># -------------------- UTILITIES --------------------#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cast a collection to a shapely geometry array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)(</span>
+            <span class="s2">&quot;shapely and geopandas are required for shape statistics.&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">Version</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Shapely 2.0 or newer is required.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span> <span class="o">|</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">collection</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_angles</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">return_indices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the angles pertaining to each vertex of a set of polygons.</span>
+<span class="sd">    This assumes the input are polygons.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ga  :   shapely geometry array</span>
+<span class="sd">        array of polygons/multipolygons</span>
+<span class="sd">    return_indices  :   bool (Default: False)</span>
+<span class="sd">        whether to return the indices relating each geometry to a polygon</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    angles between triples of points on each geometry, as well as the indices</span>
+<span class="sd">    relating angles to input geometries (if requested).</span>
+
+<span class="sd">    See the Notes for information on the shape of angles and indices.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -------</span>
+<span class="sd">    If a geometry has n coordinates and k parts, the array will be n - k.</span>
+<span class="sd">    If each geometry has n_i coordinates, then let N be a vector storing</span>
+<span class="sd">    those counts (computed, for example, using shapely.get_num_coordinates(ga)).</span>
+<span class="sd">    Likewise, let K be a vector storing the number of parts each geometry has, k_i</span>
+<span class="sd">    (computed, for example, using shapely.get_num_geometries(ga))</span>
+
+<span class="sd">    Then, the output is of shape (N - K).sum()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">exploded</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_parts</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">exploded</span><span class="p">)</span>
+    <span class="n">n_coords_per_geom</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_coordinates</span><span class="p">(</span><span class="n">exploded</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_get_angles</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">n_coords_per_geom</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">return_indices</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">angles</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ga</span><span class="p">)),</span>
+            <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_coordinates</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">-</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_geometries</span><span class="p">(</span><span class="n">ga</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">angles</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_angles</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">n_coords_per_geom</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterate over points in a set of geometries.</span>
+<span class="sd">    This assumes that the input geometries are simple, not multi!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Start at the first point of the first geometry</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">on_geom</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">on_coord</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># if we&#39;re on the last point before the closure point,</span>
+        <span class="k">if</span> <span class="n">on_coord</span> <span class="o">==</span> <span class="p">(</span><span class="n">n_coords_per_geom</span><span class="p">[</span><span class="n">on_geom</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># set the offset to start on the first point of the next geometry</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="n">on_coord</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">on_geom</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">on_coord</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># if we&#39;re now done with all geometries, exit</span>
+            <span class="k">if</span> <span class="n">on_geom</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_coords_per_geom</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># and continue to the next iteration.</span>
+                <span class="k">continue</span>
+        <span class="c1"># construct the triple so that we wrap around and avoid the closure point</span>
+        <span class="n">left_ix</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">on_coord</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_coords_per_geom</span><span class="p">[</span><span class="n">on_geom</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">center_ix</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="p">(</span><span class="n">on_coord</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_coords_per_geom</span><span class="p">[</span><span class="n">on_geom</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">right_ix</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="p">(</span><span class="n">on_coord</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_coords_per_geom</span><span class="p">[</span><span class="n">on_geom</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># grab the actual coordinates corresponding to the triple</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">left_ix</span><span class="p">]</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">center_ix</span><span class="p">]</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">right_ix</span><span class="p">]</span>
+        <span class="c1"># build the line segments originating at center</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">left</span> <span class="o">-</span> <span class="n">center</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">right</span> <span class="o">-</span> <span class="n">center</span>
+        <span class="c1"># compute the angle between the segments</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">on_coord</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="c1"># -------------------- IDEAL SHAPE MEASURES -------------------- #</span>
+
+
+<div class="viewcode-block" id="isoperimetric_quotient">
+<a class="viewcode-back" href="../../generated/esda.shape.isoperimetric_quotient.html#esda.shape.isoperimetric_quotient">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">isoperimetric_quotient</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Isoperimetric quotient, defined as the ratio of a polygon&#39;s area to the</span>
+<span class="sd">    area of the equi-perimeter circle.</span>
+
+<span class="sd">    Altman&#39;s PA_1 measure :cite:`altman1998Districting`</span>
+
+<span class="sd">    Construction:</span>
+
+<span class="sd">    let:</span>
+<span class="sd">    p_d = perimeter of polygon</span>
+<span class="sd">    a_d = area of polygon</span>
+
+<span class="sd">    a_c = area of the constructed circle</span>
+<span class="sd">    r = radius of constructed circle</span>
+
+<span class="sd">    then the relationship between the constructed radius and the polygon</span>
+<span class="sd">    perimeter is:</span>
+<span class="sd">    p_d = 2 \pi r</span>
+<span class="sd">    p_d / (2 \pi) = r</span>
+
+<span class="sd">    meaning the area of the circle can be expressed as:</span>
+<span class="sd">    a_c = \pi r^2</span>
+<span class="sd">    a_c = \pi (p_d / (2\pi))^2</span>
+
+<span class="sd">    implying finally that the IPQ is:</span>
+
+<span class="sd">    pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">measurement</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="isoareal_quotient">
+<a class="viewcode-back" href="../../generated/esda.shape.isoareal_quotient.html#esda.shape.isoareal_quotient">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">isoareal_quotient</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Isoareal quotient, defined as the ratio of a polygon&#39;s perimeter to the</span>
+<span class="sd">    perimeter of the equi-areal circle</span>
+
+<span class="sd">    Altman&#39;s PA_3 measure, and proportional to the PA_4 measure</span>
+<span class="sd">    :cite:`altman1998Districting`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">measurement</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="minimum_bounding_circle_ratio">
+<a class="viewcode-back" href="../../generated/esda.shape.minimum_bounding_circle_ratio.html#esda.shape.minimum_bounding_circle_ratio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">minimum_bounding_circle_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Reock compactness measure, defined by the ratio of areas between the</span>
+<span class="sd">    minimum bounding/containing circle of a shape and the shape itself.</span>
+
+<span class="sd">    Measure A1 in :cite:`altman1998Districting`,</span>
+<span class="sd">    cited for Frolov (1974), but earlier from Reock</span>
+<span class="sd">    (1963)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">mbca</span> <span class="o">=</span> <span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">minimum_bounding_radius</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">mbca</span></div>
+
+
+
+<div class="viewcode-block" id="radii_ratio">
+<a class="viewcode-back" href="../../generated/esda.shape.radii_ratio.html#esda.shape.radii_ratio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">radii_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Flaherty &amp; Crumplin (1992) index, OS_3 in :cite:`altman1998Districting`.</span>
+
+<span class="sd">    The ratio of the radius of the equi-areal circle to the radius of the MBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">r_eac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">r_mbc</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">minimum_bounding_radius</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r_eac</span> <span class="o">/</span> <span class="n">r_mbc</span></div>
+
+
+
+<div class="viewcode-block" id="diameter_ratio">
+<a class="viewcode-back" href="../../generated/esda.shape.diameter_ratio.html#esda.shape.diameter_ratio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">diameter_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">rotated</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Flaherty &amp; Crumplin (1992) length-width measure, stated as measure LW_7</span>
+<span class="sd">    in :cite:`altman1998Districting`.</span>
+
+<span class="sd">    It is given as the ratio between the minimum and maximum shape diameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rotated</span><span class="p">:</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">minimum_rotated_rectangle</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">5</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">5</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">5</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">5</span><span class="p">])</span>
+        <span class="n">widths</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">heights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span> <span class="o">=</span> <span class="n">box</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">box</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">widths</span><span class="p">,</span> <span class="n">heights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span> <span class="n">heights</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span> <span class="n">heights</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="length_width_diff">
+<a class="viewcode-back" href="../../generated/esda.shape.length_width_diff.html#esda.shape.length_width_diff">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">length_width_diff</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Eig &amp; Seitzinger (1981) shape measure, defined as:</span>
+
+<span class="sd">    L - W</span>
+
+<span class="sd">    Where L is the maximal east-west extent and W is the maximal north-south</span>
+<span class="sd">    extent.</span>
+
+<span class="sd">    Defined as measure LW_5 in :cite:`altman1998Districting`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span> <span class="o">=</span> <span class="n">box</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">box</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">width</span> <span class="o">-</span> <span class="n">height</span></div>
+
+
+
+<div class="viewcode-block" id="boundary_amplitude">
+<a class="viewcode-back" href="../../generated/esda.shape.boundary_amplitude.html#esda.shape.boundary_amplitude">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">boundary_amplitude</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The boundary amplitude (adapted from Wang &amp; Huang (2012)) is the</span>
+<span class="sd">    length of the boundary of the convex hull divided by the length of the</span>
+<span class="sd">    boundary of the original shape.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    This is inverted from Wang &amp; Huang (2012) in order to provide a value</span>
+<span class="sd">    between zero and one, like many of the other ideal shape-based indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="convex_hull_ratio">
+<a class="viewcode-back" href="../../generated/esda.shape.convex_hull_ratio.html#esda.shape.convex_hull_ratio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convex_hull_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ratio of the area of the convex hull to the area of the shape itself</span>
+
+<span class="sd">    Altman&#39;s A_3 measure, from Neimi et al 1991.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fractal_dimension</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The fractal dimension of the boundary of a shape, assuming a given</span>
+<span class="sd">    spatial support for the geometries.</span>
+
+<span class="sd">    Note that this derivation assumes a specific ideal spatial support</span>
+<span class="sd">    for the polygon, and is thus may not return valid results for</span>
+<span class="sd">    complex or highly irregular geometries.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">support</span> <span class="o">==</span> <span class="s2">&quot;hex&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">A</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">support</span> <span class="o">==</span> <span class="s2">&quot;square&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">support</span> <span class="o">==</span> <span class="s2">&quot;circle&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">A</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The support argument must be one of &#39;hex&#39;, &#39;circle&#39;, or &#39;square&#39;, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;but </span><span class="si">{</span><span class="n">support</span><span class="si">}</span><span class="s2"> was provided.&quot;</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="squareness">
+<a class="viewcode-back" href="../../generated/esda.shape.squareness.html#esda.shape.squareness">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">squareness</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measures how different is a given shape from an equi-areal square</span>
+
+<span class="sd">    The index is close to 0 for highly irregular shapes and to 1.3 for circular shapes.</span>
+<span class="sd">    It equals 1 for squares.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\begin{equation}</span>
+<span class="sd">        \\frac{</span>
+<span class="sd">            \\sqrt{A}}{P^{2}}</span>
+<span class="sd">            \\times</span>
+<span class="sd">            \\frac{\\left(4 \\sqrt{\\left.A\\right)}^{2}\\right.}{\\sqrt{A}}</span>
+<span class="sd">            =</span>
+<span class="sd">            \\frac{\\left(4 \\sqrt{A}\\right)^{2}}{P{ }^{2}}</span>
+<span class="sd">            =</span>
+<span class="sd">            \\left(\\frac{4 \\sqrt{A}}{P}\\right)^{2}</span>
+<span class="sd">        \\end{equation}</span>
+
+<span class="sd">    where :math:`A` is the area and :math:`P` is the perimeter.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Implementation follows :cite:`basaraner2017`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+
+<div class="viewcode-block" id="rectangularity">
+<a class="viewcode-back" href="../../generated/esda.shape.rectangularity.html#esda.shape.rectangularity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rectangularity</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ratio of the area of the shape to the area</span>
+<span class="sd">    of its minimum bounding rotated rectangle</span>
+
+<span class="sd">    Reveals a polygon’s degree of being curved inward.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\frac{A}{A_{MBR}}</span>
+
+<span class="sd">    where :math:`A` is the area and :math:`A_{MBR}`</span>
+<span class="sd">    is the area of minimum bounding</span>
+<span class="sd">    rotated rectangle.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Implementation follows :cite:`basaraner2017`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">minimum_rotated_rectangle</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="shape_index">
+<a class="viewcode-back" href="../../generated/esda.shape.shape_index.html#esda.shape.shape_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">shape_index</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schumm’s shape index (Schumm (1956) in MacEachren 1985)</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        {\\sqrt{{A} \\over {\\pi}}} \\over {R}</span>
+
+<span class="sd">    where :math:`A` is the area and :math:`R` is the radius of the minimum bounding</span>
+<span class="sd">    circle.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Implementation follows :cite:`maceachren1985compactness`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">minimum_bounding_radius</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="equivalent_rectangular_index">
+<a class="viewcode-back" href="../../generated/esda.shape.equivalent_rectangular_index.html#esda.shape.equivalent_rectangular_index">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">equivalent_rectangular_index</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deviation of a polygon from an equivalent rectangle</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\frac{\\sqrt{A}}{A_{MBR}}</span>
+<span class="sd">        \\times</span>
+<span class="sd">        \\frac{P_{MBR}}{P}</span>
+
+<span class="sd">    where :math:`A` is the area, :math:`A_{MBR}` is the area of minimum bounding</span>
+<span class="sd">    rotated rectangle, :math:`P` is the perimeter, :math:`P_{MBR}` is the perimeter</span>
+<span class="sd">    of minimum bounding rotated rectangle.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Implementation follows :cite:`basaraner2017`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">minimum_rotated_rectangle</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">box</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">box</span><span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># -------------------- VOLMETRIC MEASURES ------------------- #</span>
+
+
+<div class="viewcode-block" id="form_factor">
+<a class="viewcode-back" href="../../generated/esda.shape.form_factor.html#esda.shape.form_factor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">form_factor</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes volumetric compactness</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\frac{A}{(A \\times H)^{\\frac{2}{3}}}</span>
+
+<span class="sd">    where :math:`A` is the area and :math:`H` is polygon&#39;s</span>
+<span class="sd">    height.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Implementation follows :cite:`bourdic2012`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">height</span>
+    <span class="n">zeros</span> <span class="o">=</span> <span class="n">V</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span>
+    <span class="n">res</span><span class="p">[</span><span class="o">~</span><span class="n">zeros</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="o">~</span><span class="n">zeros</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">~</span><span class="n">zeros</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+
+<span class="c1"># -------------------- INERTIAL MEASURES -------------------- #</span>
+
+
+<div class="viewcode-block" id="moment_of_inertia">
+<a class="viewcode-back" href="../../generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the moment of inertia of the polygon.</span>
+
+<span class="sd">    This treats each boundary point as a point-mass of 1.</span>
+
+<span class="sd">    Thus, for constant unit mass at each boundary point,</span>
+<span class="sd">    the MoI of this pointcloud is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\sum_i d_{i,c}^2</span>
+
+<span class="sd">    where c is the centroid of the polygon</span>
+
+<span class="sd">    Altman&#39;s OS_1 measure :cite:`altman1998Districting`, cited in Boyce and Clark</span>
+<span class="sd">    (1964), also used in Weaver and Hess (1963).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="n">geom_ixs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ga</span><span class="p">)),</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_coordinates</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span>
+    <span class="n">centroids</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">ga</span><span class="p">))[</span><span class="n">geom_ixs</span><span class="p">]</span>
+    <span class="n">squared_euclidean</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">coords</span> <span class="o">-</span> <span class="n">centroids</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dists</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">d2</span><span class="o">=</span><span class="n">squared_euclidean</span><span class="p">,</span> <span class="n">geom_ix</span><span class="o">=</span><span class="n">geom_ixs</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;geom_ix&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">d2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dists</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="moa_ratio">
+<a class="viewcode-back" href="../../generated/esda.shape.moa_ratio.html#esda.shape.moa_ratio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">moa_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the ratio of the second moment of area (like Li et al (2013)) to</span>
+<span class="sd">    the moment of area of a circle with the same area.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span> <span class="o">/</span> <span class="n">second_areal_moment</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="nmi">
+<a class="viewcode-back" href="../../generated/esda.shape.nmi.html#esda.shape.nmi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nmi</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Normalized Moment of Inertia from Li et al (2013), recognizing</span>
+<span class="sd">    that it is the relationship between the area of a shape squared divided by</span>
+<span class="sd">    its second moment of area.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">second_areal_moment</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="second_areal_moment">
+<a class="viewcode-back" href="../../generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">second_areal_moment</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Using equation listed on en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon, the second</span>
+<span class="sd">    moment of area is the sum of the inertia across the x and y axes:</span>
+
+<span class="sd">    The :math:`x` axis is given by:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)</span>
+
+<span class="sd">    While the :math:`y` axis is in a similar form:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)</span>
+
+<span class="sd">    where :math:`x_i`, :math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,</span>
+<span class="sd">    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes,</span>
+<span class="sd">    all parts are treated as separate contributions to the overall centroid, which</span>
+<span class="sd">    provides the same result as if all parts with holes are separately computed, and then</span>
+<span class="sd">    merged together using the parallel axis theorem.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Hally, D. 1987. The calculations of the moments of polygons. Canadian National</span>
+<span class="sd">    Defense Research and Development Technical Memorandum 87/209.</span>
+<span class="sd">    https://apps.dtic.mil/dtic/tr/fulltext/u2/a183444.pdf</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>  <span class="c1"># function level, to follow module design</span>
+
+    <span class="c1"># construct a dataframe of the fundamental parts of all input polygons</span>
+    <span class="n">parts</span><span class="p">,</span> <span class="n">collection_ix</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_parts</span><span class="p">(</span><span class="n">ga</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rings</span><span class="p">,</span> <span class="n">ring_ix</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_rings</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># get_rings() always returns the exterior first, then the interiors</span>
+    <span class="n">collection_ix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
+        <span class="n">collection_ix</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_interior_rings</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">)</span>
+    <span class="c1"># we need to work in polygon-space for the algorithms</span>
+    <span class="c1"># (centroid, shoelace calculation) to work</span>
+    <span class="n">polygon_rings</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">polygons</span><span class="p">(</span><span class="n">rings</span><span class="p">)</span>
+    <span class="n">is_external</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">collection_ix</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="c1"># the first element is always external</span>
+    <span class="n">is_external</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># and each subsequent element is external iff</span>
+    <span class="c1"># it is different from the preceeding index</span>
+    <span class="n">is_external</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ring_ix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">ring_ix</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># now, our analysis frame contains a bunch of (guaranteed-to-be-simple) polygons</span>
+    <span class="c1"># that represent either exterior rings or holes</span>
+    <span class="n">polygon_rings</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">collection_ix</span><span class="o">=</span><span class="n">collection_ix</span><span class="p">,</span>
+            <span class="n">ring_within_geom_ix</span><span class="o">=</span><span class="n">ring_ix</span><span class="p">,</span>
+            <span class="n">is_external_ring</span><span class="o">=</span><span class="n">is_external</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">geometry</span><span class="o">=</span><span class="n">polygon_rings</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># the polygonal moi can be calculated using the same ring-based strategy,</span>
+    <span class="c1"># and this could be parallelized if necessary over the elemental shapes with:</span>
+
+    <span class="c1"># from joblib import Parallel, parallel_backend, delayed</span>
+    <span class="c1"># with parallel_backend(&#39;loky&#39;, n_jobs=-1):</span>
+    <span class="c1">#     engine = Parallel()</span>
+    <span class="c1">#     promise = delayed(_second_moment_of_area_polygon)</span>
+    <span class="c1">#     result = engine(promise(geom) for geom in polygon_rings.geometry.values)</span>
+
+    <span class="c1"># but we will keep simple for now</span>
+    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;moa&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">polygon_rings</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_second_moment_of_area_polygon</span><span class="p">)</span>
+    <span class="c1"># the above algorithm computes an unsigned moa</span>
+    <span class="c1"># to be insensitive to winding direction.</span>
+    <span class="c1"># however, we need to subtract the moa of holes. Hence, the sign of the moa is</span>
+    <span class="c1"># -1 when the polygon is an internal ring and 1 otherwise:</span>
+    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;sign&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">polygon_rings</span><span class="o">.</span><span class="n">is_external_ring</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c1"># shapely already uses the correct formulation for centroids</span>
+    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">polygon_rings</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="c1"># the inertia of parts applies to the overall center of mass:</span>
+    <span class="n">original_centroids</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;collection_centroid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_centroids</span><span class="p">[</span><span class="n">collection_ix</span><span class="p">]</span>
+    <span class="c1"># proportional to the squared distance between the original and part centroids:</span>
+    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span>
+        <span class="n">polygon_rings</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">polygon_rings</span><span class="o">.</span><span class="n">collection_centroid</span><span class="o">.</span><span class="n">values</span>
+    <span class="p">)</span>
+    <span class="c1"># now, we take the sum of (I+Ar^2) for each ring, treating the</span>
+    <span class="c1"># contribution of holes as negative.</span>
+    <span class="c1"># Then, we take the sum of all of the contributions</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">polygon_rings</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;collection_ix&quot;</span><span class="p">,</span> <span class="s2">&quot;ring_within_geom_ix&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">ring_in_part</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">ring_in_part</span><span class="o">.</span><span class="n">moa</span> <span class="o">+</span> <span class="n">ring_in_part</span><span class="o">.</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ring_in_part</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+                <span class="o">*</span> <span class="n">ring_in_part</span><span class="o">.</span><span class="n">sign</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;collection_ix&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">values</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_second_moment_of_area_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the absolute value of the moment of area (i.e. ignoring winding direction)</span>
+<span class="sd">    for an input polygon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coordinates</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+    <span class="n">centroid</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+    <span class="n">centroid_coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">centroid</span><span class="p">)</span>
+    <span class="n">moi</span> <span class="o">=</span> <span class="n">_second_moa_ring_xplusy</span><span class="p">(</span><span class="n">coordinates</span> <span class="o">-</span> <span class="n">centroid_coords</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">moi</span><span class="p">)</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_second_moa_ring_xplusy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    implementation of the moment of area for a single ring</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">moi</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
+        <span class="n">x_tail</span><span class="p">,</span> <span class="n">y_tail</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">x_head</span><span class="p">,</span> <span class="n">y_head</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">xtyh</span> <span class="o">=</span> <span class="n">x_tail</span> <span class="o">*</span> <span class="n">y_head</span>
+        <span class="n">xhyt</span> <span class="o">=</span> <span class="n">x_head</span> <span class="o">*</span> <span class="n">y_tail</span>
+        <span class="n">moi</span> <span class="o">+=</span> <span class="p">(</span><span class="n">xtyh</span> <span class="o">-</span> <span class="n">xhyt</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="n">x_head</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">+</span> <span class="n">x_head</span> <span class="o">*</span> <span class="n">x_tail</span>
+            <span class="o">+</span> <span class="n">x_tail</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">+</span> <span class="n">y_head</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">+</span> <span class="n">y_head</span> <span class="o">*</span> <span class="n">y_tail</span>
+            <span class="o">+</span> <span class="n">y_tail</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">moi</span> <span class="o">/</span> <span class="mi">12</span>
+
+
+<span class="c1"># -------------------- OTHER MEASURES -------------------- #</span>
+
+
+<div class="viewcode-block" id="reflexive_angle_ratio">
+<a class="viewcode-back" href="../../generated/esda.shape.reflexive_angle_ratio.html#esda.shape.reflexive_angle_ratio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reflexive_angle_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Taylor reflexive angle index, measure OS_4 in :cite:`altman1998Districting`</span>
+
+<span class="sd">    (N-R)/(N+R), the difference in number between non-reflexive angles and</span>
+<span class="sd">    reflexive angles in a polygon, divided by the number of angles in the</span>
+<span class="sd">    polygon in general.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angles</span><span class="p">,</span> <span class="n">geom_indices</span> <span class="o">=</span> <span class="n">get_angles</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">return_indices</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">is_reflex</span><span class="o">=</span><span class="n">angles</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">geom_ix</span><span class="o">=</span><span class="n">geom_indices</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;geom_ix&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">is_reflex</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">values</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

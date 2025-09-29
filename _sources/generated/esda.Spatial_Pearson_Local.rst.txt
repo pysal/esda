@@ -1,0 +1,27 @@
+﻿esda.Spatial\_Pearson\_Local
+============================
+
+.. currentmodule:: esda
+
+.. autoclass:: Spatial_Pearson_Local
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Spatial_Pearson_Local.__init__
+      ~Spatial_Pearson_Local.fit
+      ~Spatial_Pearson_Local.get_metadata_routing
+      ~Spatial_Pearson_Local.get_params
+      ~Spatial_Pearson_Local.set_fit_request
+      ~Spatial_Pearson_Local.set_params
+   
+   
+
+   
+   
+   

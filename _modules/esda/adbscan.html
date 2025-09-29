@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.adbscan &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../../_static/documentation_options.js?v=6b84fd01"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for esda.adbscan</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A-DBSCAN implementation</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Dani Arribas-Bel &lt;daniel.arribas.bel@gmail.com&gt;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.cg.alpha_shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">alpha_shape_auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">cKDTree</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span> <span class="k">as</span> <span class="n">_BaseEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClusterMixin</span> <span class="k">as</span> <span class="n">_ClusterMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBSCAN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ADBSCAN&quot;</span><span class="p">,</span> <span class="s2">&quot;remap_lbls&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;get_cluster_boundary&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ADBSCAN">
+<a class="viewcode-back" href="../../generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ADBSCAN</span><span class="p">(</span><span class="n">_ClusterMixin</span><span class="p">,</span> <span class="n">_BaseEstimator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A-DBSCAN, as introduced in :cite:`ab_gl_vm2020joue`.</span>
+
+<span class="sd">    A-DSBCAN is an extension of the original DBSCAN algorithm that creates an</span>
+<span class="sd">    ensemble of solutions generated by running DBSCAN on a random subset and</span>
+<span class="sd">    &quot;extending&quot; the solution to the rest of the sample through</span>
+<span class="sd">    nearest-neighbor regression.</span>
+
+<span class="sd">    See the original reference (:cite:`ab_gl_vm2020joue`) for more details or</span>
+<span class="sd">    the notebook guide for an illustration.</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eps : float</span>
+<span class="sd">        The maximum distance between two samples for them to be considered</span>
+<span class="sd">        as in the same neighborhood.</span>
+<span class="sd">    min_samples : int</span>
+<span class="sd">        The number of samples (or total weight) in a neighborhood</span>
+<span class="sd">        for a point to be considered as a core point. This includes the</span>
+<span class="sd">        point itself.</span>
+<span class="sd">    algorithm : {&#39;auto&#39;, &#39;ball_tree&#39;, &#39;kd_tree&#39;, &#39;brute&#39;}, optional</span>
+<span class="sd">        The algorithm to be used by the NearestNeighbors module</span>
+<span class="sd">        to compute pointwise distances and find nearest neighbors.</span>
+<span class="sd">        See NearestNeighbors module documentation for details.</span>
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        [Optional. Default=1] The number of parallel jobs to run. If -1, then</span>
+<span class="sd">        the number of jobs is set to the number of CPU cores.</span>
+<span class="sd">    pct_exact : float</span>
+<span class="sd">        [Optional. Default=0.1] Proportion of the entire dataset</span>
+<span class="sd">        used to calculate DBSCAN in each draw</span>
+<span class="sd">    reps : int</span>
+<span class="sd">        [Optional. Default=100] Number of random samples to draw in order to</span>
+<span class="sd">        build final solution</span>
+<span class="sd">    keep_solus : bool</span>
+<span class="sd">        [Optional. Default=False] If True, the `solus` and `solus_relabelled`</span>
+<span class="sd">        objects are kept, else it is deleted to save memory</span>
+<span class="sd">    pct_thr : float</span>
+<span class="sd">        [Optional. Default=0.9] Minimum proportion of replications that</span>
+<span class="sd">        a non-noise label need to be assigned to an observation for that</span>
+<span class="sd">        observation to be labelled as such</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    labels_ : array</span>
+<span class="sd">        [Only available after `fit`] Cluster labels for each point in the</span>
+<span class="sd">        dataset given to fit().</span>
+<span class="sd">        Noisy (if the proportion of the most common label is &lt; pct_thr)</span>
+<span class="sd">        samples are given the label -1.</span>
+<span class="sd">    votes : DataFrame</span>
+<span class="sd">        [Only available after `fit`] Table indexed on `X.index` with</span>
+<span class="sd">        `labels_` under the `lbls` column, and the frequency across draws of</span>
+<span class="sd">        that label under `pct`</span>
+<span class="sd">    solus : DataFrame, shape = [n, reps]</span>
+<span class="sd">        [Only available after `fit`] Each solution of labels for every draw</span>
+<span class="sd">    solus_relabelled : DataFrame, shape = [n, reps]</span>
+<span class="sd">        [Only available after `fit`] Each solution of labels for</span>
+<span class="sd">        every draw, relabelled to be consistent across solutions</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import pandas</span>
+<span class="sd">    &gt;&gt;&gt; from esda.adbscan import ADBSCAN</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(10)</span>
+<span class="sd">    &gt;&gt;&gt; db = pandas.DataFrame({&#39;X&#39;: np.random.random(25), \</span>
+<span class="sd">                               &#39;Y&#39;: np.random.random(25) \</span>
+<span class="sd">                              })</span>
+
+<span class="sd">    ADBSCAN can be run following scikit-learn like API as:</span>
+
+<span class="sd">    &gt;&gt;&gt; np.random.seed(10)</span>
+<span class="sd">    &gt;&gt;&gt; clusterer = ADBSCAN(0.03, 3, reps=10, keep_solus=True)</span>
+<span class="sd">    &gt;&gt;&gt; _ = clusterer.fit(db)</span>
+<span class="sd">    &gt;&gt;&gt; clusterer.labels_</span>
+<span class="sd">    array([&#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,</span>
+<span class="sd">           &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;-1&#39;,</span>
+<span class="sd">           &#39;-1&#39;, &#39;-1&#39;], dtype=object)</span>
+
+<span class="sd">    We can inspect the winning label for each observation, as well as the</span>
+<span class="sd">    proportion of votes:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(clusterer.votes.head().to_string())</span>
+<span class="sd">      lbls  pct</span>
+<span class="sd">    0   -1  0.7</span>
+<span class="sd">    1   -1  0.5</span>
+<span class="sd">    2   -1  0.7</span>
+<span class="sd">    3    0  1.0</span>
+<span class="sd">    4   -1  0.7</span>
+
+<span class="sd">    If you have set the option to keep them, you can even inspect each</span>
+<span class="sd">    solution that makes up the ensemble:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(clusterer.solus.head().to_string())</span>
+<span class="sd">      rep-00 rep-01 rep-02 rep-03 rep-04 rep-05 rep-06 rep-07 rep-08 rep-09</span>
+<span class="sd">    0      0      1      1      0      1      0      0      0      1      0</span>
+<span class="sd">    1      1      1      1      1      0      1      0      1      1      1</span>
+<span class="sd">    2      0      1      1      0      0      1      0      0      1      0</span>
+<span class="sd">    3      0      1      1      0      0      1      1      1      0      0</span>
+<span class="sd">    4      0      1      1      1      0      1      0      1      0      1</span>
+
+
+
+<span class="sd">    If we select only one replication and the proportion of the entire dataset</span>
+<span class="sd">    that is sampled to 100%, we obtain a traditional DBSCAN:</span>
+
+<span class="sd">    &gt;&gt;&gt; clusterer = ADBSCAN(0.2, 5, reps=1, pct_exact=1)</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(10)</span>
+<span class="sd">    &gt;&gt;&gt; _ = clusterer.fit(db)</span>
+<span class="sd">    &gt;&gt;&gt; clusterer.labels_</span>
+<span class="sd">    array([&#39;0&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;-1&#39;,</span>
+<span class="sd">           &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;0&#39;, &#39;0&#39;, &#39;0&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;0&#39;,</span>
+<span class="sd">           &#39;-1&#39;], dtype=object)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ADBSCAN.__init__">
+<a class="viewcode-back" href="../../generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">,</span>
+        <span class="n">min_samples</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">pct_exact</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">reps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">keep_solus</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">pct_thr</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_samples</span> <span class="o">=</span> <span class="n">min_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reps</span> <span class="o">=</span> <span class="n">reps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pct_exact</span> <span class="o">=</span> <span class="n">pct_exact</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pct_thr</span> <span class="o">=</span> <span class="n">pct_thr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_solus</span> <span class="o">=</span> <span class="n">keep_solus</span></div>
+
+
+<div class="viewcode-block" id="ADBSCAN.fit">
+<a class="viewcode-back" href="../../generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">]):</span>  <span class="c1"># noqa: ARG002</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform ADBSCAN clustering from fetaures</span>
+<span class="sd">        ...</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X               : DataFrame</span>
+<span class="sd">                          Features</span>
+<span class="sd">        sample_weight   : Series, shape (n_samples,)</span>
+<span class="sd">                          [Optional. Default=None] Weight of each sample, such</span>
+<span class="sd">                          that a sample with a weight of at least ``min_samples``</span>
+<span class="sd">                          is by itself a core sample; a sample with negative</span>
+<span class="sd">                          weight may inhibit its eps-neighbor from being core.</span>
+<span class="sd">                          Note that weights are absolute, and default to 1.</span>
+<span class="sd">        xy              : list</span>
+<span class="sd">                          [Default=`[&#39;X&#39;, &#39;Y&#39;]`] Ordered pair of names for XY</span>
+<span class="sd">                          coordinates in `xys`</span>
+<span class="sd">        y               : Ignored</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">zfiller</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">))</span>
+        <span class="n">solus</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">),</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;rep-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">zfiller</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">)],</span>
+        <span class="p">)</span>
+        <span class="c1"># Multi-core implementation of parallel draws</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Set different parallel seeds!!!</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Multi-core implementation only works on relabelling solutions. &quot;</span>
+                <span class="s2">&quot;Execution of draws is still sequential.&quot;</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">):</span>
+                <span class="n">pars</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">n</span><span class="p">,</span>
+                    <span class="n">X</span><span class="p">,</span>
+                    <span class="n">sample_weight</span><span class="p">,</span>
+                    <span class="n">xy</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pct_exact</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">min_samples</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">lbls_pred</span> <span class="o">=</span> <span class="n">_one_draw</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+                <span class="n">solus</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbls_pred</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">):</span>
+                <span class="n">pars</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">n</span><span class="p">,</span>
+                    <span class="n">X</span><span class="p">,</span>
+                    <span class="n">sample_weight</span><span class="p">,</span>
+                    <span class="n">xy</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pct_exact</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">min_samples</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">lbls_pred</span> <span class="o">=</span> <span class="n">_one_draw</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+                <span class="n">solus</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbls_pred</span>
+
+        <span class="n">solus_relabelled</span> <span class="o">=</span> <span class="n">remap_lbls</span><span class="p">(</span><span class="n">solus</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">votes</span> <span class="o">=</span> <span class="n">ensemble</span><span class="p">(</span><span class="n">solus_relabelled</span><span class="p">)</span>
+        <span class="n">lbls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">votes</span><span class="p">[</span><span class="s2">&quot;lbls&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">lbl_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">solus</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">lbls</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">votes</span><span class="p">[</span><span class="s2">&quot;pct&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pct_thr</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbl_type</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">lbls</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_solus</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">solus</span>
+            <span class="k">del</span> <span class="n">solus_relabelled</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solus</span> <span class="o">=</span> <span class="n">solus</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solus_relabelled</span> <span class="o">=</span> <span class="n">solus_relabelled</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_one_draw</span><span class="p">(</span><span class="n">pars</span><span class="p">):</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">pct_exact</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">min_samples</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="n">pars</span>
+    <span class="n">rids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">rids</span><span class="p">)</span>
+    <span class="n">rids</span> <span class="o">=</span> <span class="n">rids</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">pct_exact</span><span class="p">)]</span>
+
+    <span class="n">X_thin</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">rids</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="n">thin_sample_weight</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">thin_sample_weight</span> <span class="o">=</span> <span class="n">sample_weight</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">rids</span><span class="p">]</span>
+
+    <span class="n">min_samples</span> <span class="o">=</span> <span class="n">min_samples</span> <span class="o">*</span> <span class="n">pct_exact</span>
+    <span class="n">min_samples</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">min_samples</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">min_samples</span><span class="p">))</span>
+
+    <span class="n">dbs</span> <span class="o">=</span> <span class="n">DBSCAN</span><span class="p">(</span>
+        <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+        <span class="n">min_samples</span><span class="o">=</span><span class="n">min_samples</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="n">algorithm</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_thin</span><span class="p">[</span><span class="n">xy</span><span class="p">],</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">thin_sample_weight</span><span class="p">)</span>
+    <span class="n">lbls_thin</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dbs</span><span class="o">.</span><span class="n">labels_</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">X_thin</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="n">NR</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">NR</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_thin</span><span class="p">[</span><span class="n">xy</span><span class="p">],</span> <span class="n">lbls_thin</span><span class="p">)</span>
+    <span class="n">lbls_pred</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">NR</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">xy</span><span class="p">]),</span> <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lbls_pred</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">remap_lbls</span><span class="p">(</span><span class="n">solus</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remap labels in solutions so they are comparable (same label</span>
+<span class="sd">    for same cluster)</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    solus       : DataFrame</span>
+<span class="sd">                  Table with labels for each point (row) and solution (column)</span>
+<span class="sd">    xys         : DataFrame</span>
+<span class="sd">                  Table including coordinates</span>
+<span class="sd">    xy          : list</span>
+<span class="sd">                  [Default=`[&#39;X&#39;, &#39;Y&#39;]`] Ordered pair of names for XY</span>
+<span class="sd">                  coordinates in `xys`</span>
+<span class="sd">    n_jobs      : int</span>
+<span class="sd">                  [Optional. Default=1] The number of parallel jobs to run. If</span>
+<span class="sd">                  -1, then the number of jobs is set to the number of CPU</span>
+<span class="sd">                  cores.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    onel_solus  : DataFrame</span>
+<span class="sd">                  Table with original solutions remapped to consolidated</span>
+<span class="sd">                  labels across all the columns</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import pandas</span>
+<span class="sd">    &gt;&gt;&gt; db = pandas.DataFrame({&quot;X&quot;: [0, 0.1, 4, 6, 5], \</span>
+<span class="sd">                               &quot;Y&quot;: [0, 0.2, 5, 7, 5] \</span>
+<span class="sd">                              })</span>
+<span class="sd">    &gt;&gt;&gt; solus = pandas.DataFrame({&quot;rep-00&quot;: [0, 0, 7, 7, -1], \</span>
+<span class="sd">                                  &quot;rep-01&quot;: [4, 4, -1, 6, 6], \</span>
+<span class="sd">                                  &quot;rep-02&quot;: [5, 5, 8, 8, 8] \</span>
+<span class="sd">                                 })</span>
+<span class="sd">    &gt;&gt;&gt; print(remap_lbls(solus, db).to_string())</span>
+<span class="sd">       rep-00  rep-01  rep-02</span>
+<span class="sd">    0       0       0       0</span>
+<span class="sd">    1       0       0       0</span>
+<span class="sd">    2       7      -1       7</span>
+<span class="sd">    3       7       7       7</span>
+<span class="sd">    4      -1       7       7</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># N. of clusters by solution</span>
+    <span class="n">ns_clusters</span> <span class="o">=</span> <span class="n">solus</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># Pick reference solution as one w/ max N. of clusters</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">ns_clusters</span><span class="p">[</span><span class="n">ns_clusters</span> <span class="o">==</span> <span class="n">ns_clusters</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lbl_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">solus</span><span class="p">[</span><span class="n">ref</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># Obtain centroids of reference solution</span>
+    <span class="n">ref_centroids</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">xys</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">solus</span><span class="p">[</span><span class="n">ref</span><span class="p">])[</span><span class="n">xy</span><span class="p">]</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">xys</span><span class="p">:</span> <span class="n">xys</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">lbl_type</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Only continue if any solution</span>
+    <span class="k">if</span> <span class="n">ref_centroids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Build KDTree and setup results holder</span>
+        <span class="n">ref_kdt</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">ref_centroids</span><span class="p">)</span>
+        <span class="n">remapped_solus</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">solus</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">lbl_type</span><span class="p">),</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">solus</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">solus</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n_jobs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n_jobs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">_setup_pool</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">)</span>
+            <span class="n">s_ids</span> <span class="o">=</span> <span class="n">solus</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">to_loop_over</span> <span class="o">=</span> <span class="p">[(</span><span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">ref_centroids</span><span class="p">,</span> <span class="n">ref_kdt</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">s_ids</span><span class="p">]</span>
+            <span class="n">remapped</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_remap_n_expand</span><span class="p">,</span> <span class="n">to_loop_over</span><span class="p">)</span>
+            <span class="n">remapped_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">remapped</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">s_ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">remapped_df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solus</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># -</span>
+                <span class="n">pars</span> <span class="o">=</span> <span class="p">(</span><span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">ref_centroids</span><span class="p">,</span> <span class="n">ref_kdt</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span>
+                <span class="n">remap_ids</span> <span class="o">=</span> <span class="n">_remap_lbls_single</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+                <span class="c1"># -</span>
+                <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">remap_ids</span><span class="p">)</span>
+        <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">ref</span><span class="p">]</span> <span class="o">=</span> <span class="n">solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">ref</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">remapped_solus</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">lbl_type</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">lbl_type</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No clusters identified.&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">solus</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_remap_n_expand</span><span class="p">(</span><span class="n">pars</span><span class="p">):</span>
+    <span class="n">solus_s</span><span class="p">,</span> <span class="n">ref_centroids</span><span class="p">,</span> <span class="n">ref_kdt</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span> <span class="o">=</span> <span class="n">pars</span>
+    <span class="n">remap_ids</span> <span class="o">=</span> <span class="n">_remap_lbls_single</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+    <span class="n">expanded</span> <span class="o">=</span> <span class="n">solus_s</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">remap_ids</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">expanded</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_remap_lbls_single</span><span class="p">(</span><span class="n">pars</span><span class="p">):</span>
+    <span class="n">new_lbls</span><span class="p">,</span> <span class="n">ref_centroids</span><span class="p">,</span> <span class="n">ref_kdt</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span> <span class="o">=</span> <span class="n">pars</span>
+    <span class="n">lbl_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">ref_centroids</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># Cross-walk to cluster IDs</span>
+    <span class="n">ref_centroids_ids</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">ref_centroids</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="c1"># Centroids for new solution</span>
+    <span class="n">solu_centroids</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">xys</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">new_lbls</span><span class="p">)[</span><span class="n">xy</span><span class="p">]</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">xys</span><span class="p">:</span> <span class="n">xys</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">lbl_type</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Remapping from old to new labels</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">nrst_ref_cl</span> <span class="o">=</span> <span class="n">ref_kdt</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">solu_centroids</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">remap_ids</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">nrst_ref_cl</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">solu_centroids</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="n">ref_centroids_ids</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">remap_ids</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ensemble</span><span class="p">(</span><span class="n">solus_relabelled</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate unique class prediction based on majority/hard voting</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    solus_relabelled  : DataFrame</span>
+<span class="sd">                        Table with labels for each point (row) and solution</span>
+<span class="sd">                        (column). Labels are assumed to be consistent across</span>
+<span class="sd">                        solutions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pred              : DataFrame</span>
+<span class="sd">                        Table with one row per observation, a `lbls` column with the</span>
+<span class="sd">                        winning label, and a `pct` column with the proportion of</span>
+<span class="sd">                        times the winning label was voted</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; import pandas</span>
+<span class="sd">    &gt;&gt;&gt; db = pandas.DataFrame({&quot;X&quot;: [0, 0.1, 4, 6, 5], \</span>
+<span class="sd">                               &quot;Y&quot;: [0, 0.2, 5, 7, 5] \</span>
+<span class="sd">                              })</span>
+<span class="sd">    &gt;&gt;&gt; solus = pandas.DataFrame({&quot;rep-00&quot;: [0, 0, 7, 7, -1], \</span>
+<span class="sd">                                  &quot;rep-01&quot;: [4, 4, -1, 6, 6], \</span>
+<span class="sd">                                  &quot;rep-02&quot;: [5, 5, 8, 8, 8] \</span>
+<span class="sd">                                 })</span>
+<span class="sd">    &gt;&gt;&gt; solus_rl = remap_lbls(solus, db)</span>
+<span class="sd">    &gt;&gt;&gt; print(round(ensemble(solus_rl), 2).to_string())</span>
+<span class="sd">       lbls   pct</span>
+<span class="sd">    0     0  1.00</span>
+<span class="sd">    1     0  1.00</span>
+<span class="sd">    2     7  0.67</span>
+<span class="sd">    3     7  1.00</span>
+<span class="sd">    4     7  0.67</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span>  <span class="c1"># noqa: C417</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">solus_relabelled</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">winner</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">votes</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">/</span> <span class="n">solus_relabelled</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;lbls&quot;</span><span class="p">:</span> <span class="n">winner</span><span class="p">,</span> <span class="s2">&quot;pct&quot;</span><span class="p">:</span> <span class="n">votes</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="n">solus_relabelled</span><span class="o">.</span><span class="n">index</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pred</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_setup_pool</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set pool for multiprocessing</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_jobs      : int</span>
+<span class="sd">                  The number of parallel jobs to run. If -1, then the number</span>
+<span class="sd">                  of jobs is set to the number of CPU cores.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
+
+    <span class="k">return</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span> <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cluster_boundary</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turn a set of labels associated with 2-D points into polygon boundaries</span>
+<span class="sd">    for each cluster using the auto alpha shape algorithm</span>
+<span class="sd">    (`libpysal.cg.alpha_shapes.alpha_shape_auto`)</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    labels      : Series</span>
+<span class="sd">                  Cluster labels for each point in the dataset (noise</span>
+<span class="sd">                  samples expressed as -1), indexed as `xys`</span>
+<span class="sd">    xys         : DataFrame</span>
+<span class="sd">                  Table including coordinates</span>
+<span class="sd">    xy          : list</span>
+<span class="sd">                  [Default=`[&#39;X&#39;, &#39;Y&#39;]`] Ordered pair of names for XY</span>
+<span class="sd">                  coordinates in `xys`</span>
+<span class="sd">    n_jobs      : int</span>
+<span class="sd">                  [Optional. Default=1] The number of parallel jobs to run</span>
+<span class="sd">                  for remapping. If -1, then the number of jobs is set to</span>
+<span class="sd">                  the number of CPU cores.</span>
+<span class="sd">    crs         : str</span>
+<span class="sd">                  [Optional] Coordinate system</span>
+<span class="sd">    step        : int</span>
+<span class="sd">                  [Optional. Default=1]</span>
+<span class="sd">                  Number of points in `xys` to jump ahead in the alpha</span>
+<span class="sd">                  shape stage after checking whether the largest possible</span>
+<span class="sd">                  alpha that includes the point and all the other ones</span>
+<span class="sd">                  with smaller radii</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    polys       : GeoSeries</span>
+<span class="sd">                  GeoSeries with polygons for each cluster boundary, indexed</span>
+<span class="sd">                  on the cluster label</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import pandas</span>
+<span class="sd">    &gt;&gt;&gt; from esda.adbscan import ADBSCAN, get_cluster_boundary</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(10)</span>
+<span class="sd">    &gt;&gt;&gt; db = pandas.DataFrame({&#39;X&#39;: np.random.random(25), \</span>
+<span class="sd">                               &#39;Y&#39;: np.random.random(25) \</span>
+<span class="sd">                              })</span>
+
+<span class="sd">    ADBSCAN can be run following scikit-learn like API as:</span>
+
+<span class="sd">    &gt;&gt;&gt; np.random.seed(10)</span>
+<span class="sd">    &gt;&gt;&gt; clusterer = ADBSCAN(0.03, 3, reps=10, keep_solus=True)</span>
+<span class="sd">    &gt;&gt;&gt; _ = clusterer.fit(db)</span>
+<span class="sd">    &gt;&gt;&gt; labels = pandas.Series(clusterer.labels_, index=db.index)</span>
+<span class="sd">    &gt;&gt;&gt; polys = get_cluster_boundary(labels, db)</span>
+<span class="sd">    &gt;&gt;&gt; polys[0].wkt</span>
+<span class="sd">    &#39;POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeoSeries</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">GeoSeries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: ARG001, N802</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">lbl_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">lbl_type</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ids_in_cluster</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">labels</span> <span class="o">!=</span> <span class="n">noise</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">xys</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ids_in_cluster</span><span class="p">,</span> <span class="n">xy</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">ids_in_cluster</span><span class="p">])</span>
+    <span class="n">chunked_pts_step</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cluster_lbls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+        <span class="n">chunked_pts_step</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">xys</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">sub</span><span class="p">],</span> <span class="n">xy</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
+        <span class="n">cluster_lbls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">polys</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_asa</span><span class="p">,</span> <span class="n">chunked_pts_step</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">_setup_pool</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">)</span>
+        <span class="n">polys</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_asa</span><span class="p">,</span> <span class="n">chunked_pts_step</span><span class="p">)</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">polys</span> <span class="o">=</span> <span class="n">GeoSeries</span><span class="p">(</span><span class="n">polys</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">cluster_lbls</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">polys</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_asa</span><span class="p">(</span><span class="n">pts_s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">alpha_shape_auto</span><span class="p">(</span><span class="n">pts_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">step</span><span class="o">=</span><span class="n">pts_s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

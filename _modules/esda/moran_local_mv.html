@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.moran_local_mv &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../../_static/documentation_options.js?v=6b84fd01"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for esda.moran_local_mv</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.moran</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran_Local</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.significance</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_significance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">lag_spatial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.auto</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">tqdm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_quad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a simpler solution to calculate a cartesian quadrant. </span>
+
+<span class="sd">    To explain graphically, let the tuple below be (off_sign[i], neg_y[i]*2). </span>
+
+<span class="sd">    If sign(x[i]) != sign(y[i]), we are on the negative diagonal. </span>
+<span class="sd">    If y is negative, we are on the bottom of the plot. </span>
+
+<span class="sd">    Therefore, the sum (off_sign + neg_y*2 + 1) gives you the cartesian quadrant. </span>
+
+<span class="sd">     II  |   I</span>
+<span class="sd">     1,0 | 0,0</span>
+<span class="sd">    -----+-----</span>
+<span class="sd">     0,2 | 1,2</span>
+<span class="sd">     III |  IV</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">off_sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">neg_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">off_sign</span> <span class="o">+</span> <span class="n">neg_y</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="MoranLocalPartial">
+<a class="viewcode-back" href="../../generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MoranLocalPartial</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="MoranLocalPartial.__init__">
+<a class="viewcode-back" href="../../generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the Multivariable Local Moran statistics under partial dependence :cite:`wolf2024confounded`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ---------</span>
+<span class="sd">        permutations : int</span>
+<span class="sd">            the number of permutations to run for the inference,</span>
+<span class="sd">            driven by conditional randomization.</span>
+<span class="sd">        unit_scale : bool</span>
+<span class="sd">            whether to enforce unit variance in the local statistics. This</span>
+<span class="sd">            normalizes the variance of the data at inupt, ensuring that</span>
+<span class="sd">            the covariance statistics are not overwhelmed by any single</span>
+<span class="sd">            covariate&#39;s large variance.</span>
+<span class="sd">        partial_labels : bool, default=True</span>
+<span class="sd">            whether to calculate the classification based on the part-regressive </span>
+<span class="sd">            quadrant classification or the univariate quadrant classification,</span>
+<span class="sd">            like a classical Moran&#39;s I. When mvquads is True, the variables are labelled as:</span>
+<span class="sd">            - label 1: observations with large y - rho * x that also have large Wy values. </span>
+<span class="sd">            - label 2: observations with small y - rho * x values that also have large Wy values.</span>
+<span class="sd">            - label 3: observations with small y - rho * x values that also have small Wy values. </span>
+<span class="sd">            - label 4: observations with large y - rho * x values that have small Wy values.</span>
+<span class="sd">        alternative : str (default: &#39;two-sided&#39;)</span>
+<span class="sd">            the alternative hypothesis for the inference. One of</span>
+<span class="sd">            &#39;two-sided&#39;, &#39;greater&#39;, &#39;lesser&#39;, &#39;directed&#39;, or &#39;folded&#39;.</span>
+<span class="sd">            See the esda.significance.calculate_significance() documentation</span>
+<span class="sd">            for more information.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connectivity : The weights matrix inputted, but row standardized</span>
+<span class="sd">        D : The &quot;design&quot; matrix used in computation. If X is</span>
+<span class="sd">            not None, this will be [1 y X]</span>
+<span class="sd">        R : the &quot;response&quot; matrix used in computation. Will</span>
+<span class="sd">            always be the same shape as D and contain [1, Wy, Wy, ....]</span>
+<span class="sd">        DtDi : empirical parameter covariance matrix</span>
+<span class="sd">            the P x P matrix describing the variance and covariance</span>
+<span class="sd">            of y and X.</span>
+<span class="sd">        P : the number of parameters. 1 if X is not provided.</span>
+<span class="sd">        association_ : the N,P matrix of multivariable LISA statistics.</span>
+<span class="sd">            the first column, lmos[:,1] is the LISAs corresponding</span>
+<span class="sd">            to the relationship between Wy and y conditioning on X.</span>
+<span class="sd">        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional</span>
+<span class="sd">            randomization to generate reference distributions for</span>
+<span class="sd">            each Local Moran statistic. rlmos_[:,:,1] pertain to</span>
+<span class="sd">            the reference distribution of y and Wy.</span>
+<span class="sd">        significance_  : the (N, P) matrix of quadrant classifications for the</span>
+<span class="sd">            part-regressive relationships. quads[:,0] pertains to</span>
+<span class="sd">            the relationship between y and Wy. The mean is not classified,</span>
+<span class="sd">            since it&#39;s just binary above/below mean usually.</span>
+<span class="sd">        partials_: the (N,2,P+1) matrix of part-regressive contributions.</span>
+<span class="sd">            The ith slice of partials_[:,:,i] contains the</span>
+<span class="sd">            partial regressive contribution of that covariate, with</span>
+<span class="sd">            the first column indicating the part-regressive outcome</span>
+<span class="sd">            and the second indicating the part-regressive design.</span>
+<span class="sd">            The partial regression matrix starts at zero, so</span>
+<span class="sd">            partials_[:,:,0] corresponds to the partial regression</span>
+<span class="sd">            describing the relationship between y and Wy.</span>
+<span class="sd">        labels_ : the (N,) array of quadrant classifications for the</span>
+<span class="sd">            part-regressive relationships. See the partial_labels argument</span>
+<span class="sd">            for more information. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span> <span class="o">=</span> <span class="n">unit_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partial_labels</span> <span class="o">=</span> <span class="n">partial_labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alternative</span> <span class="o">=</span> <span class="n">alternative</span></div>
+
+    
+<div class="viewcode-block" id="MoranLocalPartial.fit">
+<a class="viewcode-back" href="../../generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fit the partial local Moran statistic on input data</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X   : (N,p) array</span>
+<span class="sd">            array of data that is used as &quot;confounding factors&quot;</span>
+<span class="sd">            to account for their covariance with Y.</span>
+<span class="sd">        y   : (N,1) array</span>
+<span class="sd">            array of data that is the targeted &quot;outcome&quot; covariate</span>
+<span class="sd">            to compute the multivariable Moran&#39;s I</span>
+<span class="sd">        W   : (N,N) weights object</span>
+<span class="sd">            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.</span>
+<span class="sd">      </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self    :   object</span>
+<span class="sd">            this MoranLocalPartial() statistic after fitting to data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+            <span class="n">W</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">W</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">/=</span> <span class="n">y</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">/</span> <span class="n">X</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="n">D</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_data</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">D</span><span class="p">,</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DtDi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span>
+        <span class="p">)</span>  <span class="c1"># this is only PxP, so not too bad...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_left_component_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">DtDi</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lmos_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_left_component_</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span> <span class="o">=</span> <span class="n">W</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA necessary to avoid None &gt; 0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_crand</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_p_sim_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_p_sim_</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_significance</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_lmos_</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span><span class="p">[:,:,</span><span class="n">i</span><span class="p">],</span> 
+                        <span class="n">alternative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative</span>
+                    <span class="p">)</span>
+
+        <span class="n">component_quads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">left</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_left_component_</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">quads</span> <span class="o">=</span> <span class="n">_calc_quad</span><span class="p">(</span><span class="n">left</span> <span class="o">-</span> <span class="n">left</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">right</span><span class="p">)</span>
+            <span class="n">component_quads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_partials_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_left_component_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">uvquads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">negative_lag</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">off_sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">R</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">quads</span> <span class="o">=</span> <span class="n">negative_lag</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">off_sign</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">uvquads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quads</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uvquads_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">row_stack</span><span class="p">(</span><span class="n">uvquads</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mvquads_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">row_stack</span><span class="p">(</span><span class="n">component_quads</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span> <span class="c1"># NOQA because ternary is confusing</span>
+            <span class="n">Wz</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Wz</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">z</span><span class="p">,</span> <span class="n">X</span><span class="p">))</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">z</span><span class="p">))</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">Wz</span><span class="p">,</span> <span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">D</span><span class="p">,</span> <span class="n">R</span>
+        <span class="c1"># self.D, self.R = D, R</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_crand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">N_permutations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span>
+        <span class="n">prange</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_permutations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+            <span class="n">max_neighbs</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">cardinalities</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_neighbs</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">max_neighbors</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">pre_permutations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_neighbs</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">straight_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span> <span class="c1"># NOQA</span>
+            <span class="n">id_order</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">unique_ids</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_order</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">id_order</span>
+        <span class="n">DtDi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DtDi</span>
+        <span class="n">ordered_weights</span> <span class="o">=</span> <span class="p">[</span><span class="n">W</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">id_order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">straight_ids</span><span class="p">]</span>
+        <span class="n">ordered_cardinalities</span> <span class="o">=</span> <span class="p">[</span><span class="n">W</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">[</span><span class="n">id_order</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">straight_ids</span><span class="p">]</span>
+        <span class="n">lmos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N_permutations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Simulating by site&quot;</span><span class="p">):</span>
+            <span class="n">ids_noti</span> <span class="o">=</span> <span class="n">straight_ids</span><span class="p">[</span><span class="n">straight_ids</span> <span class="o">!=</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">ids_noti</span><span class="p">)</span>
+            <span class="n">these_permutations</span> <span class="o">=</span> <span class="n">pre_permutations</span><span class="p">[:,</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">ordered_cardinalities</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">randomized_permutations</span> <span class="o">=</span> <span class="n">ids_noti</span><span class="p">[</span><span class="n">these_permutations</span><span class="p">]</span>
+            <span class="n">shuffled_ys</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">randomized_permutations</span><span class="p">]</span>
+            <span class="n">these_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ordered_weights</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">shuffled_Wyi</span> <span class="o">=</span> <span class="p">(</span><span class="n">shuffled_ys</span> <span class="o">*</span> <span class="n">these_weights</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>  <span class="c1"># these are N-permutations by 1 now</span>
+            <span class="c1"># shuffled_X = X[randomized_permutations, :] </span>
+            <span class="c1"># #these are still N-permutations, N-neighbs, N-covariates</span>
+            <span class="k">if</span> <span class="n">X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">local_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">shuffled_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span>
+                    <span class="n">local_data</span><span class="p">,</span> <span class="n">N_permutations</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># now N permutations by P</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">local_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="o">*</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">shuffled_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span>
+                    <span class="n">local_data</span><span class="p">,</span> <span class="n">N_permutations</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># now N permutations by P</span>
+            <span class="n">shuffled_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">shuffled_Wyi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">lmos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">shuffled_R</span> <span class="o">*</span> <span class="n">shuffled_D</span><span class="p">)</span> <span class="o">@</span> <span class="n">DtDi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span> <span class="o">=</span> <span class="n">lmos</span>  <span class="c1"># nobs, nperm, nvars</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">association_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The association between y and the local average of y,</span>
+<span class="sd">        removing the correlation due to x and the local average of y</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lmos_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">significance_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The pseudo-p-value built using map randomization for the</span>
+<span class="sd">        structural relationship between y and its local average,</span>
+<span class="sd">        removing the correlation due to the relationship between x</span>
+<span class="sd">        and the local average of y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_sim_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partials_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The components of the local statistic. The first column is the</span>
+<span class="sd">        structural exogenous component of the data, and the second is the</span>
+<span class="sd">        local average of y.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partials_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_distribution_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simulated distribution of association_, assuming that there is</span>
+<span class="sd">          - no structural relationship between y and its local average;</span>
+<span class="sd">          - the same observed structural relationship between y and x.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">labels_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The classifications (in terms of cluster-type and outlier-type)</span>
+<span class="sd">        for the association_ statistics. If the quads requested are</span>
+<span class="sd">        *mvquads*, then the classification is done with respect to the</span>
+<span class="sd">        left and right components (first and second columns of partials_).</span>
+
+<span class="sd">        If the quads requested are *uvquads*, then this will only be computed</span>
+<span class="sd">        with respect to the outcome and the local average.</span>
+<span class="sd">        The cluster typology is:</span>
+<span class="sd">          - 1: above-average left component (either y or D @ DtDi),</span>
+<span class="sd">               above-average right component (local average of y)</span>
+<span class="sd">          - 2: below-average left component (either y or D @ DtDi),</span>
+<span class="sd">               above-average right component (local average of y)</span>
+<span class="sd">          - 3: below-average left component (either y or D @ DtDi)</span>
+<span class="sd">               below-average right component (local average of y)</span>
+<span class="sd">          - 4: above-average left component (either y or D @ DtDi)</span>
+<span class="sd">               below-average right component (local average of y)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partial_labels</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mvquads_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uvquads_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="MoranLocalConditional">
+<a class="viewcode-back" href="../../generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MoranLocalConditional</span><span class="p">(</span><span class="n">Moran_Local</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fit a local moran statistic for y after regressing out the</span>
+<span class="sd">    effects of confounding X on y. A &quot;stronger&quot; version of the</span>
+<span class="sd">    MoranLocalPartial statistic, as defined by :cite:`wolf2024confounded`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MoranLocalConditional.__init__">
+<a class="viewcode-back" href="../../generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span>
+        <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">transformer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a local Moran statistic on the regression residuals</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ---------</span>
+<span class="sd">        permutations    : int (default: 999)</span>
+<span class="sd">                          the number of permutations to run for the inference,</span>
+<span class="sd">                          driven by conditional randomization.</span>
+<span class="sd">        unit_scale      : bool (default: True)</span>
+<span class="sd">                          whether or not to convert the input data to a unit normal scale.</span>
+<span class="sd">        transformer     : callable (default: scikit regression)</span>
+<span class="sd">                          should transform X into a predicted y. If not provided, will use</span>
+<span class="sd">                          the standard scikit OLS regression of y on X.</span>
+<span class="sd">        alternative     : str (default: &#39;two-sided&#39;)</span>
+<span class="sd">                          the alternative hypothesis for the inference. One of</span>
+<span class="sd">                          &#39;two-sided&#39;, &#39;greater&#39;, &#39;lesser&#39;, &#39;directed&#39;, or &#39;folded&#39;.</span>
+<span class="sd">                          See the esda.significance.calculate_significance() documentation</span>
+<span class="sd">                          for more information.</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connectivity : The weights matrix inputted, but row standardized</span>
+<span class="sd">        y_filtered_ : the (N,1) array of y after removing the effect of X</span>
+<span class="sd">        association_ : the N,P matrix of multivariable LISA statistics.</span>
+<span class="sd">            the first column, lmos[:,1] is the LISAs corresponding</span>
+<span class="sd">            to the relationship between Wy and y conditioning on X.</span>
+<span class="sd">        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional</span>
+<span class="sd">            randomization to generate reference distributions for</span>
+<span class="sd">            each Local Moran statistic. rlmos_[:,:,1] pertain to</span>
+<span class="sd">            the reference distribution of y and Wy.</span>
+<span class="sd">        significance_ : the (N, P) matrix of quadrant classifications for the</span>
+<span class="sd">            part-regressive relationships. quads[:,0] pertains to</span>
+<span class="sd">            the relationship between y and Wy. The mean is not classified,</span>
+<span class="sd">            since it&#39;s just binary above/below mean usually.</span>
+<span class="sd">        partials_ : the (N,2,P+1) matrix of part-regressive contributions.</span>
+<span class="sd">            The ith slice of partials_[:,:,i] contains the</span>
+<span class="sd">            partial regressive contribution of that covariate, with</span>
+<span class="sd">            the first column indicating the part-regressive outcome</span>
+<span class="sd">            and the second indicating the part-regressive design.</span>
+<span class="sd">            The partial regression matrix starts at zero, so</span>
+<span class="sd">            partials_[:,:,0] corresponds to the partial regression</span>
+<span class="sd">            describing the relationship between y and Wy.</span>
+<span class="sd">        labels_ : the (N,) array of quadrant classifications for the</span>
+<span class="sd">            part-regressive relationships. See the partial_labels argument</span>
+<span class="sd">            for more information. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span> <span class="o">=</span> <span class="n">unit_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alternative</span> <span class="o">=</span> <span class="n">alternative</span></div>
+
+
+<div class="viewcode-block" id="MoranLocalConditional.fit">
+<a class="viewcode-back" href="../../generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ---------</span>
+<span class="sd">        y : (N,1) array</span>
+<span class="sd">            array of data that is the targeted &quot;outcome&quot; covariate</span>
+<span class="sd">            to compute the multivariable Moran&#39;s I</span>
+<span class="sd">        X : (N,3) array</span>
+<span class="sd">            array of data that is used as &quot;confounding factors&quot;</span>
+<span class="sd">            to account for their covariance with Y.</span>
+<span class="sd">        W : (N,N) weights object</span>
+<span class="sd">            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A fitted MoranLocalConditional() estimator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">/=</span> <span class="n">y</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+            <span class="n">X</span> <span class="o">/=</span> <span class="n">X</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="n">y_filtered_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_filtered_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_part_regress_transform</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+            <span class="n">W</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+            <span class="n">Wyf</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">y_filtered_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">W</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+            <span class="n">Wyf</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">y_filtered_</span><span class="p">)</span> <span class="c1"># TODO: graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span> <span class="o">=</span> <span class="n">W</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partials_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">y_filtered_</span><span class="p">,</span> <span class="n">Wyf</span><span class="p">))</span>
+        <span class="n">y_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_filtered_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">association_</span> <span class="o">=</span> <span class="p">((</span><span class="n">y_out</span> <span class="o">*</span> <span class="n">Wyf</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_out</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y_out</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_crand</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">significance_</span> <span class="o">=</span> <span class="n">calculate_significance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">association_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_distribution_</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative</span><span class="p">)</span>
+        <span class="n">quads</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">left_component_cluster</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_filtered_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">right_component_cluster</span> <span class="o">=</span> <span class="p">(</span><span class="n">Wyf</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">quads</span> <span class="o">=</span> <span class="n">quads</span><span class="p">[</span><span class="n">left_component_cluster</span><span class="p">,</span> <span class="n">right_component_cluster</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="n">quads</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_part_regress_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the object has a _transformer, use it; otherwise, fit it.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_transformer&quot;</span><span class="p">):</span>
+            <span class="n">ypart</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_transformer</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span>
+            <span class="n">ypart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_part_regress_transform</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ypart</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_crand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cribbed from esda.Moran_Local</span>
+<span class="sd">        conditional randomization</span>
+<span class="sd">        for observation i with ni neighbors,  the candidate set cannot include</span>
+<span class="sd">        i (we don&#39;t want i being a neighbor of i). we have to sample without</span>
+<span class="sd">        replacement from a set of ids that doesn&#39;t include i. numpy doesn&#39;t</span>
+<span class="sd">        directly support sampling wo replacement and it is expensive to</span>
+<span class="sd">        implement this. instead we omit i from the original ids,  permute the</span>
+<span class="sd">        ids and take the first ni elements of the permuted ids as the</span>
+<span class="sd">        neighbors to i in each randomization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">lisas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
+        <span class="n">n_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">prange</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">cardinalities</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">max_neighbors</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">nn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">rids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">nn</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">])</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="p">,</span> <span class="s2">&quot;id_order&quot;</span><span class="p">):</span>
+            <span class="n">ido</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">id_order</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ido</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">unique_ids</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+        <span class="n">wc</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span><span class="o">.</span><span class="n">n</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Simulating by site&quot;</span><span class="p">):</span>
+            <span class="n">idsi</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">ids</span> <span class="o">!=</span> <span class="n">i</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">idsi</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">idsi</span><span class="p">[</span><span class="n">rids</span><span class="p">[:,</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">wc</span><span class="p">[</span><span class="n">i</span><span class="p">]]]]</span>
+            <span class="n">lisas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_distribution_</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_1</span> <span class="o">/</span> <span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="n">lisas</span></div>
+
+
+
+<span class="n">MoranLocalConditional</span><span class="o">.</span><span class="fm">__init__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">MoranLocalPartial</span><span class="o">.</span><span class="fm">__init__</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="s2">&quot;Partial&quot;</span><span class="p">,</span> <span class="s2">&quot;Conditional&quot;</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
