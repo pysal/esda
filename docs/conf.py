@@ -1,4 +1,3 @@
-import pathlib
 import sphinx_bootstrap_theme
 
 # import your package to obtain the version info to display on the docs website
