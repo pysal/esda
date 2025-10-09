@@ -60,16 +60,6 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
     </div>
 
 
-.. toctree::
-   :hidden:
-   :maxdepth: 3
-   :caption: Contents:
-
-   Installation <installation>
-   API <api>
-   Tutorial <tutorial>
-   References <references>
-
 ************
 Introduction
 ************

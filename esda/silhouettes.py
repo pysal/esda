@@ -58,7 +58,7 @@ def path_silhouette(
 
 
     Parameters
-    -----------
+    ----------
     data    :   np.ndarray (N,P)
                 matrix of data with N observations and P covariates.
     labels  :   np.ndarray (N,)
@@ -94,7 +94,7 @@ def path_silhouette(
                     asymmetry is ignored.
 
     Returns
-    --------
+    -------
     An (N_obs,) array of the path silhouette values for each observation.
     """
     if not HAS_REQUIREMENTS:
@@ -427,7 +427,7 @@ def silhouette_alist(data, labels, alist, indices=None, metric=skp.euclidean_dis
                 a function that takes an argument (data) and returns the all-pairs
                 distances/dissimilarity between observations.
 
-    Results
+    Returns
     -------
     pandas.DataFrame, copy of the adjacency list `alist`, with an additional
     column called `silhouette` that contains the pseudo-silhouette values
