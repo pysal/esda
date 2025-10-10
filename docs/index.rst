@@ -10,7 +10,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
     <div class="container-fluid">
       <div class="row equal-height">
         <div class="col-12">
-            <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb" class="thumbnail">
+            <a href="https://github.com/pysal/esda/blob/main/notebooks/spatial_autocorrelation_for_areal_unit_data.ipynb" class="thumbnail">
                 <img src="_static/images/prices.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
                 <h6>Spatial Autocorrelation for continuous and discrete data</h6>
@@ -20,7 +20,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
         </div>
         <div class="row equal-height">
         <div class="col-6">
-            <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/shape-measures.ipynb" class="thumbnail">
+            <a href="https://github.com/pysal/esda/blob/main/notebooks/shape-measures.ipynb" class="thumbnail">
                 <img src="_static/images/missipq.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
                 <h6>Shape Regularity Statistics</h6>
@@ -28,7 +28,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
             </a>
         </div>
         <div class="col-6">
-            <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/geosilhouettes.ipynb" class="thumbnail">
+            <a href="https://github.com/pysal/esda/blob/main/notebooks/geosilhouettes.ipynb" class="thumbnail">
                 <img src="_static/images/silhouettes.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
                 <h6>Boundary and Region Statistics
@@ -39,7 +39,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
         </div>
         <div class='row equal-height'>
         <div class="col-6">
-        <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/multivariable_moran.ipynb" class="thumbnail">
+        <a href="https://github.com/pysal/esda/blob/main/notebooks/multivariable_moran.ipynb" class="thumbnail">
                 <img src="_static/images/mvmoran.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
                 <h6>Multivariable Moran Statistics
@@ -48,7 +48,7 @@ ESDA is an open-source Python library for the exploratory analysis of spatial da
             </a>
         </div>
         <div class="col-6">
-        <a href="https://nbviewer.org/github/pysal/esda/blob/main/notebooks/localjoincounts.ipynb" class="thumbnail">
+        <a href="https://github.com/pysal/esda/blob/main/notebooks/localjoincounts.ipynb" class="thumbnail">
                 <img src="_static/images/joincount.png" class="img-fluid center-block w-100">
                 <div class="caption text-center">
                 <h6>Discrete Spatial Autocorrelation with Join Counts
