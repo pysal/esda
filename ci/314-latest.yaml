@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   # required
   - geopandas
   - libpysal>=4.12
@@ -23,3 +23,10 @@ dependencies:
   - geodatasets
   # optional
   - rtree
+  # doc build
+  - nbsphinx
+  - numpydoc
+  - pandoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme
