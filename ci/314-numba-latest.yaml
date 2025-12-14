@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   # required
   - geopandas
   - libpysal>=4.12
@@ -22,4 +22,5 @@ dependencies:
   - pytest-xdist
   - geodatasets
   # optional
+  - numba
   - rtree

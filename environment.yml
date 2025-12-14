@@ -2,7 +2,7 @@ name: esda
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python
   # required
   - geopandas
   - libpysal>=4.12

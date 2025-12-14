@@ -34,17 +34,18 @@
            - ci/311-numba-latest.yaml
            - ci/312-latest.yaml
            - ci/312-numba-latest.yaml
-           - ci/313-min.yaml
            - ci/313-latest.yaml
-           - ci/313-dev.yaml
            - ci/313-numba-latest.yaml
-           - ci/313-numba-dev.yaml
+           - ci/314-min.yaml
+           - ci/314-latest.yaml
+           - ci/314-dev.yaml
+           - ci/314-numba-dev.yaml
          include:
-           - environment-file: ci/313-numba-latest.yaml
+           - environment-file: ci/314-numba-latest.yaml
              os: macos-15-intel # Intel
-           - environment-file: ci/313-numba-latest.yaml
+           - environment-file: ci/314-numba-latest.yaml
              os: macos-latest # Apple Silicon
-           - environment-file: ci/313-numba-latest.yaml
+           - environment-file: ci/314-numba-latest.yaml
              os: windows-latest
        fail-fast: false
      defaults:
@@ -77,5 +78,4 @@
          uses: codecov/codecov-action@v5
          with:
            token: ${{ secrets.CODECOV_TOKEN }}
-           file: ./coverage.xml
            name: esda-codecov
