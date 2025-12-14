@@ -8,6 +8,7 @@ import contextlib
 from importlib.metadata import PackageNotFoundError, version
 
 from . import adbscan, shape  # noqa F401
+from .correlogram import correlogram  # noqa F401
 from .gamma import Gamma  # noqa F401
 from .geary import Geary  # noqa F401
 from .geary_local import Geary_Local  # noqa F401
@@ -35,6 +36,10 @@ from .moran import (
     Moran_Local_Rate,
     Moran_Rate,
     plot_moran_facet,
+)
+from .moran_local_mv import (
+    MoranLocalPartial,
+    MoranLocalConditional
 )
 from .silhouettes import boundary_silhouette, path_silhouette  # noqa F401
 from .smaup import Smaup  # noqa F401

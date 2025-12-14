@@ -217,7 +217,7 @@ class Moran:
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
-            with np.errstate(divide='ignore'):
+            with np.errstate(divide="ignore"):
                 self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
                 self.p_z_sim = stats.norm.sf(self.z_sim)
@@ -307,7 +307,7 @@ class Moran:
             documentation for the Moran statistic.
 
         Returns
-        --------
+        -------
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
@@ -540,7 +540,7 @@ class Moran_BV:  # noqa: N801
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
-            with np.errstate(divide='ignore'):
+            with np.errstate(divide="ignore"):
                 self.z_sim = (self.I - self.EI_sim) / self.seI_sim
             if self.z_sim > 0:
                 self.p_z_sim = stats.norm.sf(self.z_sim)
@@ -603,7 +603,7 @@ class Moran_BV:  # noqa: N801
             documentation for the Moran_BV statistic.
 
         Returns
-        --------
+        -------
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
@@ -1074,7 +1074,7 @@ class Moran_Rate(Moran):  # noqa: N801
             documentation for the Moran_Rate statistic.
 
         Returns
-        --------
+        -------
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
@@ -1223,13 +1223,13 @@ class Moran_Local:  # noqa: N801
         variance of Is from permutations
     EI : array
         analytical expectation of Is under total permutation,
-        from :cite:`Anselin1995`. Is the same at each site,
+        from :cite:`Anselin95`. Is the same at each site,
         and equal to the expectation of I itself when
         transformation='r'. We recommend using EI_sim, not EI,
         for analysis. This EI is only provided for reproducibility.
     VI : array
         analytical variance of Is under total permutation,
-        from :cite:`Anselin1995`. Varies according only to
+        from :cite:`Anselin95`. Varies according only to
         cardinality. We recommend using VI_sim, not VI, for
         analysis. This VI is only provided for reproducibility.
     EIc : array
@@ -1356,7 +1356,7 @@ class Moran_Local:  # noqa: N801
                 self.EI_sim = self.sim.mean(axis=0)
                 self.seI_sim = self.sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
-                with np.errstate(divide='ignore'):
+                with np.errstate(divide="ignore"):
                     self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
             else:
@@ -1410,7 +1410,7 @@ class Moran_Local:  # noqa: N801
         # ---------------------------------------------------------
         # Total randomization null, Sokal 1998, Eqs. A3 & A4*
         # ---------------------------------------------------------
-        m4 = z**4 / n
+        m4 = (z**4).sum() / n
         b2 = m4 / m2**2
 
         expectation = -wi / (n - 1)
@@ -1466,7 +1466,7 @@ class Moran_Local:  # noqa: N801
             documentation for the Moran_Local statistic.
 
         Returns
-        --------
+        -------
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
@@ -1841,7 +1841,7 @@ class Moran_Local_BV:  # noqa: N801
                 self.EI_sim = sim.mean(axis=0)
                 self.seI_sim = sim.std(axis=0)
                 self.VI_sim = self.seI_sim * self.seI_sim
-                with np.errstate(divide='ignore'):
+                with np.errstate(divide="ignore"):
                     self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
@@ -1912,7 +1912,7 @@ class Moran_Local_BV:  # noqa: N801
             documentation for the Moran_Local_BV statistic.
 
         Returns
-        --------
+        -------
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
@@ -2303,7 +2303,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
             documentation for the Moran_Local_Rate statistic.
 
         Returns
-        --------
+        -------
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
@@ -2801,8 +2801,8 @@ def _wikh_fast(W, sokal_correction=False):
     where this function is called, the defaults should always return
     the version in the original :cite:`Anselin1995 paper`.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     W : scipy sparse matrix
         a sparse matrix describing the spatial relationships
         between observations.
@@ -2825,7 +2825,7 @@ def _wikh_fast(W, sokal_correction=False):
 def _wikh_numba(n, row, col, data, sokal_correction=False):
     """
     This is a fast implementation of the wi(kh) function from
-    :cite:`Anselin1995`.
+    :cite:`Anselin95`.
 
     This uses numpy to compute the outer product of each observation's
     weights, after removing the w_ii entry. Then, the sum of the outer
@@ -2850,7 +2850,7 @@ def _wikh_numba(n, row, col, data, sokal_correction=False):
 def _wikh_slow(W, sokal_correction=False):
     """
     This is a slow implementation of the wi(kh) function from
-    :cite:`Anselin1995`
+    :cite:`Anselin95`
 
     This does three nested for-loops over n, doing the literal operations
     stated by the expression.
