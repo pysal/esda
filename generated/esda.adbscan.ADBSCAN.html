@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.adbscan.ADBSCAN &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <title>esda.adbscan.ADBSCAN &#8212; esda v2.8.1 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../_static/documentation_options.js?v=6b84fd01"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=cd87aae0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,23 +68,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/localjoincounts.html">Local join counts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
@@ -106,38 +89,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/localjoincounts.html">Local join counts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html">Measures of shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/correlogram.html">Distance Bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/correlogram.html#KNN-Distance">KNN Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/topo.html">Topological Measures of Geographical Surfaces</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
@@ -213,7 +167,7 @@
 <h1>esda.adbscan.ADBSCAN<a class="headerlink" href="#esda-adbscan-adbscan" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="esda.adbscan.ADBSCAN">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.adbscan.</span></span><span class="sig-name descname"><span class="pre">ADBSCAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_exact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_solus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/adbscan.html#ADBSCAN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.adbscan.ADBSCAN" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.adbscan.</span></span><span class="sig-name descname"><span class="pre">ADBSCAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_exact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_solus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/adbscan.html#ADBSCAN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.adbscan.ADBSCAN" title="Link to this definition">¶</a></dt>
 <dd><p>A-DBSCAN, as introduced in <span id="id1">[<a class="reference internal" href="../references.html#id23" title="Daniel Arribas-Bel, M-À Garcia-López, and Elisabet Viladecans-Marsal. Building(s and) cities: delineating urban areas with a machine learning algorithm. Journal of Urban Economics, 125:103217, 2021. Delineation of Urban Areas. doi:10.1016/j.jue.2019.103217.">ABGLopezVM21</a>]</span>.</p>
 <p>A-DSBCAN is an extension of the original DBSCAN algorithm that creates an
 ensemble of solutions generated by running DBSCAN on a random subset and
@@ -225,10 +179,10 @@ the notebook guide for an illustration.
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>eps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The maximum distance between two samples for them to be considered
+<dt><strong>eps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The maximum distance between two samples for them to be considered
 as in the same neighborhood.</p>
 </dd>
-<dt><strong>min_samples</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of samples (or total weight) in a neighborhood
+<dt><strong>min_samples</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of samples (or total weight) in a neighborhood
 for a point to be considered as a core point. This includes the
 point itself.</p>
 </dd>
@@ -236,19 +190,19 @@ point itself.</p>
 to compute pointwise distances and find nearest neighbors.
 See NearestNeighbors module documentation for details.</p>
 </dd>
-<dt><strong>n_jobs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>[Optional. Default=1] The number of parallel jobs to run. If -1, then
+<dt><strong>n_jobs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>[Optional. Default=1] The number of parallel jobs to run. If -1, then
 the number of jobs is set to the number of CPU cores.</p>
 </dd>
-<dt><strong>pct_exact</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>[Optional. Default=0.1] Proportion of the entire dataset
+<dt><strong>pct_exact</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>[Optional. Default=0.1] Proportion of the entire dataset
 used to calculate DBSCAN in each draw</p>
 </dd>
-<dt><strong>reps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>[Optional. Default=100] Number of random samples to draw in order to
+<dt><strong>reps</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>[Optional. Default=100] Number of random samples to draw in order to
 build final solution</p>
 </dd>
-<dt><strong>keep_solus</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.13)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>[Optional. Default=False] If True, the <cite>solus</cite> and <cite>solus_relabelled</cite>
+<dt><strong>keep_solus</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>[Optional. Default=False] If True, the <cite>solus</cite> and <cite>solus_relabelled</cite>
 objects are kept, else it is deleted to save memory</p>
 </dd>
-<dt><strong>pct_thr</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>[Optional. Default=0.9] Minimum proportion of replications that
+<dt><strong>pct_thr</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>[Optional. Default=0.9] Minimum proportion of replications that
 a non-noise label need to be assigned to an observation for that
 observation to be labelled as such</p>
 </dd>
@@ -256,7 +210,7 @@ observation to be labelled as such</p>
 </dd>
 <dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>[Only available after <cite>fit</cite>] Cluster labels for each point in the
+<dt><strong>labels_</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>[Only available after <cite>fit</cite>] Cluster labels for each point in the
 dataset given to fit().
 Noisy (if the proportion of the most common label is &lt; pct_thr)
 samples are given the label -1.</p>
@@ -371,7 +325,7 @@ is by itself a core sample; a sample with negative
 weight may inhibit its eps-neighbor from being core.
 Note that weights are absolute, and default to 1.</p>
 </dd>
-<dt><strong>xy</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>[Default=`[‘X’, ‘Y’]`] Ordered pair of names for XY
+<dt><strong>xy</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>[Default=`[‘X’, ‘Y’]`] Ordered pair of names for XY
 coordinates in <cite>xys</cite></p>
 </dd>
 <dt><strong>y</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ignored</span></code></span></dt><dd></dd>
@@ -382,12 +336,12 @@ coordinates in <cite>xys</cite></p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="esda.adbscan.ADBSCAN.set_fit_request">
-<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#esda.adbscan.ADBSCAN" title="esda.adbscan.ADBSCAN"><span class="pre">ADBSCAN</span></a></span></span><a class="headerlink" href="#esda.adbscan.ADBSCAN.set_fit_request" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#esda.adbscan.ADBSCAN" title="esda.adbscan.ADBSCAN"><span class="pre">ADBSCAN</span></a></span></span><a class="headerlink" href="#esda.adbscan.ADBSCAN.set_fit_request" title="Link to this definition">¶</a></dt>
 <dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
 <p>Note that this method is only relevant when this estimator is used as a
-sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.7)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
-with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.7)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
-Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.7)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.8)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.8)"><span class="xref std std-ref">User Guide</span></a> on how the routing
 mechanism works.</p>
 <p>The options for each parameter are:</p>
 <ul class="simple">
@@ -405,15 +359,15 @@ parameters and not others.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>sample_weight</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+<dt><strong>sample_weight</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </dd>
-<dt><strong>xy</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">xy</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+<dt><strong>xy</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">xy</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>self</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>The updated object.</p>
+<dt><strong>self</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>The updated object.</p>
 </dd>
 </dl>
 </dd>
@@ -444,7 +398,7 @@ parameters and not others.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

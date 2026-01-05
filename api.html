@@ -5,20 +5,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API reference &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <title>API reference &#8212; esda v2.8.1 Manual</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="_static/documentation_options.js?v=6b84fd01"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=cd87aae0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="icon" href="_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="esda.adbscan.ADBSCAN" href="generated/esda.adbscan.ADBSCAN.html" />
-    <link rel="prev" title="Installation" href="installation.html" />
+    <link rel="prev" title="Topological Measures of Geographical Surfaces" href="notebooks/topo.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,23 +68,6 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#a-dbscan">A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#correlogram">Correlogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#gamma-statistic">Gamma Statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#geary-statistics">Geary Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getis-ord-statistics">Getis-Ord Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#join-count-statistics">Join Count Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#join-count-local-statistics">Join Count Local Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#losh-statistics">LOSH Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#moran-statistics">Moran Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#shape-statistics">Shape Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#silhouette-statistics">Silhouette Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/localjoincounts.html">Local join counts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
@@ -106,38 +89,9 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/localjoincounts.html">Local join counts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html">Measures of shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/correlogram.html">Distance Bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/correlogram.html#KNN-Distance">KNN Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/topo.html">Topological Measures of Geographical Surfaces</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
@@ -233,7 +187,7 @@
 <span id="correlogram-api"></span><h2>Correlogram<a class="headerlink" href="#correlogram" title="Link to this heading">¶</a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.correlogram.html#esda.correlogram" title="esda.correlogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.correlogram</span></code></a>(geometry, variable[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.correlogram.html#esda.correlogram" title="esda.correlogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.correlogram</span></code></a>(geometry, variable, ...)</p></td>
 <td><p>Generate a spatial correlogram</p></td>
 </tr>
 </tbody>
@@ -486,7 +440,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>

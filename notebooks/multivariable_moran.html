@@ -5,22 +5,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>How do we introduce another variables? &#8212; esda v2.8.1.dev2+gcb1f0d777 Manual</title>
+    <title>How do we introduce another variables? &#8212; esda v2.8.1 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=6b84fd01"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=cd87aae0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="References" href="../references.html" />
+    <link rel="next" title="Distance Bands" href="correlogram.html" />
     <link rel="prev" title="Exploratory Analysis of Spatial Data: Spatial Autocorrelation" href="spatial_autocorrelation_for_areal_unit_data.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.1.dev2+gcb1f0d777</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -71,23 +71,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
-</ul>
-</li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
@@ -109,38 +92,9 @@
 <li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">How do we introduce another variables?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shape-measures.html">Measures of shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shape-measures.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">How do we introduce another variables?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="correlogram.html">Distance Bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="correlogram.html#KNN-Distance">KNN Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topo.html">Topological Measures of Geographical Surfaces</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
@@ -211,9 +165,9 @@
     <div class="body col-md-12 content" role="main">
       
   <div class="admonition note">
-<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda//home/runner/work/esda/esda/docs/notebooks/multivariable_moran.ipynb">/home/runner/work/esda/esda/docs/notebooks/multivariable_moran.ipynb</a>.
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda/blob/main/notebooks/multivariable_moran.ipynb">notebooks/multivariable_moran.ipynb</a>.
 Interactive online version:
-<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/master?filepath=/home/runner/work/esda/esda/docs/notebooks/multivariable_moran.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/main?filepath=notebooks/multivariable_moran.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
 </div>
 <p># Local Multi-Variable Moran Statistics</p>
 <p>Local Moran statistics are very useful to assess spatial clusters (or outliers) in geographic data. Moran-style statistics are fundamentally based on the <em>covariance</em> of an outcome <span class="math notranslate nohighlight">\(y_i\)</span> with other observations <span class="math notranslate nohighlight">\(y_j\)</span>, weighted according to some function that describes how near <span class="math notranslate nohighlight">\(i\)</span> is to <span class="math notranslate nohighlight">\(j\)</span>. Classically, we describe that weight as <span class="math notranslate nohighlight">\(w_{ij}\)</span>, and collect that into a big matrix, <span class="math notranslate nohighlight">\(\mathbf{W}\)</span>, that describes the relations between each site and every other site.</p>
@@ -895,7 +849,7 @@ all of the variation in <span class="math notranslate nohighlight">\(y\)</span> 
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
     </p>
   </div>
 </footer>
