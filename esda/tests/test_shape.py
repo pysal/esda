@@ -1,3 +1,5 @@
+import warnings
+
 import geopandas
 import numpy
 import pytest
@@ -176,8 +178,20 @@ def test_rectangularity():
 
 
 def test_shape_index():
-    observed = esda.shape.shape_index(shape)
-    testing.assert_allclose(observed, 0.659366, atol=ATOL)
+    """Test that shape_index is deprecated and returns same value as radii_ratio."""
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        observed = esda.shape.shape_index(shape)
+
+        # Check that deprecation warning was raised
+        assert len(w) == 1
+        assert issubclass(w[0].category, DeprecationWarning)
+        assert "deprecated" in str(w[0].message).lower()
+        assert "radii_ratio" in str(w[0].message)
+
+    # Check that result matches radii_ratio
+    expected = esda.shape.radii_ratio(shape)
+    testing.assert_allclose(observed, expected, atol=ATOL)
 
 
 def test_equivalent_rectangular_index():
