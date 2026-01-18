@@ -368,8 +368,8 @@ def rectangularity(collection):
 def shape_index(collection):
     """
     .. deprecated:: 2.5.0
-        ``shape_index`` is deprecated and will be removed in version 3.0.0.
-        Use ``radii_ratio`` instead, which computes the same Schumm's shape index
+        ``shape_index`` is deprecated and will be removed in future.
+        Use :func:`radii_ratio` instead, which computes the same Schumm's shape index
         (Schumm (1956) in MacEachren 1985).
 
     Schumm's shape index (Schumm (1956) in MacEachren 1985)
@@ -386,7 +386,7 @@ def shape_index(collection):
 
     """
     warnings.warn(
-        "shape_index is deprecated and will be removed in version 3.0.0. "
+        "shape_index is deprecated and will be removed in future. "
         "Use radii_ratio instead, which computes the same index.",
         DeprecationWarning,
         stacklevel=2,
