@@ -199,7 +199,7 @@ def isoareal_quotient(collection):
 
     Where :math:`A` is the area of the polygon and :math:`P` is the perimeter of the polygon.
 
-    However, the :math:`IAQ` is merely the square root of the Isoperimetric quotient, and is
+    With some manipulation, :math:`IAQ` can also be expressed as the square root of the Isoperimetric quotient, given by
     implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. Importantly, this means
     that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.
 
