@@ -33,6 +33,8 @@ spdep-geary.ipynb
 #######################################################################
 # Standard Python.gitignore template
 # https://github.com/github/gitignore/blob/main/Python.gitignore
+# Commit 7bfab2e
+# ESDA team additions noted with #esda
 #######################################################################
 
 # Byte-compiled / optimized / DLL files
@@ -107,6 +109,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/generated/ #esda
+docs/notebooks/ #esda
 
 # PyBuilder
 .pybuilder/
