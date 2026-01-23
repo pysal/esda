@@ -37,11 +37,10 @@ def _cast(collection):
 
     if isinstance(collection, geopandas.GeoSeries | geopandas.GeoDataFrame):
         return numpy.asarray(collection.geometry.array)
+    elif isinstance(collection, numpy.ndarray | list):
+        return numpy.asarray(collection)
     else:
-        if isinstance(collection, numpy.ndarray | list):
-            return numpy.asarray(collection)
-        else:
-            return numpy.array([collection])
+        return numpy.array([collection])
 
 
 def get_angles(collection, return_indices=False):
@@ -132,36 +131,41 @@ def _get_angles(points, n_coords_per_geom):
 
 # -------------------- IDEAL SHAPE MEASURES -------------------- #
 
-
 def isoperimetric_quotient(collection):
-    r"""
+    """
     The Isoperimetric quotient, defined as the ratio of a polygon's area to the
     area of the equi-perimeter circle.
 
-    Altman's PA_1 measure :cite:`altman1998Districting`
+    Parameters
+    ----------
+    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+        Input collection of polygons.
 
-    Construction:
+    Returns
+    -------
 
-    let:
-    p_d = perimeter of polygon
-    a_d = area of polygon
+    np.ndarray
+        An array of the same length as the input collection, containing the 
+        Isoperimetric quotient for each polygon in the collection.
 
-    a_c = area of the constructed circle
-    r = radius of constructed circle
+    Notes
+    -----
 
-    then the relationship between the constructed radius and the polygon
-    perimeter is:
-    p_d = 2 \pi r
-    p_d / (2 \pi) = r
+    Altman's :math:`PA_1` measure :cite:`altman1998Districting`.
 
-    meaning the area of the circle can be expressed as:
-    a_c = \pi r^2
-    a_c = \pi (p_d / (2\pi))^2
+    The formula is given by:
 
-    implying finally that the IPQ is:
+    .. math::
+        IPQ = \\frac{4 \\pi A}{P^2}
 
-    pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))
+    Where :math:`A` is the area of the polygon and :math:`P` is the perimeter of the polygon.
+
+    The :math:`IPQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, 
+    it is bounded between 0 and 1, with 1 representing a perfect circle, the most compact shape
+    by this measure.
+    
     """
+
     ga = _cast(collection)
     return (4 * numpy.pi * shapely.area(ga)) / (shapely.measurement.length(ga) ** 2)
 
@@ -169,15 +173,49 @@ def isoperimetric_quotient(collection):
 def isoareal_quotient(collection):
     """
     The Isoareal quotient, defined as the ratio of a polygon's perimeter to the
-    perimeter of the equi-areal circle
+    perimeter of the equi-areal circle.
 
-    Altman's PA_3 measure, and proportional to the PA_4 measure
-    :cite:`altman1998Districting`
+    Parameters
+    ----------
+    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+        Input collection of polygons.
+
+    Returns
+    -------
+
+    np.ndarray
+        An array of the same length as the input collection, containing the 
+        Isoareal quotient for each polygon in the collection.
+        
+    Notes
+    -----
+
+    Altman's :math:`PA_3` measure :cite:`altman1998Districting`.
+
+    The formula is given by:
+
+    .. math::
+        IAQ = \\frac{2 \\sqrt{\\pi A}}{P}
+
+    Where :math:`A` is the area of the polygon and :math:`P` is the perimeter of the polygon.
+
+    With some manipulation, :math:`IAQ` can also be expressed as the square root of the Isoperimetric quotient, given by
+
+    .. math::
+        IAQ = \\frac{2 \\sqrt{\\pi A}}{P}
+            = \\sqrt{\\frac{(2 \\sqrt{\\pi A})^2}{P^2}}
+            = \\sqrt{\\frac{4 \\pi A}{P^2}}
+            = \\sqrt{IPQ}
+
+    Therefore, `isoareal_quotient` is implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. 
+    Importantly, this means that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.
+
+    The :math:`IAQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, 
+    it is bounded between 0 and 1, with 1 representing a perfect circle, the most compact shape
+    by this measure.
+    
     """
-    ga = _cast(collection)
-    return (
-        2 * numpy.pi * numpy.sqrt(shapely.area(ga) / numpy.pi)
-    ) / shapely.measurement.length(ga)
+    return numpy.sqrt(isoperimetric_quotient(collection))
 
 
 def minimum_bounding_circle_ratio(collection):
