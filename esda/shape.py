@@ -200,8 +200,15 @@ def isoareal_quotient(collection):
     Where :math:`A` is the area of the polygon and :math:`P` is the perimeter of the polygon.
 
     With some manipulation, :math:`IAQ` can also be expressed as the square root of the Isoperimetric quotient, given by
-    implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. Importantly, this means
-    that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.
+
+    .. math::
+        IAQ = \\frac{2 \\sqrt{\\pi A}}{P}
+            = \\sqrt{\\frac{(2 \\sqrt{\\pi A})^2}{P^2}}
+            = \\sqrt{\\frac{4 \\pi A}{P^2}}
+            = \\sqrt{IPQ}
+
+    Therefore, `isoareal_quotient` is implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. 
+    Importantly, this means that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.
 
     The :math:`IAQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, 
     it is bounded between 0 and 1, with 1 representing a perfect circle, the most compact shape
