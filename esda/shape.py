@@ -514,18 +514,6 @@ def second_areal_moment(collection):
     """ 
     return second_moment_of_area(collection)
 
-def _second_moment_of_area_polygon(polygon):
-    """
-    Compute the absolute value of the moment of area (i.e. ignoring winding direction)
-    for an input polygon.
-    """
-    coordinates = shapely.get_coordinates(polygon)
-    centroid = shapely.centroid(polygon)
-    centroid_coords = shapely.get_coordinates(centroid)
-    moi = _second_moa_ring_xplusy(coordinates - centroid_coords)
-    return abs(moi)
-
-
 @njit
 def _second_moment_of_area_ring(pts, ref_pt=None):
     """Calculate the second moment of area of a closed polygon using the shoelace formula.
@@ -676,32 +664,6 @@ def second_moment_of_area(collection):
         moments.append(total_moa)
 
     return np.array(moments)
-
-@njit
-def _second_moa_ring_xplusy(points):
-    """
-    Passes through to new implementation of second moment of area for a ring.
-    """
-
-    # Preserve original implementation temporarily for testing
-
-    moi = 0
-    for i in prange(len(points[:-1])):
-        x_tail, y_tail = points[i]
-        x_head, y_head = points[i + 1]
-        xtyh = x_tail * y_head
-        xhyt = x_head * y_tail
-        moi += (xtyh - xhyt) * (
-            x_head**2
-            + x_head * x_tail
-            + x_tail**2
-            + y_head**2
-            + y_head * y_tail
-            + y_tail**2
-        )
-    return moi / 12
-    
-    return _second_moment_of_area_ring(points)
 
 # -------------------- OTHER MEASURES -------------------- #
 
