@@ -1,7 +1,7 @@
 import contextlib
 
-import numpy
-import pandas
+import numpy as np
+import pandas as pd
 from packaging.version import Version
 
 # gets handled at the _cast level.
@@ -25,7 +25,7 @@ def _cast(collection):
     Cast a collection to a shapely geometry array.
     """
     try:
-        import geopandas
+        import geopandas as gpd
         import shapely
     except (ImportError, ModuleNotFoundError) as exception:
         raise type(exception)(
@@ -35,12 +35,12 @@ def _cast(collection):
     if Version(shapely.__version__) < Version("2"):
         raise ImportError("Shapely 2.0 or newer is required.")
 
-    if isinstance(collection, geopandas.GeoSeries | geopandas.GeoDataFrame):
-        return numpy.asarray(collection.geometry.array)
-    elif isinstance(collection, numpy.ndarray | list):
-        return numpy.asarray(collection)
+    if isinstance(collection, gpd.GeoSeries | gpd.GeoDataFrame):
+        return np.asarray(collection.geometry.array)
+    elif isinstance(collection, np.ndarray | list):
+        return np.asarray(collection)
     else:
-        return numpy.array([collection])
+        return np.array([collection])
 
 
 def get_angles(collection, return_indices=False):
@@ -77,10 +77,10 @@ def get_angles(collection, return_indices=False):
     exploded = shapely.get_parts(ga)
     coords = shapely.get_coordinates(exploded)
     n_coords_per_geom = shapely.get_num_coordinates(exploded)
-    angles = numpy.asarray(_get_angles(coords, n_coords_per_geom))
+    angles = np.asarray(_get_angles(coords, n_coords_per_geom))
     if return_indices:
-        return angles, numpy.repeat(
-            numpy.arange(len(ga)),
+        return angles, np.repeat(
+            np.arange(len(ga)),
             shapely.get_num_coordinates(ga) - shapely.get_num_geometries(ga),
         )
     else:
@@ -123,7 +123,7 @@ def _get_angles(points, n_coords_per_geom):
         a = left - center
         b = right - center
         # compute the angle between the segments
-        angle = numpy.arctan2(a[0] * b[1] - a[1] * b[0], numpy.dot(a, b))
+        angle = np.arctan2(a[0] * b[1] - a[1] * b[0], np.dot(a, b))
         result.append(angle)
         on_coord += 1
     return result
@@ -167,7 +167,7 @@ def isoperimetric_quotient(collection):
     """
 
     ga = _cast(collection)
-    return (4 * numpy.pi * shapely.area(ga)) / (shapely.measurement.length(ga) ** 2)
+    return (4 * np.pi * shapely.area(ga)) / (shapely.measurement.length(ga) ** 2)
 
 
 def isoareal_quotient(collection):
@@ -207,7 +207,7 @@ def isoareal_quotient(collection):
             = \\sqrt{\\frac{4 \\pi A}{P^2}}
             = \\sqrt{IPQ}
 
-    Therefore, `isoareal_quotient` is implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. 
+    Therefore, `isoareal_quotient` is implemented as `np.sqrt(isoperimetric_quotient(collection))`. 
     Importantly, this means that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.
 
     The :math:`IAQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, 
@@ -215,7 +215,7 @@ def isoareal_quotient(collection):
     by this measure.
     
     """
-    return numpy.sqrt(isoperimetric_quotient(collection))
+    return np.sqrt(isoperimetric_quotient(collection))
 
 
 def minimum_bounding_circle_ratio(collection):
@@ -228,7 +228,7 @@ def minimum_bounding_circle_ratio(collection):
     (1963)
     """
     ga = _cast(collection)
-    mbca = (shapely.minimum_bounding_radius(ga) ** 2) * numpy.pi
+    mbca = (shapely.minimum_bounding_radius(ga) ** 2) * np.pi
     return shapely.area(ga) / mbca
 
 
@@ -239,7 +239,7 @@ def radii_ratio(collection):
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
     ga = _cast(collection)
-    r_eac = numpy.sqrt(shapely.area(ga) / numpy.pi)
+    r_eac = np.sqrt(shapely.area(ga) / np.pi)
     r_mbc = shapely.minimum_bounding_radius(ga)
     return r_eac / r_mbc
 
@@ -256,13 +256,13 @@ def diameter_ratio(collection, rotated=True):
         box = shapely.minimum_rotated_rectangle(ga)
         coords = shapely.get_coordinates(box)
         a, b, _, d = (coords[0::5], coords[1::5], coords[2::5], coords[3::5])
-        widths = numpy.sqrt(numpy.sum((a - b) ** 2, axis=1))
-        heights = numpy.sqrt(numpy.sum((a - d) ** 2, axis=1))
+        widths = np.sqrt(np.sum((a - b) ** 2, axis=1))
+        heights = np.sqrt(np.sum((a - d) ** 2, axis=1))
     else:
         box = shapely.bounds(ga)
         (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
-        widths, heights = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
-    return numpy.minimum(widths, heights) / numpy.maximum(widths, heights)
+        widths, heights = np.abs(xmax - xmin), np.abs(ymax - ymin)
+    return np.minimum(widths, heights) / np.maximum(widths, heights)
 
 
 def length_width_diff(collection):
@@ -279,7 +279,7 @@ def length_width_diff(collection):
     ga = _cast(collection)
     box = shapely.bounds(ga)
     (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
-    width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
+    width, height = np.abs(xmax - xmin), np.abs(ymax - ymin)
     return width - height
 
 
@@ -322,11 +322,11 @@ def fractal_dimension(collection, support="hex"):
     P = shapely.length(ga)
     A = shapely.area(ga)
     if support == "hex":
-        return 2 * numpy.log(P / 6) / numpy.log(A / (3 * numpy.sin(numpy.pi / 3)))
+        return 2 * np.log(P / 6) / np.log(A / (3 * np.sin(np.pi / 3)))
     elif support == "square":
-        return 2 * numpy.log(P / 4) / numpy.log(A)
+        return 2 * np.log(P / 4) / np.log(A)
     elif support == "circle":
-        return 2 * numpy.log(P / (2 * numpy.pi)) / numpy.log(A / numpy.pi)
+        return 2 * np.log(P / (2 * np.pi)) / np.log(A / np.pi)
     else:
         raise ValueError(
             "The support argument must be one of 'hex', 'circle', or 'square', "
@@ -361,7 +361,7 @@ def squareness(collection):
 
     """
     ga = _cast(collection)
-    return ((numpy.sqrt(shapely.area(ga)) * 4) / shapely.length(ga)) ** 2
+    return ((np.sqrt(shapely.area(ga)) * 4) / shapely.length(ga)) ** 2
 
 
 def rectangularity(collection):
@@ -402,7 +402,7 @@ def shape_index(collection):
 
     """
     ga = _cast(collection)
-    return numpy.sqrt(shapely.area(ga) / numpy.pi) / shapely.minimum_bounding_radius(ga)
+    return np.sqrt(shapely.area(ga) / np.pi) / shapely.minimum_bounding_radius(ga)
 
 
 def equivalent_rectangular_index(collection):
@@ -424,7 +424,7 @@ def equivalent_rectangular_index(collection):
     """
     ga = _cast(collection)
     box = shapely.minimum_rotated_rectangle(ga)
-    return numpy.sqrt(shapely.area(ga) / shapely.area(box)) * (
+    return np.sqrt(shapely.area(ga) / shapely.area(box)) * (
         shapely.length(box) / shapely.length(ga)
     )
 
@@ -450,7 +450,7 @@ def form_factor(collection, height):
     A = shapely.area(ga)
     V = A * height
     zeros = V == 0
-    res = numpy.zeros(len(ga))
+    res = np.zeros(len(ga))
     res[~zeros] = A[~zeros] / (V[~zeros] ** (2 / 3))
     return res
 
@@ -477,15 +477,15 @@ def moment_of_inertia(collection):
     """
     ga = _cast(collection)
     coords = shapely.get_coordinates(ga)
-    geom_ixs = numpy.repeat(numpy.arange(len(ga)), shapely.get_num_coordinates(ga))
+    geom_ixs = np.repeat(np.arange(len(ga)), shapely.get_num_coordinates(ga))
     centroids = shapely.get_coordinates(shapely.centroid(ga))[geom_ixs]
-    squared_euclidean = numpy.sum((coords - centroids) ** 2, axis=1)
+    squared_euclidean = np.sum((coords - centroids) ** 2, axis=1)
     dists = (
-        pandas.DataFrame.from_dict(dict(d2=squared_euclidean, geom_ix=geom_ixs))
+        pd.DataFrame.from_dict(dict(d2=squared_euclidean, geom_ix=geom_ixs))
         .groupby("geom_ix")
         .d2.sum()
     ).values
-    return shapely.area(ga) / numpy.sqrt(2 * dists)
+    return shapely.area(ga) / np.sqrt(2 * dists)
 
 
 def moa_ratio(collection):
@@ -494,8 +494,8 @@ def moa_ratio(collection):
     the moment of area of a circle with the same area.
     """
     ga = _cast(collection)
-    r = shapely.length(ga) / (2 * numpy.pi)
-    return (numpy.pi * 0.5 * r**4) / second_areal_moment(ga)
+    r = shapely.length(ga) / (2 * np.pi)
+    return (np.pi * 0.5 * r**4) / second_areal_moment(ga)
 
 
 def nmi(collection):
@@ -505,109 +505,14 @@ def nmi(collection):
     its second moment of area.
     """
     ga = _cast(collection)
-    return shapely.area(ga) ** 2 / (2 * second_areal_moment(ga) * numpy.pi)
+    return shapely.area(ga) ** 2 / (2 * second_areal_moment(ga) * np.pi)
 
 
 def second_areal_moment(collection):
     """
-    Using equation listed on en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon, the second
-    moment of area is the sum of the inertia across the x and y axes:
-
-    The :math:`x` axis is given by:
-
-    .. math::
-
-        I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)
-
-    While the :math:`y` axis is in a similar form:
-
-    .. math::
-
-        I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)
-
-    where :math:`x_i`, :math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,
-    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes,
-    all parts are treated as separate contributions to the overall centroid, which
-    provides the same result as if all parts with holes are separately computed, and then
-    merged together using the parallel axis theorem.
-
-    References
-    ----------
-    Hally, D. 1987. The calculations of the moments of polygons. Canadian National
-    Defense Research and Development Technical Memorandum 87/209.
-    https://apps.dtic.mil/dtic/tr/fulltext/u2/a183444.pdf
-
-    """  # noqa: E501
-    ga = _cast(collection)
-    import geopandas  # function level, to follow module design
-
-    # construct a dataframe of the fundamental parts of all input polygons
-    parts, collection_ix = shapely.get_parts(ga, return_index=True)
-    rings, ring_ix = shapely.get_rings(parts, return_index=True)
-    # get_rings() always returns the exterior first, then the interiors
-    collection_ix = numpy.repeat(
-        collection_ix, shapely.get_num_interior_rings(parts) + 1
-    )
-    # we need to work in polygon-space for the algorithms
-    # (centroid, shoelace calculation) to work
-    polygon_rings = shapely.polygons(rings)
-    is_external = numpy.zeros_like(collection_ix).astype(bool)
-    # the first element is always external
-    is_external[0] = True
-    # and each subsequent element is external iff
-    # it is different from the preceeding index
-    is_external[1:] = ring_ix[1:] != ring_ix[:-1]
-    # now, our analysis frame contains a bunch of (guaranteed-to-be-simple) polygons
-    # that represent either exterior rings or holes
-    polygon_rings = geopandas.GeoDataFrame(
-        dict(
-            collection_ix=collection_ix,
-            ring_within_geom_ix=ring_ix,
-            is_external_ring=is_external,
-        ),
-        geometry=polygon_rings,
-    )
-    # the polygonal moi can be calculated using the same ring-based strategy,
-    # and this could be parallelized if necessary over the elemental shapes with:
-
-    # from joblib import Parallel, parallel_backend, delayed
-    # with parallel_backend('loky', n_jobs=-1):
-    #     engine = Parallel()
-    #     promise = delayed(_second_moment_of_area_polygon)
-    #     result = engine(promise(geom) for geom in polygon_rings.geometry.values)
-
-    # but we will keep simple for now
-    polygon_rings["moa"] = polygon_rings.geometry.apply(_second_moment_of_area_polygon)
-    # the above algorithm computes an unsigned moa
-    # to be insensitive to winding direction.
-    # however, we need to subtract the moa of holes. Hence, the sign of the moa is
-    # -1 when the polygon is an internal ring and 1 otherwise:
-    polygon_rings["sign"] = (1 - polygon_rings.is_external_ring * 2) * -1
-    # shapely already uses the correct formulation for centroids
-    polygon_rings["centroids"] = shapely.centroid(polygon_rings.geometry)
-    # the inertia of parts applies to the overall center of mass:
-    original_centroids = shapely.centroid(ga)
-    polygon_rings["collection_centroid"] = original_centroids[collection_ix]
-    # proportional to the squared distance between the original and part centroids:
-    polygon_rings["radius"] = shapely.distance(
-        polygon_rings.centroid.values, polygon_rings.collection_centroid.values
-    )
-    # now, we take the sum of (I+Ar^2) for each ring, treating the
-    # contribution of holes as negative.
-    # Then, we take the sum of all of the contributions
-    return (
-        polygon_rings.groupby(["collection_ix", "ring_within_geom_ix"])
-        .apply(
-            lambda ring_in_part: (
-                (ring_in_part.moa + ring_in_part.radius**2 * ring_in_part.area)
-                * ring_in_part.sign
-            ).sum()
-        )
-        .groupby(level="collection_ix")
-        .sum()
-        .values
-    )
-
+    Reimplemented by second_moment_of_area.
+    """ 
+    return second_moment_of_area(collection)
 
 def _second_moment_of_area_polygon(polygon):
     """
@@ -622,10 +527,164 @@ def _second_moment_of_area_polygon(polygon):
 
 
 @njit
+def _second_moment_of_area_ring(pts, ref_pt=None):
+    """Calculate the second moment of area of a closed polygon using the shoelace formula.
+    
+    This computes the second moment of area (referred to in some disciplines as the polar 
+    second moment) as the sum of I_x (second moment about x-axis) and I_y (second moment 
+    about y-axis), measured from the reference point (the centroid by default).
+    
+    Parameters
+    ----------
+    pts : Iterable of tuples
+        Coordinate pairs (x, y) defining a closed linear ring (polygon boundary).
+        The last point should equal the first point.
+    ref_pt : tuple, optional
+        A point (x_ref, y_ref) to measure moment about. If None (default), moment is 
+        measured about the centroid. To return moment about the origin, explicitly
+        set to (0, 0).
+
+    Returns
+    -------
+    float
+        A float representing the total (I_x + I_y) second moment of area about 
+        the reference point.
+
+    Notes
+    -----
+    The second moment of area formulas using the shoelace method are:
+    
+    .. math::
+        I_x = \\frac{1}{12}\\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(y_i^2 + y_i y_{i+1} + y_{i+1}^2)
+        
+        I_y = \\frac{1}{12}\\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(x_i^2 + x_i x_{i+1} + x_{i+1}^2)
+    
+    where indices wrap around (n+1 = 1).
+    
+    The moments are then adjusted to be relative to the reference point using the 
+    parallel axis theorem.
+
+    The shoelace formula returns a signed area based on the winding direction 
+    of the polygon. By convention, counter-clockwise winding returns a positive area,
+    while clockwise winding returns a negative area. Geospatial data, including shapely,
+    typically uses clockwise winding for exterior rings and counter-clockwise winding for
+    interior rings. **The return value should therefore be multiplied by -1 to obtain the 
+    conventional positive second moment of area for exterior rings.** Adding exterior and 
+    (negative) interior rings together (e.g., for polygons with holes) will yield the 
+    correct total second moment of area.
+    """
+    
+    x = [c[0] for c in pts]
+    y = [c[1] for c in pts]
+    use_origin = ref_pt is not None and ref_pt == (0, 0)
+
+    # Shoelace formula components
+    A = 0  # Area (used for ref_pt/centroid calculation)
+    Sx = 0  # First moment about origin (x component)
+    Sy = 0  # First moment about origin (y component)
+    Ix_origin = 0  # Second moment about x-axis through origin
+    Iy_origin = 0  # Second moment about y-axis through origin
+    
+    # Iterate through consecutive coordinate pairs
+    for i in prange(len(pts) - 1):
+        cross = x[i] * y[i+1] - x[i+1] * y[i]  # Shoelace term
+
+        # Calculating A and Sx, Sy is not needed if calculating about origin,
+        # but there is no time savings in skipping it here.
+
+        # Accumulate area
+        A += cross
+
+        # Accumulate first moments (for centroid calculation)
+        Sx += (x[i] + x[i+1]) * cross
+        Sy += (y[i] + y[i+1]) * cross
+        
+        # Accumulate second moments about origin
+        Ix_origin += (y[i]**2 + y[i]*y[i+1] + y[i+1]**2) * cross
+        Iy_origin += (x[i]**2 + x[i]*x[i+1] + x[i+1]**2) * cross
+    
+    # Normalize second moments
+    Ix_origin = Ix_origin / 12
+    Iy_origin = Iy_origin / 12
+
+    if use_origin:
+        Ix = Ix_origin
+        Iy = Iy_origin
+    else:
+        # Normalize by area
+        A = A / 2
+
+        if ref_pt is not None:
+            # Use provided reference point
+            cx, cy = ref_pt    
+        else:
+            # Calculate centroid
+            cx = Sx / (6 * A)
+            cy = Sy / (6 * A)
+
+        
+        # Apply parallel axis theorem to shift moments to reference point
+        Ix = Ix_origin - A * (cy ** 2)
+        Iy = Iy_origin - A * (cx ** 2)
+
+    return Ix + Iy
+
+def _polygon_rings(polygon):
+    exterior = np.asarray(polygon.exterior.coords)
+    interiors = [np.asarray(ring.coords) for ring in polygon.interiors]
+    return exterior, interiors
+
+def _multipolygon_rings(multipolygon):
+    exteriors = []
+    interiors = []
+
+    for poly in multipolygon.geoms:
+        ext, holes = _polygon_rings(poly)
+        exteriors.append(ext)
+        interiors.extend(holes)
+
+    return exteriors, interiors
+
+def second_moment_of_area(collection):
+    """
+    New implementation of second moment of area using the shoelace formula.
+    """
+
+    ga = _cast(collection)
+    moments = []
+
+    for geom in ga:
+        total_moa = 0
+
+        # shapely geometries wind "backwards" compared with the mathematical convention;
+        # thus, we need to invert the sign of the result to get the expected positive value
+        if isinstance(geom, shapely.geometry.Polygon):
+            exterior, interiors = _polygon_rings(geom)
+            total_moa -= _second_moment_of_area_ring(exterior)
+            for interior in interiors:
+                total_moa += _second_moment_of_area_ring(interior)
+        elif isinstance(geom, shapely.geometry.MultiPolygon):
+            exteriors, interiors = _multipolygon_rings(geom)
+            for exterior in exteriors:
+                total_moa -= _second_moment_of_area_ring(exterior)
+            for interior in interiors:
+                total_moa += _second_moment_of_area_ring(interior)
+        else:
+            raise ValueError(
+                f"Geometry type {geom.geom_type} not supported. Only Polygon and MultiPolygon are supported."
+            )
+        moments.append(total_moa)
+
+    return np.array(moments)
+
+@njit
 def _second_moa_ring_xplusy(points):
     """
-    implementation of the moment of area for a single ring
+    Passes through to new implementation of second moment of area for a ring.
     """
+
+    # Preserve original implementation temporarily for testing
+
     moi = 0
     for i in prange(len(points[:-1])):
         x_tail, y_tail = points[i]
@@ -641,7 +700,8 @@ def _second_moa_ring_xplusy(points):
             + y_tail**2
         )
     return moi / 12
-
+    
+    return _second_moment_of_area_ring(points)
 
 # -------------------- OTHER MEASURES -------------------- #
 
@@ -656,7 +716,7 @@ def reflexive_angle_ratio(collection):
     """
     angles, geom_indices = get_angles(collection, return_indices=True)
     return (
-        pandas.DataFrame.from_dict(dict(is_reflex=angles < 0, geom_ix=geom_indices))
+        pd.DataFrame.from_dict(dict(is_reflex=angles < 0, geom_ix=geom_indices))
         .groupby("geom_ix")
         .is_reflex.mean()
         .values
