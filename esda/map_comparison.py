@@ -244,7 +244,7 @@ def _overlay_entropy(aix, a_areas, ab_areas, base):
     )
     mapping["frac"] = mapping.area / mapping.a_area
     mapping["entropy"] = entr(mapping.frac.values) / numpy.log(base)
-    result = mapping.groupby("a").entropy.sum().values
+    result = mapping.groupby("a").entropy.sum().copy()
     result[result < 0] = 0
     return result
 
