@@ -564,7 +564,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None,
     the most compact shape by this measure. Although not discussed in Li, et al (2013),
     this formulation can also be applied to the mass moment of inertia when weights are provided,
     yielding a population-weighted compactness measure. In this case, the measure can exceed 1, 
-    as a population distribution more compact than a uniform circle is theoretically possible.
+    for a population distribution more compact than a uniform circle.
     
     References
     ----------
