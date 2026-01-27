@@ -538,14 +538,14 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None,
     weighted by a density function over the area of the shape:
      
     .. math::
-        I = \int r^2 \, \mathrm{d}m
+        I = \\int r^2 \\, \\mathrm{d}m
 
     where :math:`r` is the distance from the reference point and :math:`\mathrm{d}m` is
     the mass element at each point. This implementation uses the discrete approximation,
     summing over subregions with known weights, such as census tracts with known populations:
 
     .. math::
-        I = \sum_{i} m_i r_i^2
+        I = \\sum_{i} m_i r_i^2
 
     In this implementation, weights are applied as uniform densities
     across each subregion geometry, scaled by the area of each geometry.
@@ -674,8 +674,8 @@ def _second_moment_of_area_ring(pts, ref_pt=None):
     """Calculate the second moment of area of a closed polygon using the shoelace formula.
     
     This computes the second moment of area (referred to in some disciplines as the polar 
-    second moment) as the sum of I_x (second moment about x-axis) and I_y (second moment 
-    about y-axis), measured from the reference point (the centroid by default).
+    second moment) as the sum of :math:`I_x` (second moment about x-axis) and :math:`I_y` 
+    (second moment about y-axis), measured from the reference point (the centroid by default).
     
     Parameters
     ----------
@@ -690,7 +690,7 @@ def _second_moment_of_area_ring(pts, ref_pt=None):
     Returns
     -------
     float
-        A float representing the total (I_x + I_y) second moment of area about 
+        A float representing the total (:math:`I_x + I_y`) second moment of area about 
         the reference point.
 
     Notes
