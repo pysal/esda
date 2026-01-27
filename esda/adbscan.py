@@ -337,7 +337,11 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
             to_loop_over = [(solus[s], ref_centroids, ref_kdt, xys, xy) for s in s_ids]
             remapped = pool.map(_remap_n_expand, to_loop_over)
             remapped_df = pandas.concat(remapped, axis=1)
-            remapped_solus = remapped_solus.astype(float)
+            if (
+                remapped_df.isna().any().any()
+                and remapped_solus[s_ids[0]].dtype.kind == "i"
+            ):
+                remapped_solus = remapped_solus.astype(float)
             remapped_solus.loc[:, s_ids] = remapped_df
         else:
             for s in solus.drop(ref, axis=1):
@@ -345,8 +349,10 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
                 pars = (solus[s], ref_centroids, ref_kdt, xys, xy)
                 remap_ids = _remap_lbls_single(pars)
                 # -
-                remapped_solus = remapped_solus.astype(float)
-                remapped_solus.loc[:, s] = solus[s].map(remap_ids)
+                mapped_values = solus[s].map(remap_ids)
+                if mapped_values.isna().any() and remapped_solus[s].dtype.kind == "i":
+                    remapped_solus[s] = remapped_solus[s].astype("float64")
+                remapped_solus.loc[:, s] = mapped_values
         remapped_solus.loc[:, ref] = solus.loc[:, ref]
         return remapped_solus.fillna(lbl_type(-1)).astype(lbl_type)
     else:
