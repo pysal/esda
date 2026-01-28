@@ -796,19 +796,12 @@ def second_areal_moment(collection):
     return second_moment_of_area(collection)
 
 def _second_moment_of_area_ring(pts, ref_pt=None):
-    """
-    Calculate the second moment of area of a closed polygon using the shoelace formula.
-    """
-
-    return _geometric_moments_ring(pts, ref_pt=ref_pt)[2]
-
-@njit
-def _geometric_moments_ring(pts, ref_pt=None):
     """Calculate the second moment of area of a closed polygon using the shoelace formula.
     
     This computes the second moment of area (referred to in some disciplines as the polar 
-    second moment) as the sum of :math:`I_x` (second moment about x-axis) and :math:`I_y` 
-    (second moment about y-axis), measured from the reference point (the centroid by default).
+    second moment, or the area moment of inertia) as the sum of :math:`I_x` (second moment 
+    about x-axis) and :math:`I_y` (second moment about y-axis), measured from the 
+    reference point (the centroid by default).
     
     Parameters
     ----------
@@ -816,8 +809,8 @@ def _geometric_moments_ring(pts, ref_pt=None):
         Coordinate pairs (x, y) defining a closed linear ring (polygon boundary).
         The last point should equal the first point.
     ref_pt : tuple, optional
-        A point (x_ref, y_ref) to measure moment about. If None (default), moment is 
-        measured about the centroid. To return moment about the origin, explicitly
+        A point (x_ref, y_ref) to measure second moment of area about. If None (default), 
+        moment is measured about the centroid. To return moment about the origin, explicitly
         set to (0, 0).
 
     Returns
@@ -828,17 +821,7 @@ def _geometric_moments_ring(pts, ref_pt=None):
 
     Notes
     -----
-    The second moment of area formulas using the shoelace method are:
-    
-    .. math::
-        I_x = \\frac{1}{12}\\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(y_i^2 + y_i y_{i+1} + y_{i+1}^2)
-        
-        I_y = \\frac{1}{12}\\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(x_i^2 + x_i x_{i+1} + x_{i+1}^2)
-    
-    where indices wrap around (n+1 = 1).
-    
-    The moments are then adjusted to be relative to the reference point using the 
-    parallel axis theorem.
+    See `second_moment_of_area` for details.
 
     The shoelace formula returns a signed area based on the winding direction 
     of the polygon. By convention, counter-clockwise winding returns a positive area,
@@ -848,6 +831,40 @@ def _geometric_moments_ring(pts, ref_pt=None):
     conventional positive second moment of area for exterior rings.** Adding the second
     moments of area for (positive) exterior rings and (negative) interior rings together 
     (e.g., for polygons with holes) will yield the correct total second moment of area.
+    """
+
+    return _geometric_moments_ring(pts, ref_pt=ref_pt)[2]
+
+@njit
+def _geometric_moments_ring(pts, ref_pt=None):
+    """Calculate geometric moments of a closed polygon using the shoelace formula.
+    
+    Returns area, centroid, and second moment of area.
+    Parameters
+    ----------
+    pts : Iterable of tuples
+        Coordinate pairs (x, y) defining a closed linear ring (polygon boundary).
+        The last point should equal the first point.
+    ref_pt : tuple, optional
+        A point (x_ref, y_ref) to measure second moment of area about. If None (default), 
+        moment is measured about the centroid. To return moment about the origin, explicitly
+        set to (0, 0).
+
+    Returns
+    -------
+    tuple
+        A tuple containing:
+        - A float representing the area (zeroth moment) of the polygon.
+        - A tuple (cx, cy) representing the centroid (first moment divided by area).
+        - A float representing the total (:math:`I_x + I_y`) second moment of area about         A float representing the total (:math:`I_x + I_y`) second moment of area about 
+        the reference point.
+
+    Notes
+    -----
+    The shoelace formula returns a signed area based on the winding direction 
+    of the polygon. Geospatial data, including shapely, will returng negative
+    areas and negative moments for exterior rings due to clockwise winding. See 
+    _second_moment_of_area_ring for details.
     """
     
     x = [c[0] for c in pts]
