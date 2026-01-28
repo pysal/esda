@@ -725,7 +725,7 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
     elif wts is not None:
         wts = np.asarray(wts)
     else:
-        wts = np.ones(len(ga))
+        wts = np.array(shapely.area(ga)) # Uniform weights equal to area of each sub-geometry
 
     unique_regions = np.sort(np.unique(region_ids))
     region_mois = []
