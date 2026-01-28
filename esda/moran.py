@@ -78,6 +78,16 @@ class Moran:
     two_tailed      : boolean
                       If True (default) analytical p-values for Moran are two
                       tailed, otherwise if False, they are one-tailed.
+                      Deprecated in favor of 'alternative' parameter.
+    alternative     : {'two-sided', 'greater', 'less'}, optional
+                      Alternative hypothesis for the pseudo p-value calculation.
+                      Default is 'two-sided'.
+                      - 'two-sided': the observed I is extreme in either direction
+                      - 'greater': the observed I is extremely large (positive autocorrelation)
+                      - 'less': the observed I is extremely small (negative autocorrelation)
+    seed            : int, optional
+                      Random seed for reproducible permutation tests.
+                      If None, results are not reproducible.
 
     Attributes
     ----------
@@ -181,17 +191,38 @@ class Moran:
     """  # noqa: E501
 
     def __init__(
-        self, y, w, transformation="r", permutations=PERMUTATIONS, two_tailed=True
+        self,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        two_tailed=True,
+        alternative="two-sided",
+        seed=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
         w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
+        self.alternative = alternative
+
+        # Set random seed if provided
+        if seed is not None:
+            np.random.seed(seed)
+
         self.__moments()
         self.I = self.__calc(self.z)  # noqa: E741
         self.z_norm = (self.I - self.EI) / self.seI_norm
         self.z_rand = (self.I - self.EI) / self.seI_rand
+
+        # Determine if using two_tailed based on alternative parameter
+        # For backward compatibility, if alternative is explicitly set to 'two-sided',
+        # use two_tailed logic; otherwise use one-sided
+        if alternative == "two-sided":
+            use_two_tailed = two_tailed
+        else:
+            use_two_tailed = False
 
         if self.z_norm > 0:
             self.p_norm = stats.norm.sf(self.z_norm)
@@ -200,7 +231,7 @@ class Moran:
             self.p_norm = stats.norm.cdf(self.z_norm)
             self.p_rand = stats.norm.cdf(self.z_rand)
 
-        if two_tailed:
+        if use_two_tailed:
             self.p_norm *= 2.0
             self.p_rand *= 2.0
 
@@ -209,11 +240,24 @@ class Moran:
                 self.__calc(np.random.permutation(self.z)) for i in range(permutations)
             ]
             self.sim = sim = np.array(sim)
-            above = sim >= self.I
-            larger = above.sum()
-            if (self.permutations - larger) < larger:
-                larger = self.permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+
+            # Calculate one-sided or two-sided p-value based on alternative
+            if alternative == "greater":
+                # P(sim >= observed), which measures upper tail
+                larger = (sim >= self.I).sum()
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            elif alternative == "less":
+                # P(sim <= observed), which measures lower tail
+                larger = (sim <= self.I).sum()
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            else:  # "two-sided"
+                # Original two-sided logic
+                above = sim >= self.I
+                larger = above.sum()
+                if (self.permutations - larger) < larger:
+                    larger = self.permutations - larger
+                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
@@ -1182,6 +1226,12 @@ class Moran_Local:  # noqa: N801
         value to use as a weight for the "fake" neighbor for every island.
         If numpy.nan, will propagate to the final local statistic depending
         on the `stat_func`. If 0, then the lag is always zero for islands.
+    alternative : {'two-sided', 'greater', 'less'}, optional
+        Alternative hypothesis for the pseudo p-value calculation.
+        Default is 'two-sided'.
+        - 'two-sided': the observed Ii is extreme in either direction
+        - 'greater': the observed Ii is extremely large
+        - 'less': the observed Ii is extremely small
 
     Attributes
     ----------
@@ -1301,6 +1351,7 @@ class Moran_Local:  # noqa: N801
         keep_simulations=True,
         seed=None,
         island_weight=0,  # noqa: ARG002
+        alternative="two-sided",
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1318,6 +1369,7 @@ class Moran_Local:  # noqa: N801
         w = _transform(w, transformation)
         self.w = w
         self.permutations = permutations
+        self.alternative = alternative
         self.den = (z * z).sum()
         self.Is = self.__calc(self.w, self.z)
         self.geoda_quads = geoda_quads
@@ -1341,11 +1393,26 @@ class Moran_Local:  # noqa: N801
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
-                above = sim >= self.Is
-                larger = above.sum(0)
-                low_extreme = (self.permutations - larger) < larger
-                larger[low_extreme] = self.permutations - larger[low_extreme]
-                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+
+                # Calculate one-sided or two-sided p-value based on alternative
+                if alternative == "greater":
+                    # P(sim >= observed), which measures upper tail
+                    above = sim >= self.Is
+                    larger = above.sum(axis=0)
+                    self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                elif alternative == "less":
+                    # P(sim <= observed), which measures lower tail
+                    above = sim <= self.Is
+                    larger = above.sum(axis=0)
+                    self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                else:  # "two-sided"
+                    # Original two-sided logic
+                    above = sim >= self.Is
+                    larger = above.sum(axis=0)
+                    low_extreme = (self.permutations - larger) < larger
+                    larger[low_extreme] = self.permutations - larger[low_extreme]
+                    self.p_sim = (larger + 1.0) / (permutations + 1.0)
+
                 self.sim = sim
                 self.EI_sim = self.sim.mean(axis=0)
                 self.seI_sim = self.sim.std(axis=0)

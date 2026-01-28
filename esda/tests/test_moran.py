@@ -854,3 +854,58 @@ def _fetch_map_string(m):
     out = m._parent.render()
     out_str = "".join(out.split())
     return out_str
+
+
+class TestAlternativeHypothesis:
+    """Tests for one-sided alternative hypothesis support (Issue #199)."""
+
+    def setup_method(self):
+        """Create test data with spatial structure."""
+        self.w = libpysal.weights.util.lat2W(5, 5)
+        np.random.seed(SEED)
+        self.y_positive = np.zeros(25)
+        self.y_positive[:5] = 2.0
+        self.y_positive[5:] = 0.0
+
+    def test_moran_alternative_greater(self):
+        """Test Moran with alternative='greater'."""
+        m = moran.Moran(
+            self.y_positive, self.w, permutations=99, alternative="greater", seed=SEED
+        )
+        assert hasattr(m, "p_sim")
+        assert 0 <= m.p_sim <= 1
+        m_two = moran.Moran(
+            self.y_positive, self.w, permutations=99, alternative="two-sided", seed=SEED
+        )
+        assert (
+            m.p_sim <= m_two.p_sim
+        ), "One-sided p-value should be <= two-sided p-value"
+
+    def test_moran_alternative_less(self):
+        """Test Moran with alternative='less'."""
+        m = moran.Moran(
+            self.y_positive, self.w, permutations=99, alternative="less", seed=SEED
+        )
+        assert hasattr(m, "p_sim")
+        assert 0 <= m.p_sim <= 1
+
+    def test_moran_alternative_backward_compatibility(self):
+        """Test backward compatibility: default alternative='two-sided'."""
+        m_old = moran.Moran(
+            self.y_positive, self.w, permutations=99, seed=SEED
+        )
+        m_new = moran.Moran(
+            self.y_positive, self.w, permutations=99, alternative="two-sided", seed=SEED
+        )
+        np.testing.assert_allclose(
+            m_old.p_sim, m_new.p_sim, rtol=1e-10
+        ), "Default behavior must be unchanged"
+
+    def test_moran_local_alternative_greater(self):
+        """Test Moran_Local with alternative='greater'."""
+        ml = moran.Moran_Local(
+            self.y_positive, self.w, permutations=99, alternative="greater", seed=SEED
+        )
+        assert hasattr(ml, "p_sim")
+        assert ml.p_sim.shape == (25,)
+        assert np.all((ml.p_sim >= 0) & (ml.p_sim <= 1))
