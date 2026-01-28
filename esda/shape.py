@@ -461,7 +461,7 @@ def form_factor(collection, height):
 def moment_of_inertia(collection, normalize=False, ref_pt=None, 
                       region_col=None, region_ids=None, wt_col=None, wts=None):
     """
-    Calculates the moment of inertia of each geometry in the collection. np.array([region_to_moi[rid] for rid in region_ids])Can handle
+    Calculates the moment of inertia of each geometry in the collection. Can handle
     polygons with holes and multipolygons by summing the moments of inertia of each part.
     The moment of inertia is calculated about the centroid of each geometry by default,
     but can also be calculated about a specified reference point.
