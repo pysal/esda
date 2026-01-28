@@ -603,8 +603,8 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
     Requires either a column name with region assignments (`region_col`), or an array-like of
     region IDs. Weights can be provided as a column name (`wt_col`) or an array-like. If 
     `region_col` or `wt_col` is provided, `collection` must be a GeoDataFrame. If weights
-    are not provided, all geometries are treated as having equal weight, which is equivalent 
-    to the second moment of area.  
+    are not provided, geometries weighted by area, which is equivalent 
+    to the second moment of area.
 
     Parameters
     ----------
@@ -714,7 +714,7 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
         region_ids = collection[region_col].values
 
     # Handle weights (masses). If provided, use directly. Otherwise, extract from GeoDataFrame.
-    # If neither is provided, assume uniform weights.
+    # If neither is provided, weight by geom area.
     if wt_col is not None:
 
         if not isinstance(collection, gpd.GeoDataFrame):
@@ -735,9 +735,9 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
         sub_geoms = ga[mask]
         sub_wts = wts[mask] # Weight (mass, population, etc.) of each sub-geometry
 
-        # We need centroids and areas of sub_geoms. However these are calculated 
-        # internally and discarded by second_moment_of_area() functions. Could we save time 
-        # by changing function to return these values as well as SMOA?
+        # Centroids and areas of sub_geoms are calculated internally and discarded 
+        # by _second_moment_of_area_ring(). However, calculating them here using shapely
+        # is easier to read and understand, and is also 25% faster.
 
         # Calculate centroids as an array of coordinate tuples
         sub_centroids = np.array([(pt.x, pt.y) for pt in shapely.centroid(sub_geoms)]) 
