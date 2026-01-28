@@ -200,6 +200,23 @@ class Moran:
         alternative="two-sided",
         seed=None,
     ):
+        # Validate alternative parameter
+        if alternative not in ("two-sided", "greater", "less"):
+            raise ValueError(
+                f"alternative='{alternative}' provided, but is not "
+                f"one of the supported options: 'two-sided', 'greater', 'less'"
+            )
+
+        # Deprecation warning for two_tailed parameter
+        if two_tailed is not True and alternative == "two-sided":
+            warn(
+                "The 'two_tailed' parameter is deprecated in favor of the 'alternative' "
+                "parameter. Use alternative='two-sided' (default) for two-tailed tests. "
+                "This parameter will be removed in a future version.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
         y = np.asarray(y).flatten()
         self.y = y
         w = _transform(w, transformation)
@@ -207,51 +224,61 @@ class Moran:
         self.permutations = permutations
         self.alternative = alternative
 
-        # Set random seed if provided
-        if seed is not None:
-            np.random.seed(seed)
+        # Create local random state if seed provided
+        self.rng = np.random.default_rng(seed) if seed is not None else None
 
         self.__moments()
         self.I = self.__calc(self.z)  # noqa: E741
         self.z_norm = (self.I - self.EI) / self.seI_norm
         self.z_rand = (self.I - self.EI) / self.seI_rand
 
-        # Determine if using two_tailed based on alternative parameter
-        # For backward compatibility, if alternative is explicitly set to 'two-sided',
-        # use two_tailed logic; otherwise use one-sided
-        if alternative == "two-sided":
-            use_two_tailed = two_tailed
-        else:
-            use_two_tailed = False
-
-        if self.z_norm > 0:
+        # Calculate analytical p-values based on alternative parameter
+        if alternative == "greater":
+            # One-sided upper tail test
             self.p_norm = stats.norm.sf(self.z_norm)
             self.p_rand = stats.norm.sf(self.z_rand)
-        else:
+        elif alternative == "less":
+            # One-sided lower tail test
             self.p_norm = stats.norm.cdf(self.z_norm)
             self.p_rand = stats.norm.cdf(self.z_rand)
+        else:  # "two-sided"
+            # Two-sided test respects two_tailed parameter for backward compatibility
+            if self.z_norm > 0:
+                self.p_norm = stats.norm.sf(self.z_norm)
+                self.p_rand = stats.norm.sf(self.z_rand)
+            else:
+                self.p_norm = stats.norm.cdf(self.z_norm)
+                self.p_rand = stats.norm.cdf(self.z_rand)
 
-        if use_two_tailed:
-            self.p_norm *= 2.0
-            self.p_rand *= 2.0
+            if two_tailed:
+                self.p_norm *= 2.0
+                self.p_rand *= 2.0
 
         if permutations:
-            sim = [
-                self.__calc(np.random.permutation(self.z)) for i in range(permutations)
-            ]
+            # Use local RNG if seed was provided, otherwise use global state
+            if self.rng is not None:
+                sim = [
+                    self.__calc(self.rng.permutation(self.z))
+                    for i in range(permutations)
+                ]
+            else:
+                sim = [
+                    self.__calc(np.random.permutation(self.z))
+                    for i in range(permutations)
+                ]
             self.sim = sim = np.array(sim)
 
             # Calculate one-sided or two-sided p-value based on alternative
             if alternative == "greater":
                 # P(sim >= observed), which measures upper tail
-                larger = (sim >= self.I).sum()
-                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                in_tail = (sim >= self.I).sum()
+                self.p_sim = (in_tail + 1.0) / (permutations + 1.0)
             elif alternative == "less":
                 # P(sim <= observed), which measures lower tail
-                larger = (sim <= self.I).sum()
-                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                in_tail = (sim <= self.I).sum()
+                self.p_sim = (in_tail + 1.0) / (permutations + 1.0)
             else:  # "two-sided"
-                # Original two-sided logic
+                # Original two-sided logic (directed test)
                 above = sim >= self.I
                 larger = above.sum()
                 if (self.permutations - larger) < larger:
@@ -1353,6 +1380,13 @@ class Moran_Local:  # noqa: N801
         island_weight=0,  # noqa: ARG002
         alternative="two-sided",
     ):
+        # Validate alternative parameter
+        if alternative not in ("two-sided", "greater", "less"):
+            raise ValueError(
+                f"alternative='{alternative}' provided, but is not "
+                f"one of the supported options: 'two-sided', 'greater', 'less'"
+            )
+
         y = np.asarray(y).flatten()
         self.y = y
         n = len(y)
@@ -1397,16 +1431,16 @@ class Moran_Local:  # noqa: N801
                 # Calculate one-sided or two-sided p-value based on alternative
                 if alternative == "greater":
                     # P(sim >= observed), which measures upper tail
-                    above = sim >= self.Is
-                    larger = above.sum(axis=0)
-                    self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                    in_tail = sim >= self.Is
+                    extreme_count = in_tail.sum(axis=0)
+                    self.p_sim = (extreme_count + 1.0) / (permutations + 1.0)
                 elif alternative == "less":
                     # P(sim <= observed), which measures lower tail
-                    above = sim <= self.Is
-                    larger = above.sum(axis=0)
-                    self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                    in_tail = sim <= self.Is
+                    extreme_count = in_tail.sum(axis=0)
+                    self.p_sim = (extreme_count + 1.0) / (permutations + 1.0)
                 else:  # "two-sided"
-                    # Original two-sided logic
+                    # Original two-sided logic (directed test)
                     above = sim >= self.Is
                     larger = above.sum(axis=0)
                     low_extreme = (self.permutations - larger) < larger

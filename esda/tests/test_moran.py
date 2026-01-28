@@ -877,9 +877,11 @@ class TestAlternativeHypothesis:
         m_two = moran.Moran(
             self.y_positive, self.w, permutations=99, alternative="two-sided", seed=SEED
         )
+        # Two-sided (directed) p-value should be <= one-sided p-value
+        # because it takes the minimum of both tails
         assert (
-            m.p_sim <= m_two.p_sim
-        ), "One-sided p-value should be <= two-sided p-value"
+            m_two.p_sim <= m.p_sim
+        ), "Two-sided p-value should be <= one-sided p-value"
 
     def test_moran_alternative_less(self):
         """Test Moran with alternative='less'."""
@@ -891,9 +893,7 @@ class TestAlternativeHypothesis:
 
     def test_moran_alternative_backward_compatibility(self):
         """Test backward compatibility: default alternative='two-sided'."""
-        m_old = moran.Moran(
-            self.y_positive, self.w, permutations=99, seed=SEED
-        )
+        m_old = moran.Moran(self.y_positive, self.w, permutations=99, seed=SEED)
         m_new = moran.Moran(
             self.y_positive, self.w, permutations=99, alternative="two-sided", seed=SEED
         )
@@ -909,3 +909,37 @@ class TestAlternativeHypothesis:
         assert hasattr(ml, "p_sim")
         assert ml.p_sim.shape == (25,)
         assert np.all((ml.p_sim >= 0) & (ml.p_sim <= 1))
+
+    def test_moran_local_keep_simulations_false(self):
+        """Test Moran_Local with keep_simulations=False and alternative parameter.
+
+        When keep_simulations=False, the alternative parameter is ignored
+        because p-values are computed by _crand_plus which uses 'directed' method.
+        """
+        ml = moran.Moran_Local(
+            self.y_positive,
+            self.w,
+            permutations=99,
+            alternative="greater",
+            seed=SEED,
+            keep_simulations=False,
+        )
+        # p_sim is still computed, but sim/EI_sim/etc are None
+        assert hasattr(ml, "p_sim")
+        assert ml.sim is None
+        assert np.isnan(ml.EI_sim)
+
+    def test_alternative_parameter_validation(self):
+        """Test that invalid alternative values raise ValueError."""
+        with np.testing.assert_raises(ValueError):
+            moran.Moran(self.y_positive, self.w, permutations=99, alternative="invalid")
+
+        with np.testing.assert_raises(ValueError):
+            moran.Moran_Local(
+                self.y_positive, self.w, permutations=99, alternative="invalid"
+            )
+
+    def test_two_tailed_deprecation_warning(self):
+        """Test that two_tailed parameter raises deprecation warning."""
+        with np.testing.assert_warns(DeprecationWarning):
+            moran.Moran(self.y_positive, self.w, permutations=99, two_tailed=False)
