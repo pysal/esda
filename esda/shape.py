@@ -612,8 +612,9 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
         Input collection of polygons or multipolygons.
     normalize : bool, optional
         If True, returns the normalized moment of inertia as the ratio of the 
-        moment of inertia of a circle of the same area to the moment of inertia
-        of the shape. Default is False.
+        moment of inertia of a reference circle to the moment of inertia
+        of the shape, where the reference circle has the same area and the same
+        population uniformly distributed over that area. Default is False.
     ref_pt : array-like of shape (2,) or (n, 2), optional
         Spatial coordinate(s) of reference point about which the moment of inertia is calculated.
         May be provided as a single coordinate pair ``(x, y)``, or as an
@@ -651,7 +652,8 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
     subregions within larger regions defined by `region_col` or `region_ids`. 
     The moment of inertia is calculated for each region as a whole. If weights are not
     provided, this is equivalent to the second moment of area. If normalization is
-    requested, the moment of inertia is compared with that of a circle of equal area. This
+    requested, the moment of inertia is compared with that of a circle of equal area, and
+    equal population distributed uniformly over that area. This
     is discussed in detail below.
     
     The mass moment of inertia weights each area in the shape by a value such as population. 
@@ -686,7 +688,12 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
     of the polygon. As an area-based (non-weighted) measure, the 
     :math:`C_{MI}` value is bounded between 0 and 1. Although not discussed in Li, et al (2013),
     this formulation can also be applied to the mass moment of inertia when weights are provided,
-    yielding a population-weighted compactness measure. In this case, the measure can exceed 1, 
+    yielding a population-weighted compactness measure.
+    
+    .. math::
+        C_{MI} = \\frac{M A^2}{2 \\pi I_{shape}}
+    
+    where :math:`M` is the mass (population) of the shape. In this case, the measure can exceed 1, 
     as will happen when mass (population) is concentrated near the centroid. This can be 
     interpreted as a more compact distribution than a uniform circle.
     
@@ -751,7 +758,7 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
         I_region = np.sum(I_local + sub_wts * dist_sq)
 
         if normalize:
-            region_mois.append((region_area ** 2) / (2 * np.pi * I_region))
+            region_mois.append((sub_wts.sum() * region_area ** 2) / (2 * np.pi * I_region))
         else:
             region_mois.append(I_region)
 
