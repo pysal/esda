@@ -69,11 +69,11 @@ test_simple = shapely.difference(
     shapely.box(-1, 0, -2, 1), shapely.box(-1, 0, -1.5, 0.5)
 )
 
+test_mp = shapely.union(shapely.box(-1, -1, -1.5, -2), shapely.box(0, -1, 1.25, -2))
+
 test_hole = shapely.difference(
     shapely.box(0, 0, 1.81, 1.81), shapely.box(0.8, 0.8, 1.6, 1.6)
 )
-
-test_mp = shapely.union(shapely.box(-1, -1, -1.5, -2), shapely.box(0, -1, 1.25, -2))
 
 test_mp_hole = shapely.union(
     shapely.transform(
