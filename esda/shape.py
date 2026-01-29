@@ -738,29 +738,34 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
     region_mois = []
 
     for i, region in enumerate(unique_regions):
-        mask = region_ids == region
-        sub_geoms = ga[mask]
-        sub_wts = wts[mask] # Weight (mass, population, etc.) of each sub-geometry
 
-        # Centroids and areas of sub_geoms are calculated internally and discarded 
+        # Centroids and areas of geoms are calculated internally and discarded 
         # by _geometric_moments_ring(). However, calculating them here using shapely
         # is easier to read and understand, and is also 25% faster.
 
-        # Calculate centroids as an array of coordinate tuples
-        sub_centroids = np.array([(pt.x, pt.y) for pt in shapely.centroid(sub_geoms)]) 
-        region_area = np.sum(shapely.area(sub_geoms)) # 2X faster than shapely.area(shapely.union_all(sub_geoms))
+        mask = region_ids == region
+        geoms = ga[mask]
+        m = wts[mask] # Weight (mass, population, etc.) of each sub-geometry
 
-        I_local = second_moment_of_area(sub_geoms)
+        # Get centroids as an array of coordinate tuples
+        c = np.array([(pt.x, pt.y) for pt in shapely.centroid(geoms)])
 
-        region_centroid = np.sum(sub_wts[:, None] * sub_centroids, axis=0) / sub_wts.sum()
-        dist_sq = np.sum((sub_centroids - region_centroid)**2, axis=1)
+        # Moment of inertia about centroid of each sub-geometry
+        I_geom = second_moment_of_area(geoms)
 
-        I_region = np.sum(I_local + sub_wts * dist_sq)
+        # Area and centroid of region
+        A = np.sum(shapely.area(geoms)) # 2X faster than shapely.area(shapely.union_all(geoms))
+        C = np.sum(m[:, None] * c, axis=0) / m.sum()
+
+        # Distance squared, don't actually need distance, so don't bother taking square root
+        d2 = np.sum((c - C)**2, axis=1)
+
+        I = np.sum(I_geom + m * d2)
 
         if normalize:
-            region_mois.append((sub_wts.sum() * region_area ** 2) / (2 * np.pi * I_region))
+            region_mois.append((m.sum() * A ** 2) / (2 * np.pi * I))
         else:
-            region_mois.append(I_region)
+            region_mois.append(I)
 
     return pd.Series(region_mois, index=unique_regions)
 
