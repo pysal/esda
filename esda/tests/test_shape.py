@@ -1,5 +1,5 @@
-import geopandas
-import numpy
+import geopandas as gpd
+import numpy as np
 import pytest
 import shapely
 from numpy import array, testing
@@ -77,12 +77,12 @@ test_mp = shapely.union(shapely.box(-1, -1, -1.5, -2), shapely.box(0, -1, 1.25, 
 
 test_mp_hole = shapely.union(
     shapely.transform(
-        test_hole, lambda x: numpy.column_stack((-x[:, 0] + 3, x[:, 1] * 0.5 + 3))
+        test_hole, lambda x: np.column_stack((-x[:, 0] + 3, x[:, 1] * 0.5 + 3))
     ),
-    shapely.transform(test_hole, lambda x: numpy.column_stack((x[:, 0] + 4, x[:, 1]))),
+    shapely.transform(test_hole, lambda x: np.column_stack((x[:, 0] + 4, x[:, 1]))),
 )
 
-testbench = geopandas.GeoDataFrame(
+testbench = gpd.GeoDataFrame(
     geometry=[test_geom_translated, test_simple, test_mp, test_hole, test_mp_hole]
 ).reset_index()
 testbench["name"] = ["Hanock County", "Simple", "Multi", "Single Hole", "Multi Hole"]
