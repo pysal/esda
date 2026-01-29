@@ -743,7 +743,7 @@ def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_
         sub_wts = wts[mask] # Weight (mass, population, etc.) of each sub-geometry
 
         # Centroids and areas of sub_geoms are calculated internally and discarded 
-        # by _second_moment_of_area_ring(). However, calculating them here using shapely
+        # by _geometric_moments_ring(). However, calculating them here using shapely
         # is easier to read and understand, and is also 25% faster.
 
         # Calculate centroids as an array of coordinate tuples
@@ -805,11 +805,9 @@ def second_areal_moment(collection):
 def _second_moment_of_area_ring(pts, ref_pt=None):
     """Calculate the second moment of area of a closed polygon using the shoelace formula.
     
-    This computes the second moment of area (referred to in some disciplines as the polar 
-    second moment, or the area moment of inertia) as the sum of :math:`I_x` (second moment 
-    about x-axis) and :math:`I_y` (second moment about y-axis), measured from the 
-    reference point (the centroid by default).
-    
+    This is a wrapper function that calls `_geometric_moments_ring(pts, ref_pt) and 
+    returns only the second moment of area about the reference point (:math:`I_xx + I_yy`)
+
     Parameters
     ----------
     pts : Iterable of tuples
@@ -829,24 +827,16 @@ def _second_moment_of_area_ring(pts, ref_pt=None):
     Notes
     -----
     See `second_moment_of_area` for details.
-
-    The shoelace formula returns a signed area based on the winding direction 
-    of the polygon. By convention, counter-clockwise winding returns a positive area,
-    while clockwise winding returns a negative area. Geospatial data, including shapely,
-    typically uses clockwise winding for exterior rings and counter-clockwise winding for
-    interior rings. **The return value should therefore be multiplied by -1 to obtain the 
-    conventional positive second moment of area for exterior rings.** Adding the second
-    moments of area for (positive) exterior rings and (negative) interior rings together 
-    (e.g., for polygons with holes) will yield the correct total second moment of area.
     """
-
-    return _geometric_moments_ring(pts, ref_pt=ref_pt)[2]
+    A, cx, cy, Ixx, Iyy = _geometric_moments_ring(pts, ref_pt=ref_pt)
+    return Ixx + Iyy
 
 @njit
 def _geometric_moments_ring(pts, ref_pt=None):
     """Calculate geometric moments of a closed polygon using the shoelace formula.
     
-    Returns area, centroid, and second moment of area.
+    Returns area, centroid coordinates, and second moments of area about x- and y-axis.
+
     Parameters
     ----------
     pts : Iterable of tuples
@@ -861,17 +851,31 @@ def _geometric_moments_ring(pts, ref_pt=None):
     -------
     tuple
         A tuple containing:
-        - A float representing the area (zeroth moment) of the polygon.
-        - A tuple (cx, cy) representing the centroid (first moment divided by area).
-        - A float representing the total (:math:`I_x + I_y`) second moment of area about         A float representing the total (:math:`I_x + I_y`) second moment of area about 
+        - A float :math:`A` representing the area (zeroth moment) of the polygon.
+        - Two floats :math:`c_x`, :math:`c_y` representing the centroid coordinates (first moment divided by area).
+        - Two floats :math:`I_xx`, :math:`I_yy` representing the second moments of area about         A float representing the total (:math:`I_x + I_y`) second moment of area about 
         the reference point.
 
     Notes
     -----
     The shoelace formula returns a signed area based on the winding direction 
-    of the polygon. Geospatial data, including shapely, will returng negative
-    areas and negative moments for exterior rings due to clockwise winding. See 
-    _second_moment_of_area_ring for details.
+    of the polygon. By convention, counter-clockwise winding returns a positive area,
+    while clockwise winding returns a negative area. Geospatial data, including shapely,
+    typically uses clockwise winding for exterior rings and counter-clockwise winding for
+    interior rings. This can be handled by the caller in two ways:
+
+    1. Use `shapely.orient_polygons()` to change coordinate direction to use the 
+    mathematical convention.
+    2. Multiply return values for :math:`A`, :math:`I_xx`, and :math:`I_yy` (elements 0, 
+    3, and 4 of the returned tuple) by -1 to get the correctly signed area and second 
+    moments.
+    
+    This will yield positive areas and second moments for exterior rings and negative
+    second moments of area for interior rings. The rings can then be added together using
+    :math:`I_xx + A d^2` and :math:`I_yy + A d^2` where :math:`d` is the distance between 
+    the centroid of the (exterior or interior) ring and the centroid of the entire shape. 
+    Adding the final :math:`I_xx` and :math:`I_yy` will yield the correct total second moment
+    of area for the shape.
     """
     
     x = [c[0] for c in pts]
@@ -882,8 +886,8 @@ def _geometric_moments_ring(pts, ref_pt=None):
     A = 0  # Area (used for ref_pt/centroid calculation)
     Sx = 0  # First moment about origin (x component)
     Sy = 0  # First moment about origin (y component)
-    Ix_origin = 0  # Second moment about x-axis through origin
-    Iy_origin = 0  # Second moment about y-axis through origin
+    Ixx_origin = 0  # Second moment about x-axis through origin
+    Iyy_origin = 0  # Second moment about y-axis through origin
     
     # Iterate through consecutive coordinate pairs
     for i in prange(len(pts) - 1):
@@ -900,11 +904,11 @@ def _geometric_moments_ring(pts, ref_pt=None):
         Sy += (y[i] + y[i+1]) * cross
         
         # Accumulate second moments about origin
-        Ix_origin += (y[i]**2 + y[i]*y[i+1] + y[i+1]**2) * cross
-        Iy_origin += (x[i]**2 + x[i]*x[i+1] + x[i+1]**2) * cross
+        Ixx_origin += (y[i]**2 + y[i]*y[i+1] + y[i+1]**2) * cross
+        Iyy_origin += (x[i]**2 + x[i]*x[i+1] + x[i+1]**2) * cross
     
-    Ix_origin = Ix_origin / 12
-    Iy_origin = Iy_origin / 12
+    Ixx_origin = Ixx_origin / 12
+    Iyy_origin = Iyy_origin / 12
 
     # Calculate the area (zeroth moment)
     A = A / 2
@@ -914,8 +918,8 @@ def _geometric_moments_ring(pts, ref_pt=None):
     cy = Sy / (6 * A)
 
     if use_origin:
-        Ix = Ix_origin
-        Iy = Iy_origin
+        Ixx = Ixx_origin
+        Iyy = Iyy_origin
     else:
 
         if ref_pt is None:
@@ -923,10 +927,10 @@ def _geometric_moments_ring(pts, ref_pt=None):
             ref_x, ref_y = cx, cy
         
         # Apply parallel axis theorem to shift moments to reference point
-        Ix = Ix_origin - A * (ref_y ** 2)
-        Iy = Iy_origin - A * (ref_x ** 2)
+        Ixx = Ixx_origin - A * (ref_y ** 2)
+        Iyy = Iyy_origin - A * (ref_x ** 2)
 
-    return A, (cx, cy), Ix + Iy
+    return A, cx, cy, Ixx, Iyy
 
 def _polygon_rings(polygon):
     exterior = np.asarray(polygon.exterior.coords)
@@ -1031,31 +1035,63 @@ def second_moment_of_area(collection, normalize=False, ref_pt=None):
     ga = _cast(collection)
     moments = []
 
-    for geom in ga:
-        total_moa = 0
+    # shapely geometries wind "backwards" compared with the mathematical convention;
+    # Use orient_polygons to make the wind counterclockwise
+    for geom in shapely.orient_polygons(ga):
 
-        # shapely geometries wind "backwards" compared with the mathematical convention;
-        # thus, we need to invert the sign of the result to get the expected positive value
+        Cx, Cy = geom.centroid.coords[0]
+        
+        Ixx = 0.0
+        Iyy = 0.0
+
         if isinstance(geom, shapely.geometry.Polygon):
             exterior, interiors = _polygon_rings(geom)
-            total_moa -= _second_moment_of_area_ring(exterior, ref_pt=ref_pt)
+            A, cx, cy, Ixx_c, Iyy_c = _geometric_moments_ring(exterior, ref_pt=ref_pt)
+
+            dx = cx - Cx
+            dy = cy - Cy
+
+            Ixx += Ixx_c + A * dy**2
+            Iyy += Iyy_c + A * dx**2
+
             for interior in interiors:
-                total_moa += _second_moment_of_area_ring(interior, ref_pt=ref_pt)
+                A, cx, cy, Ixx_c, Iyy_c = _geometric_moments_ring(interior, ref_pt=ref_pt)
+
+                dx = cx - Cx
+                dy = cy - Cy
+
+                Ixx += Ixx_c + A * dy**2
+                Iyy += Iyy_c + A * dx**2
+
         elif isinstance(geom, shapely.geometry.MultiPolygon):
             exteriors, interiors = _multipolygon_rings(geom)
             for exterior in exteriors:
-                total_moa -= _second_moment_of_area_ring(exterior, ref_pt=ref_pt)
+                A, cx, cy, Ixx_c, Iyy_c = _geometric_moments_ring(exterior, ref_pt=ref_pt)
+
+                dx = cx - Cx
+                dy = cy - Cy
+
+                Ixx += Ixx_c + A * dy**2
+                Iyy += Iyy_c + A * dx**2
+
             for interior in interiors:
-                total_moa += _second_moment_of_area_ring(interior, ref_pt=ref_pt)
+                A, cx, cy, Ixx_c, Iyy_c = _geometric_moments_ring(interior, ref_pt=ref_pt)
+
+                dx = cx - Cx
+                dy = cy - Cy
+
+                Ixx += Ixx_c + A * dy**2
+                Iyy += Iyy_c + A * dx**2
+
         else:
             raise ValueError(
                 f"Geometry type {geom.geom_type} not supported. Only Polygon and MultiPolygon are supported."
             )
         
         if normalize:
-            moments.append((geom.area ** 2) / (2 * np.pi * total_moa))
+            moments.append((geom.area ** 2) / (2 * np.pi * (Ixx + Iyy)))
         else:
-            moments.append(total_moa)
+            moments.append(Ixx + Iyy)
 
     return np.array(moments)
 
