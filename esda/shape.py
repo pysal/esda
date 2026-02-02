@@ -7,6 +7,7 @@ from packaging.version import Version
 # gets handled at the _cast level.
 with contextlib.suppress(ImportError, ModuleNotFoundError):
     import shapely
+    from shapely.geometry import Polygon, MultiPolygon
     import geopandas as gpd
 
 from .crand import njit, prange
@@ -595,7 +596,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None,
         return mass_moment_of_inertia(collection, region_col=region_col, region_ids=region_ids,
                                         wt_col=wt_col, wts=wts)
     
-def mass_moment_of_inertia(collection, normalize=False, region_col=None, region_ids=None, wt_col=None, wts=None):
+def mass_moment_of_inertia(collection, normalize=False, ref_pt=None, region_col=None, region_ids=None, wt_col=None, wts=None):
     """
     Calculates the mass moment of inertia for regions defined by assignment of
     geometries in the collection.
@@ -837,7 +838,7 @@ def _second_moment_of_area_ring(pts, ref_pt=None):
     return Ixx + Iyy
 
 @njit
-def _geometric_moments_ring(pts, ref_pt=None):
+def __geometric_moments_ring(pts, ref_pt=None):
     """Calculate geometric moments of a closed polygon using the shoelace formula.
     
     Returns area, centroid coordinates, and second moments of area about x- and y-axis.
@@ -885,8 +886,10 @@ def _geometric_moments_ring(pts, ref_pt=None):
     
     x = [c[0] for c in pts]
     y = [c[1] for c in pts]
-    use_origin = ref_pt is not None and ref_pt == (0, 0)
+    use_origin = ref_pt == (0, 0)
 
+    # print("use_origin = ", use_origin)
+    
     # Shoelace formula components
     A = 0  # Area (used for ref_pt/centroid calculation)
     Sx = 0  # First moment about origin (x component)
@@ -930,12 +933,15 @@ def _geometric_moments_ring(pts, ref_pt=None):
         if ref_pt is None:
             # Set reference point to centroid
             ref_x, ref_y = cx, cy
+        else:
+            ref_x, ref_y = ref_pt
+        
         
         # Apply parallel axis theorem to shift moments to reference point
         Ixx = Ixx_origin - A * (ref_y ** 2)
         Iyy = Iyy_origin - A * (ref_x ** 2)
 
-    return A, cx, cy, Ixx, Iyy
+    return A, ref_x, ref_y, Ixx, Iyy
 
 def _polygon_rings(polygon):
     exterior = np.asarray(polygon.exterior.coords)
@@ -953,7 +959,7 @@ def _multipolygon_rings(multipolygon):
 
     return exteriors, interiors
 
-def second_moment_of_area(collection, normalize=False, ref_pt=None):
+def _second_moment_of_area(collection, normalize=False, ref_pt=None):
     """
     Compute the second moment of area (moment of inertia) of each geometry in the 
     collection using the shoelace formula.
@@ -1118,3 +1124,260 @@ def reflexive_angle_ratio(collection):
         .is_reflex.mean()
         .values
     )
+
+###########################################################
+# New method begings here
+# Reposition in module once debugged
+###########################################################
+
+# -------------------------
+# Helper Functions
+# -------------------------
+
+def _dump_rings(geoms):
+    """
+    Yield all exterior and interior rings of a collection of polygons/multipolygons
+    as numpy arrays of coordinates.
+
+    Parameters
+    ----------
+    geoms : sequence of shapely geometries
+        Polygons or multipolygons.
+
+    Yields
+    ------
+    np.ndarray
+        Array of shape (N, 2) containing coordinates of a ring.
+    """
+    for poly in shapely.get_parts(geoms):
+        yield np.asarray(poly.exterior.coords)
+        for interior in poly.interiors:
+            yield np.asarray(interior.coords)
+
+
+def _geometric_moments_ring(pts, shift_to_centroid=True):
+    """
+    Compute area, centroid, and second moments of a single polygon ring.
+
+    Parameters
+    ----------
+    pts : np.ndarray
+        Array of coordinates defining the ring, shape (N, 2).
+    shift_to_centroid : bool, default True
+        If True, apply the parallel axis theorem to shift moments to the ring centroid.
+
+    Returns
+    -------
+    A : float
+        Signed area of the ring.
+    cx, cy : float
+        Coordinates of the ring centroid.
+    Ixx, Iyy : float
+        Second moments of area about the centroid (or origin if shift_to_centroid=False).
+
+    Notes
+    -----
+    - Polar moment of area J can be obtained by summing Ixx + Iyy at the calling level.
+    - This function does not compute J itself, leaving derived quantities to higher-level functions.
+    """
+    x = pts[:, 0]
+    y = pts[:, 1]
+
+    cross = x[:-1] * y[1:] - x[1:] * y[:-1]
+
+    A = cross.sum() / 2
+    Sx = ((x[:-1] + x[1:]) * cross).sum()
+    Sy = ((y[:-1] + y[1:]) * cross).sum()
+
+    Ixx_origin = ((y[:-1]**2 + y[:-1]*y[1:] + y[1:]**2) * cross).sum() / 12
+    Iyy_origin = ((x[:-1]**2 + x[:-1]*x[1:] + x[1:]**2) * cross).sum() / 12
+
+    cx = Sx / (6 * A)
+    cy = Sy / (6 * A)
+
+    if shift_to_centroid:
+        Ixx = Ixx_origin - A * cy**2
+        Iyy = Iyy_origin - A * cx**2
+    else:
+        Ixx, Iyy = Ixx_origin, Iyy_origin
+
+    return A, cx, cy, Ixx, Iyy
+
+
+def _moments_about_centroid(geoms):
+    """
+    Compute combined moments of area for a collection of polygons.
+
+    Parameters
+    ----------
+    geoms : sequence of shapely geometries
+        Input polygons or multipolygons.
+
+    Returns
+    -------
+    A_tot : float
+        Total area of the collection.
+    Cx, Cy : float
+        Centroid coordinates of the combined geometry collection.
+    Ixx, Iyy : float
+        Second moments of area about the centroid.
+    J : float
+        Polar moment of area (Ixx + Iyy) about the centroid.
+    """
+    A_tot = 0.0
+    Mx_tot = 0.0
+    My_tot = 0.0
+    Ixx0_tot = 0.0
+    Iyy0_tot = 0.0
+
+    for ring in _dump_rings(geoms):
+        A, cx, cy, Ixx_c, Iyy_c = _geometric_moments_ring(ring, shift_to_centroid=False)
+
+        # first moments
+        A_tot += A
+        Mx_tot += A * cx
+        My_tot += A * cy
+
+        # shift ring inertia back to origin
+        Ixx0_tot += Ixx_c + A * cy**2
+        Iyy0_tot += Iyy_c + A * cx**2
+
+    # centroid of entire collection
+    Cx = Mx_tot / A_tot
+    Cy = My_tot / A_tot
+
+    # shift to centroid
+    Ixx = Ixx0_tot - A_tot * Cy**2
+    Iyy = Iyy0_tot - A_tot * Cx**2
+
+    J = Ixx + Iyy
+
+    return A_tot, Cx, Cy, Ixx, Iyy, J
+
+# -------------------------
+# Main Functions
+# -------------------------
+
+def moment_of_inertia(collection, normalize=False, ref_pt=None):
+    """
+    Compute moment of inertia (second moment of area) per geometry.
+
+    Parameters
+    ----------
+    collection : sequence of shapely geometries
+        Polygons or multipolygons.
+    normalize : bool, default False
+        If True, returns moment normalized by reference disk of same area.
+    ref_pt : tuple or None, optional
+        If provided, shifts the moment to be with respect to this point.
+
+    Returns
+    -------
+    np.ndarray
+        Array of moment of inertia values per geometry.
+    """
+    ga = _cast(collection)
+    ga = shapely.orient_polygons(ga)
+
+    Js = []
+    for geom in ga:
+        A, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid([geom])
+        if ref_pt is not None:
+            dx = Cx - ref_pt[0]
+            dy = Cy - ref_pt[1]
+            J += A * (dx**2 + dy**2)
+        if normalize:
+            J = A**2 / (2 * np.pi * J)
+        Js.append(J)
+
+    return np.asarray(Js)
+
+
+second_moment_of_area = moment_of_inertia  # alias for users familiar with engineering terminology
+
+
+def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
+    """
+    Compute moment of inertia for an entire collection of geometries combined.
+
+    Parameters
+    ----------
+    collection : sequence of shapely geometries
+        Polygons or multipolygons.
+    normalize : bool, default False
+        If True, returns moment normalized by reference disk of same area.
+    ref_pt : tuple or None, optional
+        If provided, shifts the moment to be with respect to this point.
+
+    Returns
+    -------
+    float
+        Moment of inertia for the entire collection.
+    """
+    ga = _cast(collection)
+    ga = shapely.orient_polygons(ga)
+
+    A, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(ga)
+
+    if ref_pt is not None:
+        dx = Cx - ref_pt[0]
+        dy = Cy - ref_pt[1]
+        J += A * (dx**2 + dy**2)
+
+    if normalize:
+        J = A**2 / (2 * np.pi * J)
+
+    return J
+
+
+def moment_of_inertia_regions(collection, regions, weights=None, normalize=False):
+    """
+    Compute population- or area-weighted moment of inertia per region.
+
+    Parameters
+    ----------
+    collection : sequence of shapely geometries
+        Polygons or multipolygons.
+    regions : array-like
+        Region identifier for each geometry.
+    weights : array-like or None, optional
+        Weight per geometry (e.g., population). If None, defaults to polygon area.
+    normalize : bool, default False
+        Normalize each region's moment of inertia by reference disk.
+
+    Returns
+    -------
+    pd.Series
+        Indexed by unique region IDs, containing moment of inertia per region.
+    """
+    ga = _cast(collection)
+    ga = shapely.orient_polygons(ga)
+
+    regions = np.asarray(regions)
+    unique_regions = np.unique(regions)
+
+    if weights is None:
+        # default to area
+        weights = np.array([geom.area for geom in ga])
+    else:
+        weights = np.asarray(weights)
+
+    Js = []
+
+    for reg in unique_regions:
+        mask = regions == reg
+        sub_geoms = ga[mask]
+        sub_weights = weights[mask]
+
+        A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(sub_geoms)
+
+        # apply population weighting
+        if not np.allclose(sub_weights, 1):
+            J = J * sub_weights.sum() / sub_weights.size
+
+        if normalize:
+            J = sub_weights.sum() * A_tot / (2 * np.pi * J)
+
+        Js.append(J)
+
+    return pd.Series(Js, index=unique_regions)
