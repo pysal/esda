@@ -1,4 +1,5 @@
 import contextlib
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -630,16 +631,11 @@ def __moment_of_inertia(collection, normalize=False, ref_pt=None,
         return mass_moment_of_inertia(collection, region_col=region_col, region_ids=region_ids,
                                         wt_col=wt_col, wts=wts)
 
-second_moment_of_area = moment_of_inertia  # alias for users familiar with engineering terminology
+second_moment_of_area = moment_of_inertia  # Alias for users familiar with math/engineering terminology
+second_areal_moment = moment_of_inertia  # Alias to preserve old API. Should this be deprecated?
 
-def second_areal_moment(collection):
-    """
-    Reimplemented by `second_moment_of_area`. Calculates only non-normalized second moment of area
-    about the centroid. Use `second_moment_of_area` for more options.
-    """ 
-    return second_moment_of_area(collection)
-
-def moment_of_inertia_regions(collection, regions, weights=None, normalize=False):
+def moment_of_inertia_regions(collection, normalize=False, ref_pt=None, 
+                      region_col=None, regions=None, weight_col=None, weights=None):
     """
     Compute population- or area-weighted moment of inertia per region.
 
@@ -662,19 +658,48 @@ def moment_of_inertia_regions(collection, regions, weights=None, normalize=False
     ga = _cast(collection)
     ga = shapely.orient_polygons(ga)
 
-    regions = np.asarray(regions)
+    # Handle region IDs. If provided, use directly. Otherwise, extract from GeoDataFrame.
+    if region_col is not None:
+
+        if not isinstance(collection, gpd.GeoDataFrame):
+            raise ValueError(
+                "If `region_col` is provided, `collection` must be a GeoDataFrame."
+            )
+        if regions is not None:
+            msg = "Both `region_col` and `regions` were provided. Only `region_col` is being used."
+            warnings.warn(msg, UserWarning, stacklevel=2)
+        regions = np.asarray(collection[region_col])
+    elif regions is not None:
+        regions = np.asarray(regions)
+    else: # Neither region_col or regions provided
+        # Assume each geometry in the collection is its own region
+        regions = np.arange(len(collection))
+
     unique_regions = np.unique(regions)
 
-    if weights is None:
-        # default to area
-        weights = np.array([geom.area for geom in ga])
-    else:
+    # Handle weights (masses). If provided, use directly. Otherwise, extract from GeoDataFrame.
+    # If neither is provided, weight by geom area.
+    if weight_col is not None:
+
+        if not isinstance(collection, gpd.GeoDataFrame):
+            raise ValueError(
+                "If `weight_col` is provided, `collection` must be a GeoDataFrame."
+            )
+        if weights is not None:
+            msg = "Both `weight_col` and `weights` were provided. Only `weight_col` is being used."
+            warnings.warn(msg, UserWarning, stacklevel=2)
+        weights = np.asarray(collection[weight_col])
+    elif weights is not None:
         weights = np.asarray(weights)
+    else:
+        # Weight each geometry in the region by its area
+        weights = np.asarray(shapely.area(ga))
+        # weights = np.array([geom.area for geom in ga])
 
     Js = []
 
-    for reg in unique_regions:
-        mask = regions == reg
+    for region in unique_regions:
+        mask = regions == region
         sub_geoms = ga[mask]
         sub_weights = weights[mask]
 
@@ -1032,20 +1057,20 @@ def _moments_about_centroid(geoms):
     for ring in _dump_rings(geoms):
         A, cx, cy, Ixx_c, Iyy_c = _geometric_moments_ring(ring, shift_to_centroid=False)
 
-        # first moments
+        # First moments
         A_tot += A
         Mx_tot += A * cx
         My_tot += A * cy
 
-        # shift ring inertia back to origin
-        Ixx0_tot += Ixx_c + A * cy**2
-        Iyy0_tot += Iyy_c + A * cx**2
+        # Accumulate inertia about origin
+        Ixx0_tot += Ixx_c
+        Iyy0_tot += Iyy_c
 
-    # centroid of entire collection
+    # Centroid of entire collection
     Cx = Mx_tot / A_tot
     Cy = My_tot / A_tot
 
-    # shift to centroid
+    # Shift to centroid
     Ixx = Ixx0_tot - A_tot * Cy**2
     Iyy = Iyy0_tot - A_tot * Cx**2
 
