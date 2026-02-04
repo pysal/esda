@@ -632,7 +632,11 @@ def __moment_of_inertia(collection, normalize=False, ref_pt=None,
                                         wt_col=wt_col, wts=wts)
 
 second_moment_of_area = moment_of_inertia  # Alias for users familiar with math/engineering terminology
-second_areal_moment = moment_of_inertia  # Alias to preserve old API. Should this be deprecated?
+
+def second_areal_moment(collection):
+    # Alias to preserve old API. Should this be deprecated?
+    
+    return moment_of_inertia(collection, normalize=False, ref_pt=None)
 
 def moment_of_inertia_regions(collection, normalize=False, ref_pt=None, 
                       region_col=None, regions=None, weight_col=None, weights=None):
@@ -655,6 +659,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     pd.Series
         Indexed by unique region IDs, containing moment of inertia per region.
     """
+
     ga = _cast(collection)
     ga = shapely.orient_polygons(ga)
 
@@ -700,17 +705,30 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
     for region in unique_regions:
         mask = regions == region
-        sub_geoms = ga[mask]
-        sub_weights = weights[mask]
+        geoms = ga[mask]
+        m = weights[mask]
 
-        A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(sub_geoms)
+        # A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(geoms)
+        moments = np.asarray([_moments_about_centroid(geom) for geom in geoms])
+        a = moments[:,0]
+        cx = moments[:,1]
+        cy = moments[:,2]
+        c = np.column_stack((cx, cy))
+        Ixx = moments[:,3]
+        Iyy = moments[:,4]
+        J = moments[:,5]
 
-        # apply population weighting
-        if not np.allclose(sub_weights, 1):
-            J = J * sub_weights.sum() / sub_weights.size
+        # Area and centroid of region
+        A = np.sum(a)
+        C = np.sum(m[:, None] * c, axis=0) / m.sum()
+
+        # Distance squared, don't actually need distance, so don't bother taking square root
+        d2 = np.sum((c - C)**2, axis=1)
+
+        J = np.sum(J + m * d2)
 
         if normalize:
-            J = sub_weights.sum() * A_tot / (2 * np.pi * J)
+            J = m.sum() * A / (2 * np.pi * J)
 
         Js.append(J)
 
@@ -891,17 +909,16 @@ def __mass_moment_of_inertia(collection, normalize=False, ref_pt=None, region_co
 
     return pd.Series(region_mois, index=unique_regions)
 
-def moa_ratio(collection, region_col=None, region_ids=None, wt_col=None, wts=None):
+def moa_ratio(collection):
     """
     Alias for `nmi`. Computes the Normalized Moment of Inertia.
     """
 
-    # Create deprecation warning
-    return nmi(collection, region_col=region_col, region_ids=region_ids,
-               wt_col=wt_col, wts=wts)
+    # Create deprecation warning?
+    return moment_of_inertia(collection, normalize=True, ref_pt=None)
 
 
-def nmi(collection, region_col=None, region_ids=None, wt_col=None, wts=None):
+def nmi(collection):
     """
     Computes the Normalized Moment of Inertia from Li et al (2013) as the ratio of the 
     moment of inertia of a circle of the same area about its center, to the moment of 
@@ -918,8 +935,7 @@ def nmi(collection, region_col=None, region_ids=None, wt_col=None, wts=None):
     of the polygon.
     """
     
-    return moment_of_inertia(collection, normalize=True, region_col=region_col,
-                                 region_ids=region_ids, wt_col=wt_col, wts=wts)
+    return moment_of_inertia(collection, normalize=True, ref_pt=None)
 
 def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
     """
