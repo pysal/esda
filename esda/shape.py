@@ -674,13 +674,10 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             msg = "Both `region_col` and `regions` were provided. Only `region_col` is being used."
             warnings.warn(msg, UserWarning, stacklevel=2)
         regions = np.asarray(collection[region_col])
+        unique_regions = np.unique(regions)
     elif regions is not None:
         regions = np.asarray(regions)
-    else: # Neither region_col or regions provided
-        # Assume each geometry in the collection is its own region
-        regions = np.arange(len(collection))
-
-    unique_regions = np.unique(regions)
+        unique_regions = np.unique(regions)
 
     # Handle weights (masses). If provided, use directly. Otherwise, extract from GeoDataFrame.
     # If neither is provided, weight by geom area.
@@ -696,14 +693,29 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         weights = np.asarray(collection[weight_col])
     elif weights is not None:
         weights = np.asarray(weights)
-    else:
-        # Weight each geometry in the region by its area
-        weights = np.asarray(shapely.area(ga))
-        # weights = np.array([geom.area for geom in ga])
+
+    # Handle cases where weights (masses) or regions are missing. Must be handled
+    # differently depending on which is missing, or both missing.
+    if regions is None or weights is None:
+        if regions is not None:
+            # Weight each geometry in the region by its area and continue
+            weights = np.asarray(shapely.area(ga))
+        elif weights is None or normalize:
+            # If weights are missing, this reduces to second moment of area.
+            # If weights are present but we are normalizing, this also reduces 
+            # to (normalized) second moment of area. Pass to moment_of_inertia
+            # and return.
+            return moment_of_inertia(collection, normalize=normalize, ref_pt=ref_pt)
+        else: # Weights are present but we are not normalizing
+            # Adjust second moment of area for mass. I_M = I_A * m / A
+            return moment_of_inertia(collection, normalize=False, ref_pt=ref_pt) * weights / np.asarray(shapely.area(ga))
 
     Js = []
 
     for region in unique_regions:
+        # Use mask to calculate moment of inertia over each region. When user
+        # omits `region_col` and `regions`, this effectively becomes a simple
+        # loop over ga, returning mass moment of inertia per geometry.
         mask = regions == region
         geoms = ga[mask]
         m = weights[mask]
