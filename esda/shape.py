@@ -44,6 +44,70 @@ def _cast(collection):
     else:
         return np.array([collection])
 
+def _cast_pts_as_array(x):
+    """
+    Accepts:
+      - array-like of shape (2,) or (n, 2) of real-valued numerics
+      - shapely.geometry.Point or iterable of Points
+      - geopandas.GeoSeries of Points
+
+    Returns:
+      - ndarray of shape (2,) or (n, 2), dtype float
+
+    Elements must be real-valued numerics (no complex).
+    Geometry inputs must be Points only; non-Point geometries are rejected.
+    """
+    try:
+        import geopandas as gpd
+        import shapely
+    except (ImportError, ModuleNotFoundError) as exception:
+        raise type(exception)(
+            "shapely and geopandas are required for shape statistics."
+        ) from None
+
+    if Version(shapely.__version__) < Version("2"):
+        raise ImportError("Shapely 2.0 or newer is required.")
+
+    # Handle GeoSeries
+    if isinstance(x, gpd.GeoSeries):
+        if not all(x.geom_type == "Point"):
+            raise TypeError("All geometries in GeoSeries must be Points")
+        coords = np.array([[p.x, p.y] for p in x], dtype=float)
+        if coords.shape == (1, 2):
+            coords = coords[0]
+        return coords
+
+    # Handle Single Point
+    if isinstance(x, shapely.Point):
+        return np.array([x.x, x.y], dtype=float)
+
+    # Handle Iterable of Points
+    if hasattr(x, "__iter__") and all(isinstance(p, shapely.Point) for p in x):
+        coords = np.array([[p.x, p.y] for p in x], dtype=float)
+        return coords
+
+    # Handle Array-Like
+    try:
+        arr = np.asarray(x, dtype=float)
+    except Exception as e:
+        raise TypeError("Input must be array-like") from e
+
+    # Shape validation
+    if arr.ndim == 1:
+        if arr.shape != (2,):
+            raise ValueError(f"Expected shape (2,), got {arr.shape}")
+    elif arr.ndim == 2:
+        if arr.shape[1] != 2:
+            raise ValueError(f"Expected shape (n, 2), got {arr.shape}")
+    else:
+        raise ValueError(f"Expected 1D or 2D input, got {arr.ndim}D")
+
+    # Type validation: real numbers only
+    if not np.issubdtype(arr.dtype, np.floating) and not np.issubdtype(arr.dtype, np.integer):
+        raise TypeError("Elements must be floats or ints")
+
+    return arr
+
 
 def get_angles(collection, return_indices=False):
     """
@@ -480,12 +544,22 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
     ga = _cast(collection)
     ga = shapely.orient_polygons(ga)
 
+    if ref_pt is not None:
+        coords = _cast_pts_as_array(ref_pt)
+        if not (coords.shape == (2,) or coords.shape == (len(ga), 2)):
+            msg = f"`ref_pt` must be a single point (or coordinate pair) or one point (or coordinate pairs) per geometry in `collection` ({len(ga)})"
+            raise ValueError(msg)            
+
     Js = []
-    for geom in ga:
+    for i, geom in enumerate(ga):
         A, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid([geom])
         if ref_pt is not None:
-            dx = Cx - ref_pt[0]
-            dy = Cy - ref_pt[1]
+            if coords.shape == (2,):
+                dx = Cx - coords[0]
+                dy = Cy - coords[1]
+            else: # Already tested, if not (2,), must be (len(ga), 2)
+                dx = Cx - coords[i][0]
+                dy = Cy - coords[i][1]
             J += A * (dx**2 + dy**2)
         if normalize:
             J = A**2 / (2 * np.pi * J)
@@ -710,6 +784,34 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             # Adjust second moment of area for mass. I_M = I_A * m / A
             return moment_of_inertia(collection, normalize=False, ref_pt=ref_pt) * weights / np.asarray(shapely.area(ga))
 
+    # Handle reference point(s), if provided
+    if ref_pt is not None:
+        if isinstance(ref_pt, dict):
+            k = list(ref_pt.keys())
+        
+            # Make sure we have one entry per region
+            if set(unique_regions) <= set(k):
+                if set(unique_regions) < set (k):
+                    # Extra unused regions in dict. Issue warning and remove them
+                    msg = """Keys found in `ref_pt` that are not regions in `regions` or `region_col`.
+                    Extra regions will be ignored.
+                    """
+                    warnings.warn(msg, UserWarning, stacklevel=2)
+                # Cast all points in dict values
+                ref_pt = {key: _cast_pts_as_array(value) for key, value in ref_pt.items()}
+
+            else:
+                msg = """Regions found in `regions` or `region_col` that are not in `ref_pt`. If
+                `ref_pt` is a `dict`, every region must have an entry in the `dict`.
+                """
+                raise ValueError(msg)
+        else:
+            ref_pt = _cast_pts_as_array(ref_pt)
+            # If not passed as a dictionary, this should be single global reference point
+            if ref_pt.shape != (2,):
+                msg = f"`ref_pt` must be a single point (or coordinate pair) or a dictionary with one point per region."
+                raise ValueError(msg)            
+            
     Js = []
 
     for region in unique_regions:
@@ -734,8 +836,19 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         A = np.sum(a)
         C = np.sum(m[:, None] * c, axis=0) / m.sum()
 
+        # Determine reference point for shifting, or use centroid
+        if ref_pt is None:
+            # Use centroid
+            pt = C
+        elif isinstance(ref_pt, dict):
+            # Use regional reference point
+            pt = ref_pt[region]
+        else:
+            # Use global reference point
+            pt = ref_pt
+
         # Distance squared, don't actually need distance, so don't bother taking square root
-        d2 = np.sum((c - C)**2, axis=1)
+        d2 = np.sum((c - pt)**2, axis=1) # d2 = np.sum((c - C)**2, axis=1) # 
 
         J = np.sum(J + m * d2)
 
