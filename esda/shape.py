@@ -828,13 +828,11 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     elif weights is not None:
         weights = np.asarray(weights)
 
-    # Handle cases where weights (masses) or regions are missing. Must be handled
-    # differently depending on which is missing, or both missing.
-    if regions is None or weights is None:
-        if regions is not None:
-            # Weight each geometry in the region by its area and continue
-            weights = np.asarray(shapely.area(ga))
-        elif weights is None or normalize:
+    # Handle cases where regions are missing. Must be handled
+    # differently depending on whether weights is missing or normalization
+    # is requested.
+    if regions is None:
+        if weights is None or normalize:
             # If weights are missing, this reduces to second moment of area.
             # If weights are present but we are normalizing, this also reduces 
             # to (normalized) second moment of area. Pass to moment_of_inertia
@@ -843,6 +841,9 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         else: # Weights are present but we are not normalizing
             # Adjust second moment of area for mass. I_M = I_A * m / A
             return moment_of_inertia(collection, normalize=False, ref_pt=ref_pt) * weights / np.asarray(shapely.area(ga))
+
+    # If we get to this point, regions are present, but weights might be none. Will
+    # be handled differently in loop on unique regions.
 
     # Handle reference point(s), if provided
     if ref_pt is not None:
@@ -880,42 +881,59 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         # loop over ga, returning mass moment of inertia per geometry.
         mask = regions == region
         geoms = ga[mask]
-        m = weights[mask]
 
-        # A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(geoms)
-        moments = np.asarray([_moments_about_centroid(geom) for geom in geoms])
-        a = moments[:,0]
-        cx = moments[:,1]
-        cy = moments[:,2]
-        c = np.column_stack((cx, cy))
-        Ixx = moments[:,3]
-        Iyy = moments[:,4]
-        J = moments[:,5]
+        if weights is None:
+            # Calcluate area moment of inertia per region
+                        # Determine reference point for shifting, or use centroid
+            if ref_pt is None:
+                # Use centroid
+                pt = None
+            elif isinstance(ref_pt, dict):
+                # Use regional reference point
+                pt = ref_pt[region]
+            else:
+                # Use global reference point
+                pt = ref_pt
 
-        # Area and centroid of region
-        A = np.sum(a)
-        C = np.sum(m[:, None] * c, axis=0) / m.sum()
+            Js.append(moment_of_inertia_global(geoms, normalize=normalize, ref_pt=pt))
 
-        # Determine reference point for shifting, or use centroid
-        if ref_pt is None:
-            # Use centroid
-            pt = C
-        elif isinstance(ref_pt, dict):
-            # Use regional reference point
-            pt = ref_pt[region]
         else:
-            # Use global reference point
-            pt = ref_pt
+            m = weights[mask]
 
-        # Distance squared, don't actually need distance, so don't bother taking square root
-        d2 = np.sum((c - pt)**2, axis=1) # d2 = np.sum((c - C)**2, axis=1) # 
+            # A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(geoms)
+            moments = np.asarray([_moments_about_centroid(geom) for geom in geoms])
+            a = moments[:,0]
+            cx = moments[:,1]
+            cy = moments[:,2]
+            c = np.column_stack((cx, cy))
+            Ixx = moments[:,3]
+            Iyy = moments[:,4]
+            J = moments[:,5]
 
-        J = np.sum(J + m * d2)
+            # Area and centroid of region
+            A = np.sum(a)
+            C = np.sum(m[:, None] * c, axis=0) / m.sum()
 
-        if normalize:
-            J = m.sum() * A / (2 * np.pi * J)
+            # Determine reference point for shifting, or use centroid
+            if ref_pt is None:
+                # Use centroid
+                pt = C
+            elif isinstance(ref_pt, dict):
+                # Use regional reference point
+                pt = ref_pt[region]
+            else:
+                # Use global reference point
+                pt = ref_pt
 
-        Js.append(J)
+            # Distance squared, don't actually need distance, so don't bother taking square root
+            d2 = np.sum((c - pt)**2, axis=1) # d2 = np.sum((c - C)**2, axis=1) # 
+
+            J = np.sum(J + m * d2)
+
+            if normalize:
+                J = m.sum() * A / (2 * np.pi * J)
+
+            Js.append(J)
 
     return pd.Series(Js, index=unique_regions)
 
