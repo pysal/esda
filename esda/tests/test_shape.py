@@ -178,6 +178,10 @@ def test_moment_of_inertia_about_origin():
         atol=ATOL,
     )
 
+def test_moment_of_inertia_global():
+    observed = esda.shape.moment_of_inertia_global(testbench)
+    testing.assert_allclose(observed, 84.31724299486667, atol=ATOL)
+
 # mir refers to `moment_of_inertia_regions`
 def test_mir_with_regions():
     observed = np.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, regions=regions))
