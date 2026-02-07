@@ -1016,7 +1016,7 @@ def _dump_rings(geoms):
         for interior in poly.interiors:
             yield np.asarray(interior.coords)
 
-
+@njit
 def _geometric_moments_ring(pts, shift_to_centroid=True):
     """
     Compute area, centroid, and second moments of a single polygon ring.
