@@ -5,8 +5,6 @@ Emerging Hot Spot Analysis for spatio-temporal clustering detection
 __author__ = "samay2504 <samay.m2504@gmail.com>"
 __all__ = ["EmergingHotSpot"]
 
-from typing import Optional
-
 import numpy as np
 from scipy import stats as sp_stats
 from sklearn.base import BaseEstimator
@@ -28,7 +26,7 @@ def _mann_kendall(series):
     if unique_vals == n:
         var_s = n * (n - 1) * (2 * n + 5) / 18
     else:
-        tp = np.bincount(np.argsort(np.argsort(series)))
+        _, tp = np.unique(series, return_counts=True)
         var_s = (n * (n - 1) * (2 * n + 5) - np.sum(tp * (tp - 1) * (2 * tp + 5))) / 18
 
     if s > 0:
@@ -153,7 +151,7 @@ class EmergingHotSpot(BaseEstimator):
 
     Notes
     -----
-    Classification codes:
+    Classification codes (sign of z-scores indicates hot spot vs cold spot):
     0 = new, 1 = intensifying, 2 = persistent, 3 = diminishing,
     4 = oscillating, 5 = sporadic, 6 = consecutive, 7 = historical, 8 = not significant
 
@@ -248,22 +246,18 @@ class EmergingHotSpot(BaseEstimator):
             if np.sum(valid_mask) < 3:
                 continue
 
-            try:
-                gi_star = G_Local(
-                    y_t,
-                    self.w,
-                    transform="B",
-                    permutations=self.permutations,
-                    star=True,
-                    seed=self.seed,
-                    n_jobs=self.n_jobs,
-                    keep_simulations=False,
-                    alternative="two-sided",
-                )
-                self.z_scores[t, :] = gi_star.Zs
-                self.p_values[t, :] = gi_star.p_sim
-            except Exception:
-                continue
+            gi_star = G_Local(
+                y_t,
+                self.w,
+                transform="B",
+                permutations=self.permutations,
+                star=True,
+                seed=self.seed,
+                n_jobs=self.n_jobs,
+                keep_simulations=False,
+            )
+            self.z_scores[t, :] = gi_star.Zs
+            self.p_values[t, :] = gi_star.p_sim
 
     def _compute_mann_kendall(self):
         self.mk_z = np.zeros(self.n_obs)
@@ -298,11 +292,12 @@ class EmergingHotSpot(BaseEstimator):
             if np.isnan(self.mk_p[i]):
                 self.classification[i] = 8
             else:
+                mk_p_corrected = self.mk_p[i] if adjusted_sig[i] else 1.0
                 pattern = _classify_pattern(
                     self.z_scores[:, i],
                     self.p_values[:, i],
                     self.mk_z[i],
-                    self.mk_p[i],
+                    mk_p_corrected,
                     alpha=alpha,
                 )
                 self.classification[i] = pattern

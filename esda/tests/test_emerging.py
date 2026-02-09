@@ -77,6 +77,7 @@ def test_emerging_hotspot_basic():
 
     assert np.all((ehsa.p_values >= 0) & (ehsa.p_values <= 1))
     assert np.all((ehsa.classification >= 0) & (ehsa.classification <= 8))
+    assert np.mean(np.abs(ehsa.z_scores[:, 12])) > 0.5
 
 
 def test_emerging_hotspot_intensifying_pattern():
