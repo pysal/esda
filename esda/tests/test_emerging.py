@@ -1,12 +1,16 @@
 """
-Tests for Emerging Hot Spot Analysis
+Tests for spatio-temporal hot spot analysis
 """
 
 import numpy as np
 import pytest
 from libpysal.weights import lat2W
 
-from esda.emerging import EmergingHotSpot, _bh_fdr, _mann_kendall
+from esda.emerging import EmergingHotSpot, _mann_kendall
+
+pytestmark = pytest.mark.filterwarnings(
+    "ignore:The alternative hypothesis for conditional randomization:DeprecationWarning"
+)
 
 
 def test_mann_kendall_increasing():
@@ -37,25 +41,6 @@ def test_mann_kendall_short_series():
     assert np.isnan(p)
 
 
-def test_bh_fdr_all_significant():
-    pvals = np.array([0.001, 0.002, 0.003, 0.004])
-    adjusted = _bh_fdr(pvals, alpha=0.05)
-    assert np.all(adjusted)
-
-
-def test_bh_fdr_none_significant():
-    pvals = np.array([0.1, 0.2, 0.3, 0.4])
-    adjusted = _bh_fdr(pvals, alpha=0.05)
-    assert not np.any(adjusted)
-
-
-def test_bh_fdr_partial_significant():
-    pvals = np.array([0.001, 0.01, 0.05, 0.1])
-    adjusted = _bh_fdr(pvals, alpha=0.05)
-    assert np.sum(adjusted) > 0
-    assert np.sum(adjusted) < len(pvals)
-
-
 def test_emerging_hotspot_basic():
     np.random.seed(42)
     w = lat2W(5, 5)
@@ -73,14 +58,14 @@ def test_emerging_hotspot_basic():
     assert ehsa.p_values.shape == (n_time, n_obs)
     assert ehsa.mk_z.shape == (n_obs,)
     assert ehsa.mk_p.shape == (n_obs,)
-    assert ehsa.classification.shape == (n_obs,)
+    assert ehsa.trend_direction.shape == (n_obs,)
 
     assert np.all((ehsa.p_values >= 0) & (ehsa.p_values <= 1))
-    assert np.all((ehsa.classification >= 0) & (ehsa.classification <= 8))
+    assert np.all(np.isin(ehsa.trend_direction, [-1, 0, 1]))
     assert np.mean(np.abs(ehsa.z_scores[:, 12])) > 0.5
 
 
-def test_emerging_hotspot_intensifying_pattern():
+def test_emerging_hotspot_increasing_trend():
     np.random.seed(123)
     w = lat2W(5, 5)
     n_time = 6
@@ -96,9 +81,8 @@ def test_emerging_hotspot_intensifying_pattern():
 
     ehsa = EmergingHotSpot(y, w, times, permutations=9, seed=123, n_jobs=1)
 
-    center_class = ehsa.classification[center_idx]
-    assert 0 <= center_class <= 8
     assert ehsa.z_scores.shape == (n_time, n_obs)
+    assert ehsa.trend_direction[center_idx] in [-1, 0, 1]
 
 
 def test_emerging_hotspot_with_nans():
@@ -115,8 +99,8 @@ def test_emerging_hotspot_with_nans():
 
     ehsa = EmergingHotSpot(y, w, times, permutations=9, seed=456, n_jobs=1)
 
-    assert ehsa.classification[10] == 8
-    assert not np.isnan(ehsa.classification[5])
+    assert ehsa.trend_direction[10] == 0
+    assert not np.isnan(ehsa.trend_direction[5])
 
 
 def test_emerging_hotspot_time_axis():
@@ -139,24 +123,7 @@ def test_emerging_hotspot_time_axis():
     )
 
     np.testing.assert_array_almost_equal(ehsa1.z_scores, ehsa2.z_scores)
-    np.testing.assert_array_almost_equal(ehsa1.classification, ehsa2.classification)
-
-
-def test_emerging_hotspot_pattern_names():
-    np.random.seed(101)
-    w = lat2W(3, 3)
-    n_time = 4
-    n_obs = 9
-
-    y = np.random.randn(n_time, n_obs)
-    times = np.arange(n_time)
-
-    ehsa = EmergingHotSpot(y, w, times, permutations=9, seed=101, n_jobs=1)
-
-    names = ehsa.get_pattern_names()
-    assert len(names) == n_obs
-    assert all(isinstance(name, str) for name in names)
-    assert all(name in EmergingHotSpot.PATTERN_NAMES.values() for name in names)
+    np.testing.assert_array_equal(ehsa1.trend_direction, ehsa2.trend_direction)
 
 
 def test_emerging_hotspot_invalid_times():
@@ -168,7 +135,7 @@ def test_emerging_hotspot_invalid_times():
         EmergingHotSpot(y, w, times)
 
 
-def test_emerging_hotspot_persistent_pattern():
+def test_emerging_hotspot_persistent():
     np.random.seed(202)
     w = lat2W(4, 4)
     n_time = 8
@@ -184,12 +151,11 @@ def test_emerging_hotspot_persistent_pattern():
 
     ehsa = EmergingHotSpot(y, w, times, permutations=9, seed=202, n_jobs=1)
 
-    hot_class = ehsa.classification[hot_idx]
-    assert 0 <= hot_class <= 8
+    assert np.isin(ehsa.trend_direction[hot_idx], [-1, 0, 1])
     assert ehsa.mk_p[hot_idx] <= 1.0
 
 
-def test_emerging_hotspot_diminishing_pattern():
+def test_emerging_hotspot_decreasing_trend():
     np.random.seed(303)
     w = lat2W(4, 4)
     n_time = 6
@@ -205,8 +171,7 @@ def test_emerging_hotspot_diminishing_pattern():
 
     ehsa = EmergingHotSpot(y, w, times, permutations=9, seed=303, n_jobs=1)
 
-    dim_class = ehsa.classification[dim_idx]
-    assert 0 <= dim_class <= 8
+    assert np.isin(ehsa.trend_direction[dim_idx], [-1, 0, 1])
     assert ehsa.mk_z.shape == (n_obs,)
 
 
@@ -224,4 +189,4 @@ def test_emerging_hotspot_reproducibility():
     ehsa2 = EmergingHotSpot(y, w, times, permutations=9, seed=505, n_jobs=1)
 
     np.testing.assert_array_almost_equal(ehsa1.z_scores, ehsa2.z_scores)
-    np.testing.assert_array_equal(ehsa1.classification, ehsa2.classification)
+    np.testing.assert_array_equal(ehsa1.trend_direction, ehsa2.trend_direction)
