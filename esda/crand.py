@@ -4,13 +4,16 @@ Centralised conditional randomisation engine. Numba accelerated.
 
 import os
 import warnings
-from .significance import _permutation_significance
+
 import numpy as np
+
+from .significance import _permutation_significance
 
 try:
     from numba import boolean, njit, prange
 except (ImportError, ModuleNotFoundError):
     from libpysal.common import jit as njit
+
     prange = range
     boolean = bool
 
@@ -23,9 +26,7 @@ __all__ = ["crand"]
 
 
 @njit(fastmath=True, cache=True)
-def vec_permutations(
-    max_card: int, n: int, k_replications: int, seed: int
-    ):
+def vec_permutations(max_card: int, n: int, k_replications: int, seed: int):
     """
     Generate `max_card` permuted IDs, sampled from `n` without replacement,
     `k_replications` times
@@ -65,7 +66,7 @@ def crand(
     scaling=None,
     seed=None,
     island_weight=0,
-    alternative=None
+    alternative=None,
 ):
     """
     Conduct conditional randomization of a given input using the provided
@@ -143,17 +144,19 @@ def crand(
             "The alternative hypothesis for conditional randomization"
             " is changing in the next major release of esda. We recommend"
             " setting alternative='two-sided', which will generally"
-            " double the p-value returned." 
+            " double the p-value returned."
             " To retain the current behavior, set alternative='directed'."
             " We strongly recommend moving to alternative='two-sided'.",
             DeprecationWarning,
+            stacklevel=2,
         )
         # TODO: replace this with 'two-sided' by next major release
-        alternative = 'directed'
+        alternative = "directed"
     if alternative not in ("two-sided", "greater", "lesser", "directed", "folded"):
         raise ValueError(
             f"alternative='{alternative}' provided, but is not"
-            f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
+            " one of the supported options:"
+            " 'two-sided', 'greater', 'lesser', 'directed', 'folded'"
         )
 
     # paralellise over permutations?
@@ -172,7 +175,7 @@ def crand(
         adj_matrix.setdiag(0)
         adj_matrix.eliminate_zeros()
     # extract the weights from a now no-self-weighted adj_matrix
-    other_weights = adj_matrix.data.astype(z.dtype) # cast is forced by @ in numba
+    other_weights = adj_matrix.data.astype(z.dtype)  # cast is forced by @ in numba
     # use the non-self weight as the cardinality, since
     # this is the set we have to randomize.
     # if there is a self-neighbor, we need to *not* shuffle the
@@ -229,7 +232,7 @@ def crand(
             keep,
             stat_func,
             island_weight,
-            alternative=alternative
+            alternative=alternative,
         )
 
     return p_sims, rlocals
@@ -249,7 +252,7 @@ def compute_chunk(
     keep: bool,
     stat_func,
     island_weight: float,
-    alternative: str 
+    alternative: str,
 ):
     """
     Compute conditional randomisation for a single chunk
@@ -317,7 +320,6 @@ def compute_chunk(
     p_sims = np.zeros((chunk_n,), dtype=np.float32)
     rlocals = np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
 
-
     mask = np.ones((n_samples,), dtype=np.int8) == 1
     wloc = 0
 
@@ -370,9 +372,7 @@ def compute_chunk_parallel(
 ):
     chunk_n = z_chunk.shape[0]
     p_sims = np.zeros((chunk_n,), dtype=np.float32)
-    rlocals = (
-        np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
-    )
+    rlocals = np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
 
     for i in prange(chunk_n):
         cardinality = cardinalities[i]
@@ -514,7 +514,7 @@ def parallel_crand(
     keep: bool,
     stat_func,
     island_weight,
-    alternative: str = 'directed'
+    alternative: str = "directed",
 ):
     """
     Conduct conditional randomization in parallel using numba
@@ -602,12 +602,18 @@ def parallel_crand(
     with parallel_backend("loky", inner_max_num_threads=1):
         worker_out = Parallel(n_jobs=n_jobs)(
             delayed(compute_chunk)(
-                *pars, permuted_ids, scaling, keep, stat_func, island_weight, alternative
+                *pars,
+                permuted_ids,
+                scaling,
+                keep,
+                stat_func,
+                island_weight,
+                alternative,
             )
             for pars in chunks
         )
 
-    p_sims, rlocals = zip(*worker_out)
+    p_sims, rlocals = zip(*worker_out, strict=False)
     p_sims = np.hstack(p_sims).squeeze()
     rlocals = np.row_stack(rlocals).squeeze()
     return p_sims, rlocals
