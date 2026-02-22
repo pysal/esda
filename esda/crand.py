@@ -129,14 +129,14 @@ def crand(
         else:
             raise NotImplementedError(
                 f"multivariable input is not yet supported in "
-                f"conditional randomization. Recieved `z` of shape {z.shape}"
+                f"conditional randomization. Received `z` of shape {z.shape}"
             )
     elif z.ndim == 1:
         scaling = (n - 1) / (z * z).sum() if (scaling is None) else scaling
     else:
         raise NotImplementedError(
             f"multivariable input is not yet supported in "
-            f"conditional randomization. Recieved `z` of shape {z.shape}"
+            f"conditional randomization. Received `z` of shape {z.shape}"
         )
 
     if alternative is None:
@@ -159,7 +159,7 @@ def crand(
             " 'two-sided', 'greater', 'lesser', 'directed', 'folded'"
         )
 
-    # paralellise over permutations?
+    # parallelise over permutations?
     if seed is None:
         seed = np.random.randint(12345, 12345000)
 
@@ -197,6 +197,11 @@ def crand(
             n_jobs = 1
 
     if n_jobs == 1:
+        # n_jobs==1 skips joblib multiprocessing and runs the Numba prange
+        # kernel in-process using Numba's own thread pool (all available CPU
+        # threads). This is distinct from joblib workers. Set the environment
+        # variable NUMBA_NUM_THREADS=1 before import if strict single-thread
+        # behaviour is required.
         wloc_offsets = _wloc_offsets(cardinalities)
         p_sims, rlocals = compute_chunk_parallel(
             0,
@@ -375,16 +380,17 @@ def compute_chunk_parallel(
     rlocals = np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
 
     for i in prange(chunk_n):
-        cardinality = cardinalities[i]
+        global_i = chunk_start + i
+        cardinality = cardinalities[global_i]
         if cardinality == 0:
             weights_i = np.zeros(2, dtype=other_weights.dtype)
             weights_i[1] = island_weight
         else:
-            wloc = wloc_offsets[i]
+            wloc = wloc_offsets[global_i]
             weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
-            weights_i[0] = self_weights[i]
+            weights_i[0] = self_weights[global_i]
             weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
-        rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
+        rstats = stat_func(global_i, z, permuted_ids, weights_i, scaling)
         p_sims[i] = _permutation_significance(
             observed[i], rstats, alternative=alternative
         ).item()
