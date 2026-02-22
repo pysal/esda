@@ -22,7 +22,7 @@ __all__ = ["crand"]
 #######################################################################
 
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def vec_permutations(
     max_card: int, n: int, k_replications: int, seed: int
     ):
@@ -194,20 +194,22 @@ def crand(
             n_jobs = 1
 
     if n_jobs == 1:
-        p_sims, rlocals = compute_chunk(
-            0,  # chunk start
-            z,  # chunked z, for serial this is the entire data
-            z,  # all z, for serial this is also the entire data
-            observed,  # observed statistics
-            cardinalities,  # cardinalities conforming to chunked z
-            self_weights,  # n-length vector containing the self-weights.
-            other_weights,  # flat weights buffer
-            permuted_ids,  # permuted ids
-            scaling,  # scaling applied to all statistics
-            keep,  # whether or not to keep the local statistics
+        wloc_offsets = _wloc_offsets(cardinalities)
+        p_sims, rlocals = compute_chunk_parallel(
+            0,
+            z,
+            z,
+            observed,
+            cardinalities,
+            self_weights,
+            other_weights,
+            wloc_offsets,
+            permuted_ids,
+            scaling,
+            keep,
             stat_func,
             island_weight,
-            alternative=alternative
+            alternative=alternative,
         )
     else:
         if n_jobs == -1:
@@ -233,7 +235,7 @@ def crand(
     return p_sims, rlocals
 
 
-@njit(parallel=False, fastmath=True)
+@njit(parallel=False, fastmath=True, cache=True)
 def compute_chunk(
     chunk_start: int,
     z_chunk: np.ndarray,
@@ -332,6 +334,56 @@ def compute_chunk(
             weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
         wloc += cardinality
         mask[chunk_start + i] = False
+        rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
+        p_sims[i] = _permutation_significance(
+            observed[i], rstats, alternative=alternative
+        ).item()
+        if keep:
+            rlocals[i] = rstats
+
+    return p_sims, rlocals
+
+
+def _wloc_offsets(cardinalities: np.ndarray) -> np.ndarray:
+    offsets = np.empty(len(cardinalities) + 1, dtype=np.int64)
+    offsets[0] = 0
+    np.cumsum(cardinalities, out=offsets[1:])
+    return offsets
+
+
+@njit(parallel=True, fastmath=True, cache=True)
+def compute_chunk_parallel(
+    chunk_start: int,
+    z_chunk: np.ndarray,
+    z: np.ndarray,
+    observed: np.ndarray,
+    cardinalities: np.ndarray,
+    self_weights: np.ndarray,
+    other_weights: np.ndarray,
+    wloc_offsets: np.ndarray,
+    permuted_ids: np.ndarray,
+    scaling: np.float64,
+    keep: bool,
+    stat_func,
+    island_weight: float,
+    alternative: str,
+):
+    chunk_n = z_chunk.shape[0]
+    p_sims = np.zeros((chunk_n,), dtype=np.float32)
+    rlocals = (
+        np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
+    )
+
+    for i in prange(chunk_n):
+        cardinality = cardinalities[i]
+        if cardinality == 0:
+            weights_i = np.zeros(2, dtype=other_weights.dtype)
+            weights_i[1] = island_weight
+        else:
+            wloc = wloc_offsets[i]
+            weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
+            weights_i[0] = self_weights[i]
+            weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
         p_sims[i] = _permutation_significance(
             observed[i], rstats, alternative=alternative

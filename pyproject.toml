@@ -108,6 +108,11 @@ exclude = ["docs/*"]
 [tool.coverage.run]
 source = ["./esda"]
 
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+
 [tool.coverage.report]
 exclude_lines = [
     "if self.debug:",
