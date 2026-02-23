@@ -1,4 +1,4 @@
-[build-system]
+﻿[build-system]
 requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
@@ -105,13 +105,13 @@ exclude = ["docs/*"]
     "E402",  # Module level import not at top of cell
 ]
 
-[tool.coverage.run]
-source = ["./esda"]
-
 [tool.pytest.ini_options]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
+
+[tool.coverage.run]
+source = ["./esda"]
 
 [tool.coverage.report]
 exclude_lines = [
