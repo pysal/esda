@@ -72,7 +72,7 @@ def _cast_pts_as_array(x):
     if isinstance(x, gpd.GeoSeries):
         if not all(x.geom_type == "Point"):
             raise TypeError("All geometries in GeoSeries must be Points")
-        coords = np.array([[p.x, p.y] for p in x], dtype=float)
+        coords = shapely.get_coordinates(x)
         if coords.shape == (1, 2):
             coords = coords[0]
         return coords
@@ -83,7 +83,7 @@ def _cast_pts_as_array(x):
 
     # Handle Iterable of Points
     if hasattr(x, "__iter__") and all(isinstance(p, shapely.Point) for p in x):
-        coords = np.array([[p.x, p.y] for p in x], dtype=float)
+        coords = shapely.get_coordinates(x)
         return coords
 
     # Handle Array-Like
