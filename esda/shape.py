@@ -1030,9 +1030,9 @@ def _dump_rings(geoms):
         Array of shape (n, 2) containing coordinates of a ring.
     """
     for poly in shapely.get_parts(geoms):
-        yield np.asarray(poly.exterior.coords)
+        yield shapely.get_coordinates(poly.exterior)
         for interior in poly.interiors:
-            yield np.asarray(interior.coords)
+            yield shapely.get_coordinates(interior)
 
 @njit
 def _geometric_moments_ring(pts, shift_to_centroid=True):
