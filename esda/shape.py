@@ -3,13 +3,8 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from packaging.version import Version
-
-# gets handled at the _cast level.
-with contextlib.suppress(ImportError, ModuleNotFoundError):
-    import shapely
-    from shapely.geometry import Polygon, MultiPolygon
-    import geopandas as gpd
+import shapely
+import geopandas as gpd
 
 from .crand import njit, prange
 
@@ -26,16 +21,6 @@ def _cast(collection):
     """
     Cast a collection to a shapely geometry array.
     """
-    try:
-        import geopandas as gpd
-        import shapely
-    except (ImportError, ModuleNotFoundError) as exception:
-        raise type(exception)(
-            "shapely and geopandas are required for shape statistics."
-        ) from None
-
-    if Version(shapely.__version__) < Version("2"):
-        raise ImportError("Shapely 2.0 or newer is required.")
 
     if isinstance(collection, gpd.GeoSeries | gpd.GeoDataFrame):
         return np.asarray(collection.geometry.array)
@@ -57,16 +42,6 @@ def _cast_pts_as_array(x):
     Elements must be real-valued numerics (no complex).
     Geometry inputs must be Points only; non-Point geometries are rejected.
     """
-    try:
-        import geopandas as gpd
-        import shapely
-    except (ImportError, ModuleNotFoundError) as exception:
-        raise type(exception)(
-            "shapely and geopandas are required for shape statistics."
-        ) from None
-
-    if Version(shapely.__version__) < Version("2"):
-        raise ImportError("Shapely 2.0 or newer is required.")
 
     # Handle GeoSeries
     if isinstance(x, gpd.GeoSeries):
