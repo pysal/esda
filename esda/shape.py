@@ -914,12 +914,15 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
 def moa_ratio(collection):
     """
-    Alias for `nmi`. Computes the Normalized Moment of Inertia.
+    Computes the ratio of the second moment of area (like Li et al (2013)) to
+    the moment of area of a circle with the same perimeter.
     """
+    msg = "`moa_ratio` is deprecated and will be removed in a future version."
+    warnings.warn(msg, DeprecationWarning, stacklevel=2)
 
-    # Create deprecation warning?
-    return moment_of_inertia(collection, normalize=True, ref_pt=None)
-
+    ga = _cast(collection)
+    r = shapely.length(ga) / (2 * np.pi)
+    return (np.pi * 0.5 * r**4) / second_areal_moment(ga)
 
 def nmi(collection):
     """

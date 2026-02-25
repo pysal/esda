@@ -282,7 +282,7 @@ def test_second_areal_moment():
 
 def test_moa():
     observed = esda.shape.moa_ratio(shape)
-    testing.assert_allclose(observed, 0.802796, atol=ATOL)
+    testing.assert_allclose(observed, 5.35261, atol=ATOL)
 
 
 def test_nmi():
