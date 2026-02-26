@@ -1,10 +1,10 @@
 import contextlib
 import warnings
 
-import numpy as np
-import pandas as pd
+import numpy
+import pandas
 import shapely
-import geopandas as gpd
+import geopandas
 
 from .crand import njit, prange
 
@@ -22,12 +22,12 @@ def _cast(collection):
     Cast a collection to a shapely geometry array.
     """
 
-    if isinstance(collection, gpd.GeoSeries | gpd.GeoDataFrame):
-        return np.asarray(collection.geometry.array)
-    elif isinstance(collection, np.ndarray | list):
-        return np.asarray(collection)
+    if isinstance(collection, geopandas.GeoSeries | geopandas.GeoDataFrame):
+        return numpy.asarray(collection.geometry.array)
+    elif isinstance(collection, numpy.ndarray | list):
+        return numpy.asarray(collection)
     else:
-        return np.array([collection])
+        return numpy.array([collection])
 
 def _cast_pts_as_array(x):
     """
@@ -44,7 +44,7 @@ def _cast_pts_as_array(x):
     """
 
     # Handle GeoSeries
-    if isinstance(x, gpd.GeoSeries):
+    if isinstance(x, geopandas.GeoSeries):
         if not all(x.geom_type == "Point"):
             raise TypeError("All geometries in GeoSeries must be Points")
         coords = shapely.get_coordinates(x)
@@ -54,7 +54,7 @@ def _cast_pts_as_array(x):
 
     # Handle Single Point
     if isinstance(x, shapely.Point):
-        return np.array([x.x, x.y], dtype=float)
+        return numpy.array([x.x, x.y], dtype=float)
 
     # Handle Iterable of Points
     if hasattr(x, "__iter__") and all(isinstance(p, shapely.Point) for p in x):
@@ -63,7 +63,7 @@ def _cast_pts_as_array(x):
 
     # Handle Array-Like
     try:
-        arr = np.asarray(x, dtype=float)
+        arr = numpy.asarray(x, dtype=float)
     except Exception as e:
         raise TypeError("Input must be array-like") from e
 
@@ -78,7 +78,7 @@ def _cast_pts_as_array(x):
         raise ValueError(f"Expected 1D or 2D input, got {arr.ndim}D")
 
     # Type validation: real numbers only
-    if not np.issubdtype(arr.dtype, np.floating) and not np.issubdtype(arr.dtype, np.integer):
+    if not numpy.issubdtype(arr.dtype, numpy.floating) and not numpy.issubdtype(arr.dtype, numpy.integer):
         raise TypeError("Elements must be floats or ints")
 
     return arr
@@ -118,10 +118,10 @@ def get_angles(collection, return_indices=False):
     exploded = shapely.get_parts(ga)
     coords = shapely.get_coordinates(exploded)
     n_coords_per_geom = shapely.get_num_coordinates(exploded)
-    angles = np.asarray(_get_angles(coords, n_coords_per_geom))
+    angles = numpy.asarray(_get_angles(coords, n_coords_per_geom))
     if return_indices:
-        return angles, np.repeat(
-            np.arange(len(ga)),
+        return angles, numpy.repeat(
+            numpy.arange(len(ga)),
             shapely.get_num_coordinates(ga) - shapely.get_num_geometries(ga),
         )
     else:
@@ -164,7 +164,7 @@ def _get_angles(points, n_coords_per_geom):
         a = left - center
         b = right - center
         # compute the angle between the segments
-        angle = np.arctan2(a[0] * b[1] - a[1] * b[0], np.dot(a, b))
+        angle = numpy.arctan2(a[0] * b[1] - a[1] * b[0], numpy.dot(a, b))
         result.append(angle)
         on_coord += 1
     return result
@@ -179,13 +179,13 @@ def isoperimetric_quotient(collection):
 
     Parameters
     ----------
-    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list
         Input collection of polygons.
 
     Returns
     -------
 
-    np.ndarray
+    numpy.ndarray
         An array of the same length as the input collection, containing the 
         Isoperimetric quotient for each polygon in the collection.
 
@@ -208,7 +208,7 @@ def isoperimetric_quotient(collection):
     """
 
     ga = _cast(collection)
-    return (4 * np.pi * shapely.area(ga)) / (shapely.measurement.length(ga) ** 2)
+    return (4 * numpy.pi * shapely.area(ga)) / (shapely.measurement.length(ga) ** 2)
 
 
 def isoareal_quotient(collection):
@@ -218,13 +218,13 @@ def isoareal_quotient(collection):
 
     Parameters
     ----------
-    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list
         Input collection of polygons.
 
     Returns
     -------
 
-    np.ndarray
+    numpy.ndarray
         An array of the same length as the input collection, containing the 
         Isoareal quotient for each polygon in the collection.
         
@@ -248,7 +248,7 @@ def isoareal_quotient(collection):
             = \\sqrt{\\frac{4 \\pi A}{P^2}}
             = \\sqrt{IPQ}
 
-    Therefore, `isoareal_quotient` is implemented as `np.sqrt(isoperimetric_quotient(collection))`. 
+    Therefore, `isoareal_quotient` is implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. 
     Importantly, this means that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.
 
     The :math:`IAQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, 
@@ -256,7 +256,7 @@ def isoareal_quotient(collection):
     by this measure.
     
     """
-    return np.sqrt(isoperimetric_quotient(collection))
+    return numpy.sqrt(isoperimetric_quotient(collection))
 
 
 def minimum_bounding_circle_ratio(collection):
@@ -269,7 +269,7 @@ def minimum_bounding_circle_ratio(collection):
     (1963)
     """
     ga = _cast(collection)
-    mbca = (shapely.minimum_bounding_radius(ga) ** 2) * np.pi
+    mbca = (shapely.minimum_bounding_radius(ga) ** 2) * numpy.pi
     return shapely.area(ga) / mbca
 
 
@@ -280,7 +280,7 @@ def radii_ratio(collection):
     The ratio of the radius of the equi-areal circle to the radius of the MBC
     """
     ga = _cast(collection)
-    r_eac = np.sqrt(shapely.area(ga) / np.pi)
+    r_eac = numpy.sqrt(shapely.area(ga) / numpy.pi)
     r_mbc = shapely.minimum_bounding_radius(ga)
     return r_eac / r_mbc
 
@@ -297,13 +297,13 @@ def diameter_ratio(collection, rotated=True):
         box = shapely.minimum_rotated_rectangle(ga)
         coords = shapely.get_coordinates(box)
         a, b, _, d = (coords[0::5], coords[1::5], coords[2::5], coords[3::5])
-        widths = np.sqrt(np.sum((a - b) ** 2, axis=1))
-        heights = np.sqrt(np.sum((a - d) ** 2, axis=1))
+        widths = numpy.sqrt(numpy.sum((a - b) ** 2, axis=1))
+        heights = numpy.sqrt(numpy.sum((a - d) ** 2, axis=1))
     else:
         box = shapely.bounds(ga)
         (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
-        widths, heights = np.abs(xmax - xmin), np.abs(ymax - ymin)
-    return np.minimum(widths, heights) / np.maximum(widths, heights)
+        widths, heights = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
+    return numpy.minimum(widths, heights) / numpy.maximum(widths, heights)
 
 
 def length_width_diff(collection):
@@ -320,7 +320,7 @@ def length_width_diff(collection):
     ga = _cast(collection)
     box = shapely.bounds(ga)
     (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
-    width, height = np.abs(xmax - xmin), np.abs(ymax - ymin)
+    width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
     return width - height
 
 
@@ -363,11 +363,11 @@ def fractal_dimension(collection, support="hex"):
     P = shapely.length(ga)
     A = shapely.area(ga)
     if support == "hex":
-        return 2 * np.log(P / 6) / np.log(A / (3 * np.sin(np.pi / 3)))
+        return 2 * numpy.log(P / 6) / numpy.log(A / (3 * numpy.sin(numpy.pi / 3)))
     elif support == "square":
-        return 2 * np.log(P / 4) / np.log(A)
+        return 2 * numpy.log(P / 4) / numpy.log(A)
     elif support == "circle":
-        return 2 * np.log(P / (2 * np.pi)) / np.log(A / np.pi)
+        return 2 * numpy.log(P / (2 * numpy.pi)) / numpy.log(A / numpy.pi)
     else:
         raise ValueError(
             "The support argument must be one of 'hex', 'circle', or 'square', "
@@ -402,7 +402,7 @@ def squareness(collection):
 
     """
     ga = _cast(collection)
-    return ((np.sqrt(shapely.area(ga)) * 4) / shapely.length(ga)) ** 2
+    return ((numpy.sqrt(shapely.area(ga)) * 4) / shapely.length(ga)) ** 2
 
 
 def rectangularity(collection):
@@ -443,7 +443,7 @@ def shape_index(collection):
 
     """
     ga = _cast(collection)
-    return np.sqrt(shapely.area(ga) / np.pi) / shapely.minimum_bounding_radius(ga)
+    return numpy.sqrt(shapely.area(ga) / numpy.pi) / shapely.minimum_bounding_radius(ga)
 
 
 def equivalent_rectangular_index(collection):
@@ -465,7 +465,7 @@ def equivalent_rectangular_index(collection):
     """
     ga = _cast(collection)
     box = shapely.minimum_rotated_rectangle(ga)
-    return np.sqrt(shapely.area(ga) / shapely.area(box)) * (
+    return numpy.sqrt(shapely.area(ga) / shapely.area(box)) * (
         shapely.length(box) / shapely.length(ga)
     )
 
@@ -491,7 +491,7 @@ def form_factor(collection, height):
     A = shapely.area(ga)
     V = A * height
     zeros = V == 0
-    res = np.zeros(len(ga))
+    res = numpy.zeros(len(ga))
     res[~zeros] = A[~zeros] / (V[~zeros] ** (2 / 3))
     return res
 
@@ -504,7 +504,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
 
     Parameters
     ----------
-    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list
         Input collection of polygons or multipolygons.
     normalize : bool, optional
         If True, returns moment normalized by reference cricle of same area. Default is False.
@@ -520,7 +520,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
         
     Returns
     -------
-    np.ndarray
+    numpy.ndarray
         Array of moment of inertia values for each geometry in the collection.
 
     Notes
@@ -604,10 +604,10 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
                 dy = Cy - coords[i][1]
             J += A * (dx**2 + dy**2)
         if normalize:
-            J = A**2 / (2 * np.pi * J)
+            J = A**2 / (2 * numpy.pi * J)
         Js.append(J)
 
-    return np.asarray(Js)
+    return numpy.asarray(Js)
 
 second_moment_of_area = moment_of_inertia  # Alias for users familiar with math/engineering terminology
 
@@ -624,7 +624,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
     Parameters
     ----------
-    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list
         Input collection of polygons or multipolygons.
     normalize : bool, optional
         If True, returns moment normalized by reference cricle of same area and
@@ -653,10 +653,10 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
     Returns
     -------
-    pd.Series or np.ndarray
-        If `regions` is provided, returns a `pd.Series` indexed 
+    pandas.Series or numpy.ndarray
+        If `regions` is provided, returns a `pandas.Series` indexed 
         by unique region IDs, containing moments per region. If `regions` is 
-        omitted, retuns an `np.ndarray` of moments per geometry in `collection`.
+        omitted, retuns an `numpy.ndarray` of moments per geometry in `collection`.
 
     Calculates the mass moment of inertia for regions defined by assignment of
     geometries in the collection.
@@ -776,12 +776,12 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         # If weights is a string, interpret as column name and extract from GeoDataFrame
         if isinstance(weights, str):
 
-            if not isinstance(collection, gpd.GeoDataFrame) or weights not in collection.columns:
+            if not isinstance(collection, geopandas.GeoDataFrame) or weights not in collection.columns:
                 msg = "If `weights` is a string, it must be the name of a column in `collection`, which must be a GeoDataFrame."
                 raise ValueError(msg)
-            weights = np.asarray(collection[weights])
+            weights = numpy.asarray(collection[weights])
         else:
-            weights = np.asarray(weights)
+            weights = numpy.asarray(weights)
 
     # If regions is missing, calculate MOI per geometry. Must be handled differently 
     # depending on whether weights is missing or normalization is requested.
@@ -794,7 +794,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             return moment_of_inertia(collection, normalize=normalize, ref_pt=ref_pt)
         else: # Weights are present but we are not normalizing
             # Adjust second moment of area for mass. I_M = I_A * m / A
-            return moment_of_inertia(collection, normalize=False, ref_pt=ref_pt) * weights / np.asarray(shapely.area(ga))
+            return moment_of_inertia(collection, normalize=False, ref_pt=ref_pt) * weights / numpy.asarray(shapely.area(ga))
 
     # Handle region IDs.
     else:
@@ -802,14 +802,14 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         # If regions is a string, interpret as column name and extract from GeoDataFrame
         if isinstance(regions, str):
 
-            if not isinstance(collection, gpd.GeoDataFrame) or regions not in collection.columns:
+            if not isinstance(collection, geopandas.GeoDataFrame) or regions not in collection.columns:
                 msg = "If `regions` is a string, it must be the name of a column in `collection`, which must be a GeoDataFrame."
                 raise ValueError(msg)
-            regions = np.asarray(collection[regions])
+            regions = numpy.asarray(collection[regions])
         else:
-            regions = np.asarray(regions)
+            regions = numpy.asarray(regions)
 
-        unique_regions = np.unique(regions)
+        unique_regions = numpy.unique(regions)
 
     # If we get to this point, regions are present, but weights might be none. Will
     # be handled differently in loop on unique regions.
@@ -870,18 +870,18 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             m = weights[mask]
 
             # A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(geoms)
-            moments = np.asarray([_moments_about_centroid(geom) for geom in geoms])
+            moments = numpy.asarray([_moments_about_centroid(geom) for geom in geoms])
             a = moments[:,0]
             cx = moments[:,1]
             cy = moments[:,2]
-            c = np.column_stack((cx, cy))
+            c = numpy.column_stack((cx, cy))
             Ixx = moments[:,3]
             Iyy = moments[:,4]
             J = moments[:,5]
 
             # Area and centroid of region
-            A = np.sum(a)
-            C = np.sum(m[:, None] * c, axis=0) / m.sum()
+            A = numpy.sum(a)
+            C = numpy.sum(m[:, None] * c, axis=0) / m.sum()
 
             # Determine reference point for shifting, or use centroid
             if ref_pt is None:
@@ -895,16 +895,16 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
                 pt = ref_pt
 
             # Distance squared, don't actually need distance, so don't bother taking square root
-            d2 = np.sum((c - pt)**2, axis=1) # d2 = np.sum((c - C)**2, axis=1) # 
+            d2 = numpy.sum((c - pt)**2, axis=1)
 
-            J = np.sum(J + m * d2)
+            J = numpy.sum(J + m * d2)
 
             if normalize:
-                J = m.sum() * A / (2 * np.pi * J)
+                J = m.sum() * A / (2 * numpy.pi * J)
 
             Js.append(J)
 
-    return pd.Series(Js, index=unique_regions)
+    return pandas.Series(Js, index=unique_regions)
 
 def moa_ratio(collection):
     """
@@ -915,8 +915,8 @@ def moa_ratio(collection):
     warnings.warn(msg, DeprecationWarning, stacklevel=2)
 
     ga = _cast(collection)
-    r = shapely.length(ga) / (2 * np.pi)
-    return (np.pi * 0.5 * r**4) / second_areal_moment(ga)
+    r = shapely.length(ga) / (2 * numpy.pi)
+    return (numpy.pi * 0.5 * r**4) / second_areal_moment(ga)
 
 def nmi(collection):
     """
@@ -936,7 +936,7 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
 
     Parameters
     ----------
-    collection : GeoSeries, GeoDataFrame, np.ndarray, list
+    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list
         Input collection of polygons or multipolygons.
     normalize : bool, optional
         If True, returns moment normalized by reference cricle of same area. Default is False.
@@ -963,7 +963,7 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
     moment of inertia for an entire collection, weighted by the masses of the 
     geometries in the collection, assign all geometries to the same region:
 
-    `moment_of_inertia_regions(collection, regions=np.repeat(1, len(collection))), weights=<weights vector>`
+    `moment_of_inertia_regions(collection, regions=numpy.repeat(1, len(collection))), weights=<weights vector>`
 
     The `normalize` and `ref_pt` parameters may be used as usual.
     """
@@ -978,7 +978,7 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
         J += A * (dx**2 + dy**2)
 
     if normalize:
-        J = A**2 / (2 * np.pi * J)
+        J = A**2 / (2 * numpy.pi * J)
 
     return J
 
@@ -998,7 +998,7 @@ def _dump_rings(geoms):
 
     Yields
     ------
-    np.ndarray
+    numpy.ndarray
         Array of shape (n, 2) containing coordinates of a ring.
     """
     for poly in shapely.get_parts(geoms):
@@ -1013,7 +1013,7 @@ def _geometric_moments_ring(pts, shift_to_centroid=True):
 
     Parameters
     ----------
-    pts : np.ndarray
+    pts : numpy.ndarray
         Array of coordinates defining the ring, shape (n, 2).
     shift_to_centroid : bool, default True
         If True, apply the parallel axis theorem to shift moments to the ring centroid.
@@ -1119,7 +1119,7 @@ def reflexive_angle_ratio(collection):
     """
     angles, geom_indices = get_angles(collection, return_indices=True)
     return (
-        pd.DataFrame.from_dict(dict(is_reflex=angles < 0, geom_ix=geom_indices))
+        pandas.DataFrame.from_dict(dict(is_reflex=angles < 0, geom_ix=geom_indices))
         .groupby("geom_ix")
         .is_reflex.mean()
         .values
