@@ -633,7 +633,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         (2,) or (n, 2), or dict of any of these, optional
         If provided, shifts moment to be with respect to this point or points.
         The default behavior (default: ``None``) is to calculate the moment 
-        about the centroid of each region or geometry. If `regions` or `region_col` is
+        about the centroid of each region or geometry. If `regions` is
         provided, this must be a `dict` with one item per region, with the key
         equal to the region identifier and the value equal to a point geometry
         or point coordinates. See `moment_of_inertia` for details.
