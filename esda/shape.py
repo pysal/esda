@@ -617,7 +617,7 @@ def second_areal_moment(collection):
     return moment_of_inertia(collection, normalize=False, ref_pt=None)
 
 def moment_of_inertia_regions(collection, normalize=False, ref_pt=None, 
-                      region_col=None, regions=None, weight_col=None, weights=None):
+                              regions=None, weights=None):
     """
     Compute weighted moment of inertia per region. See Notes for behavior when
     either regions or weights are omitted.
@@ -772,40 +772,21 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     ga = _cast(collection)
     ga = shapely.orient_polygons(ga)
 
-    # Handle region IDs. If provided, use directly. Otherwise, extract from GeoDataFrame.
-    if region_col is not None:
+    # Handle weights (masses).
+    if weights is not None:
 
-        if not isinstance(collection, gpd.GeoDataFrame):
-            raise ValueError(
-                "If `region_col` is provided, `collection` must be a GeoDataFrame."
-            )
-        if regions is not None:
-            msg = "Both `region_col` and `regions` were provided. Only `region_col` is being used."
-            warnings.warn(msg, UserWarning, stacklevel=2)
-        regions = np.asarray(collection[region_col])
-        unique_regions = np.unique(regions)
-    elif regions is not None:
-        regions = np.asarray(regions)
-        unique_regions = np.unique(regions)
+        # If weights is a string, interpret as column name and extract from GeoDataFrame
+        if isinstance(weights, str):
 
-    # Handle weights (masses). If provided, use directly. Otherwise, extract from GeoDataFrame.
-    # If neither is provided, weight by geom area.
-    if weight_col is not None:
+            if not isinstance(collection, gpd.GeoDataFrame) or weights not in collection.columns:
+                msg = "If `weights` is a string, it must be the name of a column in `collection`, which must be a GeoDataFrame."
+                raise ValueError(msg)
+            weights = np.asarray(collection[weights])
+        else:
+            weights = np.asarray(weights)
 
-        if not isinstance(collection, gpd.GeoDataFrame):
-            raise ValueError(
-                "If `weight_col` is provided, `collection` must be a GeoDataFrame."
-            )
-        if weights is not None:
-            msg = "Both `weight_col` and `weights` were provided. Only `weight_col` is being used."
-            warnings.warn(msg, UserWarning, stacklevel=2)
-        weights = np.asarray(collection[weight_col])
-    elif weights is not None:
-        weights = np.asarray(weights)
-
-    # Handle cases where regions are missing. Must be handled
-    # differently depending on whether weights is missing or normalization
-    # is requested.
+    # If regions is missing, calculate MOI per geometry. Must be handled differently 
+    # depending on whether weights is missing or normalization is requested.
     if regions is None:
         if weights is None or normalize:
             # If weights are missing, this reduces to second moment of area.
@@ -816,6 +797,21 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         else: # Weights are present but we are not normalizing
             # Adjust second moment of area for mass. I_M = I_A * m / A
             return moment_of_inertia(collection, normalize=False, ref_pt=ref_pt) * weights / np.asarray(shapely.area(ga))
+
+    # Handle region IDs.
+    else:
+
+        # If regions is a string, interpret as column name and extract from GeoDataFrame
+        if isinstance(regions, str):
+
+            if not isinstance(collection, gpd.GeoDataFrame) or regions not in collection.columns:
+                msg = "If `regions` is a string, it must be the name of a column in `collection`, which must be a GeoDataFrame."
+                raise ValueError(msg)
+            regions = np.asarray(collection[regions])
+        else:
+            regions = np.asarray(regions)
+
+        unique_regions = np.unique(regions)
 
     # If we get to this point, regions are present, but weights might be none. Will
     # be handled differently in loop on unique regions.

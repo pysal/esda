@@ -192,7 +192,7 @@ def test_mir_with_regions():
     )
 
 def test_mir_with_region_col():
-    observed = np.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, region_col="region_name"))
+    observed = np.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, regions="region_name"))
     testing.assert_allclose(
         observed,
         [  7.66666667, 205.22222222,  90.66666667,  96.        ],
@@ -228,7 +228,7 @@ def test_mir_with_weights():
     )
 
 def test_mir_with_weight_col():
-    observed = np.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, weight_col="mass"))
+    observed = np.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, weights="mass"))
     testing.assert_allclose(
         observed,
         [1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
