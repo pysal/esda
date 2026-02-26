@@ -629,44 +629,43 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     normalize : bool, optional
         If True, returns moment normalized by reference cricle of same area and
         mass (sum of weights in the region). Default is False.
-    ref_pt : GeoSeries, Shapely Point or list of Points, array-like of shape (2,) or (n, 2), or dict of any of these, optional
+    ref_pt : GeoSeries, Shapely Point or list of Points, array-like of shape 
+        (2,) or (n, 2), or dict of any of these, optional
         If provided, shifts moment to be with respect to this point or points.
         The default behavior (default: ``None``) is to calculate the moment 
         about the centroid of each region or geometry. If `regions` or `region_col` is
         provided, this must be a `dict` with one item per region, with the key
         equal to the region identifier and the value equal to a point geometry
         or point coordinates. See `moment_of_inertia` for details.
-    region_col : str, optional
-        The name of the column in the GeoDataFrame to use for region assignment
-        for each geometry.
-    regions : array-like, optional
-        An iterable of region identifiers of the same length as `collection` that each geometry 
-        is assigned to. If both `region_col` and `region_ids` are provided, `region_ids` 
-        is ignored.
-    weight_col : str, optional
-        The name of the column in the GeoDataFrame to use for weights, such as
-        a population column, to calculate the mass moment of inertia. Weights 
-        should be numeric. If both `weight_col` and `weights` are None (default), 
-        defaults to polygon area.
+    regions : array-like, str, optional
+        An iterable of region identifiers of the same length as `collection` 
+        that each geometry is assigned to, or the name of a column in the 
+        GeoDataFrame to use for region assignment. If None (default), moment of inertia 
+        is calculated for each geometry in `collection` without regionalization.
+        Note that if both `regions` and `weights` are provided, the moment of 
+        inertia is calculated using the discrete approximation, i.e. assuming
+        mass is concentrated at the centroid of each geometry.
     weights : array-like, optional
-        Weight per geometry (e.g., population). If both `weight_col` and 
-        `weights` are provided, `weights` is ignored. If both `weight_col` and 
-        `weights` are None (default), defaults to polygon area.
+        An iterable of weights (e.g., population) of the same length as 
+        `collection` that are applied to each geometry in `collection`, or the 
+        name of a column in the GeoDataFrame to use for weights. If None (default),
+        calculates second moment of area using the shoelace formula.
 
     Returns
     -------
     pd.Series or np.ndarray
-        If `region_col` or `regions` is provided, returns a `pd.Series` indexed 
-        by unique region IDs, containing moments per region. If both
-        are omitted, retuns an `np.ndarray` of moments per geometry in `collection`.
+        If `regions` is provided, returns a `pd.Series` indexed 
+        by unique region IDs, containing moments per region. If `regions` is 
+        omitted, retuns an `np.ndarray` of moments per geometry in `collection`.
 
     Calculates the mass moment of inertia for regions defined by assignment of
     geometries in the collection.
     
-    Requires either a column name with region assignments (`region_col`), or an array-like of
-    region IDs. Weights can be provided as a column name (`wt_col`) or an array-like. If 
-    `region_col` or `wt_col` is provided, `collection` must be a GeoDataFrame. If weights
-    are not provided, geometries weighted by area, which is equivalent 
+    Requires either a column name with region assignments or an array-like of
+    region IDs. Weights can be provided as a column name or an array-like. If 
+    either `regions` or `weights` is a string, `collection` must be a 
+    GeoDataFrame and the column name must be a valid column in the GeoDataFrame. 
+    If weights are not provided, geometries weighted by area, which is equivalent 
     to the second moment of area.
 
     Notes
@@ -681,8 +680,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
     This function extends the `moment_of_inertia` implementation to allow
     regionalization and/or weighting. Region identifiers are provided via
-    the `region_col` or `regions` parameter. Weighting is provided via
-    the `weight_col` or `weights` parameter.
+    the `regions` parameter. Weighting is provided via the `weights` parameter.
 
     If region identifiers are provided, the geometries in `collection` are 
     subareas within larger regions defined by the region identifier. The moment 
@@ -708,13 +706,13 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
     where :math:`r_i` is the distance from the point to a reference point, 
     :math:`m_i` is the mass at each point, and each point represents the 
-    centroid of a subarea of the shape, or, for
-    a continuous shape, there are an infinite number of points filling the shape.
+    centroid of a subarea of the shape, or, for a continuous shape, there are 
+    an infinite number of points filling the shape.
 
     The mass moment of inertia can be calculated for an area of uniform density 
     or an area of varying density. For areas of uniform density, this is the 
     equivalent of the second moment of area times the mass of the shape
-    divided by the area. If regions is not provided, the mass moment of inertia
+    divided by the area. If `regions` is not provided, the mass moment of inertia
     is calculated for each geometry in `collection` as an area of uniform
     density. This is implemented as:
 
@@ -723,14 +721,13 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         I_M = I_A m / A
 
     where :math:`I_A` is the second moment of area (calculated by `moment_of_inertia`)
-    and :math`m` and :math`A` are the mass and area of the shape, respectively.
+    and :math:`m` and :math:`A` are the mass and area of the shape, respectively.
 
     For a region of varying density, region identifiers must be provided via 
-    `region_col` or `regions`. :math:`I` is calculated per the equation above, 
+    the `regions` parameter. :math:`I` is calculated per the equation above, 
     with each geometry in `collection` representing a subarea with mass given
-    by `weight_col` or `weights`. Weights are assumed to be massed at the 
-    centroid of each subregion, which is equivalent to assuming uniform density 
-    across each subregion geometry, scaled by the area of each geometry.
+    by `weights`. Weights are assumed to be massed at the centroid of each 
+    subregion (which is a discrete approximation), scaled by the area of each geometry.
 
     If reference points are not provided, the mass moment of inertia is 
     calculated with respect to the centroid of each region (calculated by the
@@ -738,7 +735,8 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     mass moment of inertia is calculated for all regions, or it may be a `dict`
     with one item per region indicating the reference point (value) to use for 
     that region (key). If any region identifier does not appear as a `dict` key,
-    an error is raise.
+    an error is raise. Extra keys in the `dict` that do not correspond to any 
+    region identifiers are ignored with a warning.
 
     The mass moment of inertia can be normalized to provide a compactness 
     measure using the formula from Fan, et al. (2015):
