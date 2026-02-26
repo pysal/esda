@@ -612,8 +612,14 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
 second_moment_of_area = moment_of_inertia  # Alias for users familiar with math/engineering terminology
 
 def second_areal_moment(collection):
-    # Alias to preserve old API. Should this be deprecated?
+    # Alias to preserve old API.
+
+    msg = "`second_areal_moment` is deprecated and will be removed in a "
+    "future version. Use `moment_of_inertia` instead. The current function "
+    "is an alias for `moment_of_inertia` which does not expose all parameters."
     
+    warnings.warn(msg, DeprecationWarning, stacklevel=2)
+
     return moment_of_inertia(collection, normalize=False, ref_pt=None)
 
 def moment_of_inertia_regions(collection, normalize=False, ref_pt=None, 
@@ -823,17 +829,13 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             if set(unique_regions) <= set(k):
                 if set(unique_regions) < set (k):
                     # Extra unused regions in dict. Issue warning and remove them
-                    msg = """Keys found in `ref_pt` that are not regions in `regions`.
-                    Extra regions will be ignored.
-                    """
+                    msg = "Keys found in `ref_pt` that are not regions in `regions`. Extra regions will be ignored."
                     warnings.warn(msg, UserWarning, stacklevel=2)
                 # Cast all points in dict values
                 ref_pt = {key: _cast_pts_as_array(value) for key, value in ref_pt.items()}
 
             else:
-                msg = """Regions found in `regions` that are not in `ref_pt`. If
-                `ref_pt` is a `dict`, every region must have an entry in the `dict`.
-                """
+                msg = "Regions found in `regions` that are not in `ref_pt`. If `ref_pt` is a `dict`, every region must have an entry in the `dict`."
                 raise ValueError(msg)
         else:
             ref_pt = _cast_pts_as_array(ref_pt)
