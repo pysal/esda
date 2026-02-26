@@ -823,7 +823,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             if set(unique_regions) <= set(k):
                 if set(unique_regions) < set (k):
                     # Extra unused regions in dict. Issue warning and remove them
-                    msg = """Keys found in `ref_pt` that are not regions in `regions` or `region_col`.
+                    msg = """Keys found in `ref_pt` that are not regions in `regions`.
                     Extra regions will be ignored.
                     """
                     warnings.warn(msg, UserWarning, stacklevel=2)
@@ -831,7 +831,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
                 ref_pt = {key: _cast_pts_as_array(value) for key, value in ref_pt.items()}
 
             else:
-                msg = """Regions found in `regions` or `region_col` that are not in `ref_pt`. If
+                msg = """Regions found in `regions` that are not in `ref_pt`. If
                 `ref_pt` is a `dict`, every region must have an entry in the `dict`.
                 """
                 raise ValueError(msg)
@@ -846,7 +846,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
 
     for region in unique_regions:
         # Use mask to calculate moment of inertia over each region. When user
-        # omits `region_col` and `regions`, this effectively becomes a simple
+        # omits and `regions`, this effectively becomes a simple
         # loop over ga, returning mass moment of inertia per geometry.
         mask = regions == region
         geoms = ga[mask]
