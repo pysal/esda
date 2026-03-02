@@ -5,15 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.shape.isoareal_quotient &#8212; esda v2.8.1 Manual</title>
+    <title>esda.shape.isoareal_quotient &#8212; esda v2.8.2 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../_static/documentation_options.js?v=cd87aae0"></script>
+    <script src="../_static/documentation_options.js?v=fa7f208a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -41,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -164,9 +166,39 @@
 <dt class="sig sig-object py" id="esda.shape.isoareal_quotient">
 <span class="sig-prename descclassname"><span class="pre">esda.shape.</span></span><span class="sig-name descname"><span class="pre">isoareal_quotient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/shape.html#isoareal_quotient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.shape.isoareal_quotient" title="Link to this definition">¶</a></dt>
 <dd><p>The Isoareal quotient, defined as the ratio of a polygon’s perimeter to the
-perimeter of the equi-areal circle</p>
-<p>Altman’s PA_3 measure, and proportional to the PA_4 measure
-<span id="id1">[<a class="reference internal" href="../references.html#id22" title="Micah Altman. Districting Principles and Democratic Representation. PhD thesis, California Institute of Technology, 1998. doi:10.7907/7ZE9-TH19.">Alt98</a>]</span></p>
+perimeter of the equi-areal circle.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>collection</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDataFrame</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Input collection of polygons.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a></dt><dd><p>An array of the same length as the input collection, containing the 
+Isoareal quotient for each polygon in the collection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Altman’s <span class="math notranslate nohighlight">\(PA_3\)</span> measure <span id="id1">[<a class="reference internal" href="../references.html#id22" title="Micah Altman. Districting Principles and Democratic Representation. PhD thesis, California Institute of Technology, 1998. doi:10.7907/7ZE9-TH19.">Alt98</a>]</span>.</p>
+<p>The formula is given by:</p>
+<div class="math notranslate nohighlight">
+\[IAQ = \frac{2 \sqrt{\pi A}}{P}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(A\)</span> is the area of the polygon and <span class="math notranslate nohighlight">\(P\)</span> is the perimeter of the polygon.</p>
+<p>With some manipulation, <span class="math notranslate nohighlight">\(IAQ\)</span> can also be expressed as the square root of the Isoperimetric quotient, given by</p>
+<div class="math notranslate nohighlight">
+\[IAQ = \frac{2 \sqrt{\pi A}}{P}
+    = \sqrt{\frac{(2 \sqrt{\pi A})^2}{P^2}}
+    = \sqrt{\frac{4 \pi A}{P^2}}
+    = \sqrt{IPQ}\]</div>
+<p>Therefore, <cite>isoareal_quotient</cite> is implemented as <cite>numpy.sqrt(isoperimetric_quotient(collection))</cite>. 
+Importantly, this means that the <span class="math notranslate nohighlight">\(IAQ\)</span> and <span class="math notranslate nohighlight">\(IPQ\)</span> will rank shapes identically.</p>
+<p>The <span class="math notranslate nohighlight">\(IAQ\)</span> is scale invariant and due to the inclusion of <span class="math notranslate nohighlight">\(\pi\)</span> in the formula, 
+it is bounded between 0 and 1, with 1 representing a perfect circle, the most compact shape
+by this measure.</p>
 </dd></dl>
 
 </section>

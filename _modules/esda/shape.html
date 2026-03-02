@@ -4,12 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.shape &#8212; esda v2.8.1 Manual</title>
+    <title>esda.shape &#8212; esda v2.8.2 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=cd87aae0"></script>
+    <script src="../../_static/documentation_options.js?v=fa7f208a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -189,11 +189,10 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span> <span class="o">|</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">collection</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">collection</span><span class="p">])</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_angles</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">return_indices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -284,38 +283,43 @@
 
 <span class="c1"># -------------------- IDEAL SHAPE MEASURES -------------------- #</span>
 
-
 <div class="viewcode-block" id="isoperimetric_quotient">
 <a class="viewcode-back" href="../../generated/esda.shape.isoperimetric_quotient.html#esda.shape.isoperimetric_quotient">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">isoperimetric_quotient</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Isoperimetric quotient, defined as the ratio of a polygon&#39;s area to the</span>
 <span class="sd">    area of the equi-perimeter circle.</span>
 
-<span class="sd">    Altman&#39;s PA_1 measure :cite:`altman1998Districting`</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, np.ndarray, list</span>
+<span class="sd">        Input collection of polygons.</span>
 
-<span class="sd">    Construction:</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 
-<span class="sd">    let:</span>
-<span class="sd">    p_d = perimeter of polygon</span>
-<span class="sd">    a_d = area of polygon</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        An array of the same length as the input collection, containing the </span>
+<span class="sd">        Isoperimetric quotient for each polygon in the collection.</span>
 
-<span class="sd">    a_c = area of the constructed circle</span>
-<span class="sd">    r = radius of constructed circle</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 
-<span class="sd">    then the relationship between the constructed radius and the polygon</span>
-<span class="sd">    perimeter is:</span>
-<span class="sd">    p_d = 2 \pi r</span>
-<span class="sd">    p_d / (2 \pi) = r</span>
+<span class="sd">    Altman&#39;s :math:`PA_1` measure :cite:`altman1998Districting`.</span>
 
-<span class="sd">    meaning the area of the circle can be expressed as:</span>
-<span class="sd">    a_c = \pi r^2</span>
-<span class="sd">    a_c = \pi (p_d / (2\pi))^2</span>
+<span class="sd">    The formula is given by:</span>
 
-<span class="sd">    implying finally that the IPQ is:</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        IPQ = \\frac{4 \\pi A}{P^2}</span>
 
-<span class="sd">    pp = (a_d) / (a_c) = (a_d) / ((p_d / (2*\pi))^2 * \pi) = (a_d) / (p_d**2 / (4\PI))</span>
+<span class="sd">    Where :math:`A` is the area of the polygon and :math:`P` is the perimeter of the polygon.</span>
+
+<span class="sd">    The :math:`IPQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, </span>
+<span class="sd">    it is bounded between 0 and 1, with 1 representing a perfect circle, the most compact shape</span>
+<span class="sd">    by this measure.</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">measurement</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
 
@@ -326,15 +330,49 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">isoareal_quotient</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Isoareal quotient, defined as the ratio of a polygon&#39;s perimeter to the</span>
-<span class="sd">    perimeter of the equi-areal circle</span>
+<span class="sd">    perimeter of the equi-areal circle.</span>
 
-<span class="sd">    Altman&#39;s PA_3 measure, and proportional to the PA_4 measure</span>
-<span class="sd">    :cite:`altman1998Districting`</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, np.ndarray, list</span>
+<span class="sd">        Input collection of polygons.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    np.ndarray</span>
+<span class="sd">        An array of the same length as the input collection, containing the </span>
+<span class="sd">        Isoareal quotient for each polygon in the collection.</span>
+<span class="sd">        </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Altman&#39;s :math:`PA_3` measure :cite:`altman1998Districting`.</span>
+
+<span class="sd">    The formula is given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        IAQ = \\frac{2 \\sqrt{\\pi A}}{P}</span>
+
+<span class="sd">    Where :math:`A` is the area of the polygon and :math:`P` is the perimeter of the polygon.</span>
+
+<span class="sd">    With some manipulation, :math:`IAQ` can also be expressed as the square root of the Isoperimetric quotient, given by</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        IAQ = \\frac{2 \\sqrt{\\pi A}}{P}</span>
+<span class="sd">            = \\sqrt{\\frac{(2 \\sqrt{\\pi A})^2}{P^2}}</span>
+<span class="sd">            = \\sqrt{\\frac{4 \\pi A}{P^2}}</span>
+<span class="sd">            = \\sqrt{IPQ}</span>
+
+<span class="sd">    Therefore, `isoareal_quotient` is implemented as `numpy.sqrt(isoperimetric_quotient(collection))`. </span>
+<span class="sd">    Importantly, this means that the :math:`IAQ` and :math:`IPQ` will rank shapes identically.</span>
+
+<span class="sd">    The :math:`IAQ` is scale invariant and due to the inclusion of :math:`\\pi` in the formula, </span>
+<span class="sd">    it is bounded between 0 and 1, with 1 representing a perfect circle, the most compact shape</span>
+<span class="sd">    by this measure.</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-    <span class="p">)</span> <span class="o">/</span> <span class="n">shapely</span><span class="o">.</span><span class="n">measurement</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">isoperimetric_quotient</span><span class="p">(</span><span class="n">collection</span><span class="p">))</span></div>
 
 
 

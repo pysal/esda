@@ -4,12 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.adbscan &#8212; esda v2.8.1 Manual</title>
+    <title>esda.adbscan &#8212; esda v2.8.2 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=cd87aae0"></script>
+    <script src="../../_static/documentation_options.js?v=fa7f208a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -498,6 +498,11 @@
             <span class="n">to_loop_over</span> <span class="o">=</span> <span class="p">[(</span><span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">ref_centroids</span><span class="p">,</span> <span class="n">ref_kdt</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">s_ids</span><span class="p">]</span>
             <span class="n">remapped</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_remap_n_expand</span><span class="p">,</span> <span class="n">to_loop_over</span><span class="p">)</span>
             <span class="n">remapped_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">remapped</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">remapped_df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="n">remapped_solus</span><span class="p">[</span><span class="n">s_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;i&quot;</span>
+            <span class="p">):</span>
+                <span class="n">remapped_solus</span> <span class="o">=</span> <span class="n">remapped_solus</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
             <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">s_ids</span><span class="p">]</span> <span class="o">=</span> <span class="n">remapped_df</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solus</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -505,7 +510,10 @@
                 <span class="n">pars</span> <span class="o">=</span> <span class="p">(</span><span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">ref_centroids</span><span class="p">,</span> <span class="n">ref_kdt</span><span class="p">,</span> <span class="n">xys</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span>
                 <span class="n">remap_ids</span> <span class="o">=</span> <span class="n">_remap_lbls_single</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
                 <span class="c1"># -</span>
-                <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">remap_ids</span><span class="p">)</span>
+                <span class="n">mapped_values</span> <span class="o">=</span> <span class="n">solus</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">remap_ids</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">mapped_values</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">remapped_solus</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span>
+                    <span class="n">remapped_solus</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">remapped_solus</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+                <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_values</span>
         <span class="n">remapped_solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">ref</span><span class="p">]</span> <span class="o">=</span> <span class="n">solus</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">ref</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">remapped_solus</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">lbl_type</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">lbl_type</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
