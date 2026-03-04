@@ -17,6 +17,20 @@ __author__ = (
 
 
 # -------------------- UTILITIES --------------------#
+# shapely.orient_polygons not available in shapely<2.1. Check version, and if 
+# not available, use shapely.normalize (to make exterior rings clockwise) + 
+# shapely.reverse. This is about 30% slower than shapely.orient_polygons.
+# Remove and use shapely.orient_polygons when shapely 2.1+ is required.
+a, b, c = shapely.__version__.split(".")
+if int(a) > 2 or (int(a) == 2 and int(b) > 0):
+    orient_polygons = shapely.orient_polygons
+else:
+    def orient_polygons(geometry, exterior_cw=False):
+        g = shapely.normalize(geometry)
+        if not exterior_cw:
+            g = shapely.reverse(g)
+        return g
+    
 def _cast(collection):
     """
     Cast a collection to a shapely geometry array.
@@ -584,7 +598,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
 
     """
     ga = _cast(collection)
-    ga = shapely.orient_polygons(ga)
+    ga = orient_polygons(ga) # shapely.orient_polygons(ga) # 
 
     if ref_pt is not None:
         coords = _cast_pts_as_array(ref_pt)
@@ -774,7 +788,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     """
 
     ga = _cast(collection)
-    ga = shapely.orient_polygons(ga)
+    ga = orient_polygons(ga) # shapely.orient_polygons(ga)
 
     # Handle weights (masses).
     if weights is not None:
@@ -970,7 +984,7 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
     The `normalize` and `ref_pt` parameters may be used as usual.
     """
     ga = _cast(collection)
-    ga = shapely.orient_polygons(ga)
+    ga = orient_polygons(ga) # shapely.orient_polygons(ga)
 
     A, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(ga)
 
