@@ -415,7 +415,7 @@ class G_Local:  # noqa: N801
         seed=None,
         island_weight=0,
     ):
-        y = np.asarray(y).flatten()
+        y = np.asarray(y, dtype=np.float64).flatten()
         self.n = len(y)
         self.y = y
         w, star = _infer_star_and_structure_w(w, star, transform)
@@ -595,9 +595,10 @@ class G_Local:  # noqa: N801
 
 
 def _infer_star_and_structure_w(weights, star, transform):
-    assert transform.lower() in ("r", "b"), (
-        f'Transforms must be binary "b" or row-standardized "r".Recieved: {transform}'
-    )
+    if transform.lower() not in ("r", "b"):
+        raise ValueError(
+            f'Transforms must be binary "b" or row-standardized "r". Received: {transform}'
+        )
     adj_matrix = weights.sparse
     diagonal = adj_matrix.diagonal()
     zero_diagonal = (diagonal == 0).all()

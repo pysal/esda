@@ -1302,7 +1302,7 @@ class Moran_Local:  # noqa: N801
         seed=None,
         island_weight=0,  # noqa: ARG002
     ):
-        y = np.asarray(y).flatten()
+        y = np.asarray(y, dtype=np.float64).flatten()
         self.y = y
         n = len(y)
         self.n = n
@@ -1774,8 +1774,8 @@ class Moran_Local_BV:  # noqa: N801
         seed=None,
         island_weight=0,  # noqa: ARG002
     ):
-        x = np.asarray(x).flatten()
-        y = np.asarray(y).flatten()
+        x = np.asarray(x, dtype=np.float64).flatten()
+        y = np.asarray(y, dtype=np.float64).flatten()
         self.y = y
         self.x = x
         n = len(y)
