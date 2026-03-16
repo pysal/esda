@@ -1854,7 +1854,7 @@ class Headbanging_Triples:  # noqa: N801
     def __init__(self, data, w, k=5, t=3, angle=135.0, edgecor=False):
         warnings.warn(
             "Headbanging_Triples is deprecated and will be removed in a future release.",
-            DeprecationWarning,
+            FutureWarning,
             stacklevel=2,
         )
         if k < 3:
@@ -1977,11 +1977,8 @@ class Headbanging_Median_Rate:  # noqa: N801
     >>> if not sids_w.id_order_set: sids_w.id_order = sids_w.id_order # doctest: +SKIP
 
     finding headbanging triples by using 5 neighbors
-        return outdf
 
     >>> s_ht = Headbanging_Triples(sids_d,sids_w,k=5) # doctest: +SKIP
-
-    DeprecationWarning: Deprecated
 
     reading in the sids2 data table
 
@@ -2032,7 +2029,7 @@ class Headbanging_Median_Rate:  # noqa: N801
     def __init__(self, e, b, t, aw=None, iteration=1):
         warnings.warn(
             "Headbanging_Median_Rate is deprecated and will be removed in a future release.",
-            DeprecationWarning,
+            FutureWarning,
             stacklevel=2,
         )
         self.r = e * 1.0 / b
