@@ -376,7 +376,7 @@ def boundary_silhouette(
         for neighbor in set(neighbors).difference([label]):
             other_mask = np.nonzero(labels == neighbor)[0]
             other_score = full_distances[i, other_mask].mean()
-            neighbor_score = np.minimum(neighbor_score, other_score, neighbor_score)
+            neighbor_score = np.minimum(neighbor_score, other_score)
             if neighbor_score < 0:
                 raise ValueError(
                     "A negative neighborhood similarity value occurred. This should "
@@ -582,7 +582,7 @@ def nearest_label(
                 n_in_neighbor - 1, 1
             )  # and sum across rows
             next_best_label[neighbor_distance < next_best_fit] = neighbor
-            np.minimum(next_best_fit, neighbor_distance, next_best_fit)
+            next_best_fit = np.minimum(next_best_fit, neighbor_distance)
         nearest_label[this_label_mask] = next_best_label
         nearest_label_dissim[this_label_mask] = next_best_fit
     if return_distance:
