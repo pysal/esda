@@ -663,8 +663,13 @@ class TestMoranLocal:
 
         assert len(axs2) == 3
         assert len(axs2[0].patches) == 0
-        assert len(axs2[1].collections) == 1
-        assert len(axs2[2].collections) == 1
+
+        if GPD_GE_120:
+            assert len(axs2[1].collections) == 5
+            assert len(axs2[2].collections) == 5
+        else:
+            assert len(axs2[1].collections) == 1
+            assert len(axs2[2].collections) == 1
 
 
 class TestMoranLocalBV:
