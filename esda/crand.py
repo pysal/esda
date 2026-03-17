@@ -80,8 +80,15 @@ def crand(
         Spatial weights object
     observed : ndarray
         (N,) array with observed values
-    permutations : int
-        Number of permutations for conditional randomisation
+    permutations : int, np.ndarray
+        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        conditional random null hypothesis for each site. Permutations
+        might be specified as an array of indices if the user needs to add
+        structure to this conditional permutation null hypothesis. Common
+        reasons to do this include exchangeability violations, which might
+        then require us to shuffle observations within (but not between)
+        groups, or linearity constraints, which may require certain
+        sequences of observation relationships to be preserved.
     keep : Boolean
         If True, store simulation; else do not return randomised statistics
     n_jobs : int
@@ -179,8 +186,40 @@ def crand(
     # self neighbor, since conditional randomization conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
     max_card = cardinalities.max()
-    permuted_ids = vec_permutations(max_card, n, permutations, seed)
 
+    if np.ndim(permutations) == 0:
+        # Random permutation array
+        if int(permutations) != permutations:
+            raise ValueError(
+            f"An integer number of permutations is required, but {permutations} was provided."
+            )
+        permuted_ids = vec_permutations(max_card, n, permutations, seed)
+    elif np.ndim(permutations) == 2:
+        # User defined permutation array
+        permuted_ids = permutations
+        if permuted_ids.shape[0] != permutations:
+            permutations = permuted_ids.shape[0]
+            warnings.warn(
+                f"Number of permutations has been adjusted to match the length of the "
+                f"permutations array. New value of 'permutations' is {permutations}.",
+                stacklevel=2,
+            )
+        if permuted_ids.shape[1] < max_card:
+            raise ValueError(
+            f"The `permutations` provided were shape {permuted_ids.shape}"
+            f", but must be ({permutations, max_card}) in order to supply"
+            f" enough possible neighbors to shuffle every observation."
+            f" Consider supplying a wider permutation matrix, with"
+            f" {max_card-permuted_ids.shape[1]} more columns."
+            )
+    else:
+        raise ValueError(
+            f"The `permutations` argument must be either an integer, or a"
+            f" two-dimensional numpy array of shape (p,k), where p is the"
+            f" number of permutations to run and k is the largest amount of"
+            f" shuffled pairs that must be considered at a given site, but"
+            f" {permutations} was provided."
+            )    
     if n_jobs != 1:
         try:
             import joblib  # noqa: F401
