@@ -152,7 +152,7 @@ class TestRemapLBLS:
         # ------------------------#
         lbls = adbscan.remap_lbls(self.solus, self.db)
         # Column names
-        np.testing.assert_equal(self.solus.columns.values, lbls.columns.values)
+        np.testing.assert_equal(self.solus.columns.to_numpy(), lbls.columns.to_numpy())
         # Values
         np.testing.assert_equal(lbls.values, vals)
         # ------------------------#
@@ -160,7 +160,7 @@ class TestRemapLBLS:
         # ------------------------#
         lbls = adbscan.remap_lbls(self.solus, self.db, n_jobs=-1)
         # Column names
-        np.testing.assert_equal(self.solus.columns.values, lbls.columns.values)
+        np.testing.assert_equal(self.solus.columns.to_numpy(), lbls.columns.to_numpy())
         # Values
         np.testing.assert_equal(lbls.values, vals)
 
