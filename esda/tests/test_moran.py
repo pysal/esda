@@ -7,10 +7,12 @@ import pandas as pd
 import pytest
 from libpysal.common import ATOL, RTOL
 from numpy.testing import assert_array_equal
+from packaging.version import Version
 
 from .. import moran
 
 SEED = 12345
+GPD_GE_120 = Version(gpd.__version__) >= Version("1.1.2.dev")
 
 parametrize_stl = pytest.mark.parametrize(
     "w",
@@ -413,22 +415,37 @@ class TestMoranLocal:
             seed=SEED,
         )
         ax = lm.plot(sac1)
-        unique, counts = np.unique(
-            ax.collections[0].get_facecolors(), axis=0, return_counts=True
-        )
-        np.testing.assert_array_almost_equal(
-            unique,
-            np.array(
-                [
-                    [0.17254902, 0.48235294, 0.71372549, 1.0],
-                    [0.5372549, 0.81176471, 0.94117647, 1.0],
-                    [0.82745098, 0.82745098, 0.82745098, 1.0],
-                    [0.84313725, 0.09803922, 0.10980392, 1.0],
-                    [0.99215686, 0.68235294, 0.38039216, 1.0],
-                ]
-            ),
-        )
-        np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
+
+        if GPD_GE_120:
+            expected = [
+                [[0.84313725, 0.09803922, 0.10980392, 1.0]],
+                [[0.99215686, 0.68235294, 0.38039216, 1.0]],
+                [[0.82745098, 0.82745098, 0.82745098, 1.0]],
+                [[0.5372549, 0.81176471, 0.94117647, 1.0]],
+                [[0.17254902, 0.48235294, 0.71372549, 1.0]],
+            ]
+            lens = [38, 3, 277, 3, 82]
+            for i, col in enumerate(ax.collections):
+                np.testing.assert_array_almost_equal(col.get_facecolors(), expected[i])
+                assert len(col.get_paths()) == lens[i]
+        else:
+            unique, counts = np.unique(
+                ax.collections[0].get_facecolors(), axis=0, return_counts=True
+            )
+            np.testing.assert_array_almost_equal(
+                unique,
+                np.array(
+                    [
+                        [0.17254902, 0.48235294, 0.71372549, 1.0],
+                        [0.5372549, 0.81176471, 0.94117647, 1.0],
+                        [0.82745098, 0.82745098, 0.82745098, 1.0],
+                        [0.84313725, 0.09803922, 0.10980392, 1.0],
+                        [0.99215686, 0.68235294, 0.38039216, 1.0],
+                    ]
+                ),
+            )
+
+            np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
 
     @parametrize_sac
     def test_plot_scatter(self, w):
@@ -630,8 +647,13 @@ class TestMoranLocal:
 
         assert len(axs) == 3
         assert len(axs[0].patches) == 1
-        assert len(axs[1].collections) == 4
-        assert len(axs[2].collections) == 4
+
+        if GPD_GE_120:
+            assert len(axs[1].collections) == 8
+            assert len(axs[2].collections) == 8
+        else:
+            assert len(axs[1].collections) == 4
+            assert len(axs[2].collections) == 4
 
         axs2 = lm.plot_combination(
             sac1,
@@ -772,22 +794,36 @@ class TestMoranLocalBV:
             seed=SEED,
         )
         ax = lm.plot(self.gdf)
-        unique, counts = np.unique(
-            ax.collections[0].get_facecolors(), axis=0, return_counts=True
-        )
-        np.testing.assert_array_almost_equal(
-            unique,
-            np.array(
-                [
-                    [0.17254902, 0.48235294, 0.71372549, 1.0],
-                    [0.5372549, 0.81176471, 0.94117647, 1.0],
-                    [0.82745098, 0.82745098, 0.82745098, 1.0],
-                    [0.84313725, 0.09803922, 0.10980392, 1.0],
-                    [0.99215686, 0.68235294, 0.38039216, 1.0],
-                ]
-            ),
-        )
-        np.testing.assert_array_equal(counts, np.array([6, 2, 86, 7, 7]))
+
+        if GPD_GE_120:
+            expected = [
+                [[0.84313725, 0.09803922, 0.10980392, 1.0]],
+                [[0.99215686, 0.68235294, 0.38039216, 1.0]],
+                [[0.82745098, 0.82745098, 0.82745098, 1.0]],
+                [[0.5372549, 0.81176471, 0.94117647, 1.0]],
+                [[0.17254902, 0.48235294, 0.71372549, 1.0]],
+            ]
+            lens = [7, 5, 80, 2, 6]
+            for i, col in enumerate(ax.collections):
+                np.testing.assert_array_almost_equal(col.get_facecolors(), expected[i])
+                assert len(col.get_paths()) == lens[i]
+        else:
+            unique, counts = np.unique(
+                ax.collections[0].get_facecolors(), axis=0, return_counts=True
+            )
+            np.testing.assert_array_almost_equal(
+                unique,
+                np.array(
+                    [
+                        [0.17254902, 0.48235294, 0.71372549, 1.0],
+                        [0.5372549, 0.81176471, 0.94117647, 1.0],
+                        [0.82745098, 0.82745098, 0.82745098, 1.0],
+                        [0.84313725, 0.09803922, 0.10980392, 1.0],
+                        [0.99215686, 0.68235294, 0.38039216, 1.0],
+                    ]
+                ),
+            )
+            np.testing.assert_array_equal(counts, np.array([6, 2, 86, 7, 7]))
 
     @parametrize_sids
     def test_plot_combination(self, w):
@@ -813,8 +849,12 @@ class TestMoranLocalBV:
 
         assert len(axs) == 3
         assert len(axs[0].patches) == 1
-        assert len(axs[1].collections) == 3
-        assert len(axs[2].collections) == 3
+        if GPD_GE_120:
+            assert len(axs[1].collections) == 7
+            assert len(axs[2].collections) == 7
+        else:
+            assert len(axs[1].collections) == 3
+            assert len(axs[2].collections) == 3
 
 
 class TestMoranLocalRate:
