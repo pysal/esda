@@ -326,7 +326,7 @@ def length_width_diff(collection):
 
     L - W
 
-    Where L is the maximal east-west extent and W is the maximal north-south
+    Where L is the maximal North-South extent and W is the maximal East-West
     extent.
 
     Defined as measure LW_5 in :cite:`altman1998Districting`
@@ -335,7 +335,7 @@ def length_width_diff(collection):
     box = shapely.bounds(ga)
     (xmin, xmax), (ymin, ymax) = box[:, [0, 2]].T, box[:, [1, 3]].T
     width, height = numpy.abs(xmax - xmin), numpy.abs(ymax - ymin)
-    return width - height
+    return height - width
 
 
 def boundary_amplitude(collection):
