@@ -291,7 +291,23 @@ def radii_ratio(collection):
     """
     The Flaherty & Crumplin (1992) index, OS_3 in :cite:`altman1998Districting`.
 
+    Also known as Schumm's shape index (Schumm (1956) in MacEachren 1985).
+
     The ratio of the radius of the equi-areal circle to the radius of the MBC
+
+    .. math::
+        {\\sqrt{{A} \\over {\\pi}}} \\over {R}
+
+    where :math:`A` is the area and :math:`R` is the radius of the minimum bounding
+    circle.
+
+    Notes
+    -----
+    Implementation follows :cite:`maceachren1985compactness`.
+
+    See Also
+    --------
+    shape_index : Deprecated alias for this function.
     """
     ga = _cast(collection)
     r_eac = numpy.sqrt(shapely.area(ga) / numpy.pi)
@@ -443,7 +459,12 @@ def rectangularity(collection):
 
 def shape_index(collection):
     """
-    Schumm’s shape index (Schumm (1956) in MacEachren 1985)
+    .. deprecated:: 2.5.0
+        ``shape_index`` is deprecated and will be removed in future.
+        Use :func:`radii_ratio` instead, which computes the same Schumm's shape index
+        (Schumm (1956) in MacEachren 1985).
+
+    Schumm's shape index (Schumm (1956) in MacEachren 1985)
 
     .. math::
         {\\sqrt{{A} \\over {\\pi}}} \\over {R}
@@ -456,8 +477,13 @@ def shape_index(collection):
     Implementation follows :cite:`maceachren1985compactness`.
 
     """
-    ga = _cast(collection)
-    return numpy.sqrt(shapely.area(ga) / numpy.pi) / shapely.minimum_bounding_radius(ga)
+    warnings.warn(
+        "shape_index is deprecated and will be removed in future. "
+        "Use radii_ratio instead, which computes the same index.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return radii_ratio(collection)
 
 
 def equivalent_rectangular_index(collection):
