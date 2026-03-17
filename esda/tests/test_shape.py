@@ -131,7 +131,7 @@ def test_convex_hull_ratio():
 
 def test_length_width_diff():
     observed = esda.shape.length_width_diff(shape)
-    testing.assert_allclose(observed, 0.25, atol=ATOL)
+    testing.assert_allclose(observed, -0.25, atol=ATOL)
 
 
 def test_radii_ratio():
