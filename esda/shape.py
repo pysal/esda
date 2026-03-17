@@ -1,10 +1,11 @@
 import contextlib
 import warnings
 
+import geopandas
 import numpy
 import pandas
 import shapely
-import geopandas
+from packaging.version import Version
 
 from .crand import njit, prange
 
@@ -21,8 +22,8 @@ __author__ = (
 # not available, use shapely.normalize (to make exterior rings clockwise) + 
 # shapely.reverse. This is about 30% slower than shapely.orient_polygons.
 # Remove and use shapely.orient_polygons when shapely 2.1+ is required.
-a, b, c = shapely.__version__.split(".")
-if int(a) > 2 or (int(a) == 2 and int(b) > 0):
+
+if Version(shapely.__version__) >= Version("2.1.0"):
     orient_polygons = shapely.orient_polygons
 else:
     def orient_polygons(geometry, exterior_cw=False):
