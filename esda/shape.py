@@ -898,7 +898,7 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
             # Area and centroid of region
             A = numpy.sum(a)
             C = numpy.sum(m[:, None] * c, axis=0) / m.sum()
-            print(f"Region {region}: A={A}, C={C}, m.sum()={m.sum()}")
+
             # Determine reference point for shifting, or use centroid
             if ref_pt is None:
                 # Use centroid
