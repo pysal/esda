@@ -662,9 +662,6 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         that each geometry is assigned to, or the name of a column in the 
         GeoDataFrame to use for region assignment. If None (default), moment of inertia 
         is calculated for each geometry in `collection` without regionalization.
-        Note that if both `regions` and `weights` are provided, the moment of 
-        inertia is calculated using the discrete approximation, i.e. assuming
-        mass is concentrated at the centroid of each geometry.
     weights : array-like, optional
         An iterable of weights (e.g., population) of the same length as 
         `collection` that are applied to each geometry in `collection`, or the 
@@ -725,9 +722,8 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
         I = \\sum_{i} m_i r_i^2
 
     where :math:`r_i` is the distance from the point to a reference point, 
-    :math:`m_i` is the mass at each point, and each point represents the 
-    centroid of a subarea of the shape, or, for a continuous shape, there are 
-    an infinite number of points filling the shape.
+    :math:`m_i` is the mass at each point, and there are an infinite number 
+    of points filling the shape.
 
     The mass moment of inertia can be calculated for an area of uniform density 
     or an area of varying density. For areas of uniform density, this is the 
@@ -744,10 +740,14 @@ def moment_of_inertia_regions(collection, normalize=False, ref_pt=None,
     and :math:`m` and :math:`A` are the mass and area of the shape, respectively.
 
     For a region of varying density, region identifiers must be provided via 
-    the `regions` parameter. :math:`I` is calculated per the equation above, 
-    with each geometry in `collection` representing a subarea with mass given
-    by `weights`. Weights are assumed to be massed at the centroid of each 
-    subregion (which is a discrete approximation), scaled by the area of each geometry.
+    the `regions` parameter. :math:`I_M` is calculated for each geometry in 
+    `collection` per the equation above, with each geometry representing a 
+    subarea of the region with mass given
+    by `weights`. The mass moment of inertia of the region is then the sum of 
+    the mass moments of inertia of each subarea shifted to the reference point
+    (using the parallel axis theorem) by adding :math:`m d^2`, where :math:`d` 
+    is the distance from the centroid of each subarea to the reference point 
+    for the region.
 
     If reference points are not provided, the mass moment of inertia is 
     calculated with respect to the centroid of each region (calculated by the
