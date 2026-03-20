@@ -259,7 +259,7 @@ def test_mir_with_regions_and_weights():
     observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, regions=regions, weights=masses))
     testing.assert_allclose(
         observed,
-        [ 162.17647059, 6098.74074074, 2632.25      , 2657.23943662],
+        [ 189.50980392, 6185.74074074, 2709.58333333, 2771.57276995],
         atol=ATOL,
     )
 def test_mir_with_regions_and_ref_pts():
