@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.shape.moment_of_inertia &#8212; esda v2.8.2 Manual</title>
+    <title>esda.shape.moment_of_inertia &#8212; esda v2.9.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../_static/documentation_options.js?v=fa7f208a"></script>
+    <script src="../_static/documentation_options.js?v=182a64a0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html">Measures of shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Inertial-Measures">Inertial Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
@@ -164,16 +165,88 @@
 <h1>esda.shape.moment_of_inertia<a class="headerlink" href="#esda-shape-moment-of-inertia" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="esda.shape.moment_of_inertia">
-<span class="sig-prename descclassname"><span class="pre">esda.shape.</span></span><span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/shape.html#moment_of_inertia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.shape.moment_of_inertia" title="Link to this definition">¶</a></dt>
-<dd><p>Computes the moment of inertia of the polygon.</p>
-<p>This treats each boundary point as a point-mass of 1.</p>
-<p>Thus, for constant unit mass at each boundary point,
-the MoI of this pointcloud is</p>
+<span class="sig-prename descclassname"><span class="pre">esda.shape.</span></span><span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/shape.html#moment_of_inertia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.shape.moment_of_inertia" title="Link to this definition">¶</a></dt>
+<dd><p>Compute moment of inertia (second moment of area) per geometry.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>collection</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDataFrame</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Input collection of polygons or multipolygons.</p>
+</dd>
+<dt><strong>normalize</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, optional</span></dt><dd><p>If True, returns moment normalized by reference cricle of same area. Default is False.</p>
+</dd>
+<dt><strong>ref_pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Shapely</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Points</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a> of shape (2,) or (<code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code>, 2), optional</span></dt><dd><p>If provided, shifts moment to be with respect to this point or points.
+The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment 
+about the centroid of each geometry. Points may be passed as
+as array-like of coordinates or point geometries. If a single point,
+all moments are calculated with respect to that reference point. If
+of length equal to collection, the moment for each geometry in 
+collection is calculated with respect to the reference point with
+the same index. To return moment about the origin, explicitly set to (0, 0).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></dt><dd><p>Array of moment of inertia values for each geometry in the collection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Calculates the moment of inertia of each geometry in the collection. Can handle
+polygons with holes and multipolygons by summing the moments of inertia of each part.
+The moment of inertia is calculated about the centroid of each geometry by default,
+but can also be calculated about a specified reference point or points.</p>
+<p>The moment of inertia is the variance of the distance of all points
+in a shape to a reference point, which can be interpreted as an axis of rotation 
+perpendicular to the plane of the shape. The first parameter should be a GeoDataFrame or 
+array-like of Polygons or MultiPolygons. If normalization is
+requested, the moment of inertia is compared with that of a circle of equal area. This
+is discussed in detail below.</p>
+<p>Moments of inertia with weights (such as population) may be calculated using 
+<cite>moment_of_inertia_regions</cite>. Without weights, the moment of inertia is known as the 
+area moment of inertia or the second moment of area, and can be quickly calculated from 
+the polygon vertices using the shoelace formula. The second moments of area about the 
+x and y axes are calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\sum_i d_{i,c}^2\]</div>
-<p>where c is the centroid of the polygon</p>
-<p>Altman’s OS_1 measure <span id="id1">[<a class="reference internal" href="../references.html#id22" title="Micah Altman. Districting Principles and Democratic Representation. PhD thesis, California Institute of Technology, 1998. doi:10.7907/7ZE9-TH19.">Alt98</a>]</span>, cited in Boyce and Clark
-(1964), also used in Weaver and Hess (1963).</p>
+\[ \begin{align}\begin{aligned}I_x = \frac{1}{12}\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(y_i^2 + y_i y_{i+1} + y_{i+1}^2)\\I_y = \frac{1}{12}\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(x_i^2 + x_i x_{i+1} + x_{i+1}^2)\end{aligned}\end{align} \]</div>
+<p>where indices wrap around (n+1 = 1).</p>
+<p>The moments are then adjusted to be relative to a reference point using the 
+parallel axis theorem. The moment of inertia is then the sum of <span class="math notranslate nohighlight">\(I_x\)</span> and 
+<span class="math notranslate nohighlight">\(I_y\)</span>. In geographic contexts, the reference point is typically the 
+centroid, which is the default if no reference point is provided.
+However, other points of interest may be used, such as a capital city or the residence of
+a political representative.</p>
+<p>The moment of inertia can be normalized to provide a compactness measure by comparing
+it with the moment of inertia of a circle of equal area. This is calculated
+as the ratio of the moment of inertia of the circle to that of the shape about its centroid:</p>
+<div class="math notranslate nohighlight">
+\[C_{MI} = \frac{I_{circle}}{I_{shape}}
+       = \frac{A^2}{2 \pi I_{shape}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(A\)</span> is the area of the polygon and <span class="math notranslate nohighlight">\(I_{shape}\)</span> is the moment of inertia
+of the polygon. This formulation is from Li, et al (2013). The value of 
+<span class="math notranslate nohighlight">\(C_{MI}\)</span> is bounded between 0 and 1, with 1 representing a perfect circle, 
+the most compact shape by this measure.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="rd39291d553b3-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Godwin, A. N. 1980. “Simple Calculation of Moments of Inertia for Polygons.”
+International Journal of Mathematical Education in Science and Technology 11 (4): 577–86. 
+<a class="reference external" href="https://doi.org/10.1080/0020739800110414">https://doi.org/10.1080/0020739800110414</a>.</p>
+</div>
+<div class="citation" id="rd39291d553b3-2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient Measure 
+of Compactness for Two-Dimensional Shapes and Its Application in Regionalization 
+Problems.” International Journal of Geographical Information Science 27 (6): 1227–50. 
+<a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p>
+</div>
+<div class="citation" id="id1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area">https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area</a></p>
+</div>
+</div>
 </dd></dl>
 
 </section>

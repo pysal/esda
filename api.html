@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API reference &#8212; esda v2.8.2 Manual</title>
+    <title>API reference &#8212; esda v2.9.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="_static/documentation_options.js?v=fa7f208a"></script>
+    <script src="_static/documentation_options.js?v=182a64a0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -85,6 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html">Measures of shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Inertial-Measures">Inertial Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
@@ -347,13 +348,13 @@
 <td><p>The Reock compactness measure, defined by the ratio of areas between the minimum bounding/containing circle of a shape and the shape itself.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/esda.shape.moa_ratio.html#esda.shape.moa_ratio" title="esda.shape.moa_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.moa_ratio</span></code></a>(collection)</p></td>
-<td><p>Computes the ratio of the second moment of area (like Li et al (2013)) to the moment of area of a circle with the same area.</p></td>
+<td><p>Computes the ratio of the second moment of area (like Li et al (2013)) to the moment of area of a circle with the same perimeter.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia" title="esda.shape.moment_of_inertia"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.moment_of_inertia</span></code></a>(collection)</p></td>
-<td><p>Computes the moment of inertia of the polygon.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia" title="esda.shape.moment_of_inertia"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.moment_of_inertia</span></code></a>(collection[, ...])</p></td>
+<td><p>Compute moment of inertia (second moment of area) per geometry.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/esda.shape.nmi.html#esda.shape.nmi" title="esda.shape.nmi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.nmi</span></code></a>(collection)</p></td>
-<td><p>Computes the Normalized Moment of Inertia from Li et al (2013), recognizing that it is the relationship between the area of a shape squared divided by its second moment of area.</p></td>
+<td><p>Computes the normalized moment of inertia</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.shape.radii_ratio.html#esda.shape.radii_ratio" title="esda.shape.radii_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.radii_ratio</span></code></a>(collection)</p></td>
 <td><p>The Flaherty &amp; Crumplin (1992) index, OS_3 in <span id="id5">[<a class="reference internal" href="references.html#id22" title="Micah Altman. Districting Principles and Democratic Representation. PhD thesis, California Institute of Technology, 1998. doi:10.7907/7ZE9-TH19.">Alt98</a>]</span>.</p></td>
@@ -365,12 +366,15 @@
 <td><p>The Taylor reflexive angle index, measure OS_4 in <span id="id6">[<a class="reference internal" href="references.html#id22" title="Micah Altman. Districting Principles and Democratic Representation. PhD thesis, California Institute of Technology, 1998. doi:10.7907/7ZE9-TH19.">Alt98</a>]</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment" title="esda.shape.second_areal_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.second_areal_moment</span></code></a>(collection)</p></td>
-<td><p>Using equation listed on en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon, the second moment of area is the sum of the inertia across the x and y axes:</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.shape.shape_index.html#esda.shape.shape_index" title="esda.shape.shape_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.shape_index</span></code></a>(collection)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.shape.second_moment_of_area.html#esda.shape.second_moment_of_area" title="esda.shape.second_moment_of_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.second_moment_of_area</span></code></a>(collection)</p></td>
+<td><p>Compute moment of inertia (second moment of area) per geometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.shape.shape_index.html#esda.shape.shape_index" title="esda.shape.shape_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.shape_index</span></code></a>(collection)</p></td>
 <td><p>Schumm’s shape index (Schumm (1956) in MacEachren 1985)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/esda.shape.squareness.html#esda.shape.squareness" title="esda.shape.squareness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.squareness</span></code></a>(collection)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/esda.shape.squareness.html#esda.shape.squareness" title="esda.shape.squareness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">esda.shape.squareness</span></code></a>(collection)</p></td>
 <td><p>Measures how different is a given shape from an equi-areal square</p></td>
 </tr>
 </tbody>

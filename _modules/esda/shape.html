@@ -4,12 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.shape &#8212; esda v2.8.2 Manual</title>
+    <title>esda.shape &#8212; esda v2.9.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=fa7f208a"></script>
+    <script src="../../_static/documentation_options.js?v=182a64a0"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -82,6 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Inertial-Measures">Inertial Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
@@ -151,15 +152,13 @@
       
   <h1>Source code for esda.shape</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">Version</span>
-
-<span class="c1"># gets handled at the _cast level.</span>
-<span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">):</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
-
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.crand</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span><span class="p">,</span> <span class="n">prange</span>
 
@@ -172,20 +171,24 @@
 
 
 <span class="c1"># -------------------- UTILITIES --------------------#</span>
+<span class="c1"># shapely.orient_polygons not available in shapely&lt;2.1. Check version, and if </span>
+<span class="c1"># not available, use shapely.normalize (to make exterior rings clockwise) + </span>
+<span class="c1"># shapely.reverse. This is about 30% slower than shapely.orient_polygons.</span>
+<span class="c1"># Remove and use shapely.orient_polygons when shapely 2.1+ is required.</span>
+
+<span class="k">if</span> <span class="n">Version</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;2.1.0&quot;</span><span class="p">):</span>
+    <span class="n">orient_polygons</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">orient_polygons</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orient_polygons</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">exterior_cw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exterior_cw</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span>
+    
 <span class="k">def</span><span class="w"> </span><span class="nf">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cast a collection to a shapely geometry array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)(</span>
-            <span class="s2">&quot;shapely and geopandas are required for shape statistics.&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-
-    <span class="k">if</span> <span class="n">Version</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Shapely 2.0 or newer is required.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span> <span class="o">|</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
@@ -193,6 +196,60 @@
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">collection</span><span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_cast_pts_as_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accepts:</span>
+<span class="sd">      - array-like of shape (2,) or (n, 2) of real-valued numerics</span>
+<span class="sd">      - shapely.geometry.Point or iterable of Points</span>
+<span class="sd">      - geopandas.GeoSeries of Points</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      - ndarray of shape (2,) or (n, 2), dtype float</span>
+
+<span class="sd">    Elements must be real-valued numerics (no complex).</span>
+<span class="sd">    Geometry inputs must be Points only; non-Point geometries are rejected.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Handle GeoSeries</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All geometries in GeoSeries must be Points&quot;</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">coords</span>
+
+    <span class="c1"># Handle Single Point</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">Point</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># Handle Iterable of Points</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">Point</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">coords</span>
+
+    <span class="c1"># Handle Array-Like</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be array-like&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="c1"># Shape validation</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected shape (2,), got </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected shape (n, 2), got </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected 1D or 2D input, got </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">D&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Type validation: real numbers only</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Elements must be floats or ints&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">arr</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_angles</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">return_indices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -292,13 +349,13 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    collection : GeoSeries, GeoDataFrame, np.ndarray, list</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list</span>
 <span class="sd">        Input collection of polygons.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    np.ndarray</span>
+<span class="sd">    numpy.ndarray</span>
 <span class="sd">        An array of the same length as the input collection, containing the </span>
 <span class="sd">        Isoperimetric quotient for each polygon in the collection.</span>
 
@@ -334,13 +391,13 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    collection : GeoSeries, GeoDataFrame, np.ndarray, list</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list</span>
 <span class="sd">        Input collection of polygons.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    np.ndarray</span>
+<span class="sd">    numpy.ndarray</span>
 <span class="sd">        An array of the same length as the input collection, containing the </span>
 <span class="sd">        Isoareal quotient for each polygon in the collection.</span>
 <span class="sd">        </span>
@@ -440,7 +497,7 @@
 
 <span class="sd">    L - W</span>
 
-<span class="sd">    Where L is the maximal east-west extent and W is the maximal north-south</span>
+<span class="sd">    Where L is the maximal North-South extent and W is the maximal East-West</span>
 <span class="sd">    extent.</span>
 
 <span class="sd">    Defined as measure LW_5 in :cite:`altman1998Districting`</span>
@@ -449,7 +506,7 @@
     <span class="n">box</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
     <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span> <span class="o">=</span> <span class="n">box</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">box</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">width</span> <span class="o">-</span> <span class="n">height</span></div>
+    <span class="k">return</span> <span class="n">height</span> <span class="o">-</span> <span class="n">width</span></div>
 
 
 
@@ -648,203 +705,627 @@
 
 <span class="c1"># -------------------- INERTIAL MEASURES -------------------- #</span>
 
-
 <div class="viewcode-block" id="moment_of_inertia">
 <a class="viewcode-back" href="../../generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the moment of inertia of the polygon.</span>
+<span class="sd">    Compute moment of inertia (second moment of area) per geometry.</span>
 
-<span class="sd">    This treats each boundary point as a point-mass of 1.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list</span>
+<span class="sd">        Input collection of polygons or multipolygons.</span>
+<span class="sd">    normalize : bool, optional</span>
+<span class="sd">        If True, returns moment normalized by reference cricle of same area. Default is False.</span>
+<span class="sd">    ref_pt : GeoSeries, Shapely Point or list of Points, array-like of shape (2,) or (n, 2), optional</span>
+<span class="sd">        If provided, shifts moment to be with respect to this point or points.</span>
+<span class="sd">        The default behavior (default: ``None``) is to calculate the moment </span>
+<span class="sd">        about the centroid of each geometry. Points may be passed as</span>
+<span class="sd">        as array-like of coordinates or point geometries. If a single point,</span>
+<span class="sd">        all moments are calculated with respect to that reference point. If</span>
+<span class="sd">        of length equal to collection, the moment for each geometry in </span>
+<span class="sd">        collection is calculated with respect to the reference point with</span>
+<span class="sd">        the same index. To return moment about the origin, explicitly set to (0, 0).</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Array of moment of inertia values for each geometry in the collection.</span>
 
-<span class="sd">    Thus, for constant unit mass at each boundary point,</span>
-<span class="sd">    the MoI of this pointcloud is</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    Calculates the moment of inertia of each geometry in the collection. Can handle</span>
+<span class="sd">    polygons with holes and multipolygons by summing the moments of inertia of each part.</span>
+<span class="sd">    The moment of inertia is calculated about the centroid of each geometry by default,</span>
+<span class="sd">    but can also be calculated about a specified reference point or points.</span>
+<span class="sd">        </span>
+<span class="sd">    The moment of inertia is the variance of the distance of all points</span>
+<span class="sd">    in a shape to a reference point, which can be interpreted as an axis of rotation </span>
+<span class="sd">    perpendicular to the plane of the shape. The first parameter should be a GeoDataFrame or </span>
+<span class="sd">    array-like of Polygons or MultiPolygons. If normalization is</span>
+<span class="sd">    requested, the moment of inertia is compared with that of a circle of equal area. This</span>
+<span class="sd">    is discussed in detail below.</span>
+<span class="sd">    </span>
+<span class="sd">    Moments of inertia with weights (such as population) may be calculated using </span>
+<span class="sd">    `moment_of_inertia_regions`. Without weights, the moment of inertia is known as the </span>
+<span class="sd">    area moment of inertia or the second moment of area, and can be quickly calculated from </span>
+<span class="sd">    the polygon vertices using the shoelace formula. The second moments of area about the </span>
+<span class="sd">    x and y axes are calculated as:</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        I_x = \\frac{1}{12}\\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(y_i^2 + y_i y_{i+1} + y_{i+1}^2)</span>
+<span class="sd">        </span>
+<span class="sd">        I_y = \\frac{1}{12}\\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(x_i^2 + x_i x_{i+1} + x_{i+1}^2)</span>
+<span class="sd">    </span>
+<span class="sd">    where indices wrap around (n+1 = 1).</span>
+
+<span class="sd">    The moments are then adjusted to be relative to a reference point using the </span>
+<span class="sd">    parallel axis theorem. The moment of inertia is then the sum of :math:`I_x` and </span>
+<span class="sd">    :math:`I_y`. In geographic contexts, the reference point is typically the </span>
+<span class="sd">    centroid, which is the default if no reference point is provided.</span>
+<span class="sd">    However, other points of interest may be used, such as a capital city or the residence of</span>
+<span class="sd">    a political representative. </span>
+
+<span class="sd">    The moment of inertia can be normalized to provide a compactness measure by comparing</span>
+<span class="sd">    it with the moment of inertia of a circle of equal area. This is calculated</span>
+<span class="sd">    as the ratio of the moment of inertia of the circle to that of the shape about its centroid:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \\sum_i d_{i,c}^2</span>
+<span class="sd">        C_{MI} = \\frac{I_{circle}}{I_{shape}}</span>
+<span class="sd">               = \\frac{A^2}{2 \\pi I_{shape}}</span>
 
-<span class="sd">    where c is the centroid of the polygon</span>
+<span class="sd">    where :math:`A` is the area of the polygon and :math:`I_{shape}` is the moment of inertia</span>
+<span class="sd">    of the polygon. This formulation is from Li, et al (2013). The value of </span>
+<span class="sd">    :math:`C_{MI}` is bounded between 0 and 1, with 1 representing a perfect circle, </span>
+<span class="sd">    the most compact shape by this measure.</span>
+<span class="sd">    </span>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Godwin, A. N. 1980. &quot;Simple Calculation of Moments of Inertia for Polygons.&quot;</span>
+<span class="sd">        International Journal of Mathematical Education in Science and Technology 11 (4): 577–86. </span>
+<span class="sd">        https://doi.org/10.1080/0020739800110414.</span>
+<span class="sd">    .. [2] Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. &quot;An Efficient Measure </span>
+<span class="sd">        of Compactness for Two-Dimensional Shapes and Its Application in Regionalization </span>
+<span class="sd">        Problems.&quot; International Journal of Geographical Information Science 27 (6): 1227–50. </span>
+<span class="sd">        https://doi.org/10.1080/13658816.2012.752093.</span>
+<span class="sd">    .. [2] https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area</span>
 
-<span class="sd">    Altman&#39;s OS_1 measure :cite:`altman1998Districting`, cited in Boyce and Clark</span>
-<span class="sd">    (1964), also used in Weaver and Hess (1963).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
-    <span class="n">geom_ixs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ga</span><span class="p">)),</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_coordinates</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span>
-    <span class="n">centroids</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">ga</span><span class="p">))[</span><span class="n">geom_ixs</span><span class="p">]</span>
-    <span class="n">squared_euclidean</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">coords</span> <span class="o">-</span> <span class="n">centroids</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">dists</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">d2</span><span class="o">=</span><span class="n">squared_euclidean</span><span class="p">,</span> <span class="n">geom_ix</span><span class="o">=</span><span class="n">geom_ixs</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;geom_ix&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">d2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">values</span>
-    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dists</span><span class="p">)</span></div>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">orient_polygons</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="c1"># shapely.orient_polygons(ga) # </span>
+
+    <span class="k">if</span> <span class="n">ref_pt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">_cast_pts_as_array</span><span class="p">(</span><span class="n">ref_pt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ga</span><span class="p">),</span> <span class="mi">2</span><span class="p">)):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;`ref_pt` must be a single point (or coordinate pair) or one point (or coordinate pairs) per geometry in `collection` (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>            
+
+    <span class="n">Js</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">geom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ga</span><span class="p">):</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">Cx</span><span class="p">,</span> <span class="n">Cy</span><span class="p">,</span> <span class="n">Ixx</span><span class="p">,</span> <span class="n">Iyy</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">_moments_about_centroid</span><span class="p">([</span><span class="n">geom</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ref_pt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">Cx</span> <span class="o">-</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">dy</span> <span class="o">=</span> <span class="n">Cy</span> <span class="o">-</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># Already tested, if not (2,), must be (len(ga), 2)</span>
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">Cx</span> <span class="o">-</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">dy</span> <span class="o">=</span> <span class="n">Cy</span> <span class="o">-</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">J</span> <span class="o">+=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+            <span class="n">J</span> <span class="o">=</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span>
+        <span class="n">Js</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Js</span><span class="p">)</span></div>
 
 
+<span class="n">second_moment_of_area</span> <span class="o">=</span> <span class="n">moment_of_inertia</span>  <span class="c1"># Alias for users familiar with math/engineering terminology</span>
+
+<div class="viewcode-block" id="second_areal_moment">
+<a class="viewcode-back" href="../../generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">second_areal_moment</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+    <span class="c1"># Alias to preserve old API.</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;`second_areal_moment` is deprecated and will be removed in a &quot;</span>
+    <span class="s2">&quot;future version. Use `moment_of_inertia` instead. The current function &quot;</span>
+    <span class="s2">&quot;is an alias for `moment_of_inertia` which does not expose all parameters.&quot;</span>
+    
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">moment_of_inertia_regions</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                              <span class="n">regions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute weighted moment of inertia per region. See Notes for behavior when</span>
+<span class="sd">    either regions or weights are omitted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list</span>
+<span class="sd">        Input collection of polygons or multipolygons.</span>
+<span class="sd">    normalize : bool, optional</span>
+<span class="sd">        If True, returns moment normalized by reference cricle of same area and</span>
+<span class="sd">        mass (sum of weights in the region). Default is False.</span>
+<span class="sd">    ref_pt : GeoSeries, Shapely Point or list of Points, array-like of shape </span>
+<span class="sd">        (2,) or (n, 2), or dict of any of these, optional</span>
+<span class="sd">        If provided, shifts moment to be with respect to this point or points.</span>
+<span class="sd">        The default behavior (default: ``None``) is to calculate the moment </span>
+<span class="sd">        about the centroid of each region or geometry. If `regions` is</span>
+<span class="sd">        provided, this must be a `dict` with one item per region, with the key</span>
+<span class="sd">        equal to the region identifier and the value equal to a point geometry</span>
+<span class="sd">        or point coordinates. See `moment_of_inertia` for details.</span>
+<span class="sd">    regions : array-like, str, optional</span>
+<span class="sd">        An iterable of region identifiers of the same length as `collection` </span>
+<span class="sd">        that each geometry is assigned to, or the name of a column in the </span>
+<span class="sd">        GeoDataFrame to use for region assignment. If None (default), moment of inertia </span>
+<span class="sd">        is calculated for each geometry in `collection` without regionalization.</span>
+<span class="sd">    weights : array-like, optional</span>
+<span class="sd">        An iterable of weights (e.g., population) of the same length as </span>
+<span class="sd">        `collection` that are applied to each geometry in `collection`, or the </span>
+<span class="sd">        name of a column in the GeoDataFrame to use for weights. If None (default),</span>
+<span class="sd">        calculates second moment of area using the shoelace formula.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.Series or numpy.ndarray</span>
+<span class="sd">        If `regions` is provided, returns a `pandas.Series` indexed </span>
+<span class="sd">        by unique region IDs, containing moments per region. If `regions` is </span>
+<span class="sd">        omitted, retuns an `numpy.ndarray` of moments per geometry in `collection`.</span>
+
+<span class="sd">    Calculates the mass moment of inertia for regions defined by assignment of</span>
+<span class="sd">    geometries in the collection.</span>
+<span class="sd">    </span>
+<span class="sd">    Requires either a column name with region assignments or an array-like of</span>
+<span class="sd">    region IDs. Weights can be provided as a column name or an array-like. If </span>
+<span class="sd">    either `regions` or `weights` is a string, `collection` must be a </span>
+<span class="sd">    GeoDataFrame and the column name must be a valid column in the GeoDataFrame. </span>
+<span class="sd">    If weights are not provided, geometries weighted by area, which is equivalent </span>
+<span class="sd">    to the second moment of area.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    See `moment_of_inertia` for an introduction. Note that moment of </span>
+<span class="sd">    intertia and second moment of area are used interchangeably in some</span>
+<span class="sd">    disciplines (see Li, et al 2013). In this discussion &quot;mass moment of</span>
+<span class="sd">    inertia&quot; is used to represent a weighted moment of inertia, and &quot;second</span>
+<span class="sd">    moment of area&quot; is used for an unweighted moment of inertia. This</span>
+<span class="sd">    module&#39;s `moment_of_inertia` function returns the second moment of</span>
+<span class="sd">    area only.</span>
+
+<span class="sd">    This function extends the `moment_of_inertia` implementation to allow</span>
+<span class="sd">    regionalization and/or weighting. Region identifiers are provided via</span>
+<span class="sd">    the `regions` parameter. Weighting is provided via the `weights` parameter.</span>
+
+<span class="sd">    If region identifiers are provided, the geometries in `collection` are </span>
+<span class="sd">    subareas within larger regions defined by the region identifier. The moment </span>
+<span class="sd">    of inertia (possibly weighted) is calculated for each region as a whole. If </span>
+<span class="sd">    omitted, moments are calculated for each geometry in `collection`.</span>
+
+<span class="sd">    If weights are provided, the mass moment of inertia is calculated using a </span>
+<span class="sd">    value of interest, such as population, as the mass of the </span>
+<span class="sd">    shape. Implementation details vary with whether regions are provided</span>
+<span class="sd">    or normalization is requested. This is discussed in detail below. First, </span>
+<span class="sd">    if weights are **not** provided, each geometry is weighted by area, and</span>
+<span class="sd">    the result is equivalent to the second moment of area. If weights are</span>
+<span class="sd">    provided and normalization is requested, the mass of the shape</span>
+<span class="sd">    and the reference circle cancel, and the result is equivalent to </span>
+<span class="sd">    the normalized second moment of area.</span>
+
+<span class="sd">    The mass moment of inertia of a point is equal to its mass times the </span>
+<span class="sd">    distance to a reference point squared. For a shape rotating about its</span>
+<span class="sd">    centroid the moment of inertia is:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        I = \\sum_{i} m_i r_i^2</span>
+
+<span class="sd">    where :math:`r_i` is the distance from the point to a reference point, </span>
+<span class="sd">    :math:`m_i` is the mass at each point, and there are an infinite number </span>
+<span class="sd">    of points filling the shape.</span>
+
+<span class="sd">    The mass moment of inertia can be calculated for an area of uniform density </span>
+<span class="sd">    or an area of varying density. For areas of uniform density, this is the </span>
+<span class="sd">    equivalent of the second moment of area times the mass of the shape</span>
+<span class="sd">    divided by the area. If `regions` is not provided, the mass moment of inertia</span>
+<span class="sd">    is calculated for each geometry in `collection` as an area of uniform</span>
+<span class="sd">    density. This is implemented as:</span>
+
+
+<span class="sd">    .. math::</span>
+<span class="sd">        I_M = I_A m / A</span>
+
+<span class="sd">    where :math:`I_A` is the second moment of area (calculated by `moment_of_inertia`)</span>
+<span class="sd">    and :math:`m` and :math:`A` are the mass and area of the shape, respectively.</span>
+
+<span class="sd">    For a region of varying density, region identifiers must be provided via </span>
+<span class="sd">    the `regions` parameter. :math:`I_M` is calculated for each geometry in </span>
+<span class="sd">    `collection` per the equation above, with each geometry representing a </span>
+<span class="sd">    subarea of the region with mass given</span>
+<span class="sd">    by `weights`. The mass moment of inertia of the region is then the sum of </span>
+<span class="sd">    the mass moments of inertia of each subarea shifted to the reference point</span>
+<span class="sd">    (using the parallel axis theorem) by adding :math:`m d^2`, where :math:`d` </span>
+<span class="sd">    is the distance from the centroid of each subarea to the reference point </span>
+<span class="sd">    for the region.</span>
+
+<span class="sd">    If reference points are not provided, the mass moment of inertia is </span>
+<span class="sd">    calculated with respect to the centroid of each region (calculated by the</span>
+<span class="sd">    algorithm). If provided, `ref_pt` may be a single point about which the</span>
+<span class="sd">    mass moment of inertia is calculated for all regions, or it may be a `dict`</span>
+<span class="sd">    with one item per region indicating the reference point (value) to use for </span>
+<span class="sd">    that region (key). If any region identifier does not appear as a `dict` key,</span>
+<span class="sd">    an error is raise. Extra keys in the `dict` that do not correspond to any </span>
+<span class="sd">    region identifiers are ignored with a warning.</span>
+
+<span class="sd">    The mass moment of inertia can be normalized to provide a compactness </span>
+<span class="sd">    measure using the formula from Fan, et al. (2015):</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        C_{NMMI} = \\frac{M A}{2 \\pi I_M}</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`I_M` is the mass moment of inertia of the shape. This </span>
+<span class="sd">    represents the ratio of the mass moment of inertia of a circle with the </span>
+<span class="sd">    same area and mass as the shape to the mass moment of inertia of the shape.</span>
+<span class="sd">    In this case, the measure can exceed 1, as will happen when mass is </span>
+<span class="sd">    concentrated near the centroid of the shape. This can be interpreted as a </span>
+<span class="sd">    more compact distribution than a uniform circle.</span>
+<span class="sd">    </span>
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Weaver, James B., and Sidney W. Hess. 1963. &quot;A Procedure for Nonpartisan </span>
+<span class="sd">        Districting: Development of Computer Techniques.&quot; Yale Law Journal 73 (2): 288–308. </span>
+<span class="sd">        https://doi.org/10.2307/794769</span>
+<span class="sd">    .. [2] Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. &quot;An Efficient Measure </span>
+<span class="sd">        of Compactness for Two-Dimensional Shapes and Its Application in Regionalization </span>
+<span class="sd">        Problems.&quot; International Journal of Geographical Information Science 27 (6): 1227–50. </span>
+<span class="sd">        https://doi.org/10.1080/13658816.2012.752093.</span>
+<span class="sd">    .. [3] Fan, Chao, Wenwen Li, Levi J. Wolf and Soe W. Myint. 2015 &quot;A Spatiotemporal</span>
+<span class="sd">        Compactness Pattern Analysis of Congressional Districts to Assess Partisan </span>
+<span class="sd">        Gerrymandering: A Case Study with California and North Carolina.&quot; Annals of the </span>
+<span class="sd">        Association of American Geographers 105 (4): 736-753. </span>
+<span class="sd">        https://doi.org/10.1080/00045608.2015.1039109</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">orient_polygons</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="c1"># shapely.orient_polygons(ga)</span>
+
+    <span class="c1"># Handle weights (masses).</span>
+    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># If weights is a string, interpret as column name and extract from GeoDataFrame</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="ow">or</span> <span class="n">weights</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;If `weights` is a string, it must be the name of a column in `collection`, which must be a GeoDataFrame.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="p">[</span><span class="n">weights</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="c1"># If regions is missing, calculate MOI per geometry. Must be handled differently </span>
+    <span class="c1"># depending on whether weights is missing or normalization is requested.</span>
+    <span class="k">if</span> <span class="n">regions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">normalize</span><span class="p">:</span>
+            <span class="c1"># If weights are missing, this reduces to second moment of area.</span>
+            <span class="c1"># If weights are present but we are normalizing, this also reduces </span>
+            <span class="c1"># to (normalized) second moment of area. Pass to moment_of_inertia</span>
+            <span class="c1"># and return.</span>
+            <span class="k">return</span> <span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="n">ref_pt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># Weights are present but we are not normalizing</span>
+            <span class="c1"># Adjust second moment of area for mass. I_M = I_A * m / A</span>
+            <span class="k">return</span> <span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="n">ref_pt</span><span class="p">)</span> <span class="o">*</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">))</span>
+
+    <span class="c1"># Handle region IDs.</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># If regions is a string, interpret as column name and extract from GeoDataFrame</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="ow">or</span> <span class="n">regions</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;If `regions` is a string, it must be the name of a column in `collection`, which must be a GeoDataFrame.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">regions</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">collection</span><span class="p">[</span><span class="n">regions</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">regions</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+
+        <span class="n">unique_regions</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+
+    <span class="c1"># If we get to this point, regions are present, but weights might be none. Will</span>
+    <span class="c1"># be handled differently in loop on unique regions.</span>
+
+    <span class="c1"># Handle reference point(s), if provided</span>
+    <span class="k">if</span> <span class="n">ref_pt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_pt</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ref_pt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        
+            <span class="c1"># Make sure we have one entry per region</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">unique_regions</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">unique_regions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">set</span> <span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                    <span class="c1"># Extra unused regions in dict. Issue warning and remove them</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Keys found in `ref_pt` that are not regions in `regions`. Extra regions will be ignored.&quot;</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="c1"># Cast all points in dict values</span>
+                <span class="n">ref_pt</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">_cast_pts_as_array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ref_pt</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Regions found in `regions` that are not in `ref_pt`. If `ref_pt` is a `dict`, every region must have an entry in the `dict`.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ref_pt</span> <span class="o">=</span> <span class="n">_cast_pts_as_array</span><span class="p">(</span><span class="n">ref_pt</span><span class="p">)</span>
+            <span class="c1"># If not passed as a dictionary, this should be single global reference point</span>
+            <span class="k">if</span> <span class="n">ref_pt</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;`ref_pt` must be a single point (or coordinate pair) or a dictionary with one point per region.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>            
+            
+    <span class="n">Js</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">unique_regions</span><span class="p">:</span>
+        <span class="c1"># Use mask to calculate moment of inertia over each region. When user</span>
+        <span class="c1"># omits and `regions`, this effectively becomes a simple</span>
+        <span class="c1"># loop over ga, returning mass moment of inertia per geometry.</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">regions</span> <span class="o">==</span> <span class="n">region</span>
+        <span class="n">geoms</span> <span class="o">=</span> <span class="n">ga</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Calcluate area moment of inertia per region</span>
+                        <span class="c1"># Determine reference point for shifting, or use centroid</span>
+            <span class="k">if</span> <span class="n">ref_pt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Use centroid</span>
+                <span class="n">pt</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_pt</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="c1"># Use regional reference point</span>
+                <span class="n">pt</span> <span class="o">=</span> <span class="n">ref_pt</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Use global reference point</span>
+                <span class="n">pt</span> <span class="o">=</span> <span class="n">ref_pt</span>
+
+            <span class="n">Js</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moment_of_inertia_global</span><span class="p">(</span><span class="n">geoms</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="n">pt</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+            <span class="c1"># A_tot, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(geoms)</span>
+            <span class="n">moments</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">_moments_about_centroid</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="k">for</span> <span class="n">geom</span> <span class="ow">in</span> <span class="n">geoms</span><span class="p">])</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cx</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">cy</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">))</span>
+            <span class="n">Ixx</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">Iyy</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">J</span> <span class="o">=</span> <span class="n">moments</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>
+
+            <span class="c1"># Area and centroid of region</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">m</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+            <span class="c1"># Determine reference point for shifting, or use centroid</span>
+            <span class="k">if</span> <span class="n">ref_pt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Use centroid</span>
+                <span class="n">pt</span> <span class="o">=</span> <span class="n">C</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_pt</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="c1"># Use regional reference point</span>
+                <span class="n">pt</span> <span class="o">=</span> <span class="n">ref_pt</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Use global reference point</span>
+                <span class="n">pt</span> <span class="o">=</span> <span class="n">ref_pt</span>
+
+            <span class="c1"># Distance squared, don&#39;t actually need distance, so don&#39;t bother taking square root</span>
+            <span class="n">d2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">c</span> <span class="o">-</span> <span class="n">pt</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">J</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">m</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">J</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">d2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+                <span class="n">J</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">A</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span>
+
+            <span class="n">Js</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">Js</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">unique_regions</span><span class="p">)</span>
 
 <div class="viewcode-block" id="moa_ratio">
 <a class="viewcode-back" href="../../generated/esda.shape.moa_ratio.html#esda.shape.moa_ratio">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">moa_ratio</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the ratio of the second moment of area (like Li et al (2013)) to</span>
-<span class="sd">    the moment of area of a circle with the same area.</span>
+<span class="sd">    the moment of area of a circle with the same perimeter.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;`moa_ratio` is deprecated and will be removed in a future version.&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
     <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">length</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span> <span class="o">/</span> <span class="n">second_areal_moment</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span></div>
-
 
 
 <div class="viewcode-block" id="nmi">
 <a class="viewcode-back" href="../../generated/esda.shape.nmi.html#esda.shape.nmi">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">nmi</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the Normalized Moment of Inertia from Li et al (2013), recognizing</span>
-<span class="sd">    that it is the relationship between the area of a shape squared divided by</span>
-<span class="sd">    its second moment of area.</span>
+<span class="sd">    Computes the normalized moment of inertia</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Implemented as `moment_of_inertia(collection, normalize=True, ref_pt=None)`.</span>
+<span class="sd">    See `moment_of_inertia` for details.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">second_areal_moment</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+    
+    <span class="k">return</span> <span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="second_areal_moment">
-<a class="viewcode-back" href="../../generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">second_areal_moment</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">moment_of_inertia_global</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Using equation listed on en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon, the second</span>
-<span class="sd">    moment of area is the sum of the inertia across the x and y axes:</span>
+<span class="sd">    Compute moment of inertia (second moment of area) for an entire collection of geometries combined.</span>
 
-<span class="sd">    The :math:`x` axis is given by:</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        I_x = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (x_i^2 + x_ix_{i+1} + x_{i+1}^2)</span>
-
-<span class="sd">    While the :math:`y` axis is in a similar form:</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        I_y = (1/12)\\sum^{N}_{i=1} (x_i y_{i+1} - x_{i+1}y_i) (y_i^2 + y_iy_{i+1} + y_{i+1}^2)</span>
-
-<span class="sd">    where :math:`x_i`, :math:`y_i` is the current point and :math:`x_{i+1}`, :math:`y_{i+1}` is the next point,</span>
-<span class="sd">    and where :math:`x_{n+1} = x_1, y_{n+1} = y_1`. For multipart polygons with holes,</span>
-<span class="sd">    all parts are treated as separate contributions to the overall centroid, which</span>
-<span class="sd">    provides the same result as if all parts with holes are separately computed, and then</span>
-<span class="sd">    merged together using the parallel axis theorem.</span>
-
-<span class="sd">    References</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    Hally, D. 1987. The calculations of the moments of polygons. Canadian National</span>
-<span class="sd">    Defense Research and Development Technical Memorandum 87/209.</span>
-<span class="sd">    https://apps.dtic.mil/dtic/tr/fulltext/u2/a183444.pdf</span>
+<span class="sd">    collection : GeoSeries, GeoDataFrame, numpy.ndarray, list</span>
+<span class="sd">        Input collection of polygons or multipolygons.</span>
+<span class="sd">    normalize : bool, optional</span>
+<span class="sd">        If True, returns moment normalized by reference cricle of same area. Default is False.</span>
+<span class="sd">    ref_pt : GeoSeries, Shapely Point, or array-like of shape (2,), optional</span>
+<span class="sd">        If provided, shifts moment to be with respect to this point.</span>
+<span class="sd">        The default behavior (default: ``None``) is to calculate the moment </span>
+<span class="sd">        about the centroid of the entire `collection`. Point may be passed as</span>
+<span class="sd">        as array-like of coordinates or a point geometry (which can include a</span>
+<span class="sd">        GeoSeries of length 1). To return moment about the origin, explicitly set to (0, 0).</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>  <span class="c1"># function level, to follow module design</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Moment of inertia for the entire collection.</span>
 
-    <span class="c1"># construct a dataframe of the fundamental parts of all input polygons</span>
-    <span class="n">parts</span><span class="p">,</span> <span class="n">collection_ix</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_parts</span><span class="p">(</span><span class="n">ga</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">rings</span><span class="p">,</span> <span class="n">ring_ix</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_rings</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="c1"># get_rings() always returns the exterior first, then the interiors</span>
-    <span class="n">collection_ix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
-        <span class="n">collection_ix</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_num_interior_rings</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="p">)</span>
-    <span class="c1"># we need to work in polygon-space for the algorithms</span>
-    <span class="c1"># (centroid, shoelace calculation) to work</span>
-    <span class="n">polygon_rings</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">polygons</span><span class="p">(</span><span class="n">rings</span><span class="p">)</span>
-    <span class="n">is_external</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">collection_ix</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
-    <span class="c1"># the first element is always external</span>
-    <span class="n">is_external</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="c1"># and each subsequent element is external iff</span>
-    <span class="c1"># it is different from the preceeding index</span>
-    <span class="n">is_external</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ring_ix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">ring_ix</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># now, our analysis frame contains a bunch of (guaranteed-to-be-simple) polygons</span>
-    <span class="c1"># that represent either exterior rings or holes</span>
-    <span class="n">polygon_rings</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
-        <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">collection_ix</span><span class="o">=</span><span class="n">collection_ix</span><span class="p">,</span>
-            <span class="n">ring_within_geom_ix</span><span class="o">=</span><span class="n">ring_ix</span><span class="p">,</span>
-            <span class="n">is_external_ring</span><span class="o">=</span><span class="n">is_external</span><span class="p">,</span>
-        <span class="p">),</span>
-        <span class="n">geometry</span><span class="o">=</span><span class="n">polygon_rings</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="c1"># the polygonal moi can be calculated using the same ring-based strategy,</span>
-    <span class="c1"># and this could be parallelized if necessary over the elemental shapes with:</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -------</span>
+<span class="sd">    This is a convenience function to calculate the second moment of area for</span>
+<span class="sd">    an entire collection, which will usually be faster than running a geospatial</span>
+<span class="sd">    dissolve on the geometries and then running `moment_of_inertia` on the </span>
+<span class="sd">    result.</span>
 
-    <span class="c1"># from joblib import Parallel, parallel_backend, delayed</span>
-    <span class="c1"># with parallel_backend(&#39;loky&#39;, n_jobs=-1):</span>
-    <span class="c1">#     engine = Parallel()</span>
-    <span class="c1">#     promise = delayed(_second_moment_of_area_polygon)</span>
-    <span class="c1">#     result = engine(promise(geom) for geom in polygon_rings.geometry.values)</span>
+<span class="sd">    This will *not* calculate a mass moment of inertia. To calculate the mass</span>
+<span class="sd">    moment of inertia for an entire collection, weighted by the masses of the </span>
+<span class="sd">    geometries in the collection, assign all geometries to the same region:</span>
 
-    <span class="c1"># but we will keep simple for now</span>
-    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;moa&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">polygon_rings</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_second_moment_of_area_polygon</span><span class="p">)</span>
-    <span class="c1"># the above algorithm computes an unsigned moa</span>
-    <span class="c1"># to be insensitive to winding direction.</span>
-    <span class="c1"># however, we need to subtract the moa of holes. Hence, the sign of the moa is</span>
-    <span class="c1"># -1 when the polygon is an internal ring and 1 otherwise:</span>
-    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;sign&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">polygon_rings</span><span class="o">.</span><span class="n">is_external_ring</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="c1"># shapely already uses the correct formulation for centroids</span>
-    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;centroids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">polygon_rings</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
-    <span class="c1"># the inertia of parts applies to the overall center of mass:</span>
-    <span class="n">original_centroids</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
-    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;collection_centroid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_centroids</span><span class="p">[</span><span class="n">collection_ix</span><span class="p">]</span>
-    <span class="c1"># proportional to the squared distance between the original and part centroids:</span>
-    <span class="n">polygon_rings</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span>
-        <span class="n">polygon_rings</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">polygon_rings</span><span class="o">.</span><span class="n">collection_centroid</span><span class="o">.</span><span class="n">values</span>
-    <span class="p">)</span>
-    <span class="c1"># now, we take the sum of (I+Ar^2) for each ring, treating the</span>
-    <span class="c1"># contribution of holes as negative.</span>
-    <span class="c1"># Then, we take the sum of all of the contributions</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">polygon_rings</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;collection_ix&quot;</span><span class="p">,</span> <span class="s2">&quot;ring_within_geom_ix&quot;</span><span class="p">])</span>
-        <span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">ring_in_part</span><span class="p">:</span> <span class="p">(</span>
-                <span class="p">(</span><span class="n">ring_in_part</span><span class="o">.</span><span class="n">moa</span> <span class="o">+</span> <span class="n">ring_in_part</span><span class="o">.</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ring_in_part</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
-                <span class="o">*</span> <span class="n">ring_in_part</span><span class="o">.</span><span class="n">sign</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;collection_ix&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">values</span>
-    <span class="p">)</span></div>
+<span class="sd">    `moment_of_inertia_regions(collection, regions=numpy.repeat(1, len(collection))), weights=&lt;weights vector&gt;`</span>
 
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_second_moment_of_area_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the absolute value of the moment of area (i.e. ignoring winding direction)</span>
-<span class="sd">    for an input polygon.</span>
+<span class="sd">    The `normalize` and `ref_pt` parameters may be used as usual.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">coordinates</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
-    <span class="n">centroid</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
-    <span class="n">centroid_coords</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">centroid</span><span class="p">)</span>
-    <span class="n">moi</span> <span class="o">=</span> <span class="n">_second_moa_ring_xplusy</span><span class="p">(</span><span class="n">coordinates</span> <span class="o">-</span> <span class="n">centroid_coords</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">moi</span><span class="p">)</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">_cast</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">orient_polygons</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span> <span class="c1"># shapely.orient_polygons(ga)</span>
 
+    <span class="n">A</span><span class="p">,</span> <span class="n">Cx</span><span class="p">,</span> <span class="n">Cy</span><span class="p">,</span> <span class="n">Ixx</span><span class="p">,</span> <span class="n">Iyy</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="n">_moments_about_centroid</span><span class="p">(</span><span class="n">ga</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ref_pt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">Cx</span> <span class="o">-</span> <span class="n">ref_pt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">Cy</span> <span class="o">-</span> <span class="n">ref_pt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">J</span> <span class="o">+=</span> <span class="n">A</span> <span class="o">*</span> <span class="p">(</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">A</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">J</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Helper Functions for Inertial Measures</span>
+<span class="c1"># -------------------------</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dump_rings</span><span class="p">(</span><span class="n">geoms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yield all exterior and interior rings of a collection of polygons/multipolygons</span>
+<span class="sd">    as numpy arrays of coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geoms : sequence of shapely geometries</span>
+<span class="sd">        Polygons or multipolygons.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Array of shape (n, 2) containing coordinates of a ring.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_parts</span><span class="p">(</span><span class="n">geoms</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">interior</span> <span class="ow">in</span> <span class="n">poly</span><span class="o">.</span><span class="n">interiors</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">interior</span><span class="p">)</span>
 
 <span class="nd">@njit</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_second_moa_ring_xplusy</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_geometric_moments_ring</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">shift_to_centroid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    implementation of the moment of area for a single ring</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">moi</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
-        <span class="n">x_tail</span><span class="p">,</span> <span class="n">y_tail</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">x_head</span><span class="p">,</span> <span class="n">y_head</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">xtyh</span> <span class="o">=</span> <span class="n">x_tail</span> <span class="o">*</span> <span class="n">y_head</span>
-        <span class="n">xhyt</span> <span class="o">=</span> <span class="n">x_head</span> <span class="o">*</span> <span class="n">y_tail</span>
-        <span class="n">moi</span> <span class="o">+=</span> <span class="p">(</span><span class="n">xtyh</span> <span class="o">-</span> <span class="n">xhyt</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
-            <span class="n">x_head</span><span class="o">**</span><span class="mi">2</span>
-            <span class="o">+</span> <span class="n">x_head</span> <span class="o">*</span> <span class="n">x_tail</span>
-            <span class="o">+</span> <span class="n">x_tail</span><span class="o">**</span><span class="mi">2</span>
-            <span class="o">+</span> <span class="n">y_head</span><span class="o">**</span><span class="mi">2</span>
-            <span class="o">+</span> <span class="n">y_head</span> <span class="o">*</span> <span class="n">y_tail</span>
-            <span class="o">+</span> <span class="n">y_tail</span><span class="o">**</span><span class="mi">2</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">moi</span> <span class="o">/</span> <span class="mi">12</span>
+<span class="sd">    Compute area, centroid, and second moments of a single polygon ring.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pts : numpy.ndarray</span>
+<span class="sd">        Array of coordinates defining the ring, shape (n, 2).</span>
+<span class="sd">    shift_to_centroid : bool, default True</span>
+<span class="sd">        If True, apply the parallel axis theorem to shift moments to the ring centroid.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A : float</span>
+<span class="sd">        Signed area of the ring.</span>
+<span class="sd">    cx, cy : float</span>
+<span class="sd">        Coordinates of the ring centroid.</span>
+<span class="sd">    Ixx, Iyy : float</span>
+<span class="sd">        Second moments of area about the centroid (or origin if shift_to_centroid=False).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Polar moment of area J can be obtained by summing Ixx + Iyy at the calling level.</span>
+<span class="sd">    - This function does not compute J itself, leaving derived quantities to higher-level functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">cross</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">cross</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">Sx</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">*</span> <span class="n">cross</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">Sy</span> <span class="o">=</span> <span class="p">((</span><span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">*</span> <span class="n">cross</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="n">Ixx_origin</span> <span class="o">=</span> <span class="p">((</span><span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">cross</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">12</span>
+    <span class="n">Iyy_origin</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">cross</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">12</span>
+
+    <span class="n">cx</span> <span class="o">=</span> <span class="n">Sx</span> <span class="o">/</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">Sy</span> <span class="o">/</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">shift_to_centroid</span><span class="p">:</span>
+        <span class="n">Ixx</span> <span class="o">=</span> <span class="n">Ixx_origin</span> <span class="o">-</span> <span class="n">A</span> <span class="o">*</span> <span class="n">cy</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">Iyy</span> <span class="o">=</span> <span class="n">Iyy_origin</span> <span class="o">-</span> <span class="n">A</span> <span class="o">*</span> <span class="n">cx</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Ixx</span><span class="p">,</span> <span class="n">Iyy</span> <span class="o">=</span> <span class="n">Ixx_origin</span><span class="p">,</span> <span class="n">Iyy_origin</span>
+
+    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">Ixx</span><span class="p">,</span> <span class="n">Iyy</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_moments_about_centroid</span><span class="p">(</span><span class="n">geoms</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute combined moments of area for a collection of polygons.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geoms : sequence of shapely geometries</span>
+<span class="sd">        Input polygons or multipolygons.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A_tot : float</span>
+<span class="sd">        Total area of the collection.</span>
+<span class="sd">    Cx, Cy : float</span>
+<span class="sd">        Centroid coordinates of the combined geometry collection.</span>
+<span class="sd">    Ixx, Iyy : float</span>
+<span class="sd">        Second moments of area about the centroid.</span>
+<span class="sd">    J : float</span>
+<span class="sd">        Polar moment of area (Ixx + Iyy) about the centroid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A_tot</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">Mx_tot</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">My_tot</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">Ixx0_tot</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">Iyy0_tot</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">for</span> <span class="n">ring</span> <span class="ow">in</span> <span class="n">_dump_rings</span><span class="p">(</span><span class="n">geoms</span><span class="p">):</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">Ixx_c</span><span class="p">,</span> <span class="n">Iyy_c</span> <span class="o">=</span> <span class="n">_geometric_moments_ring</span><span class="p">(</span><span class="n">ring</span><span class="p">,</span> <span class="n">shift_to_centroid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># First moments</span>
+        <span class="n">A_tot</span> <span class="o">+=</span> <span class="n">A</span>
+        <span class="n">Mx_tot</span> <span class="o">+=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">cx</span>
+        <span class="n">My_tot</span> <span class="o">+=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">cy</span>
+
+        <span class="c1"># Accumulate inertia about origin</span>
+        <span class="n">Ixx0_tot</span> <span class="o">+=</span> <span class="n">Ixx_c</span>
+        <span class="n">Iyy0_tot</span> <span class="o">+=</span> <span class="n">Iyy_c</span>
+
+    <span class="c1"># Centroid of entire collection</span>
+    <span class="n">Cx</span> <span class="o">=</span> <span class="n">Mx_tot</span> <span class="o">/</span> <span class="n">A_tot</span>
+    <span class="n">Cy</span> <span class="o">=</span> <span class="n">My_tot</span> <span class="o">/</span> <span class="n">A_tot</span>
+
+    <span class="c1"># Shift to centroid</span>
+    <span class="n">Ixx</span> <span class="o">=</span> <span class="n">Ixx0_tot</span> <span class="o">-</span> <span class="n">A_tot</span> <span class="o">*</span> <span class="n">Cy</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">Iyy</span> <span class="o">=</span> <span class="n">Iyy0_tot</span> <span class="o">-</span> <span class="n">A_tot</span> <span class="o">*</span> <span class="n">Cx</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">J</span> <span class="o">=</span> <span class="n">Ixx</span> <span class="o">+</span> <span class="n">Iyy</span>
+
+    <span class="k">return</span> <span class="n">A_tot</span><span class="p">,</span> <span class="n">Cx</span><span class="p">,</span> <span class="n">Cy</span><span class="p">,</span> <span class="n">Ixx</span><span class="p">,</span> <span class="n">Iyy</span><span class="p">,</span> <span class="n">J</span>
 
 <span class="c1"># -------------------- OTHER MEASURES -------------------- #</span>
 

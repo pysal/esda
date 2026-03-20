@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Measures of shape &#8212; esda v2.8.2 Manual</title>
+    <title>Measures of shape &#8212; esda v2.9.0 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=fa7f208a"></script>
+    <script src="../_static/documentation_options.js?v=182a64a0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.8.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Measures of shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Inertial-Measures">Inertial Measures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html">How do we introduce another variables?</a></li>
@@ -134,6 +135,7 @@
 <li><a class="reference internal" href="#Relative-ideal-shape-measures">Relative ideal shape measures</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#Inertial-Measures">Inertial Measures</a></li>
 <li><a class="reference internal" href="#Conclusion">Conclusion</a></li>
 </ul>
 </ul>
@@ -171,19 +173,18 @@ Interactive online version:
 </div>
 <section id="Measures-of-shape">
 <h1>Measures of shape<a class="headerlink" href="#Measures-of-shape" title="Link to this heading">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module provides statistics that are used in the literature to measure the structure and regularity of polygons. These measures vary from very simple (such as the length-width difference) to very complex (such as the normalized moment of inertia). Regardless, we’ll walk through computing a few of these measures for counties in Mississippi.</p>
-<p>Why Mississippi? Because counties on the west side of Mississippi touch the Mississippi river, with its many twists and turns. Generally speaking, we would think that counties on the left side of the state are more “irregular” than the more square counties on the right. You can see this in the map below:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module provides statistics that are used in the literature to measure the structure and regularity of polygons. These measures vary from very simple (such as the length-width difference) to very complex (such as the normalized moment of inertia). Regardless, we’ll walk through computing a few of these measures for counties in Virginia.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
-
-import geopandas
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
+import geopandas as gpd
+import shapely
 import libpysal
 import matplotlib.pyplot as plt
 
-from esda import shape as shapestats
+from esda import shape
 </pre></div>
 </div>
 </div>
@@ -191,17 +192,17 @@ from esda import shape as shapestats
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties = geopandas.read_file(libpysal.examples.get_path(&quot;south.shp&quot;))
-ms_counties = counties.query(&quot;STATE_NAME == &#39;Mississippi&#39;&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties = gpd.read_file(libpysal.examples.get_path(&quot;virginia.shp&quot;))
 </pre></div>
 </div>
 </div>
+<p>Why Virginia? The Virginia counties include a mix of regular and irregular shapes due to the mountainous counties in the West. Two counties are multipolygons, which impacts some shape measures. Finally, many of the counties have holes, because they surround “independent cities”, which are county equivalents in Virginia. You can see this in the map below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot()
-plt.title(&quot;Mississippi Counties&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot()
+plt.title(&quot;Virginia Counties&quot;)
 </pre></div>
 </div>
 </div>
@@ -211,28 +212,320 @@ plt.title(&quot;Mississippi Counties&quot;)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Text(0.5, 1.0, &#39;Mississippi Counties&#39;)
+Text(0.5, 1.0, &#39;Virginia Counties&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_4_1.png" src="../_images/notebooks_shape-measures_4_1.png" />
+<img alt="../_images/notebooks_shape-measures_5_1.png" src="../_images/notebooks_shape-measures_5_1.png" />
 </div>
 </div>
-<p>The first very simple measurement is the difference between the length and width of a shape. This measure is a measurement of <em>elongation</em>. You can see the effect below, where counties that are relatively square are colored very dark blue, whereas the elongated rectangular counties are colored in light yellow. Since this measure does not “see” the twists and turns taken by the river, the river counties are judged to be relatively square and not elongated.</p>
+<p>We did not check the coordinate reference system (CRS) of the geodataframe, but we can see from the axes on the plot that the coordinates are in lat-long. <strong>We should not use lat-long coordinate systems to calculate shape measures.</strong> If you are familiar with Virginia, the above plot may “look right”. This is because Geopandas automatically adjust the aspect ratio of lat-long plots to approximate a conformal projection. We can turn this feature off to see what the unprojected coordinates look
+like.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.length_width_diff(ms_counties.geometry))
-plt.title(&quot;length-width difference&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = counties.plot()
+ax.set_aspect(&quot;auto&quot;)
+plt.title(&quot;Virginia Counties&quot;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_7_1.png" src="../_images/notebooks_shape-measures_7_1.png" />
+</div>
+</div>
+<p>Now we can see that calculating Euclidian distances and areas on unprojected lat-long coordinates will lead to incorrect results. The distorted distances and areas will impact many shape measures. We will see how by introducing a simple shape measure, the difference between the length and width of the shape. The length-width difference is a measure of <em>elongation</em>. As you might guess by comparing the previous two plots, the length-width difference will be heavily affected by the CRS. Let’s see
+what this looks like numerically.</p>
+<p>First, what <em>is</em> an appropriate projection to use? You should use a conformal projection. Conformal projections are often described as “shape-preserving” projections. Since shape is exactly what we are interested in, conformal projections will meet our needs. Keep in mind that projections are parameterized to cover specific areas on the surface of the globe. The larger the area mapped, the more distortion there will be away from the area the projection is intended to cover. Nonetheless, World
+Mercator will give acceptable results over much of the globe as long as you are not at high latitudes (think of Greenland on a World Mercator map), and calculating measures for a shape that crosses many degrees of latitude.</p>
+<p>Let’s reproject the virginia counties to World Mercator.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.to_crs(epsg=3395, inplace=True)
+counties.plot()
+plt.title(&quot;Virginia Counties&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_9_1.png" src="../_images/notebooks_shape-measures_9_1.png" />
+</div>
+</div>
+<p>Now let’s calculate the length-width difference on both the lat-long and Mercator coordinates, and see the difference. The measure is the difference of <span class="math notranslate nohighlight">\(L\)</span>, the length of the shape in the North-South direction, and <span class="math notranslate nohighlight">\(W\)</span>, the width of the shape in the East-West direction.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lwd_lat_long = shape.length_width_diff(counties.to_crs(epsg=4326))
+lwd_mercator = shape.length_width_diff(counties)
+# plt.scatter(lwd_lat_long, lwd_mercator)
+df = pd.DataFrame({&quot;lwd_lat_long&quot;: lwd_lat_long, &quot;lwd_mercator&quot;: lwd_mercator})
+df
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lwd_lat_long</th>
+      <th>lwd_mercator</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.057152</td>
+      <td>7834.746553</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.169186</td>
+      <td>-4082.002847</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.037289</td>
+      <td>4894.678174</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.008430</td>
+      <td>1097.722973</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.070480</td>
+      <td>7499.467262</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>-0.021633</td>
+      <td>-1742.967132</td>
+    </tr>
+    <tr>
+      <th>132</th>
+      <td>0.023273</td>
+      <td>4775.942741</td>
+    </tr>
+    <tr>
+      <th>133</th>
+      <td>-0.006683</td>
+      <td>111.373760</td>
+    </tr>
+    <tr>
+      <th>134</th>
+      <td>-0.015362</td>
+      <td>665.530662</td>
+    </tr>
+    <tr>
+      <th>135</th>
+      <td>-0.041515</td>
+      <td>-3880.980596</td>
+    </tr>
+  </tbody>
+</table>
+<p>136 rows × 2 columns</p>
+</div></div>
+</div>
+<p>As the length and width are in the units of the CRS, the scale of the values is completely different. Many of the measures we will explore later have the desirable property of being <em>scale invariant</em>. Let’s normalize the results by dividing by <span class="math notranslate nohighlight">\(L\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bounds_lat_long = shapely.bounds(counties.to_crs(epsg=4326).geometry)
+ymin_lat_long, ymax_lat_long = bounds_lat_long[:, [1, 3]].T
+length_lat_long = abs(ymax_lat_long - ymin_lat_long)
+
+bounds_mercator = shapely.bounds(counties.geometry)
+ymin_mercator, ymax_mercator = bounds_mercator[:, [1, 3]].T
+length_mercator = abs(ymax_mercator - ymin_mercator)
+
+df[&quot;scaled_lwd_lat_long&quot;] = df[&quot;lwd_lat_long&quot;] / length_lat_long
+df[&quot;scaled_lwd_mercator&quot;] = df[&quot;lwd_mercator&quot;] / length_mercator
+df
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lwd_lat_long</th>
+      <th>lwd_mercator</th>
+      <th>scaled_lwd_lat_long</th>
+      <th>scaled_lwd_mercator</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.057152</td>
+      <td>7834.746553</td>
+      <td>-0.128097</td>
+      <td>0.122680</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.169186</td>
+      <td>-4082.002847</td>
+      <td>-0.361438</td>
+      <td>-0.061054</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.037289</td>
+      <td>4894.678174</td>
+      <td>-0.130227</td>
+      <td>0.119615</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.008430</td>
+      <td>1097.722973</td>
+      <td>-0.131204</td>
+      <td>0.119460</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.070480</td>
+      <td>7499.467262</td>
+      <td>-0.142612</td>
+      <td>0.106586</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>-0.021633</td>
+      <td>-1742.967132</td>
+      <td>-0.875289</td>
+      <td>-0.510157</td>
+    </tr>
+    <tr>
+      <th>132</th>
+      <td>0.023273</td>
+      <td>4775.942741</td>
+      <td>0.285882</td>
+      <td>0.424618</td>
+    </tr>
+    <tr>
+      <th>133</th>
+      <td>-0.006683</td>
+      <td>111.373760</td>
+      <td>-0.209971</td>
+      <td>0.025320</td>
+    </tr>
+    <tr>
+      <th>134</th>
+      <td>-0.015362</td>
+      <td>665.530662</td>
+      <td>-0.172870</td>
+      <td>0.054250</td>
+    </tr>
+    <tr>
+      <th>135</th>
+      <td>-0.041515</td>
+      <td>-3880.980596</td>
+      <td>-1.500069</td>
+      <td>-1.015612</td>
+    </tr>
+  </tbody>
+</table>
+<p>136 rows × 4 columns</p>
+</div></div>
+</div>
+<p>We can see that the normalized length-width differences are quite different for most counties, and that for some counties the two measures have opposite signs. Treating the polar coordinates of lat-long as planar coordinates makes these shapes taller. For some counties, <span class="math notranslate nohighlight">\(L&lt;W\)</span> in lat-long, yielding a negative measure, while <span class="math notranslate nohighlight">\(L&gt;W\)</span> in Mercator, yielding a positive measure.</p>
+<p>Let’s plot counties with these values. The counties that are tall North-South have a positive (high) length-width difference, while those that are wide East-West have a negative (low) length-width difference.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.length_width_diff(counties.geometry))
+plt.title(&quot;length-width difference&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -244,7 +537,7 @@ Text(0.5, 1.0, &#39;length-width difference&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_6_1.png" src="../_images/notebooks_shape-measures_6_1.png" />
+<img alt="../_images/notebooks_shape-measures_15_1.png" src="../_images/notebooks_shape-measures_15_1.png" />
 </div>
 </div>
 </section>
@@ -253,27 +546,27 @@ Text(0.5, 1.0, &#39;length-width difference&#39;)
 <p>The next class of shape measures are usually taken to be <em>ideal shape</em> measures of compactness. This means that they construct the relationship between one (or more) aspects of the polygon (such as its perimeter or area) and compares this to an analogous value for an “ideal” shape.</p>
 <p>Ideal shapes come in a few flavors.</p>
 <ul class="simple">
-<li><p>“relative ideal shapes” are shapes whose properties are fixed relative to the original shape. For example, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, compares the area of a polygon to the area of the circle w/ the same perimeter as the original polygon. Mathematically, these measures generally are constructed so that they vary between zero and one, and are one when the shape is the same as its relative ideal shape. Measures in this family include the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code> and <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>,
-as well as our implementation of the <code class="docutils literal notranslate"><span class="pre">fractal_dimension</span></code>, as will be discussed later.</p></li>
-<li><p>“absolute ideal shapes” are shapes that have some fixed, known relationship to the original shape and serve as a “bound” on that shape in some manner. For example, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> compares the area of a polygon to the area of its convex hull. Since a convex hull is guaranteeed to be at least as large as the original shape, this measure also is between zero and one, with one meaning that a polygon is its own convex hull. Measures in this family include the <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, the
-<code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">diameter_ratio</span></code>, and the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>.</p></li>
+<li><p>“relative ideal shapes” are shapes whose properties are fixed relative to the original shape. For example, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, compares the area of a polygon to the area of the circle wit the same perimeter as the original polygon. Mathematically, these measures generally are constructed so that they vary between zero and one, and equal <span class="math notranslate nohighlight">\(1\)</span> when the shape is the same as its relative ideal shape. Measures in this family include the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code> and
+<code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, as well as our implementation of the <code class="docutils literal notranslate"><span class="pre">fractal_dimension</span></code>, as will be discussed later.</p></li>
+<li><p>“absolute ideal shapes” are shapes that have some fixed, known relationship to the original shape and serve as a “bound” on that shape in some manner. For example, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> compares the area of a polygon to the area of its convex hull. Since a convex hull is guaranteeed to be at least as large as the original shape, this measure also is between zero and one, with <span class="math notranslate nohighlight">\(1\)</span> meaning that a polygon is its own convex hull. Measures in this family include the
+<code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">diameter_ratio</span></code>, and the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>.</p></li>
 </ul>
 <section id="Absolute-Ideal-Shape-Measures">
 <h2>Absolute Ideal Shape Measures<a class="headerlink" href="#Absolute-Ideal-Shape-Measures" title="Link to this heading">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> and <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> are two simple and very-related measures of shape regularity. The boundary amplitude is the perimeter of the convex hull divided by the perimeter of the original shape. This varies between zero and one, where one indicates the case where the polygon is its own convex hull. This is because the convex hull will always have <em>at most</em> the perimeter of the original shape; it will be shorter than the original shape when the shape has many concave
-parts that cut back into the shape.</p>
-<p>In the map below, you can see that the counties on the Mississippi River have very poor <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> scores, since their boundaries are very wiggly:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> and <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> are two simple and very-related measures of shape regularity. The boundary amplitude is the perimeter of the convex hull divided by the perimeter of the original shape. This varies between zero and one, where <span class="math notranslate nohighlight">\(1\)</span> indicates the case where the polygon is its own convex hull. This is because the convex hull will always have <em>at most</em> the perimeter of the original shape; it will be shorter than the original shape when the shape has many
+concave parts that cut back into the shape.</p>
+<p>In the map below, you can see that the counties with holes in them have very poor <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> scores, since the holes add to the perimeter of the shape, but not the perimeter of the convex hull:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.boundary_amplitude(ms_counties.geometry))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.boundary_amplitude(counties.geometry))
 plt.title(&quot;boundary amplitude&quot;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -285,21 +578,21 @@ Text(0.5, 1.0, &#39;boundary amplitude&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_11_1.png" src="../_images/notebooks_shape-measures_11_1.png" />
+<img alt="../_images/notebooks_shape-measures_20_1.png" src="../_images/notebooks_shape-measures_20_1.png" />
 </div>
 </div>
 <p>Related, the convex hull ratio is the <em>area</em> of the original shape divided by the area of the convex hull. This varies between zero and one again: since the convex hull always <em>contains</em> the original shape, its area is always larger. The measure, thus, is related to the <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, but will be different for different polygons, since it pertains to <em>area</em>, not <em>perimeter</em>. Generally speaking, perimeter-based measures will be more sensitive to non-convexities than areal-based measures.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.convex_hull_ratio(ms_counties.geometry))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.convex_hull_ratio(counties.geometry))
 plt.title(&quot;convex hull areal ratio&quot;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -311,22 +604,22 @@ Text(0.5, 1.0, &#39;convex hull areal ratio&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_13_1.png" src="../_images/notebooks_shape-measures_13_1.png" />
+<img alt="../_images/notebooks_shape-measures_22_1.png" src="../_images/notebooks_shape-measures_22_1.png" />
 </div>
 </div>
-<p>Another useful measure is the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, sometimes called the Reock measure after the author of the first journal article in which it was used to analyze congressional districts. The ratio compares the area of the original shape to the area of the smallest circle that can fully enclose the shape. This measure strongly penalizes elongation, as the minimum bounding circle has to get larger and larger to contain the shape. It also varies between zero and one, where one
-reflects the case where a polygon is its own bounding circle.</p>
+<p>Another measure is the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, sometimes called the Reock measure after the author of the first journal article in which it was used to analyze congressional districts. The ratio compares the area of the original shape to the area of the smallest circle that can fully enclose the shape. This measure <em>strongly penalizes elongation</em>, as the minimum bounding circle has to get larger and larger to contain the shape. While the method is similar to the <code class="docutils literal notranslate"><span class="pre">convex</span> <span class="pre">hull</span> <span class="pre">ratio</span></code>
+(both compare the area of the shape to the area of a containing shape), the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> is sensitive to concavities of the perimeter but insensitve to elongation, while the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code> is sensitive to elongation but insensitive to concavities of the perimeter. It also varies between zero and one, where <span class="math notranslate nohighlight">\(1\)</span> reflects the case where a polygon is its own bounding circle.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.minimum_bounding_circle_ratio(ms_counties))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.minimum_bounding_circle_ratio(counties))
 plt.title(&quot;minimum bounding circle ratio&quot;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -338,21 +631,21 @@ Text(0.5, 1.0, &#39;minimum bounding circle ratio&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_15_1.png" src="../_images/notebooks_shape-measures_15_1.png" />
+<img alt="../_images/notebooks_shape-measures_24_1.png" src="../_images/notebooks_shape-measures_24_1.png" />
 </div>
 </div>
 <p>A related measure is the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>. Instead of comparing the areas of the two shapes, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code> actually mixes the reference and ideal shape concepts together. It relates the radius of the minimum bounding circle to the radius of the <em>isoareal</em> circle, or the circle that contains the same area as the original shape.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.radii_ratio(ms_counties.geometry))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.radii_ratio(counties.geometry))
 plt.title(&quot;radii ratio&quot;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -364,17 +657,17 @@ Text(0.5, 1.0, &#39;radii ratio&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_17_1.png" src="../_images/notebooks_shape-measures_17_1.png" />
+<img alt="../_images/notebooks_shape-measures_26_1.png" src="../_images/notebooks_shape-measures_26_1.png" />
 </div>
 </div>
 <p>This measure generally performs about the same as the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, with a bit more sensitivity to concavities in the shape.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.scatter(
-    shapestats.radii_ratio(ms_counties.geometry),
-    shapestats.minimum_bounding_circle_ratio(ms_counties.geometry),
+    shape.radii_ratio(counties.geometry),
+    shape.minimum_bounding_circle_ratio(counties.geometry),
 )
 plt.plot((0, 1), (0, 1), color=&quot;k&quot;, linestyle=&quot;:&quot;)
 plt.xlim(0.2, 0.9)
@@ -385,7 +678,7 @@ plt.ylabel(&quot;Minimum Bounding Circle Ratio&quot;)
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -397,156 +690,21 @@ Text(0, 0.5, &#39;Minimum Bounding Circle Ratio&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_19_1.png" src="../_images/notebooks_shape-measures_19_1.png" />
+<img alt="../_images/notebooks_shape-measures_28_1.png" src="../_images/notebooks_shape-measures_28_1.png" />
 </div>
 </div>
 <p>A similar measure to the minimum bounding circle ratio is the diameter ratio. This measures the ratio between a shape’s “longest” and “shortest” diameters. This can be measured as the longest and shortest axis of a shape’s minimum rotated rectangle. Alternatively, one can use the raw bounding box for shapes, but this is biased towards shapes that are east-west and north-south oriented. This again is quite a strong measure of elongation, and shapes with very large differences between their
 longest and shortest axes will have low scores.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with warnings.catch_warnings():
-    warnings.filterwarnings(
-        &quot;ignore&quot;,
-        category=RuntimeWarning,
-        message=&quot;invalid value encountered in oriented_envelope&quot;,
-    )
-
-    ms_counties.plot(shapestats.diameter_ratio(ms_counties.geometry))
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_21_0.png" src="../_images/notebooks_shape-measures_21_0.png" />
-</div>
-</div>
-</section>
-<section id="Relative-ideal-shape-measures">
-<h2>Relative ideal shape measures<a class="headerlink" href="#Relative-ideal-shape-measures" title="Link to this heading">¶</a></h2>
-<p>These classes of shape measures construct a relationship between the observed shape and a different shape with some known relation. As we discussed before with the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code> measure, this often looks like a circle with the same perimeter or area as the source shape.</p>
-<p>In the case of the <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, this relates the shape’s perimeter to the perimeter of a circle with the same area as the source shape:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.isoareal_quotient(ms_counties))
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;Axes: &gt;
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_23_1.png" src="../_images/notebooks_shape-measures_23_1.png" />
-</div>
-</div>
-<p>The related measure, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, relates the shape’s area to the area of a circle with the same perimeter of the original shape.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.isoperimetric_quotient(ms_counties))
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;Axes: &gt;
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_25_1.png" src="../_images/notebooks_shape-measures_25_1.png" />
-</div>
-</div>
-<p>The two measures are directly related to one another, albeit non-linearly so</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.scatter(
-    shapestats.isoareal_quotient(ms_counties),
-    shapestats.isoperimetric_quotient(ms_counties),
-)
-plt.plot((0, 1), (0, 1), color=&quot;k&quot;, linestyle=&quot;:&quot;)
-plt.xlim(0.2, 0.9)
-plt.ylim(0.2, 0.9)
-plt.xlabel(&quot;Isoareal Quotient&quot;)
-plt.ylabel(&quot;Isoperimetric Quotient&quot;)
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Text(0, 0.5, &#39;Isoperimetric Quotient&#39;)
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_27_1.png" src="../_images/notebooks_shape-measures_27_1.png" />
-</div>
-</div>
-<p>A final related measure is the fractal dimension of a shape. This measures the effective dimension of a shape’s boundary, and generally varies between zero and two, where two implies a very convoluted boundary, and zero implies a very simple boundary. Hoever, our particular implementation approximates the true fractal dimension by assuming that shapes’ boundaries move along either in a grid or a hexagonal lattice. Thus, the measure is effectively the relationship between a square (or hexagon)
-and the existing shape.</p>
-<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.fractal_dimension(ms_counties, support=&quot;hex&quot;))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.diameter_ratio(counties))
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;Axes: &gt;
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_29_1.png" src="../_images/notebooks_shape-measures_29_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ms_counties.plot(shapestats.fractal_dimension(ms_counties, support=&quot;square&quot;))
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -561,25 +719,162 @@ and the existing shape.</p>
 <img alt="../_images/notebooks_shape-measures_30_1.png" src="../_images/notebooks_shape-measures_30_1.png" />
 </div>
 </div>
-<p>The two are also extremely related:</p>
+</section>
+<section id="Relative-ideal-shape-measures">
+<h2>Relative ideal shape measures<a class="headerlink" href="#Relative-ideal-shape-measures" title="Link to this heading">¶</a></h2>
+<p>These classes of shape measures construct a relationship between the observed shape and a different shape with some known relation. As we discussed before with the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code> measure, this often looks like a circle with the same perimeter or area as the source shape.</p>
+<p>In the case of the <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, this relates the shape’s perimeter to the perimeter of a circle with the same area as the source shape:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.isoareal_quotient(counties))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_32_1.png" src="../_images/notebooks_shape-measures_32_1.png" />
+</div>
+</div>
+<p>The related measure, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, relates the shape’s area to the area of a circle with the same perimeter of the original shape.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.isoperimetric_quotient(counties))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_34_1.png" src="../_images/notebooks_shape-measures_34_1.png" />
+</div>
+</div>
+<p>If these two maps look similar to each other, it is because the <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code> is mathematically equal to the square root of the <code class="docutils literal notranslate"><span class="pre">isoperimetric</span> <span class="pre">quotient</span></code>. They will always rank shapes in the same order, as is demonstrated in the plot below. Of the two, the <code class="docutils literal notranslate"><span class="pre">isoperimetric</span> <span class="pre">quotient</span></code> is more commonly used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.scatter(
-    shapestats.fractal_dimension(ms_counties, support=&quot;hex&quot;),
-    shapestats.fractal_dimension(ms_counties, support=&quot;square&quot;),
+    shape.isoareal_quotient(counties),
+    shape.isoperimetric_quotient(counties),
+)
+plt.plot((0, 1), (0, 1), color=&quot;k&quot;, linestyle=&quot;:&quot;)
+plt.xlim(0.2, 0.9)
+plt.ylim(0.2, 0.9)
+plt.xlabel(&quot;Isoareal Quotient&quot;)
+plt.ylabel(&quot;Isoperimetric Quotient&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Isoperimetric Quotient&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_36_1.png" src="../_images/notebooks_shape-measures_36_1.png" />
+</div>
+</div>
+<p>A final related measure is the fractal dimension of a shape. This measures the effective dimension of a shape’s boundary, and generally varies between zero and two, where <span class="math notranslate nohighlight">\(2\)</span> implies a very convoluted boundary, and <span class="math notranslate nohighlight">\(0\)</span> implies a very simple boundary. Hoever, our particular implementation approximates the true fractal dimension by assuming that shapes’ boundaries move along either in a grid or a hexagonal lattice. Thus, the measure is effectively the relationship between a square (or
+hexagon) and the existing shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.fractal_dimension(counties, support=&quot;hex&quot;))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_38_1.png" src="../_images/notebooks_shape-measures_38_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.fractal_dimension(counties, support=&quot;square&quot;))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_39_1.png" src="../_images/notebooks_shape-measures_39_1.png" />
+</div>
+</div>
+<p>The two are also extremely related:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.scatter(
+    shape.fractal_dimension(counties, support=&quot;hex&quot;),
+    shape.fractal_dimension(counties, support=&quot;square&quot;),
 )
 plt.plot((0, 2), (0, 2), color=&quot;k&quot;, linestyle=&quot;:&quot;)
-plt.xlim(0.4, 1.1)
-plt.ylim(0.4, 1.1)
+plt.xlim(0.98, 1.08)
+plt.ylim(0.98, 1.08)
 plt.xlabel(&quot;Fractal Dimension (hex)&quot;)
 plt.ylabel(&quot;Fractal Dimension (square)&quot;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -591,14 +886,239 @@ Text(0, 0.5, &#39;Fractal Dimension (square)&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_shape-measures_32_1.png" src="../_images/notebooks_shape-measures_32_1.png" />
+<img alt="../_images/notebooks_shape-measures_41_1.png" src="../_images/notebooks_shape-measures_41_1.png" />
 </div>
 </div>
 </section>
+</section>
+<section id="Inertial-Measures">
+<h1>Inertial Measures<a class="headerlink" href="#Inertial-Measures" title="Link to this heading">¶</a></h1>
+<p>The moment of inertia is a concept from physics and engineering that measures dispersion of mass around an axis of rotation. This has been adapted to measures of shape in geography. If the shape is treated as of homogeneous density, this is equivalent to the <em>second moment of area</em>. If we have information about the distribution of a quantity of interest, such as population, we can obtain a shape measure that quantifies how dispersed the population is from a reference point, usually the centroid
+or center of population. The interested reader is referred to:</p>
+<ul class="simple">
+<li><p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient Measure of Compactness for Two-Dimensional Shapes and Its Application in Regionalization Problems.” International Journal of Geographical Information Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p></li>
+<li><p>Fan, Chao, Wenwen Li, Levi J. Wolf, and Soe W. Myint. 2015. “A Spatiotemporal Compactness Pattern Analysis of Congressional Districts to Assess Partisan Gerrymandering: A Case Study with California and North Carolina.” Annals of the Association of American Geographers 105 (4): 736–53. <a class="reference external" href="https://doi.org/10.1080/00045608.2015.1039109">https://doi.org/10.1080/00045608.2015.1039109</a>.</p></li>
+</ul>
+<p>We begin with the <em>normalized moment of inertia</em> or <em>normalized second moment of area</em>. The moment of inertia is calculated for the shape, and normalized by the moment of inertia of a circle of the same area. As with some of the other shape measures we have seen, it can vary between zero and one, and equals <span class="math notranslate nohighlight">\(1\)</span> for a perfect circle. The moment of inertia is insensitive to wiggliness of the shape’s perimeter (Li, et al. 2013).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties.plot(shape.moment_of_inertia(counties, normalize=True))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_44_1.png" src="../_images/notebooks_shape-measures_44_1.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">moment_of_inertia</span></code> function calculates the moment of inertia about the centroid of each polygon. However, the user can also pass in a reference point or an array-like of reference points of the same length as the geodataframe. In the first case, it calculates the moment of inertia of each shape with resepct to a single reference point. For example, we can calculate the moment of inertia of each county with respect to the centroid of Virginia.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>va = counties.dissolve()
+va_centroid = va.centroid
+
+ax = va.plot()
+va_centroid.plot(ax=ax, color=&quot;red&quot;)
+plt.title(&quot;Virginia Centroid&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Centroid&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_46_1.png" src="../_images/notebooks_shape-measures_46_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax = counties.plot(shape.moment_of_inertia(counties, ref_pt=va_centroid))
+va_centroid.plot(ax=ax, color=&quot;red&quot;)
+plt.title(&quot;Virginia Counties MOI about Virginia Centroid&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties MOI about Virginia Centroid&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_47_1.png" src="../_images/notebooks_shape-measures_47_1.png" />
+</div>
+</div>
+<p>As you can see, the MOI is lower for counties close to the centroid, and higher for counties farther away. In physical terms, you can think about the as swinging on a string about the centroid. The farther away they are, the more rotational force they have, and the higher the moment of inertia. In human geography, this can be used as a measure of population access to a point of interest.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module also has a function to quickly calculate the global moment of inertia for all shapes in a collection. It is more efficient that manually running a dissolve and calculating the MOI on the dissolved shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>shape.moment_of_inertia_global(counties, normalize=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.58717002611019
+</pre></div></div>
+</div>
+<p>Of particular interest is the ability to calculate the moment of inertia for unevenly distributed populations (or other quantities of interest). In this case, the polygons must be assigned to <em>regions</em>, and the moment of inertia is calculated for each region, not each polygon in the collection. Region IDs can be passed in as an array of the same length as the collection (each polygon must be assigned to a region) or as the name of a column of region IDs in the geodataframe.</p>
+<p>In order to demonstrate this, we will assign each county to an <a class="reference external" href="https://www.vedp.org/regions">economic region</a>. We will also add 2020 populations for each county. Since the built-in Virginia dataset is from 2000, we will remove 3 independent cities that merged with their surrounding counties between 2000 and 2020.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Remove these independent cities
+cities_to_remove = [&quot;Bedford City&quot;, &quot;Clifton Forge&quot;, &quot;South Boston&quot;]
+counties_2020 = counties.copy()[~counties[&quot;NAME&quot;].isin(cities_to_remove)]
+
+# Function to remove holes
+def remove_holes(geom):
+    if isinstance(geom, shapely.geometry.Polygon):
+        return shapely.geometry.Polygon(geom.exterior)
+    elif isinstance(geom, shapely.geometry.MultiPolygon):
+        return shapely.geometry.MultiPolygon([shapely.geometry.Polygon(p.exterior) for p in geom.geoms])
+    else:
+        return geom
+
+# Boolean mask for rows to modify
+mask = counties_2020[&quot;NAME&quot;].isin([&quot;Bedford&quot;, &quot;Alleghany&quot;, &quot;Halifax&quot;])
+
+# Apply transformation only to rows that match the mask
+counties_2020.loc[mask, &quot;geometry&quot;] = counties_2020.loc[mask, &quot;geometry&quot;].apply(remove_holes)
+
+# Reindex the GeoDataFrame
+counties_2020.reset_index(drop=True, inplace=True)
+
+regions = [&#39;Region 8&#39;, &#39;Region 7&#39;, &#39;Region 8&#39;, &#39;Region 8&#39;, &#39;Region 8&#39;, &#39;Region 7&#39;, &#39;Region 8&#39;, &#39;Region 9&#39;, &#39;Region 7&#39;, &#39;Region 7&#39;, &#39;Region 7&#39;, &#39;Region 7&#39;, &#39;Region 9&#39;, &#39;Region 7&#39;, &#39;Region 8&#39;, &#39;Region 8&#39;, &#39;Region 7&#39;, &#39;Region 7&#39;, &#39;Region 9&#39;, &#39;Region 9&#39;, &#39;Region 6&#39;, &#39;Region 8&#39;, &#39;Region 8&#39;, &#39;Region 9&#39;, &#39;Region 8&#39;, &#39;Region 9&#39;, &#39;Region 6&#39;, &#39;Region 6&#39;, &#39;Region 6&#39;, &#39;Region 6&#39;, &#39;Region 9&#39;, &#39;Region 8&#39;, &#39;Region 6&#39;, &#39;Region 8&#39;, &#39;Region 6&#39;, &#39;Region 9&#39;, &#39;Region 6&#39;, &#39;Region 8&#39;, &#39;Region 8&#39;, &#39;Region 9&#39;, &#39;Region 9&#39;, &#39;Region 5&#39;, &#39;Region 6&#39;, &#39;Region 4&#39;, &#39;Region 9&#39;, &#39;Region 6&#39;, &#39;Region 2&#39;, &#39;Region 6&#39;, &#39;Region 4&#39;, &#39;Region 6&#39;, &#39;Region 2&#39;, &#39;Region 2&#39;, &#39;Region 8&#39;, &#39;Region 2&#39;, &#39;Region 3&#39;, &#39;Region 6&#39;, &#39;Region 3&#39;, &#39;Region 8&#39;, &#39;Region 4&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 4&#39;, &#39;Region 6&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 5&#39;, &#39;Region 1&#39;, &#39;Region 6&#39;, &#39;Region 3&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 2&#39;, &#39;Region 5&#39;, &#39;Region 2&#39;, &#39;Region 2&#39;, &#39;Region 3&#39;, &#39;Region 5&#39;, &#39;Region 2&#39;, &#39;Region 1&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 1&#39;, &#39;Region 1&#39;, &#39;Region 3&#39;, &#39;Region 4&#39;, &#39;Region 5&#39;, &#39;Region 4&#39;, &#39;Region 3&#39;, &#39;Region 4&#39;, &#39;Region 4&#39;, &#39;Region 2&#39;, &#39;Region 5&#39;, &#39;Region 2&#39;, &#39;Region 1&#39;, &#39;Region 5&#39;, &#39;Region 2&#39;, &#39;Region 5&#39;, &#39;Region 1&#39;, &#39;Region 3&#39;, &#39;Region 2&#39;, &#39;Region 3&#39;, &#39;Region 4&#39;, &#39;Region 5&#39;, &#39;Region 1&#39;, &#39;Region 3&#39;, &#39;Region 3&#39;, &#39;Region 1&#39;, &#39;Region 5&#39;, &#39;Region 5&#39;, &#39;Region 1&#39;, &#39;Region 5&#39;, &#39;Region 1&#39;, &#39;Region 1&#39;, &#39;Region 5&#39;, &#39;Region 4&#39;, &#39;Region 3&#39;, &#39;Region 1&#39;, &#39;Region 1&#39;, &#39;Region 3&#39;, &#39;Region 5&#39;, &#39;Region 3&#39;, &#39;Region 5&#39;, &#39;Region 1&#39;, &#39;Region 4&#39;, &#39;Region 3&#39;, &#39;Region 1&#39;, &#39;Region 5&#39;, &#39;Region 3&#39;, &#39;Region 1&#39;]
+populations = [93355, 427082, 15060, 27981, 44630, 1144474, 41104, 73935, 484625, 235463, 14593, 24478, 7409, 156788, 84739, 23750, 16923, 42674, 53563, 13931, 160520, 2265, 77713, 20850, 51492, 37208, 143876, 27468, 28383, 18683, 113683, 4123, 31541, 25765, 10604, 39012, 9047, 22574, 22578, 45863, 14777, 33326, 12085, 111652, 27764, 6676, 14962, 18232, 25613, 10876, 31385, 5671, 7420, 33875, 16914, 10774, 9745, 6612, 334434, 31074, 4881, 24139, 80254, 227595, 39228, 371610, 16424, 12115, 19857, 8517, 13342, 6686, 16610, 79255, 80046, 55398, 96793, 21932, 70590, 99159, 39933, 42873, 98677, 22944, 25477, 6211, 13920, 15597, 18210, 15564, 28083, 11475, 6552, 33365, 33771, 184774, 54958, 35727, 12556, 16505, 39444, 25635, 60148, 15560, 11990, 10793, 137334, 28219, 33811, 15868, 29585, 17988, 235037, 3620, 457066, 29158, 53913, 96638, 11304, 30431, 22042, 21504, 17606, 251153, 50365, 97299, 15323, 5633, 13584, 6698, 8212, 42239, 17024]
+
+counties_2020[&quot;region&quot;] = regions
+counties_2020[&quot;population&quot;] = populations
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>counties_2020.plot(&quot;region&quot;)
+plt.title(&quot;Economic Regions of Virginia&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Economic Regions of Virginia&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_52_1.png" src="../_images/notebooks_shape-measures_52_1.png" />
+</div>
+</div>
+<p>In order to calculate the (unweighted) moment of inertia for each economic region, we pass either the list of region identifiers or the column name to the <code class="docutils literal notranslate"><span class="pre">moment_of_inertia_regions</span></code> function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>shape.moment_of_inertia_regions(counties_2020, normalize=True, regions=&quot;region&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Region 1    0.571706
+Region 2    0.747063
+Region 3    0.539548
+Region 4    0.793634
+Region 5    0.323609
+Region 6    0.642518
+Region 7    0.744163
+Region 8    0.477483
+Region 9    0.672687
+dtype: float64
+</pre></div></div>
+</div>
+<p>In order to calculate the mass moment of inertia, we pass in an array-like or column name of weights, which in this case represents the population of each county. We demonstrate the version here which normalizes by comparing with a reference circle having the same mass (population) and area as the shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>shape.moment_of_inertia_regions(counties_2020, normalize=True, regions=&quot;region&quot;, weights=&quot;population&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Region 1    0.622823
+Region 2    0.988687
+Region 3    0.549320
+Region 4    2.192231
+Region 5    0.984835
+Region 6    0.568993
+Region 7    0.950173
+Region 8    0.529857
+Region 9    0.796767
+dtype: float64
+</pre></div></div>
+</div>
+<p>As you can see above, it <em>is</em> possible for the normalized mass moment of inertia to attain a value greater than one. The population (mass) of the reference circle is evenly distributed throughout its area, i.e., it is of uniform density. The shapes we are calculating NMMI for have varying density, and if a shape’s population is concentrated near its centroid, it will be <em>more</em> compact than the reference circle.</p>
 </section>
 <section id="Conclusion">
 <h1>Conclusion<a class="headerlink" href="#Conclusion" title="Link to this heading">¶</a></h1>
-<p>There are many more shape measures in the <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module that are useful in a large variety of applications. The ones detailed here are the most common ones encountered in literatures on redistricting, which is noly one special area where shape measurements are useful. For more information on shape measures, a good introductory conceptual paper is <a class="reference external" href="https://doi.org/10.1111/j.1541-0064.2009.00304.x">by Shlomo Angel et al. (2010)</a> on how shape is measured in geography.</p>
+<p>There are many more shape measures in the <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module that are useful in a large variety of applications. The ones detailed here are the most common ones encountered in literatures on redistricting, which is only one special area where shape measurements are useful. For more information on shape measures, a good introductory conceptual paper on how shape is measured in geography is by <a class="reference external" href="https://doi.org/10.1111/j.1541-0064.2009.00304.x">Shlomo Angel et al. (2010)</a> .</p>
 </section>
 
 
