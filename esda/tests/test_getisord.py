@@ -63,6 +63,17 @@ class TestGLocal:
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
 
     @parametrize_w
+    def test_float32_input(self, w):
+        lg = getisord.G_Local(
+            self.y.astype(np.float32),
+            w,
+            transform="R",
+            permutations=9,
+            seed=12345,
+        )
+        assert np.isfinite(lg.p_sim).all()
+
+    @parametrize_w
     def test_star_binary(self, w):
         lg = getisord.G_Local(self.y, w, transform="B", star=True, seed=10)
         np.testing.assert_allclose(lg.Zs[0], -1.39727626, rtol=RTOL, atol=ATOL)

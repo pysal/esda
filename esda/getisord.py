@@ -18,6 +18,24 @@ from .crand import crand as _crand_plus
 from .crand import njit as _njit
 from .tabular import _univariate_handler
 
+try:
+    from numba import float32 as _f4
+    from numba import float64 as _f8
+    from numba import int64 as _i8
+except (ImportError, ModuleNotFoundError):
+    _CRAND_UNIV_FLOAT_SIGS = None
+else:
+    _CRAND_UNIV_FLOAT_SIGS = [
+        _f8[:](_i8, _f4[:], _i8[:, :], _f4[:], _f8),
+        _f8[:](_i8, _f8[:], _i8[:, :], _f8[:], _f8),
+    ]
+
+
+def _crand_njit(signatures=None, **kwargs):
+    if signatures is None:
+        return _njit(**kwargs)
+    return _njit(signatures, **kwargs)
+
 PERMUTATIONS = 999
 
 
@@ -415,7 +433,7 @@ class G_Local:  # noqa: N801
         seed=None,
         island_weight=0,
     ):
-        y = np.asarray(y, dtype=np.float64).flatten()
+        y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
         w, star = _infer_star_and_structure_w(w, star, transform)
@@ -595,10 +613,9 @@ class G_Local:  # noqa: N801
 
 
 def _infer_star_and_structure_w(weights, star, transform):
-    if transform.lower() not in ("r", "b"):
-        raise ValueError(
-            f'Transforms must be binary "b" or row-standardized "r". Received: {transform}'
-        )
+    assert transform.lower() in ("r", "b"), (
+        f'Transforms must be binary "b" or row-standardized "r".Recieved: {transform}'
+    )
     adj_matrix = weights.sparse
     diagonal = adj_matrix.diagonal()
     zero_diagonal = (diagonal == 0).all()
@@ -676,14 +693,14 @@ def _infer_star_and_structure_w(weights, star, transform):
 # --------------------------------------------------------------
 
 
-@_njit(fastmath=True)
+@_crand_njit(_CRAND_UNIV_FLOAT_SIGS, fastmath=True)
 def _g_local_crand(i, z, permuted_ids, weights_i, scaling):
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zrand @ other_weights) / (scaling - zi)
 
 
-@_njit(fastmath=True)
+@_crand_njit(_CRAND_UNIV_FLOAT_SIGS, fastmath=True)
 def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
     self_weight = weights_i[0]
     other_weights = weights_i[1:]
