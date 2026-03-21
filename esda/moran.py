@@ -24,6 +24,29 @@ from .crand import njit as _njit
 from .smoothing import assuncao_rate
 from .tabular import _bivariate_handler, _univariate_handler
 
+try:
+    from numba import float32 as _f4
+    from numba import float64 as _f8
+    from numba import int64 as _i8
+except (ImportError, ModuleNotFoundError):
+    _CRAND_UNIV_FLOAT_SIGS = None
+    _CRAND_BIVAR_FLOAT_SIGS = None
+else:
+    _CRAND_UNIV_FLOAT_SIGS = [
+        _f8[:](_i8, _f4[:], _i8[:, :], _f4[:], _f8),
+        _f8[:](_i8, _f8[:], _i8[:, :], _f8[:], _f8),
+    ]
+    _CRAND_BIVAR_FLOAT_SIGS = [
+        _f8[:](_i8, _f4[:, :], _i8[:, :], _f4[:], _f8),
+        _f8[:](_i8, _f8[:, :], _i8[:, :], _f8[:], _f8),
+    ]
+
+
+def _crand_njit(signatures=None, **kwargs):
+    if signatures is None:
+        return _njit(**kwargs)
+    return _njit(signatures, **kwargs)
+
 __all__ = [
     "Moran",
     "Moran_Local",
@@ -2865,7 +2888,7 @@ def _wikh_slow(W, sokal_correction=False):
 # --------------------------------------------------------------
 
 
-@_njit(fastmath=True)
+@_crand_njit(_CRAND_BIVAR_FLOAT_SIGS, fastmath=True)
 def _moran_local_bv_crand(i, z, permuted_ids, weights_i, scaling):
     self_weight = weights_i[0]
     other_weights = weights_i[1:]
@@ -2875,7 +2898,7 @@ def _moran_local_bv_crand(i, z, permuted_ids, weights_i, scaling):
     return zx[i] * (zyrand @ other_weights + self_weight * zyi) * scaling
 
 
-@_njit(fastmath=True)
+@_crand_njit(_CRAND_UNIV_FLOAT_SIGS, fastmath=True)
 def _moran_local_crand(i, z, permuted_ids, weights_i, scaling):
     self_weight = weights_i[0]
     other_weights = weights_i[1:]

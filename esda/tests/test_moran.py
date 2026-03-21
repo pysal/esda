@@ -539,6 +539,18 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
+    @parametrize_desmith
+    def test_float32_input(self, w):
+        lm = moran.Moran_Local(
+            self.y.astype(np.float32),
+            w,
+            transformation="r",
+            permutations=9,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        assert np.isfinite(lm.p_sim).all()
+
     @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
         import pandas as pd
@@ -695,6 +707,19 @@ class TestMoranLocalBV:
         np.testing.assert_allclose(lm.Is[0], 1.4649221250620736)
         np.testing.assert_allclose(lm.z_sim[0], 1.330673752886702)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.09164819151535242)
+
+    @parametrize_sids
+    def test_float32_input(self, w):
+        lm = moran.Moran_Local_BV(
+            self.x.astype(np.float32),
+            self.y.astype(np.float32),
+            w,
+            transformation="r",
+            permutations=9,
+            keep_simulations=True,
+            seed=SEED,
+        )
+        assert np.isfinite(lm.p_sim).all()
 
     @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
