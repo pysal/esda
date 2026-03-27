@@ -56,7 +56,7 @@
        - name: checkout repo
          uses: actions/checkout@v6
        - name: setup micromamba
-         uses: mamba-org/setup-micromamba@v2
+         uses: mamba-org/setup-micromamba@v3
          with:
             micromamba-version: 'latest'
             environment-file: ${{ matrix.environment-file }}
