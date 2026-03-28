@@ -105,6 +105,11 @@ exclude = ["docs/*"]
     "E402",  # Module level import not at top of cell
 ]
 
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+
 [tool.coverage.run]
 source = ["./esda"]
 
