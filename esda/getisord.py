@@ -598,7 +598,7 @@ def _infer_star_and_structure_w(weights, star, transform):
     assert transform.lower() in (
         "r",
         "b",
-    ), f'Transforms must be binary "b" or row-standardized "r".Recieved: {transform}'
+    ), f'Transforms must be binary "b" or row-standardized "r". Received: {transform}'
     adj_matrix = weights.sparse
     diagonal = adj_matrix.diagonal()
     zero_diagonal = (diagonal == 0).all()
