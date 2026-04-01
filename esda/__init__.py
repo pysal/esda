@@ -14,6 +14,7 @@ from .geary import Geary  # noqa F401
 from .geary_local import Geary_Local  # noqa F401
 from .geary_local_mv import Geary_Local_MV  # noqa F401
 from .getisord import G, G_Local  # noqa F401
+from .emerging import EmergingHotSpot  # noqa F401
 from .join_counts import Join_Counts  # noqa F401
 from .join_counts_local import Join_Counts_Local  # noqa F401
 from .join_counts_local_bv import Join_Counts_Local_BV  # noqa F401
