@@ -93,6 +93,8 @@ class LOSH(BaseEstimator):
 
         self.Hi, self.ylag, self.yresid, self.VarHi = self._statistic(y, w, a)
 
+        self._is_fitted = True
+
         if self.inference is None:
             return self
         elif self.inference == "chi-square":
@@ -114,7 +116,6 @@ class LOSH(BaseEstimator):
                 "The requested inference method "
                 f"({self.inference}) is not currently supported!"
             )
-
         return self
 
     @staticmethod
@@ -145,3 +146,9 @@ class LOSH(BaseEstimator):
         VarHi = term1 * term2 * term3 * term4
 
         return (Hi, ylag, yresid, VarHi)
+
+    def __sklearn_is_fitted__(self):
+        """
+        Check fitted status and return a Boolean value.
+        """
+        return hasattr(self, "_is_fitted") and self._is_fitted

@@ -14,6 +14,7 @@ from .geary import Geary  # noqa F401
 from .geary_local import Geary_Local  # noqa F401
 from .geary_local_mv import Geary_Local_MV  # noqa F401
 from .getisord import G, G_Local  # noqa F401
+from .inspection import WesterholtPlot
 from .join_counts import Join_Counts  # noqa F401
 from .join_counts_local import Join_Counts_Local  # noqa F401
 from .join_counts_local_bv import Join_Counts_Local_BV  # noqa F401
@@ -37,10 +38,7 @@ from .moran import (
     Moran_Rate,
     plot_moran_facet,
 )
-from .moran_local_mv import (
-    MoranLocalPartial,
-    MoranLocalConditional
-)
+from .moran_local_mv import MoranLocalConditional, MoranLocalPartial
 from .silhouettes import boundary_silhouette, path_silhouette  # noqa F401
 from .smaup import Smaup  # noqa F401
 from .topo import isolation, prominence  # noqa F401
