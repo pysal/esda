@@ -5,7 +5,60 @@ from .losh import LOSH
 from .moran import Moran_Local
 
 
-class WesterholtPlot:
+class GIPlot:
+    """Combine local statistics into a G-I-LOSH cluster plot.
+
+    The G-I-LOSH cluster plot is a joint diagnostic that places standardized
+    Getis-Ord :math:`G_i^*` values on the x-axis and standardized Local
+    Moran statistics on the y-axis while scaling symbol sizes by local
+    spatial heteroscedasticity (LOSH), proposed by :cite:`westerholt_2026_19421814`.
+    This provides a compact view of
+    local clustering, local association, and local variance structure in
+    a single graphic.
+
+    For details refer to :cite:`westerholt_2026_19421814`.
+
+    Parameters
+    ----------
+    connectivity : W | Graph, optional
+        Spatial weights object aligned with the observed values.
+    permuations : int, default=999
+        Number of random permutations used when fitting
+        :class:`~esda.moran.Moran_Local` and
+        :class:`~esda.getisord.G_Local`.
+    star : bool, default=False
+        Whether to include the focal observation in the Getis-Ord local
+        statistic.
+    n_jobs : int, default=-1
+        Number of parallel workers for permutation-based inference in the
+        local Moran and local Getis-Ord statistics.
+    seed : int, optional
+        Random seed forwarded to permutation-based local statistics.
+    island_weight : float, default=0
+        Weight assigned to the synthetic neighbor used for islands in the
+        local Moran and local Getis-Ord calculations.
+    inference : str, optional
+        Inference method for :class:`~esda.losh.LOSH`. See
+        :class:`~esda.losh.LOSH` for supported options.
+    a : int or float, default=2
+        Residual exponent passed to :meth:`esda.losh.LOSH.fit`. The
+        default corresponds to a variance-based LOSH measure.
+
+    Attributes
+    ----------
+    connectivity : W | Graph or None
+        Spatial weights object used to fit the component estimators.
+    permutations : int
+        Number of permutations used for local Moran and local Getis-Ord
+        inference.
+    losh_ : LOSH
+        Fitted LOSH estimator.
+    moran_local_ : Moran_Local
+        Fitted local Moran estimator.
+    g_local_ : G_Local
+        Fitted local Getis-Ord estimator.
+    """
+
     def __init__(
         self,
         connectivity=None,
@@ -27,6 +80,26 @@ class WesterholtPlot:
         self.a = a
 
     def fit(self, y):
+        """Fit the component local statistics used in the plot.
+
+        Parameters
+        ----------
+        y : array_like
+            One-dimensional array of observed values aligned with
+            ``connectivity``.
+
+        Returns
+        -------
+        WesterholtPlot
+
+        Notes
+        -----
+        Fitting computes and stores:
+
+        - :class:`~esda.losh.LOSH` for local spatial heteroscedasticity,
+        - :class:`~esda.moran.Moran_Local` for local spatial association,
+        - :class:`~esda.getisord.G_Local` for local concentration.
+        """
         self.y = y
 
         self.losh_ = LOSH(self.connectivity, inference=self.inference).fit(y, a=self.a)
@@ -50,6 +123,34 @@ class WesterholtPlot:
         return self
 
     def plot(self, losh_scaling_factor=10, linewidth=0.5, ax=None):
+        """Draw the Westerholt plot.
+
+        Parameters
+        ----------
+        losh_scaling_factor : float, default=10
+            Multiplicative factor applied to ``exp(losh_.Hi)`` when
+            converting LOSH values into marker areas.
+        linewidth : float, default=0.5
+            Line width for marker outlines.
+        ax : matplotlib.axes.Axes, optional
+            Axes on which to draw the plot. If omitted, a new figure and
+            axes are created.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axes containing the plot.
+
+        Notes
+        -----
+        The plot uses the following encodings:
+
+        - x-axis: standardized local Getis-Ord :math:`G_i^*`,
+        - y-axis: permutation-standardized Local Moran statistic,
+        - marker size: ``exp(LOSH)``,
+        - marker color: significance/sign combinations of local
+          Getis-Ord and Local Moran results.
+        """
         import matplotlib.pyplot as plt
 
         g = self.g_local_.Zs
@@ -102,7 +203,34 @@ class WesterholtPlot:
 
     @classmethod
     def from_estimators(cls, g_local, moran_local, losh):
+        """Construct a plotter from pre-fitted component estimators.
+
+        Parameters
+        ----------
+        g_local : G_Local
+            Fitted local Getis-Ord estimator.
+        moran_local : Moran_Local
+            Fitted local Moran estimator.
+        losh : LOSH
+            Fitted LOSH estimator.
+
+        Returns
+        -------
+        WesterholtPlot
+            Plotter populated with the provided estimators.
+
+        Notes
+        -----
+        This constructor is useful when the component estimators have
+        already been fit elsewhere or when custom settings were used for
+        each statistic independently.
+        """
         wp = cls()
+
+        if isinstance(moran_local.z_sim, float):
+            raise ValueError(
+                "Moran_Local needs to be fitted with keep_simulations=True."
+            )
 
         wp.losh_ = losh
         wp.moran_local_ = moran_local

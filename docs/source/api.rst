@@ -60,6 +60,15 @@ Getis-Ord Statistics
     esda.G
     esda.G_Local
 
+.. _inspection_api:
+
+Inspection plots
+-----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    esda.GIPlot
 
 .. _join_api:
 
