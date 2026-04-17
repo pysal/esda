@@ -6,19 +6,50 @@ from .moran import Moran_Local
 
 
 class WesterholtPlot:
-    def __init__(self, connectivity=None):
+    def __init__(
+        self,
+        connectivity=None,
+        permuations=999,
+        star=False,
+        n_jobs=-1,
+        seed=None,
+        island_weight=0,
+        inference=None,
+        a=2,
+    ):
         self.connectivity = connectivity
+        self.permutations = permuations
+        self.star = star
+        self.n_jobs = n_jobs
+        self.seed = seed
+        self.island_weight = island_weight
+        self.inference = inference
+        self.a = a
 
     def fit(self, y):
         self.y = y
 
-        self.losh_ = LOSH(self.connectivity).fit(y)
-        self.moran_local_ = Moran_Local(y, self.connectivity)
-        self.g_local_ = G_Local(y, self.connectivity)
+        self.losh_ = LOSH(self.connectivity, inference=self.inference).fit(y, a=self.a)
+        self.moran_local_ = Moran_Local(
+            y,
+            self.connectivity,
+            permutations=self.permutations,
+            n_jobs=self.n_jobs,
+            seed=self.seed,
+            island_weight=self.island_weight,
+        )
+        self.g_local_ = G_Local(
+            y,
+            self.connectivity,
+            permutations=self.permutations,
+            n_jobs=self.n_jobs,
+            seed=self.seed,
+            island_weight=self.island_weight,
+        )
 
         return self
 
-    def plot(self):
+    def plot(self, losh_scaling_factor=10, linewidth=0.5, ax=None):
         import matplotlib.pyplot as plt
 
         g = self.g_local_.Zs
@@ -37,16 +68,17 @@ class WesterholtPlot:
 
         sig_mask = color != "lightgrey"
 
-        f, ax = plt.subplots()
+        if not ax:
+            _, ax = plt.subplots()
 
         # significant on top
         ax.scatter(
             x=g[sig_mask],
             y=i[sig_mask],
-            s=np.exp(self.losh_.Hi[sig_mask]) * 10,
+            s=np.exp(self.losh_.Hi[sig_mask]) * losh_scaling_factor,
             facecolor="none",
             edgecolor=color[sig_mask],
-            linewidth=0.5,
+            linewidth=linewidth,
             zorder=1,
         )
 
@@ -54,10 +86,10 @@ class WesterholtPlot:
         ax.scatter(
             x=g[~sig_mask],
             y=i[~sig_mask],
-            s=np.exp(self.losh_.Hi[~sig_mask]) * 10,
+            s=np.exp(self.losh_.Hi[~sig_mask]) * losh_scaling_factor,
             facecolor="none",
             edgecolor=color[~sig_mask],
-            linewidth=0.5,
+            linewidth=linewidth,
             zorder=0,
         )
 
