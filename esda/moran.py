@@ -528,9 +528,9 @@ class Moran_BV:  # noqa: N801
         w = _transform(w, transformation)
         self.w = w
         self.I = self.__calc(zy)  # noqa: E741
+        rng = np.random.default_rng()
         if permutations:
-            nrp = np.random.permutation
-            sim = [self.__calc(nrp(zy)) for i in range(permutations)]
+            sim = [self.__calc(rng.permutation(zy)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.I
             larger = above.sum()
