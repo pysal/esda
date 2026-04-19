@@ -181,7 +181,13 @@ class Moran:
     """  # noqa: E501
 
     def __init__(
-        self, y, w, transformation="r", permutations=PERMUTATIONS, two_tailed=True
+        self,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        two_tailed=True,
+        seed=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -204,10 +210,9 @@ class Moran:
             self.p_norm *= 2.0
             self.p_rand *= 2.0
 
+        rng = np.random.default_rng(seed)
         if permutations:
-            sim = [
-                self.__calc(np.random.permutation(self.z)) for i in range(permutations)
-            ]
+            sim = [self.__calc(rng.permutation(self.z)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.I
             larger = above.sum()
