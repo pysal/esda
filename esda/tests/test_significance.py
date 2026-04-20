@@ -1,8 +1,9 @@
 import numpy
-import esda
-from esda.significance import calculate_significance
 import pytest
 from libpysal.weights import Voronoi
+
+import esda
+from esda.significance import calculate_significance
 
 numpy.random.seed(2478879)
 coordinates = numpy.random.random(size=(800, 2))
@@ -46,5 +47,6 @@ def test_alternative_relationships():
         "some directed p-value is neither the greater nor lesser p-value"
     )
     assert (two_sided < folded).mean() < (directed < folded).mean(), (
-        "Directed p-values should tend to be much smaller than two_sided p-values or folded p-values."
+        "Directed p-values should tend to be much "
+        "smaller than two_sided p-values or folded p-values."
     )

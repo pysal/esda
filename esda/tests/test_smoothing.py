@@ -242,11 +242,11 @@ class TestSRate:
         bnames = [self.bname, "BIR79"]
         out_df = sm.Spatial_Median_Rate.by_col(self.df, enames, bnames, self.w)
         outcols = [
-            "{}-{}_spatial_median_rate".format(e, b) for e, b in zip(enames, bnames)
+            f"{e}-{b}_spatial_median_rate" for e, b in zip(enames, bnames, strict=True)
         ]
         smr79 = np.array([0.00122129, 0.00176924, 0.00176924, 0.00240964, 0.00272035])
         answers = [self.smr, smr79]
-        for col, answer in zip(outcols, answers):
+        for col, answer in zip(outcols, answers, strict=True):
             np.testing.assert_allclose(
                 out_df[col].values[:5], answer, rtol=1e-4, atol=1e-6
             )
@@ -257,10 +257,10 @@ class TestSRate:
         enames = [self.ename, "SID79"]
         bnames = [self.bname, "BIR79"]
         out_df = sm.Excess_Risk.by_col(self.df, enames, bnames)
-        outcols = ["{}-{}_excess_risk".format(e, b) for e, b in zip(enames, bnames)]
+        outcols = [f"{e}-{b}_excess_risk" for e, b in zip(enames, bnames, strict=True)]
         er79 = np.array([0.000000, 2.796607, 0.8383863, 1.217479, 0.943811])
         answers = [self.er, er79]
-        for col, answer in zip(outcols, answers):
+        for col, answer in zip(outcols, answers, strict=True):
             np.testing.assert_allclose(
                 out_df[col].values[:5], answer, rtol=1e-4, atol=1e-7
             )

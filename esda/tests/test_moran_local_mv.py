@@ -1,12 +1,13 @@
-import numpy
 import geodatasets
 import geopandas
+import numpy
 import pytest
-from libpysal.weights import Rook
 from libpysal.graph import Graph
+from libpysal.weights import Rook
 from sklearn.linear_model import TheilSenRegressor
-from esda.moran_local_mv import MoranLocalPartial, MoranLocalConditional
+
 from esda.moran import Moran_Local_BV
+from esda.moran_local_mv import MoranLocalConditional, MoranLocalPartial
 
 
 def rsrook(df):
@@ -42,6 +43,7 @@ def test_partial_runs(data, graph):
     """Check if the class computes successfully in a default configuration"""
     y, X, df = data
     m = MoranLocalPartial(permutations=1).fit(X, y, graph)
+    assert m
     # done, just check if it runs
 
 
@@ -99,6 +101,7 @@ def test_conditional_runs(data, graph):
     """Check that the class completes successfully in a default configuration"""
     y, X, df = data
     a = MoranLocalConditional(permutations=1).fit(X, y, graph)
+    assert a
     # done, just check if it runs
 
 
@@ -149,4 +152,5 @@ def test_conditional_transformer(data, graph):
     a = MoranLocalConditional(permutations=0, transformer=TheilSenRegressor).fit(
         X, y, graph
     )
+    assert a
     # done, should just complete
