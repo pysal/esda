@@ -1,5 +1,6 @@
-import numpy as np
 import warnings
+
+import numpy as np
 
 try:
     from numba import njit
@@ -11,29 +12,40 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
     """
     Calculate a pseudo p-value from a reference distribution.
 
-    Pseudo-p values are calculated using the formula (M + 1) / (R + 1). Where R is the number of simulations
-    and M is the number of times that the simulated value was equal to, or more extreme than the observed test statistic.
+    Pseudo-p values are calculated using the formula (M + 1) / (R + 1).
+    Where R is the number of simulations and M is the number of times that the
+    simulated value was equal to, or more extreme than the observed test statistic.
 
     Parameters
     ----------
-    test_stat: float or numpy.ndarray
+    test_stat : float or numpy.ndarray
         The observed test statistic, or a vector of observed test statistics
-    reference_distribution: numpy.ndarray
-        A numpy array containing simulated test statistics as a result of conditional permutation.
-    alternative: string
-        One of 'two-sided', 'lesser', 'greater', 'folded', or 'directed'. Indicates the alternative hypothesis.
-        - 'two-sided': the observed test statistic is in either tail of the reference distribution. This is an un-directed alternative hypothesis.
-        - 'folded': the observed test statistic is an extreme value of the reference distribution folded about its mean. This is an un-directed alternative hypothesis.
-        - 'lesser': the observed test statistic is small relative to the reference distribution. This is a directed alternative hypothesis.
-        - 'greater': the observed test statistic is large relative to the reference distribution. This is a directed alternative hypothesis.
-        - 'directed': the observed test statistic is in either tail of the reference distribution, but the tail is selected depending on the test statistic. This is a directed alternative hypothesis, but the direction is chosen dependent on the data. This is not advised, and included solely to reproduce past results.
+    reference_distribution : numpy.ndarray
+        A numpy array containing simulated test statistics as a result
+        of conditional permutation.
+    alternative : string
+        One of 'two-sided', 'lesser', 'greater', 'folded', or 'directed'.
+        Indicates the alternative hypothesis.
+        - 'two-sided': the observed test statistic is in either tail of
+            the reference distribution. This is an un-directed alternative hypothesis.
+        - 'folded': the observed test statistic is an extreme value of
+            the reference distribution folded about its mean.
+            This is an un-directed alternative hypothesis.
+        - 'lesser': the observed test statistic is small relative to
+            the reference distribution. This is a directed alternative hypothesis.
+        - 'greater': the observed test statistic is large relative to
+            the reference distribution. This is a directed alternative hypothesis.
+        - 'directed': the observed test statistic is in either tail of the reference
+            distribution, but the tail is selected depending on the test statistic.
+            This is a directed alternative hypothesis, but the direction
+            is chosen dependent on the data. This is not advised,
+            and included solely to reproduce past results.
 
     Notes
     -----
-
-    the directed p-value is half of the two-sided p-value, and corresponds to running the
-    lesser and greater tests, then picking the smaller significance value. This is not advised,
-    since the p-value will be uniformly too small.
+    the directed p-value is half of the two-sided p-value, and corresponds to running
+    the lesser and greater tests, then picking the smaller significance value.
+    This is not advised, since the p-value will be uniformly too small.
     """
     reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
@@ -41,7 +53,8 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
     if alternative not in ("folded", "two-sided", "greater", "lesser", "directed"):
         raise ValueError(
             f"alternative='{alternative}' provided, but is not"
-            f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
+            " one of the supported options: 'two-sided', 'greater', "
+            "'lesser', 'directed', 'folded')"
         )
     result = _permutation_significance(
         test_stat, reference_distribution, alternative=alternative
