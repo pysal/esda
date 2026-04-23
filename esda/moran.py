@@ -1542,6 +1542,9 @@ class Moran_Local:  # noqa: N801
         ax=None,
         scatter_kwds=None,
         fitline_kwds=None,
+        losh_scaling_factor: bool | int | float = False,
+        losh_inference=None,
+        a=2,
     ):
         """
         Plot a Moran scatterplot with optional coloring for significant points.
@@ -1556,18 +1559,37 @@ class Moran_Local:  # noqa: N801
             Additional keyword arguments for scatter plot, by default None.
         fitline_kwds : dict, optional
             Additional keyword arguments for fit line, by default None.
+        losh_scaling_factor : bool | int | float, by default False
+            Scale the observations by LOSH. When set to a number, it is treated as
+            the multiplicative factor applied to ``exp(LOSH.Hi)`` when
+            converting LOSH values into marker areas.
+        losh_inference : str, optional
+            Inference method for :class:`~esda.losh.LOSH`. See
+            :class:`~esda.losh.LOSH` for supported options. Applies only if
+            ``losh_scaling_factor`` is not ``False``.
+        a : int or float, default=2
+            Residual exponent passed to :meth:`esda.losh.LOSH.fit`. The
+            default corresponds to a variance-based LOSH measure. Applies only if
+            ``losh_scaling_factor`` is not ``False``.
 
         Returns
         -------
         matplotlib.axes.Axes
             Axes object with the Moran scatterplot.
         """
+        if losh_scaling_factor:
+            from .losh import LOSH
+
+            losh = LOSH(self.w, inference=losh_inference).fit(self.y, a=a)
+            losh_scaling_factor = np.exp(losh.Hi) * losh_scaling_factor
+
         return _scatterplot(
             self,
             crit_value=crit_value,
             ax=ax,
             scatter_kwds=scatter_kwds,
             fitline_kwds=fitline_kwds,
+            losh=losh_scaling_factor,
         )
 
     def plot_combination(
@@ -2422,6 +2444,7 @@ def _scatterplot(
     ax=None,
     scatter_kwds=None,
     fitline_kwds=None,
+    losh=False,
 ):
     """Generates a Moran Local or Global Scatterplot.
 
@@ -2437,6 +2460,8 @@ def _scatterplot(
         Additional keyword arguments to pass to the scatter plot.
     fitline_kwds : dict, optional
         Additional keyword arguments to pass to the fit line plot.
+    losh : np.array
+        Array of values (typically LOSH) to be used to scale the marker area.
 
     Returns
     -------
@@ -2464,6 +2489,7 @@ def _scatterplot(
 
     if crit_value is not None:
         labels = _get_cluster_labels(moran, crit_value)
+        sig_mask = labels == "Insignificant"
         # TODO: allow customization of colors in here and in plot and explore
         # TODO: in a way to keep them easily synced
         colors5_mpl = {
@@ -2473,7 +2499,7 @@ def _scatterplot(
             "High-Low": "#fdae61",
             "Insignificant": "lightgrey",
         }
-        colors5 = [colors5_mpl[i] for i in labels]  # for mpl
+        colors5 = np.array([colors5_mpl[i] for i in labels])  # for mpl
 
     # define customization
     scatter_kwds.setdefault("alpha", 0.6)
@@ -2495,6 +2521,12 @@ def _scatterplot(
         ax.set_xlabel("Attribute")
         ax.set_ylabel("Spatial Lag")
 
+    if losh is not False and "s" in scatter_kwds:
+        raise ValueError(
+            "Cannot specify `s` while using LOSH scaling. Remove `s` "
+            "from scatter_kwds or set losh=False."
+        )
+
     fit = stats.linregress(
         x,
         lag,
@@ -2504,9 +2536,25 @@ def _scatterplot(
     ax.axhline(0, alpha=0.5, color="k", linestyle="--")
     if crit_value is not None:
         fitline_kwds.setdefault("color", "k")
-        scatter_kwds.setdefault("c", colors5)
+
         ax.plot(x, fit.intercept + fit.slope * x, **fitline_kwds)
-        ax.scatter(x, lag, **scatter_kwds)
+
+        # insignificant
+        if losh is not False:
+            scatter_kwds["s"] = losh[sig_mask]
+        ax.scatter(
+            x[sig_mask],
+            lag[sig_mask],
+            zorder=0,
+            c=colors5_mpl["Insignificant"],
+            **scatter_kwds,
+        )
+        # significant
+        if losh is not False:
+            scatter_kwds["s"] = losh[~sig_mask]
+        ax.scatter(
+            x[~sig_mask], lag[~sig_mask], c=colors5[~sig_mask], zorder=1, **scatter_kwds
+        )
     else:
         scatter_kwds.setdefault("color", "#bababa")
         fitline_kwds.setdefault("color", "#d6604d")
