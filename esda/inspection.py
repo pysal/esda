@@ -5,11 +5,11 @@ from .losh import LOSH
 from .moran import Moran_Local
 
 
-class GIPlot:
-    """Combine local statistics into a G-I-LOSH cluster plot.
+class LocalCrossPlot:
+    """Combine local statistics into a G-I-LOSH cross plot.
 
-    The G-I-LOSH cluster plot is a joint diagnostic that places standardized
-    Getis-Ord :math:`G_i^*` values on the x-axis and standardized Local
+    The local G-I-LOSH cross plot is a joint diagnostic that places standardized
+    Getis-Ord :math:`G_i` values on the x-axis and standardized Local
     Moran statistics on the y-axis while scaling symbol sizes by local
     spatial heteroscedasticity (LOSH), proposed by :cite:`westerholt_2026_19421814`.
     This provides a compact view of
@@ -90,7 +90,7 @@ class GIPlot:
 
         Returns
         -------
-        WesterholtPlot
+        LocalCrossPlot
 
         Notes
         -----
@@ -114,6 +114,7 @@ class GIPlot:
         self.g_local_ = G_Local(
             y,
             self.connectivity,
+            star=self.star,
             permutations=self.permutations,
             n_jobs=self.n_jobs,
             seed=self.seed,
@@ -122,11 +123,20 @@ class GIPlot:
 
         return self
 
-    def plot(self, losh_scaling_factor=10, linewidth=0.5, ax=None):
-        """Draw the Westerholt plot.
+    def plot(
+        self,
+        crit_value=0.05,
+        losh_scaling_factor=10,
+        linewidth=0.5,
+        ax=None,
+        legend=False,
+    ):
+        """Draw the local cross plot.
 
         Parameters
         ----------
+        crit_value : float, default=0.05
+            The critical value for significance.
         losh_scaling_factor : float, default=10
             Multiplicative factor applied to ``exp(losh_.Hi)`` when
             converting LOSH values into marker areas.
@@ -156,8 +166,8 @@ class GIPlot:
         g = self.g_local_.Zs
         i = self.moran_local_.z_sim
 
-        moran_sig = self.moran_local_.p_sim < 0.05
-        g_sig = self.g_local_.p_sim < 0.05
+        moran_sig = self.moran_local_.p_sim < crit_value
+        g_sig = self.g_local_.p_sim < crit_value
 
         color = np.array(["lightgrey"] * len(g), dtype="O")
         color[(g < 0) & g_sig] = "darkblue"
@@ -173,7 +183,7 @@ class GIPlot:
             _, ax = plt.subplots()
 
         # significant on top
-        ax.scatter(
+        sc = ax.scatter(
             x=g[sig_mask],
             y=i[sig_mask],
             s=np.exp(self.losh_.Hi[sig_mask]) * losh_scaling_factor,
@@ -194,10 +204,17 @@ class GIPlot:
             zorder=0,
         )
 
-        ax.set_xlabel("Getis-Ord $G^*_i$")
-        ax.set_ylabel("Moran's $I$")
+        ax.set_xlabel(f"Getis-Ord $G{'^*' if self.g_local_.star else ''}_i$")
+        ax.set_ylabel("Moran's $I_i$")
         ax.axvline(0, color="silver", linestyle="dashed")
         ax.axhline(0, color="silver", linestyle="dashed")
+
+        if legend:
+            handles, labels = sc.legend_elements(prop="sizes", num=4)
+            for h in handles:
+                h.set_fillstyle("none")
+            labels = [(np.log(float(l[14:-2])) / 10).round(2) for l in labels]
+            ax.legend(handles, labels, title="LOSH")
 
         return ax
 
@@ -216,7 +233,7 @@ class GIPlot:
 
         Returns
         -------
-        WesterholtPlot
+        LocalCrossPlot
             Plotter populated with the provided estimators.
 
         Notes

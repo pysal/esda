@@ -14,7 +14,7 @@ from .geary import Geary
 from .geary_local import Geary_Local
 from .geary_local_mv import Geary_Local_MV
 from .getisord import G, G_Local
-from .inspection import GIPlot
+from .inspection import LocalCrossPlot
 from .join_counts import Join_Counts
 from .join_counts_local import Join_Counts_Local
 from .join_counts_local_bv import Join_Counts_Local_BV
