@@ -19,6 +19,7 @@ try:
 except ImportError:
     statsmodels = None
 
+
 def test_distance_correlogram():
     corr = correlogram(sac.geometry.centroid, sac.HH_INC, dsupport)
 
@@ -62,6 +63,7 @@ def test_unspecified_distances():
         known,
     )
 
+
 @pytest.mark.skipif(statsmodels is None, reason="lowess requires statsmodels")
 def test_lowess_correlogram():
     corr = correlogram(
@@ -71,6 +73,7 @@ def test_lowess_correlogram():
     test_data = np.array([0.586032, 0.377228, 0.268441, 0.336877])
 
     assert_array_almost_equal(corr.lowess, test_data)
+
 
 @pytest.mark.skipif(statsmodels is None, reason="lowess requires statsmodels")
 def test_lowess_precomputed():

@@ -12,16 +12,16 @@ except ImportError:
         return x
 
 
-def _calc_quad(x,y):
+def _calc_quad(x, y):
     """
-    This is a simpler solution to calculate a cartesian quadrant. 
+    This is a simpler solution to calculate a cartesian quadrant.
 
-    To explain graphically, let the tuple below be (off_sign[i], neg_y[i]*2). 
+    To explain graphically, let the tuple below be (off_sign[i], neg_y[i]*2).
 
-    If sign(x[i]) != sign(y[i]), we are on the negative diagonal. 
-    If y is negative, we are on the bottom of the plot. 
+    If sign(x[i]) != sign(y[i]), we are on the negative diagonal.
+    If y is negative, we are on the bottom of the plot.
 
-    Therefore, the sum (off_sign + neg_y*2 + 1) gives you the cartesian quadrant. 
+    Therefore, the sum (off_sign + neg_y*2 + 1) gives you the cartesian quadrant.
 
      II  |   I
      1,0 | 0,0
@@ -31,12 +31,17 @@ def _calc_quad(x,y):
 
     """
     off_sign = np.sign(x) != np.sign(y)
-    neg_y = (y<0)
-    return off_sign + neg_y*2 + 1
+    neg_y = y < 0
+    return off_sign + neg_y * 2 + 1
+
 
 class MoranLocalPartial(object):
     def __init__(
-        self, permutations=999, unit_scale=True, partial_labels=True, alternative='two-sided'
+        self,
+        permutations=999,
+        unit_scale=True,
+        partial_labels=True,
+        alternative="two-sided",
     ):
         """
         Compute the Multivariable Local Moran statistics under partial dependence :cite:`wolf2024confounded`
@@ -52,12 +57,12 @@ class MoranLocalPartial(object):
             the covariance statistics are not overwhelmed by any single
             covariate's large variance.
         partial_labels : bool, default=True
-            whether to calculate the classification based on the part-regressive 
+            whether to calculate the classification based on the part-regressive
             quadrant classification or the univariate quadrant classification,
             like a classical Moran's I. When mvquads is True, the variables are labelled as:
-            - label 1: observations with large y - rho * x that also have large Wy values. 
+            - label 1: observations with large y - rho * x that also have large Wy values.
             - label 2: observations with small y - rho * x values that also have large Wy values.
-            - label 3: observations with small y - rho * x values that also have small Wy values. 
+            - label 3: observations with small y - rho * x values that also have small Wy values.
             - label 4: observations with large y - rho * x values that have small Wy values.
         alternative : str (default: 'two-sided')
             the alternative hypothesis for the inference. One of
@@ -97,13 +102,13 @@ class MoranLocalPartial(object):
             describing the relationship between y and Wy.
         labels_ : the (N,) array of quadrant classifications for the
             part-regressive relationships. See the partial_labels argument
-            for more information. 
+            for more information.
         """
         self.permutations = permutations
         self.unit_scale = unit_scale
         self.partial_labels = partial_labels
         self.alternative = alternative
-    
+
     def fit(self, X, y, W):
         """
         Fit the partial local Moran statistic on input data
@@ -118,7 +123,7 @@ class MoranLocalPartial(object):
             to compute the multivariable Moran's I
         W   : (N,N) weights object
             spatial weights instance as W or Graph aligned with y. Immediately row-standardized.
-      
+
         Returns
         -------
         self    :   object
@@ -154,10 +159,10 @@ class MoranLocalPartial(object):
                 self._rlmos_ *= self.N - 1
                 self._p_sim_ = np.zeros((self.N, self.P + 1))
                 for i in range(self.P + 1):
-                    self._p_sim_[:,i] = calculate_significance(
-                        self._lmos_[:,i], 
-                        self._rlmos_[:,:,i], 
-                        alternative=self.alternative
+                    self._p_sim_[:, i] = calculate_significance(
+                        self._lmos_[:, i],
+                        self._rlmos_[:, :, i],
+                        alternative=self.alternative,
                     )
 
         component_quads = []
@@ -173,11 +178,11 @@ class MoranLocalPartial(object):
         )
 
         uvquads = []
-        negative_lag = R[:,1] < 0
+        negative_lag = R[:, 1] < 0
         for i, x_ in enumerate(self.D.T):
             if i == 0:
                 continue
-            off_sign = np.sign(x_) != np.sign(R[:,1])
+            off_sign = np.sign(x_) != np.sign(R[:, 1])
             quads = negative_lag.astype(int).flatten() * 2 + off_sign.astype(int) + 1
             uvquads.append(quads.flatten())
 
@@ -186,7 +191,7 @@ class MoranLocalPartial(object):
         return self
 
     def _make_data(self, z, X, W):
-        if isinstance(W, Graph): # NOQA because ternary is confusing
+        if isinstance(W, Graph):  # NOQA because ternary is confusing
             Wz = W.lag(z)
         else:
             Wz = lag_spatial(W, z)
@@ -212,7 +217,7 @@ class MoranLocalPartial(object):
             [np.random.permutation(N - 1)[0:max_neighbs] for i in prange]
         )
         straight_ids = np.arange(N)
-        if isinstance(W, Graph): # NOQA
+        if isinstance(W, Graph):  # NOQA
             id_order = W.unique_ids
         else:
             id_order = W.id_order
@@ -230,7 +235,7 @@ class MoranLocalPartial(object):
             shuffled_Wyi = (shuffled_ys * these_weights).sum(
                 axis=1
             )  # these are N-permutations by 1 now
-            # shuffled_X = X[randomized_permutations, :] 
+            # shuffled_X = X[randomized_permutations, :]
             # #these are still N-permutations, N-neighbs, N-covariates
             if X is None:
                 local_data = np.array((1, y[i].item())).reshape(1, -1)
@@ -320,7 +325,7 @@ class MoranLocalConditional(Moran_Local):
         permutations=999,
         unit_scale=True,
         transformer=None,
-        alternative='two-sided'
+        alternative="two-sided",
     ):
         """
         Initialize a local Moran statistic on the regression residuals
@@ -366,7 +371,7 @@ class MoranLocalConditional(Moran_Local):
             describing the relationship between y and Wy.
         labels_ : the (N,) array of quadrant classifications for the
             part-regressive relationships. See the partial_labels argument
-            for more information. 
+            for more information.
         """
         self.permutations = permutations
         self.unit_scale = unit_scale
@@ -385,7 +390,7 @@ class MoranLocalConditional(Moran_Local):
             to account for their covariance with Y.
         W : (N,N) weights object
             spatial weights instance as W or Graph aligned with y. Immediately row-standardized.
-        
+
         Returns
         -------
         A fitted MoranLocalConditional() estimator
@@ -403,15 +408,19 @@ class MoranLocalConditional(Moran_Local):
             Wyf = W.lag(y_filtered_)
         else:
             W.transform = "r"
-            Wyf = lag_spatial(W, y_filtered_) # TODO: graph
+            Wyf = lag_spatial(W, y_filtered_)  # TODO: graph
         self.connectivity = W
         self.partials_ = np.column_stack((y_filtered_, Wyf))
         y_out = self.y_filtered_
         self.association_ = ((y_out * Wyf) / (y_out.T @ y_out) * (W.n - 1)).flatten()
         if self.permutations > 0:
             self._crand()
-            self.significance_ = calculate_significance(self.association_, self.reference_distribution_, alternative=self.alternative)
-        quads = np.array([[3,2,4,1]]).reshape(2,2)
+            self.significance_ = calculate_significance(
+                self.association_,
+                self.reference_distribution_,
+                alternative=self.alternative,
+            )
+        quads = np.array([[3, 2, 4, 1]]).reshape(2, 2)
         left_component_cluster = (y_filtered_ > 0).astype(int)
         right_component_cluster = (Wyf > 0).astype(int)
         quads = quads[left_component_cluster, right_component_cluster]

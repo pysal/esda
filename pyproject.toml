@@ -98,7 +98,7 @@ lint.ignore = [
     "N999",
     "UP007"
 ]
-exclude = ["docs/*"]
+
 
 [tool.ruff.lint.per-file-ignores]
 "*.ipynb" = [

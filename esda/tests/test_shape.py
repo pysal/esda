@@ -91,33 +91,33 @@ testbench["name"] = ["Hanock County", "Simple", "Multi", "Single Hole", "Multi H
 tmp_geoms = []
 for i in range(8):
     for j in range(8):
-        tmp_geoms.append(shapely.box(i, j, i+1, j+1))
+        tmp_geoms.append(shapely.box(i, j, i + 1, j + 1))
 tmp_geoseries = geopandas.GeoSeries(tmp_geoms)
-regions = [1, 1, 1, 2, 2, 2, 3, 3,
-           1, 1, 4, 4, 2, 2, 3, 3,
-           1, 4, 4, 4, 4, 2, 3, 3,
-           4, 4, 4, 4, 4, 4, 3, 3,
-           4, 4, 4, 4, 4, 4, 3, 3,
-           2, 4, 4, 4, 4, 2, 3, 3,
-           2, 2, 4, 4, 2, 2, 3, 3,
-           2, 2, 2, 2, 2, 2, 3, 3]
+# fmt: off
+regions = [
+    1, 1, 1, 2, 2, 2, 3, 3,
+    1, 1, 4, 4, 2, 2, 3, 3,
+    1, 4, 4, 4, 4, 2, 3, 3,
+    4, 4, 4, 4, 4, 4, 3, 3,
+    4, 4, 4, 4, 4, 4, 3, 3,
+    2, 4, 4, 4, 4, 2, 3, 3,
+    2, 2, 4, 4, 2, 2, 3, 3,
+    2, 2, 2, 2, 2, 2, 3, 3,
+]
+# fmt: on
 region_lookup = {
     1: "1 - Triangle region",
     2: "2 - Discontiguous region",
     3: "3 - Skinny region",
-    4: "4 - Circle-ish region"
+    4: "4 - Circle-ish region",
 }
 region_names = [region_lookup[i] for i in regions]
 masses = [10, 20, 30, 40, 50] * 13
 masses = masses[:-1]
 test_region_8x8 = geopandas.GeoDataFrame(
-    {
-        "region_name": region_names,
-        "mass": masses,
-        "geometry": tmp_geoms
-    }
-
+    {"region_name": region_names, "mass": masses, "geometry": tmp_geoms}
 )
+
 
 def test_boundary_amplitude():
     observed = esda.shape.boundary_amplitude(shape)
@@ -162,114 +162,159 @@ def test_moment_of_inertia():
         atol=ATOL,
     )
 
+
 def test_moment_of_inertia_normalized():
     observed = esda.shape.moment_of_inertia(testbench.geometry, normalize=True)
     testing.assert_allclose(
         observed,
-        [0.58666692, 0.78130608, 0.30954837, 0.69905169, 0.175372  ],
+        [0.58666692, 0.78130608, 0.30954837, 0.69905169, 0.175372],
         atol=ATOL,
     )
 
+
 def test_moment_of_inertia_about_origin():
-    observed = esda.shape.moment_of_inertia(testbench.geometry, ref_pt=(0,0))
+    observed = esda.shape.moment_of_inertia(testbench.geometry, ref_pt=(0, 0))
     testing.assert_allclose(
         observed,
-        [ 9.53818256,  2.25,        5.52604167,  5.24375414, 87.06458556],
+        [9.53818256, 2.25, 5.52604167, 5.24375414, 87.06458556],
         atol=ATOL,
     )
+
 
 def test_moment_of_inertia_global():
     observed = esda.shape.moment_of_inertia_global(testbench)
     testing.assert_allclose(observed, 84.31724299486667, atol=ATOL)
 
+
 # mir refers to `moment_of_inertia_regions`
 def test_mir_with_regions():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, regions=regions))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(test_region_8x8, regions=regions)
+    )
     testing.assert_allclose(
         observed,
-        [  7.66666667, 205.22222222,  90.66666667,  96.        ],
+        [7.66666667, 205.22222222, 90.66666667, 96.0],
         atol=ATOL,
     )
+
 
 def test_mir_with_region_col():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, regions="region_name"))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(test_region_8x8, regions="region_name")
+    )
     testing.assert_allclose(
         observed,
-        [  7.66666667, 205.22222222,  90.66666667,  96.        ],
+        [7.66666667, 205.22222222, 90.66666667, 96.0],
         atol=ATOL,
     )
 
+
 def test_mir_with_regions_normalized():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, normalize=True, regions=regions))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(
+            test_region_8x8, normalize=True, regions=regions
+        )
+    )
     testing.assert_allclose(
         observed,
         [0.74733625, 0.25127007, 0.44937866, 0.95492966],
         atol=ATOL,
     )
 
+
 def test_mir_with_weights():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, weights=masses))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(test_region_8x8, weights=masses)
+    )
+    # fmt: off
     testing.assert_allclose(
         observed,
-        [1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667],
+        [
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667,
+        ],
         atol=ATOL,
     )
+    # fmt: on
+
 
 def test_mir_with_weight_col():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, weights="mass"))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(test_region_8x8, weights="mass")
+    )
+    # fmt: off
     testing.assert_allclose(
         observed,
-        [1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
-         1.66666667, 3.33333333, 5.        , 6.66666667],
+        [
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667, 8.33333333,
+            1.66666667, 3.33333333, 5.        , 6.66666667,
+        ],
         atol=ATOL,
     )
+    # fmt: on
+
 
 def test_mir_with_weights_normalized():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, normalize=True, weights=masses))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(
+            test_region_8x8, normalize=True, weights=masses
+        )
+    )
     testing.assert_allclose(
         observed,
         esda.shape.moment_of_inertia(test_region_8x8, normalize=True),
         atol=ATOL,
     )
 
+
 def test_mir_with_regions_and_weights():
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, regions=regions, weights=masses))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(
+            test_region_8x8, regions=regions, weights=masses
+        )
+    )
     testing.assert_allclose(
         observed,
-        [ 189.50980392, 6185.74074074, 2709.58333333, 2771.57276995],
+        [189.50980392, 6185.74074074, 2709.58333333, 2771.57276995],
         atol=ATOL,
     )
+
+
 def test_mir_with_regions_and_ref_pts():
     ref_pt = {1: (2, 0.5), 2: (1, 5), 3: (7, 7), 4: (5, 2)}
-    observed = numpy.asarray(esda.shape.moment_of_inertia_regions(test_region_8x8, ref_pt=ref_pt, regions=regions))
+    observed = numpy.asarray(
+        esda.shape.moment_of_inertia_regions(
+            test_region_8x8, ref_pt=ref_pt, regions=regions
+        )
+    )
     testing.assert_allclose(
         observed,
-        [ 14.5       , 520.        , 234.66666667, 144.        ],
+        [14.5, 520.0, 234.66666667, 144.0],
         atol=ATOL,
     )
+
 
 def test_second_areal_moment():
     observed = esda.shape.second_areal_moment(testbench.geometry)

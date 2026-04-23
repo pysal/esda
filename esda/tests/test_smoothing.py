@@ -244,9 +244,7 @@ class TestSRate:
         outcols = [
             "{}-{}_spatial_median_rate".format(e, b) for e, b in zip(enames, bnames)
         ]
-        smr79 = np.array(
-            [0.00122129, 0.00176924, 0.00176924, 0.00240964, 0.00272035]
-        )
+        smr79 = np.array([0.00122129, 0.00176924, 0.00176924, 0.00240964, 0.00272035])
         answers = [self.smr, smr79]
         for col, answer in zip(outcols, answers):
             np.testing.assert_allclose(
