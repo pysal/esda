@@ -261,6 +261,24 @@ class TestMoran:
         l_ = ax.lines[2]
         assert l_.get_color() == "pink"
 
+    @parametrize_sac
+    def test_plot_scatter_losh(self, w):
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatter(losh_scaling_factor=10)
+
+        np.testing.assert_allclose(
+            ax.collections[0].get_sizes(),
+            moran._get_losh_scaling(m, 10),
+        )
+
 
 class TestMoranRate:
     def setup_method(self):
@@ -467,9 +485,13 @@ class TestMoranLocal:
         ax = lm.plot_scatter()
 
         # test scatter
-        unique, counts = np.unique(
-            ax.collections[0].get_facecolors(), axis=0, return_counts=True
-        )
+        facecolors = []
+        for col in ax.collections:
+            colors = col.get_facecolors()
+            if len(colors) == 1:
+                colors = np.repeat(colors, len(col.get_offsets()), axis=0)
+            facecolors.append(colors)
+        unique, counts = np.unique(np.vstack(facecolors), axis=0, return_counts=True)
         np.testing.assert_array_almost_equal(
             unique,
             np.array(
@@ -524,6 +546,15 @@ class TestMoranLocal:
         l_ = ax.lines[2]
         assert l_.get_color() == "#d6604d"
         assert l_.get_linewidth() == 4.0
+
+        ax = lm.plot_scatter(
+            crit_value=None,
+            losh_scaling_factor=10,
+        )
+        np.testing.assert_allclose(
+            ax.collections[0].get_sizes(),
+            moran._get_losh_scaling(lm, 10),
+        )
 
     @parametrize_desmith
     def test_parallel(self, w):
@@ -661,10 +692,16 @@ class TestMoranLocal:
             sac1,
             "WHITE",
             legend_kwds=dict(loc="lower right"),
+            losh_scaling_factor=10,
         )
 
         assert len(axs2) == 3
         assert len(axs2[0].patches) == 0
+        labels = moran._get_cluster_labels(lm, 0.05)
+        sig_mask = labels == "Insignificant"
+        losh = moran._get_losh_scaling(lm, 10)
+        np.testing.assert_allclose(axs2[0].collections[0].get_sizes(), losh[sig_mask])
+        np.testing.assert_allclose(axs2[0].collections[1].get_sizes(), losh[~sig_mask])
 
         if GPD_GE_120:
             assert len(axs2[1].collections) == 5

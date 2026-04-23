@@ -330,6 +330,9 @@ class Moran:
         ax=None,
         scatter_kwds=None,
         fitline_kwds=None,
+        losh_scaling_factor: bool | int | float = False,
+        losh_inference=None,
+        a=2,
     ):
         """
         Plot a Moran scatterplot with optional coloring for significant points.
@@ -342,18 +345,33 @@ class Moran:
             Additional keyword arguments for scatter plot, by default None.
         fitline_kwds : dict, optional
             Additional keyword arguments for fit line, by default None.
+        losh_scaling_factor : bool | int | float, by default False
+            Scale the observations by LOSH. When set to a number, it is treated as
+            the multiplicative factor applied to ``exp(LOSH.Hi)`` when
+            converting LOSH values into marker areas.
+        losh_inference : str, optional
+            Inference method for :class:`~esda.losh.LOSH`. See
+            :class:`~esda.losh.LOSH` for supported options. Applies only if
+            ``losh_scaling_factor`` is not ``False``.
+        a : int or float, default=2
+            Residual exponent passed to :meth:`esda.losh.LOSH.fit`. The
+            default corresponds to a variance-based LOSH measure. Applies only if
+            ``losh_scaling_factor`` is not ``False``.
 
         Returns
         -------
         matplotlib.axes.Axes
             Axes object with the Moran scatterplot.
         """
+        losh = _get_losh_scaling(self, losh_scaling_factor, losh_inference, a)
+
         return _scatterplot(
             self,
             crit_value=None,
             ax=ax,
             scatter_kwds=scatter_kwds,
             fitline_kwds=fitline_kwds,
+            losh=losh,
         )
 
     def plot_simulation(self, ax=None, legend=False, fitline_kwds=None, **kwargs):
@@ -1577,11 +1595,7 @@ class Moran_Local:  # noqa: N801
         matplotlib.axes.Axes
             Axes object with the Moran scatterplot.
         """
-        if losh_scaling_factor:
-            from .losh import LOSH
-
-            losh = LOSH(self.w, inference=losh_inference).fit(self.y, a=a)
-            losh_scaling_factor = np.exp(losh.Hi) * losh_scaling_factor
+        losh = _get_losh_scaling(self, losh_scaling_factor, losh_inference, a)
 
         return _scatterplot(
             self,
@@ -1589,7 +1603,7 @@ class Moran_Local:  # noqa: N801
             ax=ax,
             scatter_kwds=scatter_kwds,
             fitline_kwds=fitline_kwds,
-            losh=losh_scaling_factor,
+            losh=losh,
         )
 
     def plot_combination(
@@ -1608,6 +1622,9 @@ class Moran_Local:  # noqa: N801
         scatter_kwds=None,
         fitline_kwds=None,
         legend_kwds=None,
+        losh_scaling_factor: bool | int | float = False,
+        losh_inference=None,
+        a=2,
     ):
         """
         Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
@@ -1649,6 +1666,18 @@ class Moran_Local:  # noqa: N801
         legend_kwds : dict
             Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds``
             allowing repositioning of the legend in LISA cluster plot and choropleth.
+        losh_scaling_factor : bool | int | float, by default False
+            Scale the scatterplot observations by LOSH. When set to a number, it
+            is treated as the multiplicative factor applied to ``exp(LOSH.Hi)``
+            when converting LOSH values into marker areas.
+        losh_inference : str, optional
+            Inference method for :class:`~esda.losh.LOSH`. See
+            :class:`~esda.losh.LOSH` for supported options. Applies only if
+            ``losh_scaling_factor`` is not ``False``.
+        a : int or float, default=2
+            Residual exponent passed to :meth:`esda.losh.LOSH.fit`. The
+            default corresponds to a variance-based LOSH measure. Applies only if
+            ``losh_scaling_factor`` is not ``False``.
 
         Returns
         -------
@@ -1670,6 +1699,9 @@ class Moran_Local:  # noqa: N801
             scatter_kwds=scatter_kwds,
             fitline_kwds=fitline_kwds,
             legend_kwds=legend_kwds,
+            losh_scaling_factor=losh_scaling_factor,
+            losh_inference=losh_inference,
+            a=a,
         )
 
 
@@ -2437,6 +2469,16 @@ def _get_cluster_labels(moran_local, crit_value):
     return gdf["Moran Cluster"].values
 
 
+def _get_losh_scaling(moran, losh_scaling_factor=False, losh_inference=None, a=2):
+    if not losh_scaling_factor:
+        return False
+
+    from .losh import LOSH
+
+    losh = LOSH(moran.w, inference=losh_inference).fit(moran.y, a=a)
+    return np.exp(losh.Hi) * losh_scaling_factor
+
+
 def _scatterplot(
     moran,
     crit_value=0.05,
@@ -2559,6 +2601,8 @@ def _scatterplot(
         scatter_kwds.setdefault("color", "#bababa")
         fitline_kwds.setdefault("color", "#d6604d")
         ax.plot(x, fit.intercept + fit.slope * x, **fitline_kwds)
+        if losh is not False:
+            scatter_kwds["s"] = losh
         ax.scatter(x, lag, **scatter_kwds)
 
     ax.set_aspect("equal")
@@ -2625,6 +2669,9 @@ def _plot_combination(
     scatter_kwds=None,
     fitline_kwds=None,
     legend_kwds=None,
+    losh_scaling_factor: bool | int | float = False,
+    losh_inference=None,
+    a=2,
 ):
     """
     Produce three-plot visualisation of Moran Scatteprlot, LISA cluster
@@ -2669,6 +2716,18 @@ def _plot_combination(
     legend_kwds : dict
         Keyword arguments passed to geopandas.GeodataFrame.plot ``legend_kwds`` allowing
         repositioning of the legend in LISA cluster plot and choropleth.
+    losh_scaling_factor : bool | int | float, by default False
+        Scale the scatterplot observations by LOSH. When set to a number, it is
+        treated as the multiplicative factor applied to ``exp(LOSH.Hi)`` when
+        converting LOSH values into marker areas.
+    losh_inference : str, optional
+        Inference method for :class:`~esda.losh.LOSH`. See
+        :class:`~esda.losh.LOSH` for supported options. Applies only if
+        ``losh_scaling_factor`` is not ``False``.
+    a : int or float, default=2
+        Residual exponent passed to :meth:`esda.losh.LOSH.fit`. The default
+        corresponds to a variance-based LOSH measure. Applies only if
+        ``losh_scaling_factor`` is not ``False``.
 
     Returns
     -------
@@ -2687,12 +2746,19 @@ def _plot_combination(
         1, 3, figsize=figsize, subplot_kw={"aspect": "equal", "adjustable": "datalim"}
     )
     # Moran Scatterplot
-    moran_loc.plot_scatter(
-        crit_value=crit_value,
-        ax=axs[0],
-        scatter_kwds=scatter_kwds,
-        fitline_kwds=fitline_kwds,
-    )
+    plot_scatter_kwargs = {
+        "crit_value": crit_value,
+        "ax": axs[0],
+        "scatter_kwds": scatter_kwds,
+        "fitline_kwds": fitline_kwds,
+    }
+    if losh_scaling_factor:
+        plot_scatter_kwargs.update(
+            losh_scaling_factor=losh_scaling_factor,
+            losh_inference=losh_inference,
+            a=a,
+        )
+    moran_loc.plot_scatter(**plot_scatter_kwargs)
 
     # Lisa cluster map
     moran_loc.plot(
