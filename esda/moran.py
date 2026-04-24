@@ -514,7 +514,9 @@ class Moran_BV:  # noqa: N801
 
     """  # noqa: E501
 
-    def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS):
+    def __init__(
+        self, x, y, w, transformation="r", permutations=PERMUTATIONS, seed=None
+    ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
         zy = (y - y.mean()) / y.std(ddof=1)
@@ -528,9 +530,9 @@ class Moran_BV:  # noqa: N801
         w = _transform(w, transformation)
         self.w = w
         self.I = self.__calc(zy)  # noqa: E741
+        rng = np.random.default_rng(seed)
         if permutations:
-            nrp = np.random.permutation
-            sim = [self.__calc(nrp(zy)) for i in range(permutations)]
+            sim = [self.__calc(rng.permutation(zy)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
             above = sim >= self.I
             larger = above.sum()
@@ -1014,6 +1016,7 @@ class Moran_Rate(Moran):  # noqa: N801
         transformation="r",
         permutations=PERMUTATIONS,
         two_tailed=True,
+        seed=None,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1025,6 +1028,7 @@ class Moran_Rate(Moran):  # noqa: N801
             transformation=transformation,
             permutations=permutations,
             two_tailed=two_tailed,
+            seed=seed,
         )
 
     @classmethod

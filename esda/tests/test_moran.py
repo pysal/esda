@@ -287,6 +287,45 @@ class TestMoranRate:
         np.testing.assert_allclose(sidr, 0.16622343552567395, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(pval, 0.008)
 
+    @parametrize_sids
+    def test_seed_reproducibility(self, w):
+        mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED)
+        mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED)
+        np.testing.assert_allclose(mi1.I, mi2.I)
+        np.testing.assert_allclose(mi1.p_sim, mi2.p_sim)
+        np.testing.assert_array_equal(mi1.sim, mi2.sim)
+
+    @parametrize_sids
+    def test_seed_different_values(self, w):
+        mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED)
+        mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED + 1)
+        np.testing.assert_allclose(mi1.I, mi2.I)
+        assert mi1.p_sim != mi2.p_sim
+        assert not np.allclose(mi1.sim, mi2.sim)
+
+
+class TestMoranBV:
+    def setup_method(self):
+        f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
+        self.x = np.array(f.by_col["SIDR79"])
+        self.y = np.array(f.by_col["SIDR74"])
+
+    @parametrize_sids
+    def test_seed_reproducibility(self, w):
+        mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED)
+        mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED)
+        np.testing.assert_allclose(mbv1.I, mbv2.I)
+        np.testing.assert_allclose(mbv1.p_sim, mbv2.p_sim)
+        np.testing.assert_array_equal(mbv1.sim, mbv2.sim)
+
+    @parametrize_sids
+    def test_seed_different_values(self, w):
+        mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED)
+        mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED + 1)
+        np.testing.assert_allclose(mbv1.I, mbv2.I)
+        assert mbv1.p_sim != mbv2.p_sim
+        assert not np.allclose(mbv1.sim, mbv2.sim)
+
 
 class TestMoranBVmatrix:
     def setup_method(self):
