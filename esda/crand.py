@@ -4,8 +4,10 @@ Centralised conditional randomisation engine. Numba accelerated.
 
 import os
 import warnings
-from .significance import _permutation_significance
+
 import numpy as np
+
+from .significance import _permutation_significance
 
 try:
     from numba import boolean, njit, prange
@@ -146,13 +148,15 @@ def crand(
             " To retain the current behavior, set alternative='directed'."
             " We strongly recommend moving to alternative='two-sided'.",
             DeprecationWarning,
+            stacklevel=2,
         )
         # TODO: replace this with 'two-sided' by next major release
         alternative = "directed"
     if alternative not in ("two-sided", "greater", "lesser", "directed", "folded"):
         raise ValueError(
             f"alternative='{alternative}' provided, but is not"
-            f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
+            " one of the supported options: 'two-sided', 'greater', "
+            "'lesser', 'directed', 'folded')"
         )
 
     # paralellise over permutations?
@@ -559,7 +563,7 @@ def parallel_crand(
             for pars in chunks
         )
 
-    p_sims, rlocals = zip(*worker_out)
+    p_sims, rlocals = zip(*worker_out, strict=True)
     p_sims = np.hstack(p_sims).squeeze()
     rlocals = np.row_stack(rlocals).squeeze()
     return p_sims, rlocals
