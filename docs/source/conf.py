@@ -39,7 +39,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "esda"  # string of your project name, for example, 'giddy'
-copyright = "2018, pysal developers"
+copyright = "2018, pysal developers"  # noqa: A001
 author = "pysal developers"
 
 # The version info for the project you're documenting, acts as replacement for
