@@ -1,14 +1,15 @@
 import numpy as np
+from libpysal.graph import Graph
+from libpysal.weights import lag_spatial
+
 from .moran import Moran_Local
 from .significance import calculate_significance
-from libpysal.weights import lag_spatial
-from libpysal.graph import Graph
 
 try:
     from tqdm.auto import tqdm
 except ImportError:
 
-    def tqdm(x, **kwargs):
+    def tqdm(x, **kwargs):  # noqa: ARG001
         return x
 
 
@@ -35,7 +36,7 @@ def _calc_quad(x, y):
     return off_sign + neg_y * 2 + 1
 
 
-class MoranLocalPartial(object):
+class MoranLocalPartial:
     def __init__(
         self,
         permutations=999,
@@ -44,7 +45,8 @@ class MoranLocalPartial(object):
         alternative="two-sided",
     ):
         """
-        Compute the Multivariable Local Moran statistics under partial dependence :cite:`wolf2024confounded`
+        Compute the Multivariable Local Moran statistics under
+        partial dependence :cite:`wolf2024confounded`
 
         Parameters
         ---------
@@ -59,7 +61,8 @@ class MoranLocalPartial(object):
         partial_labels : bool, default=True
             whether to calculate the classification based on the part-regressive
             quadrant classification or the univariate quadrant classification,
-            like a classical Moran's I. When mvquads is True, the variables are labelled as:
+            like a classical Moran's I. When mvquads is True,
+            the variables are labelled as:
             - label 1: observations with large y - rho * x that also have large Wy values.
             - label 2: observations with small y - rho * x values that also have large Wy values.
             - label 3: observations with small y - rho * x values that also have small Wy values.
@@ -84,7 +87,8 @@ class MoranLocalPartial(object):
         association_ : the N,P matrix of multivariable LISA statistics.
             the first column, lmos[:,1] is the LISAs corresponding
             to the relationship between Wy and y conditioning on X.
-        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional
+        reference_distribution_ :
+            the (N, permutations, P+1) realizations from the conditional
             randomization to generate reference distributions for
             each Local Moran statistic. rlmos_[:,:,1] pertain to
             the reference distribution of y and Wy.
@@ -103,7 +107,7 @@ class MoranLocalPartial(object):
         labels_ : the (N,) array of quadrant classifications for the
             part-regressive relationships. See the partial_labels argument
             for more information.
-        """
+        """  # noqa: E501
         self.permutations = permutations
         self.unit_scale = unit_scale
         self.partial_labels = partial_labels
@@ -115,14 +119,15 @@ class MoranLocalPartial(object):
 
         Parameters
         ----------
-        X   : (N,p) array
+        X : (N,p) array
             array of data that is used as "confounding factors"
             to account for their covariance with Y.
-        y   : (N,1) array
+        y : (N,1) array
             array of data that is the targeted "outcome" covariate
             to compute the multivariable Moran's I
-        W   : (N,N) weights object
-            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.
+        W : (N,N) weights object
+            spatial weights instance as W or Graph aligned with y.
+            Immediately row-standardized.
 
         Returns
         -------
@@ -173,7 +178,7 @@ class MoranLocalPartial(object):
         self._partials_ = np.asarray(
             [
                 np.vstack((left, right)).T
-                for left, right in zip(self._left_component_.T, self.R.T)
+                for left, right in zip(self._left_component_.T, self.R.T, strict=True)
             ]
         )
 
@@ -332,19 +337,19 @@ class MoranLocalConditional(Moran_Local):
 
         Parameters
         ---------
-        permutations    : int (default: 999)
-                          the number of permutations to run for the inference,
-                          driven by conditional randomization.
-        unit_scale      : bool (default: True)
-                          whether or not to convert the input data to a unit normal scale.
-        transformer     : callable (default: scikit regression)
-                          should transform X into a predicted y. If not provided, will use
-                          the standard scikit OLS regression of y on X.
-        alternative     : str (default: 'two-sided')
-                          the alternative hypothesis for the inference. One of
-                          'two-sided', 'greater', 'lesser', 'directed', or 'folded'.
-                          See the esda.significance.calculate_significance() documentation
-                          for more information.
+        permutations : int (default: 999)
+            the number of permutations to run for the inference,
+            driven by conditional randomization.
+        unit_scale : bool (default: True)
+            whether or not to convert the input data to a unit normal scale.
+        transformer : callable (default: scikit regression)
+            should transform X into a predicted y. If not provided, will use
+            the standard scikit OLS regression of y on X.
+        alternative : str (default: 'two-sided')
+            the alternative hypothesis for the inference. One of
+            'two-sided', 'greater', 'lesser', 'directed', or 'folded'.
+            See the esda.significance.calculate_significance() documentation
+            for more information.
 
         Attributes
         ----------
@@ -353,7 +358,8 @@ class MoranLocalConditional(Moran_Local):
         association_ : the N,P matrix of multivariable LISA statistics.
             the first column, lmos[:,1] is the LISAs corresponding
             to the relationship between Wy and y conditioning on X.
-        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional
+        reference_distribution_ :
+            the (N, permutations, P+1) realizations from the conditional
             randomization to generate reference distributions for
             each Local Moran statistic. rlmos_[:,:,1] pertain to
             the reference distribution of y and Wy.
@@ -389,7 +395,8 @@ class MoranLocalConditional(Moran_Local):
             array of data that is used as "confounding factors"
             to account for their covariance with Y.
         W : (N,N) weights object
-            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.
+            spatial weights instance as W or Graph aligned with y.
+            Immediately row-standardized.
 
         Returns
         -------
