@@ -415,7 +415,7 @@ class G_Local:  # noqa: N801
         seed=None,
         island_weight=0,
     ):
-        y = np.asarray(y).flatten().astype(float, copy=False)
+        y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
         w, star = _infer_star_and_structure_w(w, star, transform)
@@ -677,10 +677,24 @@ def _infer_star_and_structure_w(weights, star, transform):
 
 
 @_njit(fastmath=True)
+def _rowwise_weighted_sum(zrand, other_weights):
+    n_permutations = zrand.shape[0]
+    n_weights = len(other_weights)
+    sums = np.empty(n_permutations, dtype=np.float64)
+    for p in range(n_permutations):
+        total = 0.0
+        for j in range(n_weights):
+            total += zrand[p, j] * other_weights[j]
+        sums[p] = total
+    return sums
+
+
+@_njit(fastmath=True)
 def _g_local_crand(i, z, permuted_ids, weights_i, scaling):
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
-    return (zrand @ other_weights) / (scaling - zi)
+    weighted_sum = _rowwise_weighted_sum(zrand, other_weights)
+    return weighted_sum / (scaling - zi)
 
 
 @_njit(fastmath=True)
@@ -688,7 +702,8 @@ def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
     self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
-    return (zrand @ other_weights + self_weight * zi) / scaling
+    weighted_sum = _rowwise_weighted_sum(zrand, other_weights)
+    return (weighted_sum + self_weight * zi) / scaling
 
 
 if __name__ == "__main__":
