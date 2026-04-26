@@ -313,6 +313,13 @@ class Moran:
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _univariate_handler(
             df,
             cols,
@@ -609,6 +616,13 @@ class Moran_BV:
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _bivariate_handler(
             df,
             x,
@@ -1080,6 +1094,7 @@ class Moran_Rate(Moran):
         the relevant columns attached.
 
         """
+
         if not inplace:
             new = df.copy()
             cls.by_col(
@@ -1094,6 +1109,13 @@ class Moran_Rate(Moran):
                 **stat_kws,
             )
             return new
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         if isinstance(events, str):
             events = [events]
         if isinstance(populations, str):
@@ -1466,6 +1488,13 @@ class Moran_Local:
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _univariate_handler(
             df,
             cols,
@@ -1905,6 +1934,13 @@ class Moran_Local_BV:
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _bivariate_handler(
             df,
             x,
@@ -2304,6 +2340,13 @@ class Moran_Local_Rate(Moran_Local):
                 **stat_kws,
             )
             return new
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         if isinstance(events, str):
             events = [events]
         if isinstance(populations, str):
