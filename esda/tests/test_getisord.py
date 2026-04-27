@@ -29,20 +29,6 @@ class TestGetisG:
         np.testing.assert_allclose(g.G, 0.55709779, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(g.p_norm, 0.172936, rtol=RTOL, atol=ATOL)
 
-    @parametrize_w
-    def test_by_col(self, w):
-        import pandas as pd
-
-        df = pd.DataFrame(self.y, columns=["y"])
-        np.random.seed(12345)
-        r1 = getisord.G.by_col(df, ["y"], w=w)
-        this_getisord = np.unique(r1.y_g.values)
-        this_pval = np.unique(r1.y_p_sim.values)
-        np.random.seed(12345)
-        stat = getisord.G(self.y, w)
-        np.testing.assert_allclose(this_getisord, stat._statistic)
-        np.testing.assert_allclose(this_pval, stat.p_sim)
-
 
 class TestGLocal:
     def setup_method(self):
@@ -81,13 +67,3 @@ class TestGLocal:
         lg = getisord.G_Local(self.y, w, transform="R", star=True, seed=10)
         np.testing.assert_allclose(lg.Zs[0], -0.62488094, rtol=RTOL, atol=ATOL)
         np.testing.assert_allclose(lg.p_sim[0], 0.102, rtol=RTOL, atol=ATOL)
-
-    @parametrize_w
-    def test_by_col(self, w):
-        import pandas as pd
-
-        df = pd.DataFrame(self.y, columns=["y"])
-        r1 = getisord.G_Local.by_col(df, ["y"], w=w, seed=12345)
-        stat = getisord.G_Local(self.y, w, seed=12345)
-        np.testing.assert_allclose(r1.y_g_local.values, stat.Gs)
-        np.testing.assert_allclose(r1.y_p_sim, stat.p_sim)
