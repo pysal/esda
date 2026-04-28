@@ -575,38 +575,3 @@ def _g_local_star_crand(i, z, permuted_ids, weights_i, scaling):
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zrand @ other_weights + self_weight * zi) / scaling
-
-
-if __name__ == "__main__":
-    import geopandas
-    import numpy
-    from libpysal import examples, weights
-
-    import esda
-
-    df = geopandas.read_file(examples.get_path("NAT.shp"))
-
-    w = weights.Rook.from_dataframe(df)
-
-    for transform in ("r", "b"):
-        for star in (True, False):
-            test = esda.getisord.G_Local(df.GI89, w, transform=transform, star=star)
-            out = test._calc2()
-            (
-                statistic,
-                expected_value,
-                expected_variance,
-                z_scores,
-                empirical_mean,
-                empirical_variance,
-            ) = out
-
-            numpy.testing.assert_allclose(statistic, test.Gs)
-            numpy.testing.assert_allclose(expected_value, test.EGs)
-            numpy.testing.assert_allclose(expected_variance, test.VGs)
-            numpy.testing.assert_allclose(z_scores, test.Zs)
-            numpy.testing.assert_allclose(empirical_mean, test.yl_mean)
-            numpy.testing.assert_allclose(empirical_variance, test.s2)
-
-    # Also check that the None configuration works
-    test = esda.getisord.G_Local(df.GI89, w, star=None)
