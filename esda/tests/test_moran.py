@@ -60,7 +60,7 @@ sac1 = gpd.read_file(sac1.get_path("sacramentot2.shp"))
 parametrize_sac = pytest.mark.parametrize(
     "w",
     [
-        libpysal.weights.Queen.from_dataframe(sac1),
+        libpysal.weights.Queen.from_dataframe(sac1, use_index=False),
         libpysal.graph.Graph.build_contiguity(sac1, rook=False),
     ],
     ids=["W", "Graph"],

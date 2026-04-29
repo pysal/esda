@@ -119,3 +119,10 @@ exclude_lines = [
 ]
 ignore_errors = true
 omit = ["esda/tests/*", "docs/conf.py"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:Geometry is in a geographic CRS",
+    "ignore:divide by zero encountered",
+    "ignore:invalid value encountered",
+]
