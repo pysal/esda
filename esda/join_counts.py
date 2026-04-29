@@ -5,7 +5,6 @@ Spatial autocorrelation for binary attributes
 
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -13,14 +12,13 @@ from libpysal.weights import W
 from scipy.stats import chi2, chi2_contingency
 
 from .crand import njit as _njit
-from .tabular import _univariate_handler
 
 __all__ = ["Join_Counts"]
 
 PERMUTATIONS = 999
 
 
-class Join_Counts:  # noqa: N801
+class Join_Counts:
     """Binary Join Counts
 
 
@@ -264,67 +262,6 @@ class Join_Counts:  # noqa: N801
     @property
     def _statistic(self):
         return self.bw
-
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        """
-        Function to compute a Join_Count statistic on a dataframe
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            a pandas dataframe with a geometry column
-        cols : string or list of string
-            name or list of names of columns to use to compute the statistic
-        w : W | Graph
-            spatial weights instance as W or Graph aligned with the dataframe. If not
-            provided, this is searched for in the dataframe's metadata
-        inplace : bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, the derived columns will be named
-            'column_join_count'
-        pvalue : string
-            a string denoting which pvalue should be returned. Refer to the
-            the Join_Count statistic's documentation for available p-values
-        outvals : list of strings
-            list of arbitrary attributes to return as columns from the
-            Join_Count statistic
-        **stat_k : dict
-            options to pass to the underlying statistic. For this, see the
-            documentation for the Join_Count statistic.
-
-        Returns
-        --------
-        If inplace, None, and operation is conducted on
-        dataframe in memory. Otherwise, returns a copy of the
-        dataframe with the relevant columns attached.
-
-        """
-
-        msg = (
-            "The `.by_col()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        if outvals is None:
-            outvals = []
-            outvals.extend(["bb", "p_sim_bw", "p_sim_bb"])
-            pvalue = ""
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname="bw",
-            **stat_kws,
-        )
 
 
 # --------------------------------------------------------------

@@ -10,7 +10,7 @@ from esda.crand import njit as _njit
 PERMUTATIONS = 999
 
 
-class Join_Counts_Local_MV(BaseEstimator):  # noqa: N801
+class Join_Counts_Local_MV(BaseEstimator):
     """Multivariate Local Join Count Statistic"""
 
     def __init__(
@@ -190,7 +190,7 @@ class Join_Counts_Local_MV(BaseEstimator):  # noqa: N801
 
 
 @_njit(fastmath=True)
-def _ljc_mv(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def _ljc_mv(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001 - Unused function argument: `scaling`
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return zi * (zrand @ other_weights)

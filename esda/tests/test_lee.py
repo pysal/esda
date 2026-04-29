@@ -1,7 +1,7 @@
 import geopandas
 import libpysal
 import numpy
-from libpysal.common import ATOL, RTOL, pandas
+from libpysal.common import ATOL, RTOL
 
 from .. import lee
 

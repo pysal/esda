@@ -156,7 +156,7 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
         self.pct_thr = pct_thr
         self.keep_solus = keep_solus
 
-    def fit(self, X, y=None, sample_weight=None, xy=["X", "Y"]):  # noqa: ARG002
+    def fit(self, X, y=None, sample_weight=None, xy=["X", "Y"]):  # noqa: ARG002 - unused method argument
         """
         Perform ADBSCAN clustering from fetaures
         ...
@@ -428,7 +428,7 @@ def ensemble(solus_relabelled):
     """
 
     counts = np.array(
-        list(  # noqa: C417
+        list(  # noqa: C417 - Unnecessary `map()` usage (rewrite using a list comprehension)
             map(lambda a: Counter(a).most_common(1)[0], solus_relabelled.values)
         )
     )
@@ -517,7 +517,7 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
         from geopandas import GeoSeries
     except ModuleNotFoundError:
 
-        def GeoSeries(data, index=None, crs=None):  # noqa: ARG001, N802
+        def GeoSeries(data, index=None, crs=None):  # noqa: ARG001 - Unused function arguments: `index`, `crs`
             return list(data)
 
     lbl_type = type(labels.iloc[0])

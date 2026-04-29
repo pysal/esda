@@ -23,10 +23,19 @@ dependencies:
   - geodatasets
   # optional
   - rtree
-  # doc build
-  - nbsphinx
-  - numpydoc
-  - pandoc
+  # for docs build action (this env only)
+  - ipykernel
+  - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
+  - sphinx-autosummary-accessors
+  - sphinx-copybutton
+  - sphinx-immaterial
+  - pandoc
+  - seaborn
+  - watermark
+  - contextily
+  - pip
+  - pip:
+    - pulp
+

@@ -1,5 +1,3 @@
-import unittest
-
 import geopandas as gpd
 import libpysal
 import numpy as np

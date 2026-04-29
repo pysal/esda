@@ -7,7 +7,7 @@ from .crand import _prepare_bivariate
 from .crand import njit as _njit
 
 
-class Spatial_Pearson(BaseEstimator):  # noqa: N801
+class Spatial_Pearson(BaseEstimator):
     """Global Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):
@@ -97,7 +97,7 @@ class Spatial_Pearson(BaseEstimator):  # noqa: N801
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
 
 
-class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
+class Spatial_Pearson_Local(BaseEstimator):
     """Local Spatial Pearson Statistic"""
 
     def __init__(self, connectivity=None, permutations=999):

@@ -10,7 +10,7 @@ from sklearn.utils import check_array
 SKL_GE_16 = Version(sklearn_version) >= Version("1.6")
 
 
-class Geary_Local_MV(BaseEstimator):  # noqa: N801
+class Geary_Local_MV(BaseEstimator):
     """Local Geary - Multivariate"""
 
     def __init__(self, connectivity=None, permutations=999, drop_islands=True):

@@ -16,7 +16,6 @@ from scipy import stats
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
 from .crand import njit as _njit
-from .tabular import _univariate_handler
 
 PERMUTATIONS = 999
 
@@ -189,63 +188,8 @@ class G:
         """Standardized accessor for esda statistics"""
         return self.G
 
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        """
-        Function to compute a G statistic on a dataframe
 
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            a pandas dataframe with a geometry column
-        cols : string or list of string
-            name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
-        inplace : bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, the derived columns will be named 'column_g'
-        pvalue : string
-            a string denoting which pvalue should be returned. Refer to the
-            the G statistic's documentation for available p-values
-        outvals : list of strings
-            list of arbitrary attributes to return as columns from the G statistic
-        **stat_kws : dict
-            options to pass to the underlying statistic. For this, see the
-            documentation for the G statistic.
-
-        Returns
-        --------
-        If inplace, None, and operation is conducted on dataframe
-        in memory. Otherwise, returns a copy of the dataframe with
-        the relevant columns attached.
-
-        """
-
-        msg = (
-            "The `.by_cols()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname=cls.__name__.lower(),
-            **stat_kws,
-        )
-
-
-class G_Local:  # noqa: N801
+class G_Local:
     """
     Generalized Local G Autocorrelation
 
@@ -485,7 +429,7 @@ class G_Local:  # noqa: N801
         larger[below] = self.permutations - larger[below]
         self.p_sim = (larger + 1) / (self.permutations + 1)
 
-    def __getCardinalities(self):  # noqa: N802
+    def __getCardinalities(self):
         if isinstance(self.w, W):
             ido = self.w.id_order
             self.wc = np.array([self.w.cardinalities[ido[i]] for i in range(self.n)])
@@ -535,63 +479,6 @@ class G_Local:  # noqa: N801
     def _statistic(self):
         """Standardized accessor for esda statistics"""
         return self.Gs
-
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        """
-        Function to compute a G_Local statistic on a dataframe
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            a pandas dataframe with a geometry column
-        cols : string or list of string
-            name or list of names of columns to use to compute the statistic
-        w : W | Graph
-            spatial weights instance as W or Graph aligned with the dataframe. If not
-            provided, this is searched for in the dataframe's metadata
-        inplace : bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, the derived columns will be named 'column_g_local'
-        pvalue : string
-            a string denoting which pvalue should be returned. Refer to the
-            the G_Local statistic's documentation for available p-values
-        outvals : list of strings
-            list of arbitrary attributes to return as columns from the
-            G_Local statistic
-        **stat_kws : dict
-            options to pass to the underlying statistic. For this, see the
-            documentation for the G_Local statistic.
-
-        Returns
-        -------
-        pandas.DataFrame
-                        If inplace, None, and operation is conducted on dataframe
-                        in memory. Otherwise, returns a copy of the dataframe with
-                        the relevant columns attached.
-
-        """
-
-        msg = (
-            "The `.by_col()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname=cls.__name__.lower(),
-            **stat_kws,
-        )
 
 
 def _infer_star_and_structure_w(weights, star, transform):

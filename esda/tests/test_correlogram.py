@@ -1,12 +1,12 @@
+import geopandas as gpd
+import numpy as np
+import pytest
 from libpysal import examples
 from libpysal.weights.util import get_points_array
-from esda import correlogram
-import numpy as np
 from numpy.testing import assert_array_almost_equal
 from scipy import spatial
-import geopandas as gpd
-import pytest
 
+from esda import correlogram
 
 sac = gpd.read_file(examples.load_example("Sacramento1").get_path("sacramentot2.shp"))
 sac = sac.to_crs(sac.estimate_utm_crs())  # now in meters)
@@ -15,7 +15,7 @@ dsupport = [i + 500 for i in range(0, 2000, 500)]
 ksupport = list(range(1, 6))
 
 try:
-    import statsmodels  # noqa F401
+    import statsmodels
 except ImportError:
     statsmodels = None
 

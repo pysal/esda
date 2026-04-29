@@ -1,3 +1,5 @@
+import re
+
 import libpysal
 import numpy as np
 import pytest
@@ -51,7 +53,14 @@ class TestSmaup:
         df = pdio.read_files(libpysal.examples.get_path("sids2.dbf"))
         w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
         k = int(w.n / 2)
-        mi = Moran.by_col(df, ["SIDR74"], w=w, two_tailed=False)
+        with pytest.warns(
+            FutureWarning,
+            match=re.escape(
+                "The `.by_col()` methods are deprecated and will be "
+                "removed in a future version of `esda`."
+            ),
+        ):
+            mi = Moran.by_col(df, ["SIDR74"], w=w, two_tailed=False)
         rho = np.unique(mi.SIDR74_moran.values).item()
         sm = Smaup(w.n, k, rho)
         np.testing.assert_allclose(sm.smaup, 0.15176796553181948, atol=ATOL, rtol=RTOL)

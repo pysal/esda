@@ -1,21 +1,23 @@
 # Spatial Correlograms
+import warnings
 from collections.abc import Callable
 
 import geopandas as gpd
-import pandas as pd
 import numpy as np
+import pandas as pd
 from joblib import Parallel, delayed
 from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
 from libpysal.weights.util import get_points_array
+from scipy import linalg, spatial
 from sklearn.metrics import pairwise_distances
-from scipy import spatial, linalg
-import warnings
+
 from .moran import Moran
 
 
 def _get_stat(inputs: tuple) -> pd.Series:
-    """helper function for computing parallel statistics at multiple Graph specifications
+    """helper function for computing parallel statistics at multiple
+    Graph specifications
 
     Parameters
     ----------
@@ -25,7 +27,8 @@ def _get_stat(inputs: tuple) -> pd.Series:
     Returns
     -------
     pandas.Series
-        a pandas series with the computed autocorrelation statistic and its simulated p-value
+        a pandas series with the computed autocorrelation
+        statistic and its simulated p-value
     """
     (
         y,  # y variable
@@ -87,9 +90,9 @@ def correlogram(
     weights_kwargs : dict
         additional keyword arguments passed to the ``libpysal.weights.W`` class
     stat_kwargs : dict
-        additional keyword arguments passed to the ``esda`` autocorrelation statistic class.
-        For example for faster results with no statistical inference, set the number
-        of permutations to zero with ``stat_kwargs={permutations: 0}``
+        additional keyword arguments passed to the ``esda`` autocorrelation statistic
+        class. For example for faster results with no statistical inference, set the
+        number of permutations to zero with ``stat_kwargs={permutations: 0}``
     select_numeric : bool
         if True, only return numeric attributes from the original class. This is useful
         e.g. to prevent lists inside a "cell" of a dataframe
@@ -235,9 +238,11 @@ def _lowess_correlogram(
         1D array of distance values to evaluate the correlogram at
     metric : str
         distance metric to use. Any metric from sklearn.metrics.pairwise_distances
-        is allowed. If 'precomputed', then coordinates is assumed to be a distance matrix
+        is allowed. If 'precomputed', then coordinates is assumed
+        to be a distance matrix
     lowess_args : keyword arguments
-        additional keyword arguments passed to statsmodels.nonparametric.smoothers_lowess.lowess
+        additional keyword arguments passed to
+        statsmodels.nonparametric.smoothers_lowess.lowess
 
     Returns
     -------

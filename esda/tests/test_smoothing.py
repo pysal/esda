@@ -2,7 +2,7 @@ import libpysal
 import numpy as np
 import pytest
 from libpysal.common import ATOL, RTOL, pandas
-from libpysal.weights.distance import KNN, Kernel
+from libpysal.weights.distance import Kernel
 
 from .. import smoothing as sm
 
@@ -117,11 +117,6 @@ class TestSRate:
         out_er = sm.Excess_Risk(self.df[self.ename], self.df[self.bname]).r
         np.testing.assert_allclose(out_er[:5].flatten(), self.er, rtol=RTOL, atol=ATOL)
         assert isinstance(out_er, np.ndarray)
-        out_er = sm.Excess_Risk.by_col(self.df, self.ename, self.bname)
-        outcol = f"{self.ename}-{self.bname}_excess_risk"
-        outcol = out_er[outcol]
-        np.testing.assert_allclose(outcol[:5], self.er, rtol=RTOL, atol=ATOL)
-        assert isinstance(outcol.values, np.ndarray)
 
     def test_empirical_bayes(self):
         out_eb = sm.Empirical_Bayes(self.e, self.b).r
@@ -132,12 +127,6 @@ class TestSRate:
         out_eb = sm.Empirical_Bayes(self.df[self.ename], self.df[self.bname]).r
         np.testing.assert_allclose(out_eb[:5].flatten(), self.eb, rtol=RTOL, atol=ATOL)
         assert isinstance(out_eb, np.ndarray)
-
-        out_eb = sm.Empirical_Bayes.by_col(self.df, self.ename, self.bname)
-        outcol = f"{self.ename}-{self.bname}_empirical_bayes"
-        outcol = out_eb[outcol]
-        np.testing.assert_allclose(outcol[:5], self.eb, rtol=RTOL, atol=ATOL)
-        assert isinstance(outcol.values, np.ndarray)
 
     def test_spatial_empirical_bayes(self):
         s_eb = sm.Spatial_Empirical_Bayes(self.stl_e, self.stl_b, self.stl_w)
@@ -151,14 +140,6 @@ class TestSRate:
         assert isinstance(s_eb, np.ndarray)
         np.testing.assert_allclose(self.s_ebr10, s_eb[:10])
 
-        s_eb = sm.Spatial_Empirical_Bayes.by_col(
-            self.stl_df, self.stl_ename, self.stl_bname, self.stl_w
-        )
-        outcol = f"{self.stl_ename}-{self.stl_bname}_spatial_empirical_bayes"
-        r = s_eb[outcol].values
-        assert isinstance(r, np.ndarray)
-        np.testing.assert_allclose(self.s_ebr10, r[:10].reshape(-1, 1))
-
     def test_spatial_rate(self):
         out_sr = sm.Spatial_Rate(self.e, self.b, self.w).r
         np.testing.assert_allclose(out_sr[:5].flatten(), self.sr, rtol=RTOL, atol=ATOL)
@@ -168,12 +149,6 @@ class TestSRate:
         out_sr = sm.Spatial_Rate(self.df[self.ename], self.df[self.bname], self.w).r
         np.testing.assert_allclose(out_sr[:5].flatten(), self.sr, rtol=RTOL, atol=ATOL)
         assert isinstance(out_sr, np.ndarray)
-
-        out_sr = sm.Spatial_Rate.by_col(self.df, self.ename, self.bname, w=self.w)
-        outcol = f"{self.ename}-{self.bname}_spatial_rate"
-        r = out_sr[outcol].values
-        assert isinstance(r, np.ndarray)
-        np.testing.assert_allclose(r[:5], self.sr, rtol=RTOL, atol=ATOL)
 
     def test_spatial_median_rate(self):
         out_smr = sm.Spatial_Median_Rate(self.e, self.b, self.w).r
@@ -214,141 +189,6 @@ class TestSRate:
         np.testing.assert_allclose(
             out_smr2[:5].flatten(), self.smr2, atol=ATOL, rtol=RTOL
         )
-
-        out_smr = sm.Spatial_Median_Rate.by_col(self.df, self.ename, self.bname, self.w)
-        out_smr_w = sm.Spatial_Median_Rate.by_col(
-            self.df, self.ename, self.bname, self.w, aw=self.df[self.bname]
-        )
-        out_smr2 = sm.Spatial_Median_Rate.by_col(
-            self.df, self.ename, self.bname, self.w, iteration=2
-        )
-        outcol = f"{self.ename}-{self.bname}_spatial_median_rate"
-
-        np.testing.assert_allclose(
-            out_smr[outcol].values[:5], self.smr, rtol=RTOL, atol=ATOL
-        )
-        np.testing.assert_allclose(
-            out_smr_w[outcol].values[:5], self.smr_w, rtol=RTOL, atol=ATOL
-        )
-        np.testing.assert_allclose(
-            out_smr2[outcol].values[:5], self.smr2, rtol=RTOL, atol=ATOL
-        )
-
-    @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
-    def test_Spatial_Smoother_multicol(self):
-        # test that specifying multiple columns works correctly. Since the
-        # function is shared over all spatial smoothers, we can only test one.
-        enames = [self.ename, "SID79"]
-        bnames = [self.bname, "BIR79"]
-        out_df = sm.Spatial_Median_Rate.by_col(self.df, enames, bnames, self.w)
-        outcols = [
-            "{}-{}_spatial_median_rate".format(e, b) for e, b in zip(enames, bnames)
-        ]
-        smr79 = np.array([0.00122129, 0.00176924, 0.00176924, 0.00240964, 0.00272035])
-        answers = [self.smr, smr79]
-        for col, answer in zip(outcols, answers):
-            np.testing.assert_allclose(
-                out_df[col].values[:5], answer, rtol=1e-4, atol=1e-6
-            )
-
-    @pytest.mark.skipif(PANDAS_EXTINCT, reason="missing pandas")
-    def test_Smoother_multicol(self):
-        # test that non-spatial smoothers work with multicolumn queries
-        enames = [self.ename, "SID79"]
-        bnames = [self.bname, "BIR79"]
-        out_df = sm.Excess_Risk.by_col(self.df, enames, bnames)
-        outcols = ["{}-{}_excess_risk".format(e, b) for e, b in zip(enames, bnames)]
-        er79 = np.array([0.000000, 2.796607, 0.8383863, 1.217479, 0.943811])
-        answers = [self.er, er79]
-        for col, answer in zip(outcols, answers):
-            np.testing.assert_allclose(
-                out_df[col].values[:5], answer, rtol=1e-4, atol=1e-7
-            )
-
-
-class TestHB:
-    def setup_method(self):
-        sids = libpysal.io.open(libpysal.examples.get_path("sids2.shp"), "r")
-        self.sids = sids
-        self.d = np.array([i.centroid for i in sids])
-        self.w = KNN.from_array(self.d, k=5)
-        if not self.w.id_order_set:
-            self.w.id_order = self.w.id_order
-        sids_db = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"), "r")
-        self.b, self.e = np.array(sids_db[:, 8]), np.array(sids_db[:, 9])
-        self.sids_hb_rr5 = np.array([0.00075586, 0.0, 0.0008285, 0.0018315, 0.00498891])
-        self.sids_hb_r2r5 = np.array(
-            [0.0008285, 0.00084331, 0.00086896, 0.0018315, 0.00498891]
-        )
-        self.sids_hb_r3r5 = np.array(
-            [0.00091659, 0.0, 0.00156838, 0.0018315, 0.00498891]
-        )
-        if not PANDAS_EXTINCT:
-            self.df = sids_db.to_df()
-            self.ename = "SID74"
-            self.bname = "BIR74"
-            self.enames = [self.ename, "SID79"]
-            self.bnames = [self.bname, "BIR79"]
-            self.sids79r = np.array([0.000563, 0.001659, 0.001879, 0.002410, 0.002720])
-
-    @pytest.mark.skip("Deprecated")
-    def test_triples(self):
-        ht = sm.Headbanging_Triples(self.d, self.w)
-        assert len(ht.triples) == len(self.d)
-        ht2 = sm.Headbanging_Triples(self.d, self.w, edgecor=True)
-        assert hasattr(ht2, "extra")
-        assert len(ht2.triples) == len(self.d)
-        htr = sm.Headbanging_Median_Rate(self.e, self.b, ht2, iteration=5)
-        assert len(htr.r) == len(self.e)
-        for i in htr.r:
-            assert i is not None
-
-    @pytest.mark.skip("Deprecated")
-    def test_median_rate(self):
-        s_ht = sm.Headbanging_Triples(self.d, self.w, k=5)
-        sids_hb_r = sm.Headbanging_Median_Rate(self.e, self.b, s_ht)
-        np.testing.assert_array_almost_equal(self.sids_hb_rr5, sids_hb_r.r[:5])
-        sids_hb_r2 = sm.Headbanging_Median_Rate(self.e, self.b, s_ht, iteration=5)
-        np.testing.assert_array_almost_equal(self.sids_hb_r2r5, sids_hb_r2.r[:5])
-        sids_hb_r3 = sm.Headbanging_Median_Rate(self.e, self.b, s_ht, aw=self.b)
-        np.testing.assert_array_almost_equal(self.sids_hb_r3r5, sids_hb_r3.r[:5])
-
-    @pytest.mark.skip("Deprecated")
-    def test_median_rate_tabular(self):
-        # test that dataframe columns are treated correctly
-        s_ht = sm.Headbanging_Triples(self.d, self.w, k=5)
-        sids_hb_r = sm.Headbanging_Median_Rate(
-            self.df[self.ename], self.df[self.bname], s_ht
-        )
-        self.assertIsInstance(sids_hb_r.r, np.ndarray)
-        np.testing.assert_array_almost_equal(self.sids_hb_rr5, sids_hb_r.r[:5])
-
-        sids_hb_r2 = sm.Headbanging_Median_Rate(
-            self.df[self.ename], self.df[self.bname], s_ht, iteration=5
-        )
-        assert isinstance(sids_hb_r2.r, np.ndarray)
-        np.testing.assert_array_almost_equal(self.sids_hb_r2r5, sids_hb_r2.r[:5])
-
-        sids_hb_r3 = sm.Headbanging_Median_Rate(
-            self.df[self.ename], self.df[self.bname], s_ht, aw=self.df[self.bname]
-        )
-        assert isinstance(sids_hb_r3.r, np.ndarray)
-        np.testing.assert_array_almost_equal(self.sids_hb_r3r5, sids_hb_r3.r[:5])
-
-        # test that the by col on multiple names works correctly
-        sids_hr_df = sm.Headbanging_Median_Rate.by_col(
-            self.df, self.enames, self.bnames, w=self.w
-        )
-        outcols = [
-            f"{e}-{b}_headbanging_median_rate"
-            for e, b in zip(self.enames, self.bnames, strict=True)
-        ]
-        for col, answer in zip(outcols, [self.sids_hb_rr5, self.sids79r], strict=True):
-            this_col = sids_hr_df[col].values
-            assert isinstance(this_col, np.ndarray)
-            np.testing.assert_allclose(
-                sids_hr_df[col][:5], answer, rtol=RTOL, atol=ATOL * 10
-            )
 
 
 class TestKernelAgeAdjSM:
@@ -415,13 +255,6 @@ class TestKernelAgeAdjSM:
         assert isinstance(kr.r, np.ndarray)
         np.testing.assert_allclose(kr.r, self.ageadj_exp)
 
-        kr = sm.Age_Adjusted_Smoother.by_col(dfb, "e", "b", w=self.kw, s="s")
-        answer = np.array(
-            [0.10519625, 0.08494318, 0.06440072, 0.06898604, 0.06952076, 0.05020968]
-        )
-        colname = "e-b_age_adjusted_smoother"
-        np.testing.assert_allclose(kr[colname].values, answer, rtol=RTOL, atol=ATOL)
-
     def test_disk_smoother(self):
         self.kw.transform = "b"
         disk = sm.Disk_Smoother(self.e, self.b, self.kw)
@@ -433,12 +266,6 @@ class TestKernelAgeAdjSM:
         dfa = self.dfa
         disk = sm.Disk_Smoother(dfa.e, dfa.b, self.kw).r
         np.testing.assert_allclose(disk.flatten(), self.disk_exp)
-
-        disk = sm.Disk_Smoother.by_col(dfa, "e", "b", self.kw)
-        col = "e-b_disk_smoother"
-        np.testing.assert_allclose(
-            disk[col].values, self.disk_exp, rtol=RTOL, atol=ATOL
-        )
 
     def test_spatial_filtering(self):
         points = np.array(self.points)
@@ -454,40 +281,6 @@ class TestKernelAgeAdjSM:
         sf = sm.Spatial_Filtering(bbox, point_array, dfa.e, dfa.b, 2, 2, r=30)
 
         np.testing.assert_allclose(sf.r, self.sf_exp, rtol=RTOL, atol=ATOL)
-
-        dfa["geometry"] = self.points
-        sf = sm.Spatial_Filtering.by_col(dfa, "e", "b", 3, 3, r=30)
-        r_answer = np.array(
-            [
-                0.07692308,
-                0.07213115,
-                0.07213115,
-                0.07692308,
-                0.07692308,
-                0.07692308,
-                0.07692308,
-                0.07692308,
-                0.07692308,
-            ]
-        )
-        x_answer = np.array([10.0, 10.0, 10.0, 20.0, 20.0, 20.0, 30.0, 30.0, 30.0])
-        y_answer = np.array(
-            [
-                10.000000,
-                16.666667,
-                23.333333,
-                10.000000,
-                16.666667,
-                23.333333,
-                10.000000,
-                16.666667,
-                23.333333,
-            ]
-        )
-        columns = [f"e-b_spatial_filtering_{name}" for name in ["X", "Y", "R"]]
-
-        for col, answer in zip(columns, [x_answer, y_answer, r_answer], strict=True):
-            np.testing.assert_allclose(sf[col].values, answer, rtol=RTOL, atol=ATOL)
 
 
 class TestUtils:

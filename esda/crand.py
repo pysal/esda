@@ -2,10 +2,13 @@
 Centralised conditional randomisation engine. Numba accelerated.
 """
 
+import importlib
 import os
 import warnings
-from .significance import _permutation_significance
+
 import numpy as np
+
+from .significance import _permutation_significance
 
 try:
     from numba import boolean, njit, prange
@@ -146,13 +149,15 @@ def crand(
             " To retain the current behavior, set alternative='directed'."
             " We strongly recommend moving to alternative='two-sided'.",
             DeprecationWarning,
+            stacklevel=2,
         )
         # TODO: replace this with 'two-sided' by next major release
         alternative = "directed"
     if alternative not in ("two-sided", "greater", "lesser", "directed", "folded"):
         raise ValueError(
             f"alternative='{alternative}' provided, but is not"
-            f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
+            " one of the supported options: 'two-sided', 'greater', "
+            "'lesser', 'directed', 'folded')"
         )
 
     # paralellise over permutations?
@@ -180,17 +185,14 @@ def crand(
     max_card = cardinalities.max()
     permuted_ids = vec_permutations(max_card, n, permutations, seed)
 
-    if n_jobs != 1:
-        try:
-            import joblib  # noqa: F401
-        except (ModuleNotFoundError, ImportError):
-            warnings.warn(
-                f"Parallel processing is requested (n_jobs={n_jobs}),"
-                f" but joblib cannot be imported. n_jobs will be set"
-                f" to 1.",
-                stacklevel=2,
-            )
-            n_jobs = 1
+    if n_jobs != 1 and not importlib.util.find_spec("joblib"):
+        warnings.warn(
+            f"Parallel processing is requested (n_jobs={n_jobs}),"
+            f" but joblib cannot be imported. n_jobs will be set"
+            f" to 1.",
+            stacklevel=2,
+        )
+        n_jobs = 1
 
     if n_jobs == 1:
         p_sims, rlocals = compute_chunk(
@@ -559,7 +561,7 @@ def parallel_crand(
             for pars in chunks
         )
 
-    p_sims, rlocals = zip(*worker_out)
+    p_sims, rlocals = zip(*worker_out, strict=True)
     p_sims = np.hstack(p_sims).squeeze()
     rlocals = np.row_stack(rlocals).squeeze()
     return p_sims, rlocals
@@ -602,6 +604,6 @@ def _prepare_bivariate(i, z, permuted_ids, weights_i):
 
 
 @njit(fastmath=True)
-def local(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def local(i, z, permuted_ids, weights_i, scaling):
     raise NotImplementedError
     # returns (k_permutations,) array of random statistics for observation i
