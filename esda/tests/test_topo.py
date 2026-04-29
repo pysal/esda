@@ -134,6 +134,7 @@ class TestTopo:
 @pytest.mark.skipif(not mpl_available, reason="matplotlib needed for this test")
 @image_comparison(["topo4x1"], extensions=["png"], tol=1.0)
 def test_plots():
+    pytest.importorskip("rtree")
 
     current_cmap = plt.get_cmap("twilight")
     current_cmap.set_bad(color="lightgrey")
