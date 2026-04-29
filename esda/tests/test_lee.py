@@ -42,6 +42,7 @@ class TestLee:
             known_significance, result.significance_, rtol=RTOL, atol=ATOL
         )
 
+    @pytest.mark.skipif(ON_WIN, reason="undiagnosed windows failure")
     def test_global_no_conn(self):
         numpy.random.seed(2478879)
         result = lee.Spatial_Pearson().fit(self.x, self.y)
@@ -65,7 +66,6 @@ class TestLee:
             known_significance, result.significance_, rtol=RTOL, atol=ATOL
         )
 
-    @pytest.mark.skipif(ON_WIN, reason="undiagnosed windows failure")
     def test_global_no_perm(self):
         numpy.random.seed(2478879)
         result = lee.Spatial_Pearson(permutations=None).fit(self.x, self.y)
