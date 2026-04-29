@@ -213,7 +213,7 @@ class LocalCrossPlot:
             handles, labels = sc.legend_elements(prop="sizes", num=4)
             for h in handles:
                 h.set_fillstyle("none")
-            labels = [(np.log(float(l[14:-2])) / 10).round(2) for l in labels]
+            labels = [(np.log(float(lab[14:-2])) / 10).round(2) for lab in labels]
             ax.legend(handles, labels, title="LOSH")
 
         return ax
