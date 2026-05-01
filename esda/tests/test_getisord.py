@@ -18,6 +18,22 @@ parametrize_w = pytest.mark.parametrize(
 )
 
 
+def test_g_local_legacy_crand_deprecated():
+    np.random.seed(12345)
+
+    points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
+    w = DistanceBand(points, threshold=15)
+    y = np.array([2, 3, 3.2, 5, 8, 7])
+
+    gl = getisord.G_Local(y, w, transform="B", permutations=99)
+
+    with pytest.warns(
+        DeprecationWarning,
+        match=r"G_Local\.__crand is deprecated",
+    ):
+        gl._G_Local__crand(keep_simulations=False)
+
+
 class TestGetisG:
     def setup_method(self):
         self.y = np.array([2, 3, 3.2, 5, 8, 7])
