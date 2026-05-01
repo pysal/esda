@@ -209,6 +209,15 @@ def prominence(
     Observations have "NA" prominence when they are neither a saddle point nor a peak.
 
     """
+
+    if gdf is not None:
+        try:
+            from matplotlib import pyplot as plt
+        except ImportError as err:
+            raise ImportError(
+                "matplotlib library must be installed to use the scatterplot feature"
+            ) from err
+
     X = check_array(X, ensure_2d=False).squeeze()
     X = to_elevation(X, middle=middle).squeeze()
     (n,) = X.shape
@@ -437,40 +446,3 @@ def _check_connectivity(connectivity_or_coordinates):
         from libpysal.weights import Voronoi
 
         return _check_connectivity(Voronoi(connectivity_or_coordinates))
-
-
-if __name__ == "__main__":
-    import geopandas
-    import matplotlib.pyplot as plt
-    import pandas
-    from libpysal import examples, weights
-    from matplotlib import cm
-
-    current_cmap = cm.get_cmap()
-    current_cmap.set_bad(color="lightgrey")
-
-    data = (
-        geopandas.read_file(examples.get_path("NAT.shp"))
-        .query('STATE_NAME == "Illinois"')
-        .reset_index()
-    )
-    coordinates = numpy.column_stack((data.centroid.x, data.centroid.y))
-    gini = data[["GI89"]].values.flatten()
-    contig_graph = weights.Rook.from_dataframe(data)
-    iso = isolation(gini, coordinates, return_all=True)
-
-    f, ax = plt.subplots(1, 3)
-    for i in range(1, 3):
-        data.plot(color="lightgrey", ax=ax[i])
-    data.plot(iso.gap, ax=ax[1], cmap=current_cmap)
-    data.plot(iso.distance, ax=ax[2], cmap=current_cmap)
-    data.plot("GI89", ax=ax[0])
-    ax[0].set_title("Variable")
-    ax[1].set_title("Releif")
-    ax[2].set_title("Isolation")
-    plt.show()
-
-    prom = prominence(gini, contig_graph)
-    ax = data.plot(prom)
-    data.plot(color="lightgrey", ax=ax, zorder=-1)
-    plt.show()

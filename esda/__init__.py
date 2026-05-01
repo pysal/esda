@@ -27,6 +27,7 @@ from .map_comparison import (
     homogeneity,
     overlay_entropy,
 )
+from .mixture_smoothing import NP_Mixture_Smoother
 from .moran import (
     Moran,
     Moran_BV,

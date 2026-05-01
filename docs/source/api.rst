@@ -90,6 +90,29 @@ LOSH Statistics
 
     LOSH
 
+
+Map Comparison
+--------------
+
+.. autosummary::
+   :toctree: generated/
+
+    areal_entropy
+    completeness
+    external_entropy
+    homogeneity
+    overlay_entropy
+
+    
+Mixture Smoothing
+-----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    NP_Mixture_Smoother
+    
+
 Modifiable Areal Unit Tests
 ---------------------------
 
@@ -166,6 +189,16 @@ Spatial Pearson Statistics
 
     Spatial_Pearson
     Spatial_Pearson_Local
+
+
+Topology
+--------
+
+.. autosummary::
+   :toctree: generated/
+
+    isolation
+    prominence
 
 
 Utility Functions

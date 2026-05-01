@@ -27,6 +27,9 @@ dependencies:
   - nbsphinx
   - numpydoc
   - pandoc
+  - ipykernel
+  - ipywidgets
+  - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme
@@ -35,6 +38,9 @@ dependencies:
   - sphinx-immaterial
   - myst-nb
   - sphinx-copybutton
+  - pandoc
+  - seaborn
+  - statsmodels
   - watermark
   - contextily
   - pip

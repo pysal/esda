@@ -58,7 +58,7 @@ class Geary_Local_MV(BaseEstimator):
 
         Notes
         -----
-        Technical details and derivations can be found in :cite:`Anselin1995`.
+        Technical details and derivations can be found in :cite:`Anselin95`.
 
         Examples
         --------
