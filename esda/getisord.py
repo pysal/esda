@@ -395,6 +395,13 @@ class G_Local:
                 self.p_z_sim = stats.norm.sf(np.abs(self.z_sim))
 
     def __crand(self, keep_simulations):
+        warnings.warn(
+            "G_Local.__crand is deprecated and will be removed in a future release. "
+            "Use the current conditional randomization implementation based on "
+            "`esda.crand.crand` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         y = self.y
         if keep_simulations:
             rGs = np.zeros((self.n, self.permutations))
