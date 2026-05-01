@@ -3,25 +3,31 @@ name: Build Docs
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
+    branches: [main]
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*"
+  pull_request:
+    branches:
+      - "*"
   workflow_dispatch:
     inputs:
       version:
-        description: Manual Doc Build Reason
-        default: test
+        description: Manual Doc Build
+        default: run-doc-build
         required: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   docs:
-    name: Build and Push Docs (${{ matrix.os }}-${{ matrix.environment-file }})
+    name: Build & push docs
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
     timeout-minutes: 90
     strategy:
       matrix:
-        os: ['ubuntu-latest']
+        os: ["ubuntu-latest"]
         environment-file: [ci/314-latest.yaml]
         experimental: [false]
     defaults:
@@ -38,17 +44,61 @@ jobs:
         uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: ${{ matrix.environment-file }}
-          micromamba-version: 'latest'
+          micromamba-version: "latest"
 
-      - name: Install esda
-        run: pip install .
+      - name: Install package
+        run: pip install . --no-deps
 
-      - name: Make Docs
+      - name: Make docs
         run: cd docs; make html
 
-      - name: Publish to Github Pages
+      - name: Zip documentation
+        if: ${{ github.event_name == 'pull_request' }}
+        run: zip docs_artifact.zip docs/_build/html -r
+
+      - name: Upload artifact
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs_artifact
+          path: docs_artifact.zip
+
+      - name: Publish to GitHub Pages on main (dev)
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/_build/html/
+          destination_dir: dev
           keep_files: false
+
+      - name: Publish to GitHub Pages on release (versioned)
+        if: ${{ github.ref_type == 'tag' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html/
+          destination_dir: ${{ github.ref_name }}
+
+      - name: Publish to GitHub Pages on release (stable)
+        if: ${{ github.ref_type == 'tag' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html/
+          destination_dir: stable
+          keep_files: false
+
+      - name: Update the versions switcher
+        if: ${{ github.ref_type == 'tag' }}
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python update_version_json.py --version "${{ github.ref_name }}"
+          git add versions.json
+          git commit -m "Update versions switcher" || echo "No changes to commit"
+          git push origin gh-pages
+          git checkout main
