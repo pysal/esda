@@ -11,7 +11,7 @@ from esda.moran_local_mv import MoranLocalConditional, MoranLocalPartial
 
 
 def rsrook(df):
-    w_classic = Rook.from_dataframe(df)
+    w_classic = Rook.from_dataframe(df, use_index=False)
     w_classic.transform = "r"
     return w_classic
 
