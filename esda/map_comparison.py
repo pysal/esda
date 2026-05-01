@@ -150,7 +150,7 @@ def homogeneity(a, b, local=False, base=numpy.e):
     """
     The homogeneity of polygons from a partitioned by b.
 
-    From :cite:`nowosad2018`
+    From :cite:`nowosad2018`.
 
     This is equal to completeness(b,a).
 
