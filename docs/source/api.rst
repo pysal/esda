@@ -102,8 +102,17 @@ Map Comparison
     external_entropy
     homogeneity
     overlay_entropy
+
     
+Mixture Smoothing
+-----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    NP_Mixture_Smoother
     
+
 Modifiable Areal Unit Tests
 ---------------------------
 
