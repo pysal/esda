@@ -54,7 +54,7 @@ jobs:
 
       - name: Zip documentation
         if: ${{ github.event_name == 'pull_request' }}
-        run: zip docs_artifact.zip docs/_build/html -r
+        run: zip docs_artifact.zip docs/build/html -r
 
       - name: Upload artifact
         if: ${{ github.event_name == 'pull_request' }}
@@ -68,7 +68,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build/html/
+          publish_dir: docs/build/html/
           destination_dir: dev
           keep_files: false
 
@@ -77,7 +77,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build/html/
+          publish_dir: docs/build/html/
           destination_dir: ${{ github.ref_name }}
 
       - name: Publish to GitHub Pages on release (stable)
@@ -85,7 +85,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build/html/
+          publish_dir: docs/build/html/
           destination_dir: stable
           keep_files: false
 
