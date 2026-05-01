@@ -90,6 +90,20 @@ LOSH Statistics
 
     LOSH
 
+
+Map Comparison
+--------------
+
+.. autosummary::
+   :toctree: generated/
+
+    areal_entropy
+    completeness
+    external_entropy
+    homogeneity
+    overlay_entropy
+    
+    
 Modifiable Areal Unit Tests
 ---------------------------
 
