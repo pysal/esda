@@ -64,16 +64,17 @@ dev = [
     "pre-commit"
 ]
 docs = [
-    "myst-parser",
-    "seaborn",
-    "watermark",
-    "statsmodels",
     "nbsphinx",
     "numpydoc",
     "pandoc",
     "sphinx",
     "sphinxcontrib-bibtex",
     "sphinx_bootstrap_theme",
+    "mkdocs-jupyter",
+    "myst-parser",
+    "sphinx-immaterial",
+    "myst_nb",
+    "sphinx-copybutton"
 ]
 notebooks = [
     "matplotlib-scalebar",
