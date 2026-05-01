@@ -25,6 +25,7 @@ dependencies:
   - rtree
   # for docs build action (this env only)
   - ipykernel
+  - ipywidgets
   - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
@@ -33,6 +34,7 @@ dependencies:
   - sphinx-immaterial
   - pandoc
   - seaborn
+  - statsmodels
   - watermark
   - contextily
   - pip
