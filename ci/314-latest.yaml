@@ -24,14 +24,20 @@ dependencies:
   # optional
   - rtree
   # for docs build action (this env only)
+  - nbsphinx
+  - numpydoc
+  - pandoc
   - ipykernel
   - ipywidgets
   - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
-  - sphinx-autosummary-accessors
-  - sphinx-copybutton
+  - sphinx_bootstrap_theme
+  - mkdocs-jupyter
+  - myst-parser
   - sphinx-immaterial
+  - myst-nb
+  - sphinx-copybutton
   - pandoc
   - seaborn
   - statsmodels
