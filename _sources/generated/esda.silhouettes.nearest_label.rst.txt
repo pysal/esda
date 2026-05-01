@@ -1,6 +1,0 @@
-﻿esda.silhouettes.nearest\_label
-===============================
-
-.. currentmodule:: esda.silhouettes
-
-.. autofunction:: nearest_label

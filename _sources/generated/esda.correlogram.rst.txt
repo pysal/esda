@@ -1,6 +1,0 @@
-﻿esda.correlogram
-================
-
-.. currentmodule:: esda
-
-.. autofunction:: correlogram

@@ -1,6 +1,0 @@
-﻿esda.silhouettes.silhouette\_alist
-==================================
-
-.. currentmodule:: esda.silhouettes
-
-.. autofunction:: silhouette_alist

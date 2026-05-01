@@ -1,6 +1,0 @@
-﻿esda.shape.convex\_hull\_ratio
-==============================
-
-.. currentmodule:: esda.shape
-
-.. autofunction:: convex_hull_ratio
