@@ -191,6 +191,16 @@ Spatial Pearson Statistics
     Spatial_Pearson_Local
 
 
+Topology
+--------
+
+.. autosummary::
+   :toctree: generated/
+
+    isolation
+    prominence
+
+
 Utility Functions
 -----------------
 
