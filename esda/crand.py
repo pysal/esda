@@ -563,7 +563,7 @@ def parallel_crand(
 
     p_sims, rlocals = zip(*worker_out, strict=True)
     p_sims = np.hstack(p_sims).squeeze()
-    rlocals = np.row_stack(rlocals).squeeze()
+    rlocals = np.vstack(rlocals).squeeze()
     return p_sims, rlocals
 
 
