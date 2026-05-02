@@ -26,5 +26,6 @@ class TestJoinCountsLocal:
     @parametrize_w
     def test_defaults(self, w):
         np.random.seed(12345)
-        ljc = Join_Counts_Local(connectivity=w).fit(self.y)
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            ljc = Join_Counts_Local(connectivity=w).fit(self.y)
         assert np.array_equal(ljc.LJC, [0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 2, 2, 3, 3, 2])

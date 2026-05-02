@@ -28,7 +28,8 @@ class TestLocalJoinCountsMV:
     @parametrize_w
     def test_defaults(self, w):
         np.random.seed(12345)
-        ljc_mv = Join_Counts_Local_MV(connectivity=w).fit([self.x, self.y, self.z])
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            ljc_mv = Join_Counts_Local_MV(connectivity=w).fit([self.x, self.y, self.z])
         assert np.array_equal(
             ljc_mv.LJC, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 2]
         )

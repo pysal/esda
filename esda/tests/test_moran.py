@@ -14,6 +14,7 @@ GPD_GE_120 = (Version(gpd.__version__) >= Version("1.1.2.dev")) and Version(
     gpd.__version__
 ).is_devrelease
 
+
 parametrize_stl = pytest.mark.parametrize(
     "w",
     [
@@ -101,7 +102,8 @@ class TestMoran:
     def test_z_consistency(self, w):
         m1 = moran.Moran(self.y, w)
         # m2 = moran.Moran_BV(self.x, self.y, self.w) TODO testing for other.z values
-        m3 = moran.Moran_Local(self.y, w, keep_simulations=True, seed=SEED)
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            m3 = moran.Moran_Local(self.y, w, keep_simulations=True, seed=SEED)
         # m4 = moran.Moran_Local_BV(self.x, self.y, self.w)
         np.testing.assert_allclose(m1.z, m3.z, atol=ATOL, rtol=RTOL)
 
@@ -344,27 +346,29 @@ class TestMoranLocal:
 
     @parametrize_desmith
     def test_defaults(self, w):
-        lm = moran.Moran_Local(
-            self.y,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                self.y,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
     @parametrize_sac
     def test_labels(self, w):
-        lm = moran.Moran_Local(
-            sac1.HSG_VAL.values,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                sac1.HSG_VAL.values,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         expected_labels = np.array(
             [
                 "High-High",
@@ -387,14 +391,15 @@ class TestMoranLocal:
 
     @parametrize_sac
     def test_explore(self, w):
-        lm = moran.Moran_Local(
-            sac1.HSG_VAL.values,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                sac1.HSG_VAL.values,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         m = lm.explore(sac1)
         np.testing.assert_array_equal(
             m.get_bounds(),
@@ -423,14 +428,15 @@ class TestMoranLocal:
 
         matplotlib.use("Agg")
 
-        lm = moran.Moran_Local(
-            sac1.HSG_VAL.values,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                sac1.HSG_VAL.values,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         ax = lm.plot(sac1)
 
         if GPD_GE_120:
@@ -473,14 +479,15 @@ class TestMoranLocal:
 
         matplotlib.use("Agg")
 
-        lm = moran.Moran_Local(
-            sac1.WHITE,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                sac1.WHITE,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
 
         ax = lm.plot_scatter()
 
@@ -520,14 +527,15 @@ class TestMoranLocal:
 
         matplotlib.use("Agg")
 
-        lm = moran.Moran_Local(
-            sac1.WHITE,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                sac1.WHITE,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
 
         ax = lm.plot_scatter(
             crit_value=None,
@@ -550,15 +558,16 @@ class TestMoranLocal:
 
     @parametrize_desmith
     def test_parallel(self, w):
-        lm = moran.Moran_Local(
-            self.y,
-            w,
-            transformation="r",
-            n_jobs=-1,
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                self.y,
+                w,
+                transformation="r",
+                n_jobs=-1,
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
@@ -654,14 +663,15 @@ class TestMoranLocal:
 
         matplotlib.use("Agg")
 
-        lm = moran.Moran_Local(
-            sac1.WHITE,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                sac1.WHITE,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         axs = lm.plot_combination(
             sac1,
             "WHITE",
@@ -709,15 +719,16 @@ class TestMoranLocalBV:
 
     @parametrize_sids
     def test_defaults(self, w):
-        lm = moran.Moran_Local_BV(
-            self.x,
-            self.y,
-            w,
-            keep_simulations=True,
-            transformation="r",
-            permutations=99,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local_BV(
+                self.x,
+                self.y,
+                w,
+                keep_simulations=True,
+                transformation="r",
+                permutations=99,
+                seed=SEED,
+            )
         np.testing.assert_allclose(lm.Is[0], 1.4649221250620736)
         np.testing.assert_allclose(lm.z_sim[0], 1.330673752886702)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.09164819151535242)
@@ -747,15 +758,16 @@ class TestMoranLocalBV:
 
     @parametrize_sids
     def test_labels(self, w):
-        lm = moran.Moran_Local_BV(
-            self.x,
-            self.y,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local_BV(
+                self.x,
+                self.y,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         expected_labels = np.array(
             [
                 "Insignificant",
@@ -778,15 +790,16 @@ class TestMoranLocalBV:
 
     @parametrize_sids
     def test_explore(self, w):
-        lm = moran.Moran_Local_BV(
-            self.x,
-            self.y,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local_BV(
+                self.x,
+                self.y,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         m = lm.explore(self.gdf)
         np.testing.assert_array_equal(
             m.get_bounds(),
@@ -818,15 +831,16 @@ class TestMoranLocalBV:
 
         matplotlib.use("Agg")
 
-        lm = moran.Moran_Local_BV(
-            self.x,
-            self.y,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local_BV(
+                self.x,
+                self.y,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         ax = lm.plot(self.gdf)
 
         if GPD_GE_120:
@@ -867,15 +881,16 @@ class TestMoranLocalBV:
 
         matplotlib.use("Agg")
 
-        lm = moran.Moran_Local_BV(
-            self.x,
-            self.y,
-            w,
-            transformation="r",
-            permutations=99,
-            keep_simulations=True,
-            seed=SEED,
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local_BV(
+                self.x,
+                self.y,
+                w,
+                transformation="r",
+                permutations=99,
+                keep_simulations=True,
+                seed=SEED,
+            )
         axs = lm.plot_combination(
             self.gdf,
             "SIDR79",
@@ -902,9 +917,10 @@ class TestMoranLocalRate:
 
     @parametrize_sids
     def test_moran_rate(self, w):
-        lm = moran.Moran_Local_Rate(
-            self.e, self.b, w, transformation="r", permutations=99, seed=SEED
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local_Rate(
+                self.e, self.b, w, transformation="r", permutations=99, seed=SEED
+            )
         np.testing.assert_allclose(lm.z_sim[0], 0.02702781851384379, 7)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.4892187730835096)
 

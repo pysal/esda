@@ -191,8 +191,8 @@ class MoranLocalPartial:
             quads = negative_lag.astype(int).flatten() * 2 + off_sign.astype(int) + 1
             uvquads.append(quads.flatten())
 
-        self._uvquads_ = np.row_stack(uvquads).T
-        self._mvquads_ = np.row_stack(component_quads).T
+        self._uvquads_ = np.vstack(uvquads).T
+        self._mvquads_ = np.vstack(component_quads).T
         return self
 
     def _make_data(self, z, X, W):
