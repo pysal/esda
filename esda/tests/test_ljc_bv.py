@@ -27,9 +27,10 @@ class TestLocalJoinCountsBV:
     @parametrize_w
     def test_bjc(self, w):
         np.random.seed(12345)
-        ljc_bv_case1 = Join_Counts_Local_BV(connectivity=w).fit(
-            self.x, self.z, case="BJC"
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            ljc_bv_case1 = Join_Counts_Local_BV(connectivity=w).fit(
+                self.x, self.z, case="BJC"
+            )
         assert np.array_equal(
             ljc_bv_case1.LJC, [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0]
         )
@@ -37,9 +38,10 @@ class TestLocalJoinCountsBV:
     @parametrize_w
     def test_clc(self, w):
         np.random.seed(12345)
-        ljc_bv_case2 = Join_Counts_Local_BV(connectivity=w).fit(
-            self.x, self.z, case="CLC"
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            ljc_bv_case2 = Join_Counts_Local_BV(connectivity=w).fit(
+                self.x, self.z, case="CLC"
+            )
         assert np.array_equal(
             ljc_bv_case2.LJC, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 2]
         )

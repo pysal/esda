@@ -10,7 +10,9 @@ coordinates = numpy.random.random(size=(800, 2))
 x = numpy.random.normal(size=(800,))
 w = Voronoi(coordinates, clip="bounding_box", use_index=False)
 w.transform = "r"
-stat = esda.Moran_Local(x, w, permutations=19)
+
+with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+    stat = esda.Moran_Local(x, w, permutations=19)
 
 
 @pytest.mark.parametrize(
