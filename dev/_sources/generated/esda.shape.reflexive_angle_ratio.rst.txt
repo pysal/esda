@@ -1,0 +1,6 @@
+﻿esda.shape.reflexive\_angle\_ratio
+==================================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: reflexive_angle_ratio
