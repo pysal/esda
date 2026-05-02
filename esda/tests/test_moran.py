@@ -120,6 +120,7 @@ class TestMoran:
     @parametrize_sac
     def test_plot_simulation(self, w):
         pytest.importorskip("seaborn")
+        plt = pytest.importorskip("matplotlib.pyplot")
 
         m = moran.Moran(sac1.WHITE, w=w)
         ax = m.plot_simulation()
@@ -155,6 +156,8 @@ class TestMoran:
             ei_vline.get_paths()[0].vertices,
             np.array([[m.EI, 0.0], [m.EI, 1.0]]),
         )
+
+        plt.close()
 
     @parametrize_sac
     def test_plot_simulation_custom(self, w):
@@ -206,8 +209,12 @@ class TestMoran:
             "Expected I",
         ]
 
+        plt.close()
+
     @parametrize_sac
     def test_plot_scatter(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
+
         import matplotlib
 
         matplotlib.use("Agg")
@@ -234,8 +241,11 @@ class TestMoran:
         np.testing.assert_almost_equal(y.max(), 1.634939204358587)
         assert l_.get_color() == "#d6604d"
 
+        plt.close()
+
     @parametrize_sac
     def test_plot_scatter_args(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -258,6 +268,8 @@ class TestMoran:
         # test fitline
         l_ = ax.lines[2]
         assert l_.get_color() == "pink"
+
+        plt.close()
 
 
 class TestMoranRate:
@@ -302,6 +314,8 @@ class TestMoranBVmatrix:
 
     @parametrize_sids
     def test_plot_moran_facet(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
+
         matrix = moran.Moran_BV_matrix(self.vars_, w, varnames=self.names)
         axes = moran.plot_moran_facet(matrix)
         assert axes.shape == (4, 4)
@@ -319,6 +333,8 @@ class TestMoranBVmatrix:
             axes[1][1].get_facecolor(),
             (0.8509803921568627, 0.8509803921568627, 0.8509803921568627, 1.0),
         )
+
+        plt.close()
 
 
 class TestMoranLocal:
@@ -402,6 +418,7 @@ class TestMoranLocal:
 
     @parametrize_sac
     def test_plot(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -447,8 +464,11 @@ class TestMoranLocal:
 
             np.testing.assert_array_equal(counts, np.array([86, 3, 298, 38, 3]))
 
+        plt.close()
+
     @parametrize_sac
     def test_plot_scatter(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -491,8 +511,11 @@ class TestMoranLocal:
         np.testing.assert_almost_equal(y.max(), 1.634939204358587)
         assert l_.get_color() == "k"
 
+        plt.close()
+
     @parametrize_sac
     def test_plot_scatter_args(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -522,6 +545,8 @@ class TestMoranLocal:
         l_ = ax.lines[2]
         assert l_.get_color() == "#d6604d"
         assert l_.get_linewidth() == 4.0
+
+        plt.close()
 
     @parametrize_desmith
     def test_parallel(self, w):
@@ -624,6 +649,7 @@ class TestMoranLocal:
 
     @parametrize_sac
     def test_plot_combination(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -670,6 +696,8 @@ class TestMoranLocal:
         else:
             assert len(axs2[1].collections) == 1
             assert len(axs2[2].collections) == 1
+
+        plt.close()
 
 
 class TestMoranLocalBV:
@@ -785,6 +813,7 @@ class TestMoranLocalBV:
 
     @parametrize_sids
     def test_plot(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -829,9 +858,11 @@ class TestMoranLocalBV:
                 ),
             )
             np.testing.assert_array_equal(counts, np.array([6, 2, 86, 7, 7]))
+        plt.close()
 
     @parametrize_sids
     def test_plot_combination(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
@@ -860,6 +891,7 @@ class TestMoranLocalBV:
         else:
             assert len(axs[1].collections) == 3
             assert len(axs[2].collections) == 3
+        plt.close()
 
 
 class TestMoranLocalRate:
