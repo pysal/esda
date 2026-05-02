@@ -3,12 +3,12 @@
  on:
    push:
      branches:
-     - '*'
+     - "*"
    pull_request:
      branches:
-     - '*'
+     - "*"
    schedule:
-     - cron: '59 21 * * *'
+     - cron: "59 21 * * *"
    workflow_dispatch:
      inputs:
        version:
@@ -19,8 +19,10 @@
  jobs:
    unittests:
      env:
-       FETCH_DATA: python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "NCOVR", "sids2", "stl", "Sacramento1"]]'
-       RUN_TEST: pytest esda -v -r a -n auto --cov esda --cov-report xml --color yes --cov-append --cov-report term-missing
+       FETCH_DATA: |
+         python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "NCOVR", "sids2", "stl", "Sacramento1"]]'
+       RUN_TEST: |
+         pytest esda -v -r a -n auto --cov esda --cov-report xml --color yes --cov-append --cov-report term-missing
      name: CI (${{ matrix.os }}, ${{ matrix.environment-file }})
      runs-on: ${{ matrix.os }}
      timeout-minutes: 25
@@ -55,10 +57,13 @@
      steps:
        - name: checkout repo
          uses: actions/checkout@v6
+         with:
+          fetch-depth: 0 # Fetch all history for all branches and tags.
+
        - name: setup micromamba
          uses: mamba-org/setup-micromamba@v3
          with:
-            micromamba-version: 'latest'
+            micromamba-version: "latest"
             environment-file: ${{ matrix.environment-file }}
 
        - name: environment info
@@ -66,8 +71,13 @@
            micromamba info
            micromamba list
 
+      - name: install package
+        run: |
+          pip install -e . --no-deps
+
        - name: spatial versions
-         run: 'python -c "import geopandas; geopandas.show_versions();"'
+         run: |
+           python -c "import geopandas; geopandas.show_versions();"
 
        - name: run tests - bash
          run: |
