@@ -6,7 +6,6 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
-from libpysal.cg.kdtree import KDTree
 from libpysal.weights import KNN, DistanceBand
 from libpysal.weights.util import get_points_array
 from scipy import linalg, spatial
@@ -145,7 +144,7 @@ def correlogram(
             "geometry must be of type Point. Try sending geometry.centroid"
         )
 
-    tree = KDTree(get_points_array(geometry.values))
+    tree = spatial.KDTree(get_points_array(geometry.values))
 
     if support is None:
         if distance_type == "band":

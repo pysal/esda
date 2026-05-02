@@ -126,4 +126,5 @@ filterwarnings = [
     "ignore:Geometry is in a geographic CRS",
     "ignore:divide by zero encountered",
     "ignore:invalid value encountered",
+    "ignore:Numba not imported, so alpha shape construction may be slower",
 ]

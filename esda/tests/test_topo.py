@@ -1,7 +1,6 @@
 import importlib
 
 import geopandas
-import matplotlib.pyplot as plt
 import numpy
 import pandas
 import pytest
@@ -135,6 +134,7 @@ class TestTopo:
 @image_comparison(["topo4x1"], extensions=["png"], tol=1.0)
 def test_plots():
     pytest.importorskip("rtree")
+    plt = pytest.importorskip("matplotlib.pyplot")
 
     current_cmap = plt.get_cmap("twilight")
     current_cmap.set_bad(color="lightgrey")
