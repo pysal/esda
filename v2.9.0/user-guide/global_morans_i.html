@@ -1,0 +1,1594 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="global.html">
+      
+      
+        <link rel="next" href="join_counts.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>Global Spatial Autocorrelation with Moran’s I - esda</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#learning-goals" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="esda" class="md-header__button md-logo" aria-label="esda" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            esda
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Global Spatial Autocorrelation with Moran’s I
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/esda/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/esda
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="esda" class="md-nav__button md-logo" aria-label="esda" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    esda
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/esda/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/esda
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>User Guide</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>User Guide</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Overview</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="global.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Global Spatial Autocorrelation</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Moran’s I</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Moran’s I</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-preparation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Data preparation</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Why Moran’s I?</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Global Spatial Autocorrelation</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Spatial Autocorrelation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attribute-similarity" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Attribute Similarity</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#computing-global-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Computing global Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#permutation-based-inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Permutation-<wbr>based inference</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaways" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Takeaways</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="join_counts.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Join Counts</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="local.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Local Spatial Autocorrelation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="diagnostics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="geometry.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Geometry</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="topology.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Topology</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/esda" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/esda/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-preparation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Data preparation</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Why Moran’s I?</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Global Spatial Autocorrelation</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Spatial Autocorrelation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attribute-similarity" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Attribute Similarity</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#computing-global-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Computing global Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#permutation-based-inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Permutation-<wbr>based inference</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaways" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Takeaways</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/esda/blob/main/docs/user-guide/global_morans_i.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="global-spatial-autocorrelation-with-moran-s-i">Global Spatial Autocorrelation with Moran’s I<a class="headerlink" href="#global-spatial-autocorrelation-with-moran-s-i" title="Link to this heading">¶</a></h1>
+<p>This notebook  focuses on global spatial autocorrelation for a continuous attribute using Moran’s I.</p>
+<h2 id="learning-goals">Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">¶</a></h2>
+<p>By the end of this notebook, you will be able to:</p>
+<ul class="simple">
+<li><p>construct a spatial weights matrix for areal data</p></li>
+<li><p>compute a spatial lag for a continuous attribute</p></li>
+<li><p>interpret global Moran’s <span class="math notranslate nohighlight">\(I\)</span> as a summary measure of spatial autocorrelation</p></li>
+<li><p>compare the observed statistic to a permutation reference distribution</p></li>
+</ul>
+<p>The substantive question is whether neighborhoods with similar median Airbnb prices tend to be located near one another.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lps</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the <a class="reference external" href="https://github.com/ljwolf/geopython">GeoPython 2018 workshop</a> by <a class="reference external" href="https://ljwolf.org">Levi Wolf</a> and <a class="reference external" href="https://sergerey.org">Serge Rey</a>. As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:</p>
+<h2 id="data-preparation">Data preparation<a class="headerlink" href="#data-preparation" title="Link to this heading">¶</a></h2>
+<p>We begin by assembling neighborhood polygons and Airbnb listings, then aggregate listing prices to the neighborhood level. The resulting variable, <code class="docutils literal notranslate"><span class="pre">median_pri</span></code>, is the continuous attribute we will analyze throughout the notebook.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-neighbourhoods.geojson&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">bl_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/berlin-listings.csv&quot;</span><span class="p">)</span>
+<span class="n">geometry</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">points_from_xy</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">bl_df</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">bl_df</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;epsg:4326&quot;</span><span class="p">)</span>
+<span class="n">bl_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">bl_df</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">bl_gdf</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bl_gdf</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+<span class="n">sj_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span>
+    <span class="n">gdf</span><span class="p">,</span> <span class="n">bl_gdf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;intersects&quot;</span><span class="p">,</span> <span class="n">lsuffix</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">rsuffix</span><span class="o">=</span><span class="s2">&quot;right&quot;</span>
+<span class="p">)</span>
+<span class="n">median_price_gb</span> <span class="o">=</span> <span class="n">sj_gdf</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">sj_gdf</span><span class="p">[</span><span class="s2">&quot;neighbourhood_group&quot;</span><span class="p">]])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">median_price_gb</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>neighbourhood_group
+Charlottenburg-Wilm.        58.556408
+Friedrichshain-Kreuzberg    55.492809
+Lichtenberg                 44.584270
+Marzahn - Hellersdorf       54.246754
+Mitte                       60.387890
+Neukölln                    45.135948
+Pankow                      60.282516
+Reinickendorf               43.682465
+Spandau                     48.236561
+Steglitz - Zehlendorf       54.445683
+Tempelhof - Schöneberg      53.704407
+Treptow - Köpenick          51.222004
+Name: price, dtype: float32
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">median_price_gb</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;neighbourhood_group&quot;</span><span class="p">)</span>
+<span class="n">gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;median_pri&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">gdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>neighbourhood</th>
+      <th>neighbourhood_group</th>
+      <th>geometry</th>
+      <th>median_pri</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Blankenfelde/Niederschönhausen</td>
+      <td>Pankow</td>
+      <td>MULTIPOLYGON (((13.41191 52.61487, 13.41183 52...</td>
+      <td>60.282516</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Helmholtzplatz</td>
+      <td>Pankow</td>
+      <td>MULTIPOLYGON (((13.41405 52.54929, 13.41422 52...</td>
+      <td>60.282516</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Wiesbadener Straße</td>
+      <td>Charlottenburg-Wilm.</td>
+      <td>MULTIPOLYGON (((13.30748 52.46788, 13.30743 52...</td>
+      <td>58.556408</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Schmöckwitz/Karolinenhof/Rauchfangswerder</td>
+      <td>Treptow - Köpenick</td>
+      <td>MULTIPOLYGON (((13.70973 52.3963, 13.70926 52....</td>
+      <td>51.222004</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Müggelheim</td>
+      <td>Treptow - Köpenick</td>
+      <td>MULTIPOLYGON (((13.73762 52.4085, 13.73773 52....</td>
+      <td>51.222004</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Biesdorf</td>
+      <td>Marzahn - Hellersdorf</td>
+      <td>MULTIPOLYGON (((13.56643 52.5351, 13.56697 52....</td>
+      <td>54.246754</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Nord 1</td>
+      <td>Reinickendorf</td>
+      <td>MULTIPOLYGON (((13.33669 52.62265, 13.33663 52...</td>
+      <td>43.682465</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>West 5</td>
+      <td>Reinickendorf</td>
+      <td>MULTIPOLYGON (((13.28138 52.59958, 13.28158 52...</td>
+      <td>43.682465</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Frankfurter Allee Nord</td>
+      <td>Friedrichshain-Kreuzberg</td>
+      <td>MULTIPOLYGON (((13.4532 52.51682, 13.45321 52....</td>
+      <td>55.492809</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Buch</td>
+      <td>Pankow</td>
+      <td>MULTIPOLYGON (((13.4645 52.65055, 13.46457 52....</td>
+      <td>60.282516</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Kaulsdorf</td>
+      <td>Marzahn - Hellersdorf</td>
+      <td>MULTIPOLYGON (((13.62135 52.52704, 13.62196 52...</td>
+      <td>54.246754</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>MULTIPOLYGON (((13.61659 52.58154, 13.61458 52...</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>MULTIPOLYGON (((13.61668 52.57868, 13.60703 52...</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>nördliche Luisenstadt</td>
+      <td>Friedrichshain-Kreuzberg</td>
+      <td>MULTIPOLYGON (((13.4443 52.50066, 13.44266 52....</td>
+      <td>55.492809</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Nord 2</td>
+      <td>Reinickendorf</td>
+      <td>MULTIPOLYGON (((13.3068 52.58606, 13.30667 52....</td>
+      <td>43.682465</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>We have an <code class="docutils literal notranslate"><span class="pre">nan</span></code> to first deal with:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.int64(2)
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+</code></pre></div>
+</div>
+<img alt="../_images/b787e98f421adb25328242da544610c16c512c847e43df4582f4fae4fd8b49af.png" src="../_images/b787e98f421adb25328242da544610c16c512c847e43df4582f4fae4fd8b49af.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
+<span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="c1"># ax.set_xlim(150000, 160000)</span>
+<span class="c1"># ax.set_ylim(208000, 215000)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+</code></pre></div>
+</div>
+<img alt="../_images/63b6e636c9569f12ef73e1773702f64b5630853b73026ccff6c5239ace81ec12.png" src="../_images/63b6e636c9569f12ef73e1773702f64b5630853b73026ccff6c5239ace81ec12.png" />
+</div>
+</div>
+<h2 id="why-moran-s-i">Why Moran’s I?<a class="headerlink" href="#why-moran-s-i" title="Link to this heading">¶</a></h2>
+<p>A map can suggest clustering, but visual impressions are not enough. Moran’s <span class="math notranslate nohighlight">\(I\)</span> provides a formal global test of whether nearby areas tend to have similar values more often than would be expected under spatial randomness.</p>
+<h2 id="global-spatial-autocorrelation">Global Spatial Autocorrelation<a class="headerlink" href="#global-spatial-autocorrelation" title="Link to this heading">¶</a></h2>
+<h3 id="moran-s-i">Moran’s I<a class="headerlink" href="#moran-s-i" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gdf</span>
+<span class="n">wq</span> <span class="o">=</span> <span class="n">lps</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">silence_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">wq</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="attribute-similarity">Attribute Similarity<a class="headerlink" href="#attribute-similarity" title="Link to this heading">¶</a></h3>
+<p>So the spatial weight between neighborhoods <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> indicates if the two
+are neighbors (i.e., geographically similar). What we also need is a measure of
+attribute similarity to pair up with this concept of spatial similarity. The
+<strong>spatial lag</strong> is a derived variable that accomplishes this for us. For neighborhood
+<span class="math notranslate nohighlight">\(i\)</span> the spatial lag is defined as: $<span class="math notranslate nohighlight">\(ylag_i = \sum_j w_{i,j} y_j\)</span>$</p>
+<p>The key ingredients are:</p>
+<ul class="simple">
+<li><p><strong>spatial proximity</strong>, encoded in the weights matrix; and</p></li>
+<li><p><strong>attribute similarity</strong>, summarized through the spatial lag.</p></li>
+</ul>
+<p>The next cells build that intuition before computing the test statistic itself.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<span class="n">ylag</span> <span class="o">=</span> <span class="n">lps</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lag_spatial</span><span class="p">(</span><span class="n">wq</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ylag</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([56.9625061 , 60.28251648, 56.37749926, 51.22200394, 51.22200394,
+       50.52180099, 43.6824646 , 45.63422012, 52.65491422, 60.28251648,
+       53.64180374, 52.73586273, 52.73586273, 56.47182541, 47.83247757,
+       58.58870177, 60.33520317, 59.60296903, 60.38788986, 60.02159348,
+       51.80624199, 57.94034958, 52.84482813, 53.40314266, 57.90522512,
+       60.28251648, 60.28251648, 55.79730334, 56.79401737, 50.81182589,
+       59.01427841, 60.29756982, 60.28251648, 50.86356888, 60.3220315 ,
+       60.28251648, 55.48057556, 54.42881557, 60.32466583, 59.50179418,
+       54.42846909, 58.55640793, 58.55640793, 57.73426285, 57.47818544,
+       57.74774106, 56.13040733, 48.23656082, 48.23656082, 53.74621709,
+       55.11957245, 45.95951271, 51.67650986, 54.1985906 , 51.45368042,
+       52.36880302, 54.44568253, 54.44568253, 50.84825389, 56.50104523,
+       53.92108345, 55.9956289 , 50.49590378, 49.14499828, 48.61369433,
+       49.70049   , 49.32550866, 51.22200394, 51.22200394, 47.80509822,
+       49.70049   , 51.22200394, 45.13594818, 47.57037048, 51.22200394,
+       51.22200394, 51.22200394, 51.22200394, 49.60257785, 51.57007762,
+       51.42743301, 51.22200394, 51.22200394, 52.43339348, 49.41551208,
+       51.58891296, 44.58427048, 51.58891296, 51.42743301, 49.82624902,
+       48.947686  , 48.40726217, 45.95951271, 47.57037048, 43.6824646 ,
+       47.02354965, 45.95951271, 58.55640793, 56.30865606, 58.09966066,
+       47.34497997, 46.40236028, 58.05298805, 59.24321365, 58.55640793,
+       47.83247757, 49.49497332, 50.74955784, 48.6149381 , 55.97644615,
+       57.95624052, 57.87081385, 58.75619634, 60.37283652, 48.23656082,
+       49.389711  , 54.00091705, 54.26036358, 57.54238828, 55.61980756,
+       51.97116137, 48.92101212, 50.97179985, 54.07504463, 47.45824547,
+       49.42017746, 45.13594818, 45.13594818, 48.61369433, 49.41551208,
+       51.22200394, 50.20766131, 48.72533471, 54.24675369, 54.24675369,
+       54.24675369, 53.23850377, 56.1851902 , 49.23337746, 43.6824646 ])
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">mapclassify</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mc</span>
+
+<span class="n">ylagq5</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">Quantiles</span><span class="p">(</span><span class="n">ylag</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">ylagq5</span><span class="o">.</span><span class="n">yb</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
+    <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Median Price (Quintiles)&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/65dbb9a0668c0d4840aed3e2e7ceb3dc0786f7dd11fc0e8bf4475cc2cf83ff5c.png" src="../_images/65dbb9a0668c0d4840aed3e2e7ceb3dc0786f7dd11fc0e8bf4475cc2cf83ff5c.png" />
+</div>
+</div>
+<p>The quintile map for the spatial lag tends to enhance the impression of value
+similarity in space. It is, in effect, a local smoother.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="p">[</span><span class="s2">&quot;lag_median_pri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ylag</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">2.16</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;lag_median_pri&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Price&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f41fe8bd02d144cc6c53d266b487f173b200adc2ec96e55736c8f1d55e64b94d.png" src="../_images/f41fe8bd02d144cc6c53d266b487f173b200adc2ec96e55736c8f1d55e64b94d.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Moran’s I is a test for global autocorrelation for a continuous attribute:</p>
+<h2 id="computing-global-moran-s-i">Computing global Moran’s I<a class="headerlink" href="#computing-global-moran-s-i" title="Link to this heading">¶</a></h2>
+<p>With the outcome and weights in place, we can calculate Moran’s <span class="math notranslate nohighlight">\(I\)</span>. Positive values indicate that similar values are more likely to be neighbors; negative values indicate a checkerboard pattern of dissimilar neighbors.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">moran</span><span class="o">.</span><span class="n">Moran</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">wq</span><span class="p">)</span>
+<span class="n">mi</span><span class="o">.</span><span class="n">I</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.6563069331329718)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Again, our value for the statistic needs to be interpreted against a reference
+distribution under the null of CSR. PySAL uses a similar approach as we saw in
+the join count analysis: random spatial permutations.</p>
+<h2 id="permutation-based-inference">Permutation-based inference<a class="headerlink" href="#permutation-based-inference" title="Link to this heading">¶</a></h2>
+<p>The observed value of Moran’s <span class="math notranslate nohighlight">\(I\)</span> is only meaningful relative to a null model. Here, the null hypothesis is that the observed attribute values are randomly arranged over the fixed neighborhood structure. Permutation inference lets us assess how unusual the observed statistic is under that null.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sbn</span>
+
+<span class="n">sbn</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">sim</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">EI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Moran&#39;s I&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, &quot;Moran&#39;s I&quot;)
+</code></pre></div>
+</div>
+<img alt="../_images/cc752007a20f4539363bcf768a6fa90b84fb8826a2e16be57d0f3c7342f8a715.png" src="../_images/cc752007a20f4539363bcf768a6fa90b84fb8826a2e16be57d0f3c7342f8a715.png" />
+</div>
+</div>
+<p>Here our observed value is again in the upper tail, although visually it does
+not look as extreme relative to the binary case. Yet, it is still statistically significant:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mi</span><span class="o">.</span><span class="n">p_sim</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.001)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>
+<p>This notebook showed how to move from a visual impression of clustering to a formal global test for a continuous variable. In practice, global Moran’s <span class="math notranslate nohighlight">\(I\)</span> is often the first ESDA step: it tells you whether spatial dependence is present overall, but not <strong>where</strong> it is concentrated. That motivates the local methods in the companion notebook on local spatial autocorrelation.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.1.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>

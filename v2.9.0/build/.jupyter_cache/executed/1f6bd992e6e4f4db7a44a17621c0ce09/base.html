@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>&lt;no title&gt; &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../../../../_static/documentation_options.js?v=6358a976"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../../installation.html">Installation</a></li>
+                <li><a href="../../../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../../../api.html">API</a></li>
+                <li><a href="../../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/shape-measures.html#Inertial-Measures">Inertial Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/correlogram.html">Distance Bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/correlogram.html#KNN-Distance">KNN Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../notebooks/topo.html">Topological Measures of Geographical Surfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda/blob/main/build/.jupyter_cache/executed/1f6bd992e6e4f4db7a44a17621c0ce09/base.ipynb">build/.jupyter_cache/executed/1f6bd992e6e4f4db7a44a17621c0ce09/base.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/main?filepath=build/.jupyter_cache/executed/1f6bd992e6e4f4db7a44a17621c0ce09/base.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">geodatasets</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>  <span class="c1"># work with spatial data</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>  <span class="c1"># math tools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span>  <span class="c1"># further visualization tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>  <span class="c1"># construct spatial relations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>  <span class="c1"># visualize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>  <span class="c1"># calculate correlation</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">esda.moran</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran_Local</span><span class="p">,</span> <span class="n">Moran_Local_BV</span>  <span class="c1"># standard Moran</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">esda.moran_local_mv</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MoranLocalConditional</span><span class="p">,</span>  <span class="c1"># new Moran</span>
+    <span class="n">MoranLocalPartial</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">geodatasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;geoda.airbnb&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;price_pp&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_2_1.png" src="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_2_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">price_pp</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">crowded</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># are expensive places near expensive places?</span>
+<span class="n">Iy</span> <span class="o">=</span> <span class="n">Moran_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="c1"># are crowded plcaes near crowded places?</span>
+<span class="n">Ix</span> <span class="o">=</span> <span class="n">Moran_Local</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="c1"># are expensive places also crowded places?</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># are expensive places near crowded places?</span>
+<span class="n">Ixy</span> <span class="o">=</span> <span class="n">Moran_Local_BV</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="c1"># are crowded places near expensive places?</span>
+<span class="n">Iyx</span> <span class="o">=</span> <span class="n">Moran_Local_BV</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="c1"># are expensive places near expensive places, adjusted for crowding?</span>
+<span class="n">p_lmo</span> <span class="o">=</span> <span class="n">MoranLocalPartial</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="c1"># assuming crowding explains price,</span>
+<span class="c1"># are places with high post-crowding premiums near one another?</span>
+<span class="n">a_lmo</span> <span class="o">=</span> <span class="n">MoranLocalConditional</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+<span class="c1"># this is a scaling factor for the multivariable statistics</span>
+<span class="n">scaling</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;equal&quot;</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">((</span><span class="n">Iy</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">Ixy</span><span class="o">.</span><span class="n">Is</span><span class="p">)</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">p_lmo</span><span class="o">.</span><span class="n">association_</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">Iy</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">Ixy</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">Iyx</span><span class="o">.</span><span class="n">Is</span> <span class="o">+</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Ix</span><span class="o">.</span><span class="n">Is</span><span class="p">)</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">a_lmo</span><span class="o">.</span><span class="n">association_</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span><span class="p">])</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Splitting an OLS&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Combining basic stats&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">([</span><span class="s2">&quot;Partial Local Moran&quot;</span><span class="p">,</span> <span class="s2">&quot;Axiliary Local Moran&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_5_0.png" src="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_5_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">quadcolor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">off_sign</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">neg_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="n">quad</span> <span class="o">=</span> <span class="n">off_sign</span> <span class="o">+</span> <span class="n">neg_y</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;powderblue&quot;</span><span class="p">,</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightsalmon&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">colors</span><span class="p">[</span><span class="n">quad</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+    <span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span> <span class="o">=</span> <span class="n">Iy</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">Iy</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span> <span class="o">@</span> <span class="n">Iy</span><span class="o">.</span><span class="n">z</span>
+    <span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_lmo</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a_lmo</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">new_x</span> <span class="o">-</span> <span class="n">start_x</span><span class="p">,</span> <span class="n">new_y</span> <span class="o">-</span> <span class="n">start_y</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">quadcolor</span><span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Iy</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">ax_</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">start_x</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">start_y</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+            <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+            <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+            <span class="n">width</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+            <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">head_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">ax_</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Hotspot&quot;</span><span class="p">,</span> <span class="s2">&quot;Pit&quot;</span><span class="p">,</span> <span class="s2">&quot;Peak&quot;</span><span class="p">,</span> <span class="s2">&quot;Coldspot&quot;</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">],</span>
+                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span> <span class="k">if</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.025</span> <span class="k">if</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.6</span><span class="p">),</span>
+                <span class="n">xycoords</span><span class="o">=</span><span class="s2">&quot;axes fraction&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$y-\rho x$&quot;</span><span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">((</span><span class="sa">r</span><span class="s2">&quot;$\mathbf</span><span class="si">{W}</span><span class="s2">y$&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\mathbf</span><span class="si">{W}</span><span class="s2">(y-\rho x)$&quot;</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+<span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_7_0.png" src="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_7_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">circular_hist</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">gaps</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Produce a circular histogram of angles on ax.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : matplotlib.axes._subplots.PolarAxesSubplot</span>
+<span class="sd">        axis instance created with subplot_kw=dict(projection=&#39;polar&#39;).</span>
+
+<span class="sd">    x : array</span>
+<span class="sd">        Angles to plot, expected in units of radians.</span>
+
+<span class="sd">    bins : int, optional</span>
+<span class="sd">        Defines the number of equal-width bins in the range. The default is 16.</span>
+
+<span class="sd">    density : bool, optional</span>
+<span class="sd">        If True plot frequency proportional to area. If False plot frequency</span>
+<span class="sd">        proportional to radius. The default is True.</span>
+
+<span class="sd">    offset : float, optional</span>
+<span class="sd">        Sets the offset for the location of the 0 direction in units of</span>
+<span class="sd">        radians. The default is 0.</span>
+
+<span class="sd">    gaps : bool, optional</span>
+<span class="sd">        Whether to allow gaps between bins. When gaps = False the bins are</span>
+<span class="sd">        forced to partition the entire [-pi, pi] range. The default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    n : array or list of arrays</span>
+<span class="sd">        The number of values in each bin.</span>
+
+<span class="sd">    bins : array</span>
+<span class="sd">        The edges of the bins.</span>
+
+<span class="sd">    patches : `.BarContainer` or list of a single `.Polygon`</span>
+<span class="sd">        Container of individual artists used to create the histogram</span>
+<span class="sd">        or list of such containers if there are multiple input datasets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">np</span> <span class="o">=</span> <span class="n">numpy</span>
+    <span class="c1"># Wrap angles to [-pi, pi)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="c1"># Force bins to partition entire circle</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">gaps</span><span class="p">:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Bin data and record counts</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+
+    <span class="c1"># Compute width of each bin</span>
+    <span class="n">widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
+
+    <span class="c1"># By default plot frequency proportional to area</span>
+    <span class="k">if</span> <span class="n">density</span><span class="p">:</span>
+        <span class="c1"># Area to assign each bin</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span>
+        <span class="c1"># Calculate corresponding bin radius</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="n">area</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+    <span class="c1"># Otherwise plot frequency proportional to radius</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="c1"># Plot data on ax</span>
+    <span class="n">patches</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+        <span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Set the direction of the zero angle</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_theta_offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+    <span class="c1"># Remove ylabels for area plots (they are mostly obstructive)</span>
+    <span class="k">if</span> <span class="n">density</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;polar&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">((</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)):</span>
+    <span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span> <span class="o">=</span> <span class="n">Iy</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">Iy</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span> <span class="o">@</span> <span class="n">Iy</span><span class="o">.</span><span class="n">z</span>
+    <span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_lmo</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a_lmo</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">new_x</span> <span class="o">-</span> <span class="n">start_x</span><span class="p">,</span> <span class="n">new_y</span> <span class="o">-</span> <span class="n">start_y</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">quadcolor</span><span class="p">(</span>
+        <span class="n">dx</span><span class="p">,</span>
+        <span class="n">dy</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">new_y</span><span class="p">,</span>
+        <span class="n">colors</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;violet&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgreen&quot;</span><span class="p">]),</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Iy</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">ax_</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">start_y</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                <span class="n">width</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+                <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="n">ax_</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">ax_</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Change, Univariate to Part-Conditional&quot;</span><span class="p">)</span>
+        <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+            <span class="n">handles</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                    <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;violet&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgreen&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="p">],</span>
+            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X Heats y&quot;</span><span class="p">,</span> <span class="s2">&quot;X Pits y&quot;</span><span class="p">,</span> <span class="s2">&quot;X Cools y&quot;</span><span class="p">,</span> <span class="s2">&quot;X Peaks y&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">circular_hist</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bin_</span><span class="p">,</span> <span class="n">patch_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">patches</span><span class="o">.</span><span class="n">patches</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;lightgreen&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;violet&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;purple&quot;</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Change, Univariate to Full Conditional&quot;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_9_0.png" src="../../../../_images/build_.jupyter_cache_executed_1f6bd992e6e4f4db7a44a17621c0ce09_base_9_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="c1"># | #| jupyter: {source_hidden: false}</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+
+<span class="n">partial_moves</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+    <span class="n">Iy</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
+    <span class="n">p_lmo</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hotspot&quot;</span><span class="p">,</span> <span class="s2">&quot;pit&quot;</span><span class="p">,</span> <span class="s2">&quot;coldspot&quot;</span><span class="p">,</span> <span class="s2">&quot;peak&quot;</span><span class="p">]</span>
+<span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Partial&quot;</span>
+<span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Univariate&quot;</span>
+
+<span class="n">aux_moves</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+    <span class="n">Iy</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
+    <span class="n">a_lmo</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">aux_moves</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">aux_moves</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hotspot&quot;</span><span class="p">,</span> <span class="s2">&quot;pit&quot;</span><span class="p">,</span> <span class="s2">&quot;coldspot&quot;</span><span class="p">,</span> <span class="s2">&quot;peak&quot;</span><span class="p">]</span>
+<span class="n">aux_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Auxiliary&quot;</span>
+<span class="n">aux_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Univariate&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="n">partial_moves</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Partial</th>
+      <th>hotspot</th>
+      <th>pit</th>
+      <th>coldspot</th>
+      <th>peak</th>
+    </tr>
+    <tr>
+      <th>Univariate</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>hotspot</th>
+      <td>14</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>pit</th>
+      <td>4</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>coldspot</th>
+      <td>0</td>
+      <td>0</td>
+      <td>24</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>peak</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># | echo: false</span>
+<span class="n">aux_moves</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Auxiliary</th>
+      <th>hotspot</th>
+      <th>pit</th>
+      <th>coldspot</th>
+      <th>peak</th>
+    </tr>
+    <tr>
+      <th>Univariate</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>hotspot</th>
+      <td>14</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>pit</th>
+      <td>4</td>
+      <td>7</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>coldspot</th>
+      <td>0</td>
+      <td>5</td>
+      <td>19</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>peak</th>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../../../../_sources/build/.jupyter_cache/executed/1f6bd992e6e4f4db7a44a17621c0ce09/base.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

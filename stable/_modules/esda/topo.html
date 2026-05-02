@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>esda.topo &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
+    <script src="../../_static/documentation_options.js?v=6358a976"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Inertial-Measures">Inertial Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/correlogram.html">Distance Bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/correlogram.html#KNN-Distance">KNN Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../notebooks/topo.html">Topological Measures of Geographical Surfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for esda.topo</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">distance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">mode</span> <span class="k">as</span> <span class="n">most_common_value</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_array</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+    <span class="n">HAS_TQDM</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_TQDM</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_passthrough</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sequence</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_metric</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provide a distance function that you can use</span>
+<span class="sd">    to find the distance betwen arbitrary points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
+        <span class="n">distance_func</span> <span class="o">=</span> <span class="n">metric</span>
+    <span class="k">elif</span> <span class="n">metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;haversine&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">autojit</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">autojit</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">func</span>
+
+        <span class="nd">@autojit</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">harcdist</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Compute the kernel of haversine&quot;&quot;&quot;</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">cosp1</span><span class="p">,</span> <span class="n">cosp2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">cosp2</span> <span class="o">*</span> <span class="n">cosp1</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">))</span>
+
+        <span class="n">distance_func</span> <span class="o">=</span> <span class="n">harcdist</span>
+    <span class="k">elif</span> <span class="n">metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;precomputed&quot;</span><span class="p">:</span>
+        <span class="c1"># so, in this case, coordinates is actually distance matrix of some kind</span>
+        <span class="c1"># and is assumed aligned to X, such that the distance from X[a] to X[b] is</span>
+        <span class="c1"># coordinates[a,b], confusingly... So, we&#39;ll re-write them as &quot;distances&quot;</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">assert</span> <span class="n">k</span> <span class="o">==</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span>
+            <span class="s2">&quot;With metric=&#39;precomputed&#39;, coordinates must be an (n,n)&quot;</span>
+            <span class="s2">&quot; matrix representing distances between coordinates.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">lookup_distance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Find location of points a,b in X and return precomputed distances&quot;&quot;&quot;</span>
+            <span class="p">(</span><span class="n">aloc</span><span class="p">,)</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+            <span class="p">(</span><span class="n">bloc</span><span class="p">,)</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">aloc</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bloc</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;Precomputed distances cannot disambiguate coincident points.&quot;</span>
+                    <span class="s2">&quot; Add a slight bit of noise to the input to force them&quot;</span>
+                    <span class="s2">&quot; into non-coincidence and re-compute the distance matrix.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">aloc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bloc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;Precomputed distances cannot compute distances to new points.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="p">[</span><span class="n">aloc</span><span class="p">,</span> <span class="n">bloc</span><span class="p">]</span>
+
+        <span class="n">distance_func</span> <span class="o">=</span> <span class="n">lookup_distance</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">distance_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Metric &#39;</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">&#39; not understood. Choose &quot;</span>
+                <span class="s2">&quot;something available in scipy.spatial.distance.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">return</span> <span class="n">distance_func</span>
+
+
+<div class="viewcode-block" id="isolation">
+<a class="viewcode-back" href="../../source/generated/esda.isolation.html#esda.isolation">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">isolation</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span>
+    <span class="n">coordinates</span><span class="p">,</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
+    <span class="n">middle</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+    <span class="n">return_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">progressbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the isolation of each value of X by constructing the distance</span>
+<span class="sd">    to the nearest higher value in the data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : numpy.ndarray</span>
+<span class="sd">        (N, p) array of data to use as input. If p &gt; 1, the &quot;elevation&quot; is computed</span>
+<span class="sd">        using the topo.to_elevation function.</span>
+<span class="sd">    coordinates : numpy.ndarray</span>
+<span class="sd">        (N,k) array of locations for X to compute distances. If</span>
+<span class="sd">        metric=&#39;precomputed&#39;, this should contain the distances from</span>
+<span class="sd">        each point to every other point, and k == N.</span>
+<span class="sd">    metric : string or callable (default: &#39;euclidean&#39;)</span>
+<span class="sd">        name of distance metric in scipy.spatial.distance, or function, that can be</span>
+<span class="sd">        used to compute distances between locations. If &#39;precomputed&#39;, ad-hoc function</span>
+<span class="sd">        will be defined to look up distances between points instead.</span>
+<span class="sd">    middle : string or callable (default: &#39;mean&#39;)</span>
+<span class="sd">        method to define the elevation of points. See to_elevation for more details.</span>
+<span class="sd">    return_all : bool (default: False)</span>
+<span class="sd">        if False, only return the isolation (distance to nearest higher value).</span>
+<span class="sd">    progressbar: bool (default: False)</span>
+<span class="sd">        if True, show a progressbar for the computation.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    either (N,) array of isolation values, or a pandas dataframe containing the full</span>
+<span class="sd">    tree of precedence for the isolation tree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">to_elevation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">middle</span><span class="o">=</span><span class="n">middle</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">rtree.index</span><span class="w"> </span><span class="kn">import</span> <span class="n">Index</span> <span class="k">as</span> <span class="n">SpatialIndex</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;rtree library must be installed to use the prominence measure&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="n">distance_func</span> <span class="o">=</span> <span class="n">_resolve_metric</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+    <span class="n">sort_order</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">SpatialIndex</span><span class="p">()</span>
+    <span class="n">ix</span> <span class="o">=</span> <span class="n">sort_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">ix</span><span class="p">]),</span> <span class="n">obj</span><span class="o">=</span><span class="n">X</span><span class="p">[</span><span class="n">ix</span><span class="p">])</span>
+    <span class="n">precedence_tree</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ix</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">progressbar</span> <span class="ow">and</span> <span class="n">HAS_TQDM</span><span class="p">:</span>
+        <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span>
+    <span class="k">elif</span> <span class="n">progressbar</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">HAS_TQDM</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;The `tqdm` module is required for progressbars.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pbar</span> <span class="o">=</span> <span class="n">_passthrough</span>
+
+    <span class="k">for</span> <span class="n">iter_ix</span><span class="p">,</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">pbar</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">sort_order</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="n">iter_ix</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">ix</span><span class="p">,]</span>
+        <span class="p">(</span><span class="n">match</span><span class="p">,)</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">location</span><span class="p">),</span> <span class="n">objects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">higher_rank</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">higher_value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">object</span>
+        <span class="n">higher_location</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">bbox</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">higher_ix</span> <span class="o">=</span> <span class="n">sort_order</span><span class="p">[</span><span class="n">higher_rank</span><span class="p">]</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">distance_func</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">higher_location</span><span class="p">)</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="n">higher_value</span> <span class="o">-</span> <span class="n">value</span>
+        <span class="n">precedence_tree</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ix</span><span class="p">,</span> <span class="n">higher_ix</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">higher_rank</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">gap</span><span class="p">])</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">location</span><span class="p">),</span> <span class="n">obj</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+    <span class="c1"># return precedence_tree</span>
+    <span class="n">precedence_tree</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">precedence_tree</span><span class="p">)</span>
+    <span class="c1"># print(precedence_tree.shape)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">precedence_tree</span><span class="p">)</span>
+    <span class="n">out</span><span class="p">[</span><span class="n">sort_order</span><span class="p">]</span> <span class="o">=</span> <span class="n">precedence_tree</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">out</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;parent_index&quot;</span><span class="p">,</span> <span class="s2">&quot;rank&quot;</span><span class="p">,</span> <span class="s2">&quot;parent_rank&quot;</span><span class="p">,</span> <span class="s2">&quot;isolation&quot;</span><span class="p">,</span> <span class="s2">&quot;gap&quot;</span><span class="p">],</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;parent_index&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">return_all</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">isolation</span><span class="o">.</span><span class="n">values</span></div>
+
+
+
+<div class="viewcode-block" id="prominence">
+<a class="viewcode-back" href="../../source/generated/esda.prominence.html#esda.prominence">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prominence</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span>
+    <span class="n">connectivity</span><span class="p">,</span>
+    <span class="n">return_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">gdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">middle</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+    <span class="n">progressbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the prominence of peaks in input, given a connectivity matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : numpy.ndarray</span>
+<span class="sd">        an array of shape N,p containing data to use for computing prominence. When</span>
+<span class="sd">        p &gt; 1, X will be converted to an &quot;elevation&quot; using to_elevation.</span>
+<span class="sd">    connectivity : scipy.sparse matrix</span>
+<span class="sd">        a sparse matrix encoding the connectivity graph pertaining to rows of X. If</span>
+<span class="sd">        coordinates are provided, they must be (N,2), and the delaunay triangulation</span>
+<span class="sd">        will be computed.</span>
+<span class="sd">    return_class : bool (default: False)</span>
+<span class="sd">        whether or not to return additional information about the result, such as</span>
+<span class="sd">        the set of dominating peaks or the set of classifications for each observation.</span>
+<span class="sd">    verbose : bool (default: None)</span>
+<span class="sd">        whether or not to print extra information about the progress of the algorithm.</span>
+<span class="sd">    middle : string or callable (default: &quot;mean&quot;)</span>
+<span class="sd">        how to compute the center of mass from X, when the dimension of X &gt; 2.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    the prominence of each observation in X, possibly along with the</span>
+<span class="sd">    set of saddle points, peaks, and/or dominating peak tree.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    An observation has 0 prominence when it is a saddle point.</span>
+<span class="sd">    An observation has positive prominence when it is a peak, and this</span>
+<span class="sd">    is computed as the elevation of the peak minus the elevation of the saddle point.</span>
+
+<span class="sd">    Observations have &quot;NA&quot; prominence when they are neither a saddle point nor a peak.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">gdf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;matplotlib library must be installed to use the scatterplot feature&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">to_elevation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">middle</span><span class="o">=</span><span class="n">middle</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">n</span><span class="p">,)</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">connectivity</span> <span class="o">=</span> <span class="n">_check_connectivity</span><span class="p">(</span><span class="n">connectivity</span><span class="p">)</span>
+
+    <span class="c1"># sort the variable in descending order</span>
+    <span class="n">sort_order</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="n">peaks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">assessed_peaks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">prominence</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">dominating_peak</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">predecessors</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">keycols</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">classifications</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="n">key_cols</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">progressbar</span> <span class="ow">and</span> <span class="n">HAS_TQDM</span><span class="p">:</span>
+        <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span>
+    <span class="k">elif</span> <span class="n">progressbar</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">HAS_TQDM</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;The `tqdm` module is required for progressbars.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pbar</span> <span class="o">=</span> <span class="n">_passthrough</span>
+
+    <span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pbar</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">sort_order</span><span class="p">])):</span>
+        <span class="c1"># This is needed to break ties in the same way that argsort does. A more</span>
+        <span class="c1"># natural way to do this is to use X &gt;= value, but if value is tied, then</span>
+        <span class="c1"># that would generate a mask where too many elements are selected!</span>
+        <span class="c1"># e.g. mask.sum() &gt; rank</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">sort_order</span><span class="p">[:</span> <span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="p">(</span><span class="n">full_indices</span><span class="p">,)</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+        <span class="n">this_full_ix</span> <span class="o">=</span> <span class="p">(</span><span class="n">ids</span><span class="p">[</span><span class="n">sort_order</span><span class="p">])[</span><span class="n">rank</span><span class="p">]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;assessing </span><span class="si">{</span><span class="n">this_full_ix</span><span class="si">}</span><span class="s2"> (rank: </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">, value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="c1"># use the dominating_peak vector. A new obs either has:</span>
+        <span class="c1">#   Neighbors whose dominating_peak...</span>
+        <span class="c1">#       1. ... are all -1 (new peak)</span>
+        <span class="c1">#       2. ... are all -1 or an integer (slope of current peak)</span>
+        <span class="c1">#       3. ... include at least two integers and any -1 (key col)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">neighbs</span> <span class="o">=</span> <span class="n">connectivity</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+        <span class="n">this_preds</span> <span class="o">=</span> <span class="n">predecessors</span><span class="p">[</span><span class="n">neighbs</span><span class="p">]</span>
+
+        <span class="c1"># need to keep ordering in this sublist to preserve hierarchy</span>
+        <span class="n">this_unique_preds</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">peaks</span> <span class="k">if</span> <span class="p">((</span><span class="n">p</span> <span class="ow">in</span> <span class="n">this_preds</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">))]</span>
+        <span class="n">joins_new_subgraph</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">this_unique_preds</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">assessed_peaks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">this_unique_preds</span><span class="p">)</span> <span class="ow">in</span> <span class="n">key_cols</span><span class="p">:</span>
+            <span class="n">classification</span> <span class="o">=</span> <span class="s2">&quot;slope&quot;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">this_unique_preds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">classification</span> <span class="o">=</span> <span class="s2">&quot;peak&quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">this_unique_preds</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">joins_new_subgraph</span><span class="p">:</span>
+            <span class="n">classification</span> <span class="o">=</span> <span class="s2">&quot;keycol&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">classification</span> <span class="o">=</span> <span class="s2">&quot;slope&quot;</span>
+
+        <span class="n">classifications</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">classification</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">classification</span> <span class="o">==</span> <span class="s2">&quot;keycol&quot;</span>
+        <span class="p">):</span>  <span class="c1"># this_ix merges two or more subgraphs, so is a key_col</span>
+            <span class="c1"># find the peaks it joins</span>
+            <span class="n">now_joined_peaks</span> <span class="o">=</span> <span class="n">this_unique_preds</span>
+            <span class="c1"># add them as keys for the key_col lut</span>
+            <span class="n">key_cols</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="nb">tuple</span><span class="p">(</span><span class="n">now_joined_peaks</span><span class="p">):</span> <span class="n">this_full_ix</span><span class="p">})</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">this_full_ix</span><span class="si">}</span><span class="s2"> is a key col between </span><span class="si">{</span><span class="n">now_joined_peaks</span><span class="si">}</span><span class="s2">!&quot;</span>
+            <span class="n">dominating_peak</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">now_joined_peaks</span><span class="p">[</span>
+                <span class="o">-</span><span class="mi">1</span>
+            <span class="p">]</span>  <span class="c1"># lowest now-joined peak</span>
+            <span class="n">predecessors</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">now_joined_peaks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">prominence</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># given we now know the key col, get the prominence for</span>
+            <span class="c1"># unassayed peaks in the subgraph</span>
+            <span class="k">for</span> <span class="n">peak_ix</span> <span class="ow">in</span> <span class="n">now_joined_peaks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">peak_ix</span> <span class="ow">in</span> <span class="n">assessed_peaks</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># prominence is peak - key col</span>
+                <span class="n">keycols</span><span class="p">[</span><span class="n">peak_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_full_ix</span>
+                <span class="n">prominence</span><span class="p">[</span><span class="n">peak_ix</span><span class="p">]</span> <span class="o">-=</span> <span class="n">value</span>
+                <span class="n">assessed_peaks</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">peak_ix</span><span class="p">,))</span>
+        <span class="k">elif</span> <span class="n">classification</span> <span class="o">==</span> <span class="s2">&quot;peak&quot;</span><span class="p">:</span>  <span class="c1"># this_ix is a new peak since it&#39;s disconnected</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">this_full_ix</span><span class="si">}</span><span class="s2"> is a peak!&quot;</span>
+            <span class="c1"># its parent is the last visited peak (for precedence purposes)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">previous_peak</span> <span class="o">=</span> <span class="n">peaks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">previous_peak</span> <span class="o">=</span> <span class="n">this_full_ix</span>
+            <span class="k">if</span> <span class="n">this_full_ix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">peaks</span><span class="p">:</span>
+                <span class="n">peaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_full_ix</span><span class="p">)</span>
+            <span class="n">dominating_peak</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">previous_peak</span>
+            <span class="n">predecessors</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_full_ix</span>
+            <span class="c1"># we initialize prominence here, rather than compute it solely in</span>
+            <span class="c1"># the `key_col` branch because a graph `island` disconnected observation</span>
+            <span class="c1"># should have prominence &quot;value - 0&quot;, since it has no key cols</span>
+            <span class="n">prominence</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># this_ix is connected to an existing peak, but doesn&#39;t bridge peaks.</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">this_full_ix</span><span class="si">}</span><span class="s2"> is a slope!&quot;</span>
+            <span class="c1"># get all the peaks that are linked to this slope</span>
+            <span class="n">this_peak</span> <span class="o">=</span> <span class="n">this_unique_preds</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">this_peak</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># if there&#39;s only one peak the slope is related to</span>
+                <span class="c1"># then use it</span>
+                <span class="n">best_peak</span> <span class="o">=</span> <span class="n">this_peak</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># otherwise, if there are multiple peaks</span>
+                <span class="c1"># pick the one that most of its neighbors are assigned to</span>
+                <span class="n">best_peak</span> <span class="o">=</span> <span class="n">most_common_value</span><span class="p">(</span>
+                    <span class="n">this_unique_preds</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">all_on_slope</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="n">dominating_peak</span> <span class="o">==</span> <span class="n">best_peak</span><span class="p">]</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">all_on_slope</span><span class="si">}</span><span class="s2"> are on the slopes of </span><span class="si">{</span><span class="n">best_peak</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="n">dominating_peak</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_peak</span>
+            <span class="n">predecessors</span><span class="p">[</span><span class="n">this_full_ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_peak</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;--------------------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;at the </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2"> iteration:</span><span class="se">\n</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">peaks</span><span class="se">\t</span><span class="si">{</span><span class="n">peaks</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">prominence</span><span class="se">\t</span><span class="si">{</span><span class="n">prominence</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">key_cols</span><span class="se">\t</span><span class="si">{</span><span class="n">key_cols</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">gdf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">peakframe</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">peaks</span><span class="p">]</span>
+            <span class="n">keycolframe</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">key_cols</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
+            <span class="n">_isin_peak</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">peakframe</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">_isin_keycol</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">keycolframe</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">slopeframe</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">_isin_peak</span> <span class="o">|</span> <span class="n">_isin_keycol</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">]</span>
+            <span class="n">rest</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+            <span class="n">this_geom</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">this_full_ix</span><span class="p">]]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">rest</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">slopeframe</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ec</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;linen&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">keycolframe</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ec</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">peakframe</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ec</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">this_geom</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
+                <span class="k">break</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+            <span class="n">prominence</span><span class="o">=</span><span class="n">prominence</span><span class="p">,</span>
+            <span class="n">classification</span><span class="o">=</span><span class="n">classifications</span><span class="p">,</span>
+            <span class="n">predecessor</span><span class="o">=</span><span class="n">predecessors</span><span class="p">,</span>
+            <span class="n">keycol</span><span class="o">=</span><span class="n">keycols</span><span class="p">,</span>
+            <span class="n">dominating_peak</span><span class="o">=</span><span class="n">dominating_peak</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">return_all</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">prominence</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">to_elevation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">middle</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the &quot;elevation&quot; of coordinates in p-dimensional space.</span>
+
+<span class="sd">    For 1 dimensional X, this simply sets the zero point at the minimum value</span>
+<span class="sd">    for the data. As an analogue to physical elevation, this means that the</span>
+<span class="sd">    lowest value in 1-dimensional X is considered &quot;sea level.&quot;</span>
+
+<span class="sd">    For X in higher dimension, we treat X as defining a location on a (hyper)sphere.</span>
+<span class="sd">    The &quot;elevation,&quot; then, is the distance from the center of mass.</span>
+<span class="sd">    So, this computes the distance of each point to the overall the center of mass</span>
+<span class="sd">    and uses this as the &quot;elevation,&quot; setting sea level (zero) to the lowest elevation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : numpy.ndarray</span>
+<span class="sd">        Array of values for which to compute elevation.</span>
+<span class="sd">    middle : callable or string</span>
+<span class="sd">        name of function in numpy (or function itself)</span>
+<span class="sd">        used to compute the center point of X</span>
+<span class="sd">    metric : string</span>
+<span class="sd">        metric to use in `scipy.spatial.distance.cdist` to</span>
+<span class="sd">        compute the distance from the center of mass to the point.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    (N,1)-shaped numpy array containing the &quot;elevation&quot; of</span>
+<span class="sd">    each point relative to sea level (zero).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">X</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">middle</span><span class="p">):</span>
+            <span class="n">middle_point</span> <span class="o">=</span> <span class="n">middle</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">middle</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">numpy</span><span class="p">,</span> <span class="n">middle</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">to_elevation</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">middle</span><span class="o">=</span><span class="n">middle</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;numpy has no &#39;</span><span class="si">{</span><span class="n">middle</span><span class="si">}</span><span class="s2">&#39; function to &quot;</span>
+                    <span class="s2">&quot;compute the middle of a point cloud.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        <span class="n">distance_from_center</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">middle_point</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">to_elevation</span><span class="p">(</span><span class="n">distance_from_center</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_connectivity</span><span class="p">(</span><span class="n">connectivity_or_coordinates</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that connectivity provided is either:</span>
+<span class="sd">    1. a sparse graph from scipy.sparse</span>
+<span class="sd">    2. a weights object from libpysal that we need to cast to a scipy.sparse matrix</span>
+<span class="sd">    3. a set of coordinates that we need to build the delaunay triangulation</span>
+<span class="sd">       and then return the graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">issparse</span>
+
+    <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">connectivity_or_coordinates</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">connectivity_or_coordinates</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">assert</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Connectivity matrix must be square, but is </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">connectivity_or_coordinates</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">connectivity_or_coordinates</span><span class="p">),</span> <span class="n">weights</span><span class="o">.</span><span class="n">W</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">connectivity_or_coordinates</span><span class="o">.</span><span class="n">sparse</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">Voronoi</span>
+
+        <span class="k">return</span> <span class="n">_check_connectivity</span><span class="p">(</span><span class="n">Voronoi</span><span class="p">(</span><span class="n">connectivity_or_coordinates</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

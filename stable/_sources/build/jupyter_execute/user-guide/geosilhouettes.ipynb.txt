@@ -1,0 +1,914 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Geosilhouettes: geographical measures of cluster fit\n",
+    "\n",
+    "[Silhouette statistics](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_samples.html) (<a href=\"https://doi.org/10.1016/0377-0427(87)90125-7\">Rousseeuw, 1987</a>) are a nonparametric measure of an observation's goodness of fit to a given cluster. Where clusters have a *geographical* interpretation, such as when they represent geographical regions, silhouette statistics can incorporate *spatial thinking* in order to provide more useful measures of cluster fit.   The [paper by Wolf, Knaap, & Rey (2019)](https://doi.org/10.1177%2F2399808319875752).\n",
+    "([preprint on SocArXiv](https://osf.io/preprints/socarxiv/vd3uk/)) defines two:\n",
+    "\n",
+    "1. **Path Silhouettes**, which characterize the joint geographical and feature similarity in a clustering.\n",
+    "2. **Boundary Silhouettes**, which characterize how well-defined a geographical boundary is in a clustering. \n",
+    "\n",
+    "Together, these two new measures provide new ways to measure the goodness of fit of clusters in clustering problems in geographic data science. \n",
+    "\n",
+    "Below, we'll dig a little into how these are implemented in the `esda` package. First, though, let's set up some data. We'll be considering a single *univariate* dataset, the Gini index in 1989 in counties for the US Deep South."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:21.432685Z",
+     "iopub.status.busy": "2025-06-29T18:23:21.432437Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.895439Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.895224Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:21.432653Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import contextily\n",
+    "import geopandas\n",
+    "import libpysal\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy\n",
+    "\n",
+    "import esda\n",
+    "\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To focus in on only the deep south, we'll build an array of states that fall within the deep south:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.896001Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.895821Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.897518Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.897306Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.895992Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "focus_states = [\"Alabama\", \"Georgia\", \"Louisiana\", \"Mississippi\", \"South Carolina\"]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then, we'll read in data for all of the south, using the example datasets in the `libpysal` package:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.898517Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.898438Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.899861Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.899692Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.898510Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "south = libpysal.examples.example_manager.load(\"South\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.900219Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.900152Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.978719Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.978505Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.900213Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "south = geopandas.read_file(libpysal.examples.get_path(\"south.shp\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then, we'll filter out only the states in the deep south:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.979083Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.978978Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.983572Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.983370Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.979075Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep = south.query(\"STATE_NAME in @focus_states\").reset_index()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.983953Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.983875Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.985652Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.985468Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.983945Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep[\"state_label\"] = deep.STATE_NAME.apply(lambda x: focus_states.index(x))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Finally, for mapping purposes, let's get a basemap. This is done using the `contextily` package, which expects our data in a specific coordinate projection system. For more, check out the [`contextily` user guide](https://github.com/darribas/contextily/blob/master/contextily_guide.ipynb). "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.985947Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.985882Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.987264Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.987124Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.985940Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep.crs = 4326"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.987684Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.987592Z",
+     "iopub.status.idle": "2025-06-29T18:23:22.991659Z",
+     "shell.execute_reply": "2025-06-29T18:23:22.991500Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.987677Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep = deep.to_crs(epsg=3857)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:22.992039Z",
+     "iopub.status.busy": "2025-06-29T18:23:22.991968Z",
+     "iopub.status.idle": "2025-06-29T18:23:23.627574Z",
+     "shell.execute_reply": "2025-06-29T18:23:23.626516Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:22.992032Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "basemap, extent = contextily.bounds2img(\n",
+    "    *deep.total_bounds, zoom=6, source=contextily.providers.CartoDB.Positron\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:23.629155Z",
+     "iopub.status.busy": "2025-06-29T18:23:23.628511Z",
+     "iopub.status.idle": "2025-06-29T18:23:23.825967Z",
+     "shell.execute_reply": "2025-06-29T18:23:23.825728Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:23.629126Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, 2, figsize=(12, 3), sharex=True, sharey=True)\n",
+    "deep.plot(\"STATE_NAME\", ax=ax[0], alpha=0.6)\n",
+    "deep.plot(\"GI89\", ax=ax[1], cmap=\"plasma\", alpha=0.6)\n",
+    "for ax_ in ax:\n",
+    "    ax_.imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "    ax_.axis(deep.total_bounds[[0, 2, 1, 3]])\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## The Silhouette Score"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The standard silhouette score used in classification/grouping problems as measure of how well-fit an observation is to its current group. The measure is fairly robust, well-studied, and is common in many different problem areas. \n",
+    "\n",
+    "Statistically, the silhouette score is composed of a few components: \n",
+    "- $c$, the cluster in which $i$ is assigned\n",
+    "- $k$, another cluster in which $i$ is not currently assigned\n",
+    "- $d_i(c)$: the dissimilarity between observation $i$ and $i$'s own cluster $c$\n",
+    "- $d_i(k)$: the dissimilarity between observation $i$ and a cluster $k$ that $i$ is not in. \n",
+    "\n",
+    "Here, we define $d$ as an arbitrary dissimilarity metric. For most cases, it's normally the euclidean distance. So, if you see $d_i(c)$, this is the average dissimilarity between observation $i$ and all other observations $j$ in cluster $c$. \n",
+    "\n",
+    "Then, we need to define the *second best choice cluster*, $\\hat{k}$, which is a cluster that $i$ is most similar to, but of which $i$ is not currently a member:\n",
+    "$$\\hat{k}_i = k\\ | \\min_k \\{d_i(k)\\}$$\n",
+    "\n",
+    "This lets us define the silhouette score as the relationship between the dissimilarity scores for $i$ and its cluster $c$, and $i$ and the second-best choice cluster, $\\hat{k}$:\n",
+    "$$ s_i = \\frac{d_i(c) - d_i(\\hat{k})}{\\max\\left\\{d_i(c), d_i(\\hat{k})\\right\\}}$$\n",
+    "\n",
+    "This value is close to 1 when $i$ is much closer to its current cluster, $c$, than the second-best cluster, $\\hat{k}$, indicating strong fit to its current cluster. And, when $i$ is more similar to $\\hat{k}$ than to its own cluster $c$, the value of $s_i$ is close to -1. We can compute the score for each observation using `sklearn`'s `silhouette_samples`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:23.826385Z",
+     "iopub.status.busy": "2025-06-29T18:23:23.826306Z",
+     "iopub.status.idle": "2025-06-29T18:23:23.829957Z",
+     "shell.execute_reply": "2025-06-29T18:23:23.829764Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:23.826376Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from sklearn.metrics import silhouette_samples\n",
+    "\n",
+    "silhouettes = silhouette_samples(deep[[\"GI89\"]].values, deep.state_label)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, we can visualize the silhouette scores by county. With this information, we can see that there is very strong heterogeneity in the Gini coefficient *within* states, because the silhouette statisic for each county is usually negative (i.e. blue). But, in some areas (e.g. areas of South Carolina and Louisiana), the silhouette statistics for counties are positive (red), suggesting those counties are well-fit to their surroundings. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:23.831656Z",
+     "iopub.status.busy": "2025-06-29T18:23:23.831568Z",
+     "iopub.status.idle": "2025-06-29T18:23:23.985508Z",
+     "shell.execute_reply": "2025-06-29T18:23:23.985293Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:23.831648Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, 2, figsize=(12, 3))\n",
+    "ax[0].hist(silhouettes)\n",
+    "deep.plot(silhouettes, ax=ax[1], cmap=\"bwr\", vmin=-0.5, vmax=0.5, alpha=0.6)\n",
+    "ax[1].imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "ax[1].axis(deep.total_bounds[[0, 2, 1, 3]])\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "On the contrary, if we used a *data-driven* definition of regions, we might expect the silhouette scores to be more positive. For example, if we used $k$-means to define the *best* data-driven groups we could have for this data, we might have something like this:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:23.985946Z",
+     "iopub.status.busy": "2025-06-29T18:23:23.985864Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.013757Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.013462Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:23.985937Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from sklearn.cluster import KMeans\n",
+    "\n",
+    "data_driven_clustering = KMeans(n_clusters=len(focus_states)).fit(deep[[\"GI89\"]].values)\n",
+    "data_labels = data_driven_clustering.labels_\n",
+    "data_silhouettes = silhouette_samples(deep[[\"GI89\"]].values, data_labels)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This yields the following geography of inequality in the deep south:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.014249Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.014165Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.078288Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.078084Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.014238Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep.plot(data_labels, categorical=True, legend=True)\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And, in this geography of inequality, each county is very well fit to its group:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.078698Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.078630Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.192783Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.192575Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.078690Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, 2, figsize=(12, 3))\n",
+    "ax[0].hist(data_silhouettes)\n",
+    "deep.plot(data_silhouettes, ax=ax[1], cmap=\"bwr\", vmin=-0.5, vmax=0.5, alpha=0.6)\n",
+    "ax[1].imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "ax[1].axis(deep.total_bounds[[0, 2, 1, 3]])\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Nearest Label"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Fundamental to the measurement of the silhouette score is the idea of a *next best fit cluster*. This is $\\hat{k}_i$, the cluster to which $i$ *would* be assigned if it were not in its current cluster, $c$. This is a useful concept, because it shows the latent relationship between observations and other clusters. It gets at how the clustering *might* be different if different decisions about grouping/classification had been made, and helps us construct a measure of how much \"better\" $c$ currently is for $i$ than $\\hat{k}_i$ would be. \n",
+    "\n",
+    "But, by default, `scikit-learn` does not provide you with $\\hat{k}_i$. Instead, it only provides $s_i$. So, `esda` provides this for you in the `esda.silhouettes.nearest_label` function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.193156Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.193089Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.197119Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.196863Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.193148Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "nearest_label = esda.silhouettes.nearest_label(deep[[\"GI89\"]].values, deep.state_label)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "With this function, you can visualize the geography of the *second-best choice*, $\\hat{k}_i$. For example, most of the south of Alabama and Georgia and the [Mississippi Delta region](https://en.wikipedia.org/wiki/Mississippi_Delta) has a \"second choice\" similarity to the inequality profile of Louisiana. This means that, if these counties *were not* in their own states, they'd be most similar to counies in Louisiana. \n",
+    "\n",
+    "However, keep in mind that this idea of a *second choice* excludes $c_i$ from the potential list of *nearest labels*!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.197485Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.197421Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.425504Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.425272Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.197477Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "nearest_outside_state = numpy.asarray(focus_states)[nearest_label]\n",
+    "f, ax = plt.subplots(1, 2, figsize=(12, 4), sharex=True, sharey=True)\n",
+    "deep.plot(\"STATE_NAME\", ax=ax[0], categorical=True)\n",
+    "deep.plot(\n",
+    "    nearest_outside_state,\n",
+    "    ax=ax[1],\n",
+    "    legend=True,\n",
+    "    categorical=True,\n",
+    "    legend_kwds=dict(loc=\"lower right\", ncol=2),\n",
+    ")\n",
+    "ax[1].set_title(r\"Most similar *other* state to county ($\\hat{k}_i$)\")\n",
+    "for ax_ in ax:\n",
+    "    ax_.imshow(basemap, extent=extent, interpolation=\"bilinear\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To allow for this, the `keep_self` argument modifies `nearest_label` to return the nearest label out of *any* group, regardless of whether or not the observation is currently in that group. This means that the *nearest alternative label* is provided by `nearest_label`, but the *absolute nearest label* is provided by `esda.silhouettes.nearest_label(data, labels, keep_self=True)`. \n",
+    "\n",
+    "These two can be quite different. Below, you can see that the similarities definitely shift when we allow observations' nearest labels to be their *current* classification. There, we see that most counties are either more similar to Louisiana, or they're more similar to South Carolina. Forcing the return of the *nearest alternative label* caused Mississippi to be included as the second choice of most of the counties in Louisiana, and for Alabama & Georgia to be given the second choice of many counties in South Carolina. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.425911Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.425842Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.609727Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.609478Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.425903Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "nearest_label = esda.silhouettes.nearest_label(\n",
+    "    deep[[\"GI89\"]].values, deep.state_label, keep_self=True\n",
+    ")\n",
+    "nearest_state = numpy.asarray(focus_states)[nearest_label]\n",
+    "f, ax = plt.subplots(1, 2, figsize=(12, 4), sharex=True, sharey=True)\n",
+    "deep.plot(\"STATE_NAME\", ax=ax[0], categorical=True)\n",
+    "deep.plot(\n",
+    "    nearest_state,\n",
+    "    ax=ax[1],\n",
+    "    legend=True,\n",
+    "    categorical=True,\n",
+    "    legend_kwds=dict(loc=\"lower right\", ncol=2),\n",
+    ")\n",
+    "ax[1].set_title(r\"Most similar *other* state to county ($\\hat{k}_i$)\")\n",
+    "for ax_ in ax:\n",
+    "    ax_.imshow(basemap, extent=extent, interpolation=\"bilinear\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Geographical Structure"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "For many geographical analysis algorithms, we require some sense of geographical structure in order to \"understand\" geography. At its most basic level, this requires us to define a representation of geography that can be used in analysis. Often, this takes the form of a [*graph*, or *network*](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)), that links observations. In this mode of analysis, each *node* is an observation and each *edge* represents a geographic connection between observations. \n",
+    "\n",
+    "The `pysal`/`libpysal` libraries contain many tools for building graphs from geographical data. In these domains, it is common to refer to one representation of the geographical graph as a *spatial weights matrix*, since it reflects the *spatial weight* each observation has on every other observation. As such, this is stored in the `libpysal.weights` module. \n",
+    "\n",
+    "Here, we'll construct the [Rook Contiguity graph](https://gis.stackexchange.com/questions/172998/queen-vs-rook-neighborhood) (sometimes called the [von Neuman neighborhood](https://en.wikipedia.org/wiki/Von_Neumann_neighborhood)) for counties using the `libpysal.weights.Rook` constructor:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.610142Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.610073Z",
+     "iopub.status.idle": "2025-06-29T18:23:24.631645Z",
+     "shell.execute_reply": "2025-06-29T18:23:24.631377Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.610134Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "w = libpysal.weights.Rook.from_dataframe(deep, use_index=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To see what this looks like, we can plot the graph below, where \"connected\" counties have a black line drawn between their centers:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:24.631959Z",
+     "iopub.status.busy": "2025-06-29T18:23:24.631890Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.256506Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.256271Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:24.631951Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, ax = w.plot(deep, edge_kws=dict(linewidth=0.5), node_kws=dict(s=0))\n",
+    "deep.plot(\"STATE_NAME\", ax=ax, alpha=0.6)\n",
+    "ax.imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Path Silhouettes"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The path silhouette models the joint geographical and feature dissimilarity between two observations as a *joint* spatial and social similarity: \n",
+    "\n",
+    "$$ d(i,j) = d_f(i,j) * d_s(i,j)$$\n",
+    "\n",
+    "where $d_f(i,j)$ is the dissimilarity between the *features* for observations $i$ and $j$ and $d_s(i,j)$ is the *spatial* dissimilarity between sites $i$ and $j$. Often $d_s(i,j)$ is measured by the euclidean distance matrix between all pairs of sites, but this can sometimes include inaccurate or mis-representative information about distances for some kinds of spatial data. Therefore, the *path* silhouette uses a $d_s$ that computes the total pairwise dissimilarity for a *path* connecting $i$ and $j$. \n",
+    "\n",
+    "For the full distance matrix, this *path* dissimilarity between sites $i$ and $j$ reduces simply to the dissimilarity between sites $i$ and $j$, multiplied by the dissimilarity between sites $i$ and $j$. When $d_s$ is *not* the full distance matrix, $d_f(i,j) * d_s(i,j)$ is modeled as the length of the shortest path connecting sites $i$ and $j$. This path may include *other* intermediate sites, such that the whole path cost is the *sum* of the links on the shortest path from $i$ to $j$. For instance, if the shortest path from $i$ to $j$ is built from additional links $i \\rightarrow l \\rightarrow m \\rightarrow j$, then the path cost representing $d(i,j)$ is:\n",
+    "\n",
+    "$$ d(i,j) = d_f(i,l) * d_s(i,l) + d_f(l,m) * d_s(l,m) + d_f(m,j) * d_s(m,j)$$\n",
+    "\n",
+    "This *path metric* is common in geographical analysis problems, but provides a useful insight into the joint geographical-feature similarity of observations & groups. Then, with this $d$, the silouette is computed identically. \n",
+    "\n",
+    "In `esda`, this is done using the spatial weights object we built before, in addition to the same data and labels we used before for the classical silhouette:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.256990Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.256915Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.278522Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.278311Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.256981Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "path_silhouette = esda.path_silhouette(deep[[\"GI89\"]].values, deep.state_label, w)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.278843Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.278775Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.386803Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.386563Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.278836Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, 2, figsize=(12, 3))\n",
+    "ax[0].hist(path_silhouette)\n",
+    "deep.plot(path_silhouette, ax=ax[1], cmap=\"bwr\", vmin=-0.5, vmax=0.5)\n",
+    "ax[1].imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "ax[1].axis(deep.total_bounds[[0, 2, 1, 3]])\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "With this, we see that *most* path silhouetes are positive, but some (especially on the boundaries between similar states) are negative. Further, we see that the two states surfaced in the traditional silhouette analysis (Louisiana and South Carolina) are *again* strongly path-similar, meaning they're both geographically distinctive and homogenous in their inequality profiles. \n",
+    "\n",
+    "There is much additional output available from the `path_silhouette` function, but one useful output provides the path equivalent of `nearest_label`: the next best fit cluster under the path metric. To access this, pass `return_nbfc=True` to the `path_silhouette` function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.387161Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.387090Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.409692Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.409474Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.387154Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "path_silhouette, next_best_path = esda.path_silhouette(\n",
+    "    deep[[\"GI89\"]].values, deep.state_label, w, return_nbfc=True\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Intuitively with this, we see that the *path* similarity can enforce a strong spatial structure in the second choice cluster plots. For instance, the \"end\" states (Louisiana and South Carolina) have basically no choice other than their closest state. But, the middle three states are split quite neatly in half between their neighbors. \n",
+    "\n",
+    "However, together these combine in the silhouette plot to produce rather remarkable patterns in terms of joint geographical and feature similarity! The patterns don't strictly follow the boundaries. Indeed, the negative path silhouettes in north Georgia (largely driven by similarities within the Atlanta-Athens suburbs) and the positive areas completely disregard the divisions in the path-similar map. This suggests that this similarity changes smoothly over geography, even when the \"reference\" category does not. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.410062Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.409997Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.583277Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.583058Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.410055Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "next_best_path_state = numpy.asarray(focus_states)[next_best_path]\n",
+    "f, ax = plt.subplots(1, 2, figsize=(12, 4), sharex=True, sharey=True)\n",
+    "deep.plot(path_silhouette, ax=ax[0], cmap=\"bwr\", vmin=-0.5, vmax=0.5)\n",
+    "deep.plot(\n",
+    "    next_best_path_state,\n",
+    "    ax=ax[1],\n",
+    "    legend=True,\n",
+    "    categorical=True,\n",
+    "    legend_kwds=dict(loc=\"lower right\", ncol=2),\n",
+    ")\n",
+    "ax[1].set_title(\"Most path-similar other state\")\n",
+    "for ax_ in ax:\n",
+    "    ax_.imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Boundary Silhouettes"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The final measure of geographical similarity using silhouette statistics constraints the silhoutte \"second choice\" clusters to make geographical \"sense.\" By this, consider the map of second-choice clusters from the classic silhouette again:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.583693Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.583620Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.776478Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.776255Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.583685Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "nearest_label = esda.silhouettes.nearest_label(deep[[\"GI89\"]].values, deep.state_label)\n",
+    "nearest_outside_state = numpy.asarray(focus_states)[nearest_label]\n",
+    "f, ax = plt.subplots(1, 2, figsize=(12, 4), sharex=True, sharey=True)\n",
+    "deep.plot(\"STATE_NAME\", ax=ax[0], categorical=True)\n",
+    "deep.plot(\n",
+    "    nearest_outside_state,\n",
+    "    ax=ax[1],\n",
+    "    legend=True,\n",
+    "    categorical=True,\n",
+    "    legend_kwds=dict(loc=\"lower right\", ncol=2),\n",
+    ")\n",
+    "ax[1].set_title(r\"Most similar *other* state to county ($\\hat{k}_i$)\")\n",
+    "for ax_ in ax:\n",
+    "    ax_.imshow(basemap, extent=extent, interpolation=\"bilinear\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In this case, there are many counties in South Carolina whose \"second choice\" is all the way over in Louisiana! This is unrealistic, since these observations can't really plausibly be grouped with Louisiana counties in a geographical sense. To account for this, we restrict our attention only to counties that have a *feasible* second choice, meaning they could \"flip\" over to the other group without becoming isolated.\n",
+    "\n",
+    "This automatially restricts our attention to the *border* counties, those that touch another state. For a boundary silhouette, all \"interior\" observations, those that are *not* touching an observation in another group, have a default value of zero for their boundary silhouette. All others constrain $\\hat{k}_i$ to be a cluster that $i$ *is near*, geographically. With this constraint, the rest of the silhouette is computed as normal. \n",
+    "\n",
+    "To show what this looks like, we can use the `esda.boundary_silhouette` function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.776831Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.776762Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.822037Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.821782Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.776824Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "boundary_silhouette = esda.boundary_silhouette(\n",
+    "    deep[[\"GI89\"]].values, deep.state_label, w\n",
+    ")\n",
+    "deep[\"boundary_silhouette\"] = boundary_silhouette"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "For this, the *vast* majority of the observations are not on borders between states, so most boundary silhouettes are zeros:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.822356Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.822289Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.865482Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.865290Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.822349Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep.boundary_silhouette.hist()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "So, it often makes sense to consider these \"structural\" zeros separately from the observations that are *actually* on the boundary:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.865816Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.865748Z",
+     "iopub.status.idle": "2025-06-29T18:23:25.908156Z",
+     "shell.execute_reply": "2025-06-29T18:23:25.907932Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.865808Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "deep.query(\"boundary_silhouette != 0\").boundary_silhouette.hist()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "These observations are negative when a *boundary* county is more similar to the state on the *other side of the boundary* than it is to its own state. They are positive when a county is more similar to its own state than it is for the other state on the other side of the boundary. \n",
+    "\n",
+    "Visualizing this silhouette, it helps to separate out the zeros again:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:23:25.908520Z",
+     "iopub.status.busy": "2025-06-29T18:23:25.908457Z",
+     "iopub.status.idle": "2025-06-29T18:23:26.056649Z",
+     "shell.execute_reply": "2025-06-29T18:23:26.056420Z",
+     "shell.execute_reply.started": "2025-06-29T18:23:25.908513Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, 2, figsize=(12, 3))\n",
+    "ax[0].hist(deep.query(\"boundary_silhouette != 0\").boundary_silhouette)\n",
+    "deep.plot(\"STATE_NAME\", ax=ax[1], alpha=0.5)\n",
+    "deep.query(\"boundary_silhouette != 0\").plot(\n",
+    "    \"boundary_silhouette\", ax=ax[1], cmap=\"bwr\", vmin=-0.5, vmax=0.5, legend=True\n",
+    ")\n",
+    "ax[1].imshow(basemap, extent=extent, interpolation=\"bilinear\")\n",
+    "ax[1].axis(deep.total_bounds[[0, 2, 1, 3]])\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "From this, you can see things like:\n",
+    "- All the tracts on the Mississippi-Louisiana border have more similar Gini values to those in Louisiana. \n",
+    "- North and South Alabama differ significantly in their similarities to Mississippi; in the north, boundary tracts are much more \"Alabaman\" than in the south. \n",
+    "- The boundary between Alabama and Georgia is quite weak; most of the silhouttes are very close to zero, suggesting the dissimilarity in this area is rather gradual, and that the border tracts between the two are quite similar to either Alabama or Georgia. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Conclusion"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Overall, silhouette statistics are useful in the analysis of clustering and similarity. However, in geographical applications, it sometimes becomes important to understand the *geographical* structure of groups, in addition to the feature structure explored by silhouette statistics. So, two new silhouette statistics are proposed in Wolf, Knaap, and Rey (2019):\n",
+    "\n",
+    "1. The path silhouette, which measures the joint feature & geographical similarity.\n",
+    "2. The boundary silhouette, which measures the similarity of *boundaries* between groups. \n",
+    "\n",
+    "Both have distinct uses, and do not supersede the silhouette statistic. Rather, they are spatial complements that provide different information about the geographical structure of groups in clustering problems. "
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

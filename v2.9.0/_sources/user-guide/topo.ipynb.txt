@@ -1,0 +1,358 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Topological Measures of Geographical Surfaces"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "[*Levi John Wolf*](https://github.com/ljwolf)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import warnings\n",
+    "\n",
+    "import geopandas\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy\n",
+    "from libpysal import weights\n",
+    "\n",
+    "from esda import topo"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This notebook explains the usage and meaning of the `topo` functions, `prominence` and `isolation`. Both of these concepts arise from *topography*, the study of the forms and features of a surface. \n",
+    "\n",
+    "In this sense, topographical measures focus on the shape of a surface. In physical geography, `prominence` and `isolation` are both topographical measures that refer to how high (or how \"dominant\") a mountain is relative to its landscape. Mathematically, if we represent \"elevation\" with a surface (like a Digital Elevation Model, or DEM), then this becomes a way to characterize the local maxima, minima, and/or saddle points of a given surface. In this way, `prominence` (and `isolation`) are intricately connected to the local extrema and concavity/convexity of a surface, and provide useful ways to think about the structure of a geographical distribution. In a physical sense, the `isolation` of a mountain peak is *the distance you have to travel to find a higher point on the surface.* So, the common example given, say, on Wikipedia, is that Mount Everest has an \"infinite\" isolation, since it is the highest point on Earth's surface. The nearby peak K2, the second-highest mountain on Earth is relatively close to Everest, so K2 has quite a low isolation. However, Aconcauga, the tallest peak in the Western Hemisphere, is about 1,000 meters shorter than K2, but *way more isolated*, since the distance from it to the nearest highest point is very large. So, `isolation` is a measure of *horizontal* distance. \n",
+    "\n",
+    "In contrast, `prominence` is a measure of *vertical* distance, describing the *gap between the peak's elevation and the \"highest\" low point between it and its parent peak*. Conceptually, imagine that the whole world is flooded, all the way to the top of Mount Everest. Let's denote the height of mountain $i$ as $h_i$, and the water level as $w$. So, starting with $max(h_i) = w$, we lower the water. When $h_i = w$, a peak \"emerges\" from the water. Imagine two peaks of height $h_i$ and $h_j$ (such that $h_i > h_j$). Then, imagine that $w$ falls to a point $w^* < h_j < h_i$ where $h_i$ and $h_j$ become \"connected\" together as part of a single landmass. Then, the *prominence* of $h_j$ is computed as $p_j = h_i - w^*$, the *relative* height between peak $j$ and the lowest point connecting $j$ and $i$. In this model, it makes sense to *then* consider $j$ and $i$ the same peak $(ij)$, and measure the next peak's prominence as the lowest point between $k$ and $(ij)$. We use `prominence` because it tells you how high a peak/local maxima is *relative* to its surroundings. \n",
+    "\n",
+    "Things are complicated somewhat when we're dealing with irregular or dis-continuous relief. When dealing with mountains and elevation, we know that elevation is a *surface* that changes (relatively) smoothly. In contrast, most of our *vector* data does not change smoothly. Despite this, we can still use these notions of `isolation` and `prominence` to measure the relative contrasts between parts of a geographcial surface. \n",
+    "\n",
+    "So, for what happens next, we'll refer to the natural earth dataset baked into `geopandas`. We'll use the population estmate (`pop_est`) as a kind of \"elevation,\" *a la* [@undertheraedar](https://twitter.com/undertheraedar)'s excellent population topography: \n",
+    "\n",
+    "![this is a picture of global population like it's a surface](https://pbs.twimg.com/media/Ej0HeVoXsAEmShV?format=jpg&name=4096x4096)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Isolation and Prominence of country populations"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Let's start with a natural example: isolation of population of countries. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "natearth = geopandas.read_file(\n",
+    "    \"https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To start, we know that China, India, and the US are the three most populous countries in the world: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "natearth.sort_values(\"POP_EST\", ascending=False).head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This is a perfect dataset to think about isolation/prominence, since we have big gaps between the highest population points in each continent. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, 1, figsize=(12, 6))\n",
+    "natearth.plot(\"POP_EST\", ax=ax)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To simplify things, we'll just consider the Euclidean distances between country centroids, but we could (in theory) use any kind of distance we want in this function by specifying the `metric` argument. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with warnings.catch_warnings():\n",
+    "    warnings.filterwarnings(\n",
+    "        \"ignore\",\n",
+    "        category=UserWarning,\n",
+    "        message=\"Geometry is in a geographic CRS\",\n",
+    "    )\n",
+    "\n",
+    "    coordinates = numpy.column_stack((natearth.centroid.x, natearth.centroid.y))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To get a bit more information on the result, we can use `return_all` to get the rank and distance for the isolated peak. This also returns the gap between the peak and its nearest higher peak. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "iso = topo.isolation(natearth[\"POP_EST\"], coordinates, return_all=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Under the hood, this algorithm uses `rtree` and `numpy.sort` to insert observations into a `SpatialIndex()` in rank-order. Iterating down the ranks, the nearest higher observation is found in the `SpatialIndex()`, and that becomes the parent of that observation.  As we iterate, `pop_est` gets smaller and smaller, and more and more entries are added to the `rtree`. \n",
+    "\n",
+    "Merging this back to the data we have will let us visualize it. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "natearth = natearth.merge(iso, left_index=True, right_index=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "So, you can see that the *isolation* for China is infinite, since there is no country with a larger population. However, the isolation for India is only the distance from China to India (27). The isolation for the US, however, is much larger, and reflects the distance from the US to India (which just happens to be closer than China). The fourth-most populous country, Indonesia, is closer to China than India, so its `parent_rank` is 0, and its `isolation` is the distance from Indonesia to China. Last, you see Brazil, 5th most populous country, has US as a parent, with an isolation `distance` of 82. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "natearth[\n",
+    "    [\"CONTINENT\", \"NAME\", \"rank\", \"POP_EST\", \"parent_rank\", \"isolation\", \"gap\"]\n",
+    "].sort_values(\"POP_EST\", ascending=False).head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Visualizing this below, we get the following:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(2, 1, figsize=(12, 12))\n",
+    "for i in range(2):\n",
+    "    natearth.plot(color=\"grey\", ax=ax[i])\n",
+    "natearth.plot(\"isolation\", ax=ax[0])\n",
+    "natearth.plot(\"gap\", ax=ax[1])\n",
+    "ax[0].set_title(\"how far do you have to go to find a country with more people?\")\n",
+    "ax[1].set_title(\"how any extra people does this place need to swap with its parent?\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, to see `prominence`, we'll use the same arguments. However, `prominence` can also take a graph/`libpysal.weights.W` object that specifies the connections between sampled locations. If no pre-existing graph or surface is provided, the Delaunay Triangulation is used between the coordinates provided, which is a common triangulation in digital elevation models. Here, I'll use the Rook contiguity graph, just for ease of interpretation. This means that some islands will automatically be considered as \"peaks\" because they don't share any borders with any higher observations. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "w_rook = weights.Rook.from_dataframe(natearth, use_index=False, silence_warnings=True)\n",
+    "prominence = topo.prominence(natearth[\"POP_EST\"], w_rook, return_all=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Under the hood, this algorithm may take a bit longer for big data, so you can use the `progressbar` option to visualize the progress. \n",
+    "\n",
+    "The actual algorithm entails sorting the data and determining whether we \"connect\" peaks together each time we introduce a new observation as equal to the declining sea level $w$. We *avoid* re-computing `scipy.sparse.connected_components` each iteration by creating a `set` of neighbors for each \"peak.\" When two (or more) peaks merge, we replace the independent peaks `i` and `j` (where $h_i > h_j$) with peak `(i,j)`. Each merge, the new peak gets the union of the sub-peaks neighbors, and are then treated as a single \"peak\" from then on. \n",
+    "\n",
+    "We merge it back onto our data in the same fashion as before: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "natearth = natearth.merge(\n",
+    "    prominence, left_index=True, right_index=True, suffixes=(\"\", \"_prom\")\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This gives us the following table. I'm going to show a bit more rows than usual so we can interpret it more clearly. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "natearth[\n",
+    "    [\n",
+    "        \"CONTINENT\",\n",
+    "        \"NAME\",\n",
+    "        \"POP_EST\",\n",
+    "        \"rank\",\n",
+    "        \"parent_rank\",\n",
+    "        \"isolation\",\n",
+    "        \"dominating_peak\",\n",
+    "        \"keycol\",\n",
+    "        \"prominence\",\n",
+    "    ]\n",
+    "].sort_values(\"POP_EST\", ascending=False).head(20)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "These are the top 20 countries in terms of population. Walking down the rows, you see that China has a isolation of `NaN` and a prominence that is exactly equal to its population. India shares a border with China. So, when we \"lower the sea level\" to where India emerges from the water level, it's already connected to the highest peak, China. So, its *prominence* is not very large. In fact, it's considered a \"slope\" of the \"China\" mountain, and its `dominating_peak` is 139, the index for \"China.\" However, the US's prominence is (confusingly) computed as the height relative to the population of Panama, sin ce Panama connects it to Sough America, where French Guyana then connects between NA/SA and Eurasia in this graph. Indonesia, likewise, has a prominence measured starting from Malaysia, which connects it to Asia, where it encounters the China-based subgraph. \n",
+    "\n",
+    "For a visual on what the \"key-cols\" are, we're thinking about the points at which the disconnected countries become connected in the following sequences of graphs. In each graph, only the \"red\" outlined countries are above the \"water line\" $w$. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(3, 2, figsize=(20, 20), sharex=True, sharey=True)\n",
+    "ax = ax.flatten()\n",
+    "for ix, rank in enumerate(range(5, 31, 5)):\n",
+    "    natearth.plot(\"classification\", ax=ax[ix], cmap=\"Accent\")\n",
+    "    natearth.sort_values(\"POP_EST\", ascending=False).iloc[0:rank].boundary.plot(\n",
+    "        color=\"salmon\", ax=ax[ix]\n",
+    "    )\n",
+    "    ax[ix].set_title(f\"# of countries included: {rank}\")\n",
+    "f.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can see that the first \"key col\" country, France, is included around the 25-country mark, wheras before that most included countries are \"peaks,\" disconnected from one another. Below, you can see the full map of classifications, alongside the prominence of each country.  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(2, 1, figsize=(12, 12))\n",
+    "natearth.plot(\"classification\", ax=ax[0], legend=True, cmap=\"Accent\")\n",
+    "natearth.plot(color=\"grey\", ax=ax[1])\n",
+    "natearth.plot(\"prominence\", ax=ax[1])\n",
+    "ax[0].set_ylabel(\"Population\")\n",
+    "ax[1].set_ylabel(\"Prominence\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

@@ -1,0 +1,17 @@
+﻿esda.G\_Local
+=============
+
+.. currentmodule:: esda
+
+.. autoclass:: G_Local
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~G_Local.calc
+   
+
+   

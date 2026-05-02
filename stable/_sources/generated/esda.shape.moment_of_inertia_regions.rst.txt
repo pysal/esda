@@ -1,0 +1,6 @@
+﻿esda.shape.moment\_of\_inertia\_regions
+=======================================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: moment_of_inertia_regions
