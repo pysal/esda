@@ -1,0 +1,6 @@
+﻿esda.shape.shape\_index
+=======================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: shape_index

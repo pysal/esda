@@ -1,0 +1,6 @@
+﻿esda.areal\_entropy
+===================
+
+.. currentmodule:: esda
+
+.. autofunction:: areal_entropy

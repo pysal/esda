@@ -1,0 +1,6 @@
+﻿esda.shape.second\_moment\_of\_area
+===================================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: second_moment_of_area

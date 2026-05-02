@@ -1,0 +1,33 @@
+﻿esda.MoranLocalPartial
+======================
+
+.. currentmodule:: esda
+
+.. autoclass:: MoranLocalPartial
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MoranLocalPartial.__init__
+      ~MoranLocalPartial.fit
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MoranLocalPartial.association_
+      ~MoranLocalPartial.labels_
+      ~MoranLocalPartial.partials_
+      ~MoranLocalPartial.reference_distribution_
+      ~MoranLocalPartial.significance_
+   
+   

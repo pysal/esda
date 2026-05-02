@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Measures of shape &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=6358a976"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Exploratory Analysis of Spatial Data: Spatial Autocorrelation" href="spatial_autocorrelation_for_areal_unit_data.html" />
+    <link rel="prev" title="Cluster points and explore boundary blurriness with A-DBSCAN" href="adbscan_berlin_example.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          esda</a>
+        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="localjoincounts.html">Local join counts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geosilhouettes.html#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Measures of shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Inertial-Measures">Inertial Measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html">How do we introduce another variables?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="correlogram.html">Distance Bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="correlogram.html#KNN-Distance">KNN Distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topo.html">Topological Measures of Geographical Surfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#a-dbscan">A-DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#correlogram">Correlogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#gamma-statistic">Gamma Statistic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#geary-statistics">Geary Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-statistics">Join Count Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#losh-statistics">LOSH Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#moran-statistics">Moran Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#shape-statistics">Shape Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#silhouette-statistics">Silhouette Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Measures of shape</a></li>
+<li><a class="reference internal" href="#Ideal-Shape-Measures">Ideal Shape Measures</a><ul>
+<li><a class="reference internal" href="#Absolute-Ideal-Shape-Measures">Absolute Ideal Shape Measures</a></li>
+<li><a class="reference internal" href="#Relative-ideal-shape-measures">Relative ideal shape measures</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Inertial-Measures">Inertial Measures</a></li>
+<li><a class="reference internal" href="#Conclusion">Conclusion</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/esda/blob/main/notebooks/shape-measures.ipynb">notebooks/shape-measures.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/esda/main?filepath=notebooks/shape-measures.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Measures-of-shape">
+<h1>Measures of shape<a class="headerlink" href="#Measures-of-shape" title="Link to this heading">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module provides statistics that are used in the literature to measure the structure and regularity of polygons. These measures vary from very simple (such as the length-width difference) to very complex (such as the normalized moment of inertia). Regardless, we’ll walk through computing a few of these measures for counties in Virginia.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;virginia.shp&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Why Virginia? The Virginia counties include a mix of regular and irregular shapes due to the mountainous counties in the West. Two counties are multipolygons, which impacts some shape measures. Finally, many of the counties have holes, because they surround “independent cities”, which are county equivalents in Virginia. You can see this in the map below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Virginia Counties&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_5_1.png" src="../_images/notebooks_shape-measures_5_1.png" />
+</div>
+</div>
+<p>We did not check the coordinate reference system (CRS) of the geodataframe, but we can see from the axes on the plot that the coordinates are in lat-long. <strong>We should not use lat-long coordinate systems to calculate shape measures.</strong> If you are familiar with Virginia, the above plot may “look right”. This is because Geopandas automatically adjust the aspect ratio of lat-long plots to approximate a conformal projection. We can turn this feature off to see what the unprojected coordinates look
+like.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Virginia Counties&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_7_1.png" src="../_images/notebooks_shape-measures_7_1.png" />
+</div>
+</div>
+<p>Now we can see that calculating Euclidian distances and areas on unprojected lat-long coordinates will lead to incorrect results. The distorted distances and areas will impact many shape measures. We will see how by introducing a simple shape measure, the difference between the length and width of the shape. The length-width difference is a measure of <em>elongation</em>. As you might guess by comparing the previous two plots, the length-width difference will be heavily affected by the CRS. Let’s see
+what this looks like numerically.</p>
+<p>First, what <em>is</em> an appropriate projection to use? You should use a conformal projection. Conformal projections are often described as “shape-preserving” projections. Since shape is exactly what we are interested in, conformal projections will meet our needs. Keep in mind that projections are parameterized to cover specific areas on the surface of the globe. The larger the area mapped, the more distortion there will be away from the area the projection is intended to cover. Nonetheless, World
+Mercator will give acceptable results over much of the globe as long as you are not at high latitudes (think of Greenland on a World Mercator map), and calculating measures for a shape that crosses many degrees of latitude.</p>
+<p>Let’s reproject the virginia counties to World Mercator.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">3395</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Virginia Counties&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_9_1.png" src="../_images/notebooks_shape-measures_9_1.png" />
+</div>
+</div>
+<p>Now let’s calculate the length-width difference on both the lat-long and Mercator coordinates, and see the difference. The measure is the difference of <span class="math notranslate nohighlight">\(L\)</span>, the length of the shape in the North-South direction, and <span class="math notranslate nohighlight">\(W\)</span>, the width of the shape in the East-West direction.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lwd_lat_long</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">length_width_diff</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">))</span>
+<span class="n">lwd_mercator</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">length_width_diff</span><span class="p">(</span><span class="n">counties</span><span class="p">)</span>
+<span class="c1"># plt.scatter(lwd_lat_long, lwd_mercator)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;lwd_lat_long&quot;</span><span class="p">:</span> <span class="n">lwd_lat_long</span><span class="p">,</span> <span class="s2">&quot;lwd_mercator&quot;</span><span class="p">:</span> <span class="n">lwd_mercator</span><span class="p">})</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lwd_lat_long</th>
+      <th>lwd_mercator</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.057152</td>
+      <td>7834.746553</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.169186</td>
+      <td>-4082.002847</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.037289</td>
+      <td>4894.678174</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.008430</td>
+      <td>1097.722973</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.070480</td>
+      <td>7499.467262</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>-0.021633</td>
+      <td>-1742.967132</td>
+    </tr>
+    <tr>
+      <th>132</th>
+      <td>0.023273</td>
+      <td>4775.942741</td>
+    </tr>
+    <tr>
+      <th>133</th>
+      <td>-0.006683</td>
+      <td>111.373760</td>
+    </tr>
+    <tr>
+      <th>134</th>
+      <td>-0.015362</td>
+      <td>665.530662</td>
+    </tr>
+    <tr>
+      <th>135</th>
+      <td>-0.041515</td>
+      <td>-3880.980596</td>
+    </tr>
+  </tbody>
+</table>
+<p>136 rows × 2 columns</p>
+</div></div>
+</div>
+<p>As the length and width are in the units of the CRS, the scale of the values is completely different. Many of the measures we will explore later have the desirable property of being <em>scale invariant</em>. Let’s normalize the results by dividing by <span class="math notranslate nohighlight">\(L\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bounds_lat_long</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+<span class="n">ymin_lat_long</span><span class="p">,</span> <span class="n">ymax_lat_long</span> <span class="o">=</span> <span class="n">bounds_lat_long</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
+<span class="n">length_lat_long</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ymax_lat_long</span> <span class="o">-</span> <span class="n">ymin_lat_long</span><span class="p">)</span>
+
+<span class="n">bounds_mercator</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+<span class="n">ymin_mercator</span><span class="p">,</span> <span class="n">ymax_mercator</span> <span class="o">=</span> <span class="n">bounds_mercator</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
+<span class="n">length_mercator</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ymax_mercator</span> <span class="o">-</span> <span class="n">ymin_mercator</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;scaled_lwd_lat_long&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;lwd_lat_long&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">length_lat_long</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;scaled_lwd_mercator&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;lwd_mercator&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">length_mercator</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lwd_lat_long</th>
+      <th>lwd_mercator</th>
+      <th>scaled_lwd_lat_long</th>
+      <th>scaled_lwd_mercator</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.057152</td>
+      <td>7834.746553</td>
+      <td>-0.128097</td>
+      <td>0.122680</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.169186</td>
+      <td>-4082.002847</td>
+      <td>-0.361438</td>
+      <td>-0.061054</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.037289</td>
+      <td>4894.678174</td>
+      <td>-0.130227</td>
+      <td>0.119615</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.008430</td>
+      <td>1097.722973</td>
+      <td>-0.131204</td>
+      <td>0.119460</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.070480</td>
+      <td>7499.467262</td>
+      <td>-0.142612</td>
+      <td>0.106586</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>-0.021633</td>
+      <td>-1742.967132</td>
+      <td>-0.875289</td>
+      <td>-0.510157</td>
+    </tr>
+    <tr>
+      <th>132</th>
+      <td>0.023273</td>
+      <td>4775.942741</td>
+      <td>0.285882</td>
+      <td>0.424618</td>
+    </tr>
+    <tr>
+      <th>133</th>
+      <td>-0.006683</td>
+      <td>111.373760</td>
+      <td>-0.209971</td>
+      <td>0.025320</td>
+    </tr>
+    <tr>
+      <th>134</th>
+      <td>-0.015362</td>
+      <td>665.530662</td>
+      <td>-0.172870</td>
+      <td>0.054250</td>
+    </tr>
+    <tr>
+      <th>135</th>
+      <td>-0.041515</td>
+      <td>-3880.980596</td>
+      <td>-1.500069</td>
+      <td>-1.015612</td>
+    </tr>
+  </tbody>
+</table>
+<p>136 rows × 4 columns</p>
+</div></div>
+</div>
+<p>We can see that the normalized length-width differences are quite different for most counties, and that for some counties the two measures have opposite signs. Treating the polar coordinates of lat-long as planar coordinates makes these shapes taller. For some counties, <span class="math notranslate nohighlight">\(L&lt;W\)</span> in lat-long, yielding a negative measure, while <span class="math notranslate nohighlight">\(L&gt;W\)</span> in Mercator, yielding a positive measure.</p>
+<p>Let’s plot counties with these values. The counties that are tall North-South have a positive (high) length-width difference, while those that are wide East-West have a negative (low) length-width difference.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">length_width_diff</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;length-width difference&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;length-width difference&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_15_1.png" src="../_images/notebooks_shape-measures_15_1.png" />
+</div>
+</div>
+</section>
+<section id="Ideal-Shape-Measures">
+<h1>Ideal Shape Measures<a class="headerlink" href="#Ideal-Shape-Measures" title="Link to this heading">¶</a></h1>
+<p>The next class of shape measures are usually taken to be <em>ideal shape</em> measures of compactness. This means that they construct the relationship between one (or more) aspects of the polygon (such as its perimeter or area) and compares this to an analogous value for an “ideal” shape.</p>
+<p>Ideal shapes come in a few flavors.</p>
+<ul class="simple">
+<li><p>“relative ideal shapes” are shapes whose properties are fixed relative to the original shape. For example, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, compares the area of a polygon to the area of the circle wit the same perimeter as the original polygon. Mathematically, these measures generally are constructed so that they vary between zero and one, and equal <span class="math notranslate nohighlight">\(1\)</span> when the shape is the same as its relative ideal shape. Measures in this family include the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code> and
+<code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, as well as our implementation of the <code class="docutils literal notranslate"><span class="pre">fractal_dimension</span></code>, as will be discussed later.</p></li>
+<li><p>“absolute ideal shapes” are shapes that have some fixed, known relationship to the original shape and serve as a “bound” on that shape in some manner. For example, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> compares the area of a polygon to the area of its convex hull. Since a convex hull is guaranteeed to be at least as large as the original shape, this measure also is between zero and one, with <span class="math notranslate nohighlight">\(1\)</span> meaning that a polygon is its own convex hull. Measures in this family include the
+<code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">diameter_ratio</span></code>, and the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>.</p></li>
+</ul>
+<section id="Absolute-Ideal-Shape-Measures">
+<h2>Absolute Ideal Shape Measures<a class="headerlink" href="#Absolute-Ideal-Shape-Measures" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> and <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> are two simple and very-related measures of shape regularity. The boundary amplitude is the perimeter of the convex hull divided by the perimeter of the original shape. This varies between zero and one, where <span class="math notranslate nohighlight">\(1\)</span> indicates the case where the polygon is its own convex hull. This is because the convex hull will always have <em>at most</em> the perimeter of the original shape; it will be shorter than the original shape when the shape has many
+concave parts that cut back into the shape.</p>
+<p>In the map below, you can see that the counties with holes in them have very poor <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> scores, since the holes add to the perimeter of the shape, but not the perimeter of the convex hull:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">boundary_amplitude</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;boundary amplitude&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;boundary amplitude&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_20_1.png" src="../_images/notebooks_shape-measures_20_1.png" />
+</div>
+</div>
+<p>Related, the convex hull ratio is the <em>area</em> of the original shape divided by the area of the convex hull. This varies between zero and one again: since the convex hull always <em>contains</em> the original shape, its area is always larger. The measure, thus, is related to the <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, but will be different for different polygons, since it pertains to <em>area</em>, not <em>perimeter</em>. Generally speaking, perimeter-based measures will be more sensitive to non-convexities than areal-based measures.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">convex_hull_ratio</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;convex hull areal ratio&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;convex hull areal ratio&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_22_1.png" src="../_images/notebooks_shape-measures_22_1.png" />
+</div>
+</div>
+<p>Another measure is the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, sometimes called the Reock measure after the author of the first journal article in which it was used to analyze congressional districts. The ratio compares the area of the original shape to the area of the smallest circle that can fully enclose the shape. This measure <em>strongly penalizes elongation</em>, as the minimum bounding circle has to get larger and larger to contain the shape. While the method is similar to the <code class="docutils literal notranslate"><span class="pre">convex</span> <span class="pre">hull</span> <span class="pre">ratio</span></code>
+(both compare the area of the shape to the area of a containing shape), the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> is sensitive to concavities of the perimeter but insensitve to elongation, while the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code> is sensitive to elongation but insensitive to concavities of the perimeter. It also varies between zero and one, where <span class="math notranslate nohighlight">\(1\)</span> reflects the case where a polygon is its own bounding circle.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">minimum_bounding_circle_ratio</span><span class="p">(</span><span class="n">counties</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;minimum bounding circle ratio&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;minimum bounding circle ratio&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_24_1.png" src="../_images/notebooks_shape-measures_24_1.png" />
+</div>
+</div>
+<p>A related measure is the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>. Instead of comparing the areas of the two shapes, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code> actually mixes the reference and ideal shape concepts together. It relates the radius of the minimum bounding circle to the radius of the <em>isoareal</em> circle, or the circle that contains the same area as the original shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">radii_ratio</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;radii ratio&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;radii ratio&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_26_1.png" src="../_images/notebooks_shape-measures_26_1.png" />
+</div>
+</div>
+<p>This measure generally performs about the same as the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, with a bit more sensitivity to concavities in the shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">radii_ratio</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">),</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">minimum_bounding_circle_ratio</span><span class="p">(</span><span class="n">counties</span><span class="o">.</span><span class="n">geometry</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radii Ratio&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Minimum Bounding Circle Ratio&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Minimum Bounding Circle Ratio&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_28_1.png" src="../_images/notebooks_shape-measures_28_1.png" />
+</div>
+</div>
+<p>A similar measure to the minimum bounding circle ratio is the diameter ratio. This measures the ratio between a shape’s “longest” and “shortest” diameters. This can be measured as the longest and shortest axis of a shape’s minimum rotated rectangle. Alternatively, one can use the raw bounding box for shapes, but this is biased towards shapes that are east-west and north-south oriented. This again is quite a strong measure of elongation, and shapes with very large differences between their
+longest and shortest axes will have low scores.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">diameter_ratio</span><span class="p">(</span><span class="n">counties</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_30_1.png" src="../_images/notebooks_shape-measures_30_1.png" />
+</div>
+</div>
+</section>
+<section id="Relative-ideal-shape-measures">
+<h2>Relative ideal shape measures<a class="headerlink" href="#Relative-ideal-shape-measures" title="Link to this heading">¶</a></h2>
+<p>These classes of shape measures construct a relationship between the observed shape and a different shape with some known relation. As we discussed before with the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code> measure, this often looks like a circle with the same perimeter or area as the source shape.</p>
+<p>In the case of the <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, this relates the shape’s perimeter to the perimeter of a circle with the same area as the source shape:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">isoareal_quotient</span><span class="p">(</span><span class="n">counties</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_32_1.png" src="../_images/notebooks_shape-measures_32_1.png" />
+</div>
+</div>
+<p>The related measure, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, relates the shape’s area to the area of a circle with the same perimeter of the original shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">isoperimetric_quotient</span><span class="p">(</span><span class="n">counties</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_34_1.png" src="../_images/notebooks_shape-measures_34_1.png" />
+</div>
+</div>
+<p>If these two maps look similar to each other, it is because the <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code> is mathematically equal to the square root of the <code class="docutils literal notranslate"><span class="pre">isoperimetric</span> <span class="pre">quotient</span></code>. They will always rank shapes in the same order, as is demonstrated in the plot below. Of the two, the <code class="docutils literal notranslate"><span class="pre">isoperimetric</span> <span class="pre">quotient</span></code> is more commonly used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">isoareal_quotient</span><span class="p">(</span><span class="n">counties</span><span class="p">),</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">isoperimetric_quotient</span><span class="p">(</span><span class="n">counties</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Isoareal Quotient&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Isoperimetric Quotient&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Isoperimetric Quotient&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_36_1.png" src="../_images/notebooks_shape-measures_36_1.png" />
+</div>
+</div>
+<p>A final related measure is the fractal dimension of a shape. This measures the effective dimension of a shape’s boundary, and generally varies between zero and two, where <span class="math notranslate nohighlight">\(2\)</span> implies a very convoluted boundary, and <span class="math notranslate nohighlight">\(0\)</span> implies a very simple boundary. Hoever, our particular implementation approximates the true fractal dimension by assuming that shapes’ boundaries move along either in a grid or a hexagonal lattice. Thus, the measure is effectively the relationship between a square (or
+hexagon) and the existing shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">fractal_dimension</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_38_1.png" src="../_images/notebooks_shape-measures_38_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">fractal_dimension</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="s2">&quot;square&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_39_1.png" src="../_images/notebooks_shape-measures_39_1.png" />
+</div>
+</div>
+<p>The two are also extremely related:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">fractal_dimension</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">),</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">fractal_dimension</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="s2">&quot;square&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">1.08</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">1.08</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Fractal Dimension (hex)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Fractal Dimension (square)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Fractal Dimension (square)&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_41_1.png" src="../_images/notebooks_shape-measures_41_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Inertial-Measures">
+<h1>Inertial Measures<a class="headerlink" href="#Inertial-Measures" title="Link to this heading">¶</a></h1>
+<p>The moment of inertia is a concept from physics and engineering that measures dispersion of mass around an axis of rotation. This has been adapted to measures of shape in geography. If the shape is treated as of homogeneous density, this is equivalent to the <em>second moment of area</em>. If we have information about the distribution of a quantity of interest, such as population, we can obtain a shape measure that quantifies how dispersed the population is from a reference point, usually the centroid
+or center of population. The interested reader is referred to:</p>
+<ul class="simple">
+<li><p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient Measure of Compactness for Two-Dimensional Shapes and Its Application in Regionalization Problems.” International Journal of Geographical Information Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p></li>
+<li><p>Fan, Chao, Wenwen Li, Levi J. Wolf, and Soe W. Myint. 2015. “A Spatiotemporal Compactness Pattern Analysis of Congressional Districts to Assess Partisan Gerrymandering: A Case Study with California and North Carolina.” Annals of the Association of American Geographers 105 (4): 736–53. <a class="reference external" href="https://doi.org/10.1080/00045608.2015.1039109">https://doi.org/10.1080/00045608.2015.1039109</a>.</p></li>
+</ul>
+<p>We begin with the <em>normalized moment of inertia</em> or <em>normalized second moment of area</em>. The moment of inertia is calculated for the shape, and normalized by the moment of inertia of a circle of the same area. As with some of the other shape measures we have seen, it can vary between zero and one, and equals <span class="math notranslate nohighlight">\(1\)</span> for a perfect circle. The moment of inertia is insensitive to wiggliness of the shape’s perimeter (Li, et al. 2013).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_44_1.png" src="../_images/notebooks_shape-measures_44_1.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">moment_of_inertia</span></code> function calculates the moment of inertia about the centroid of each polygon. However, the user can also pass in a reference point or an array-like of reference points of the same length as the geodataframe. In the first case, it calculates the moment of inertia of each shape with resepct to a single reference point. For example, we can calculate the moment of inertia of each county with respect to the centroid of Virginia.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">va</span> <span class="o">=</span> <span class="n">counties</span><span class="o">.</span><span class="n">dissolve</span><span class="p">()</span>
+<span class="n">va_centroid</span> <span class="o">=</span> <span class="n">va</span><span class="o">.</span><span class="n">centroid</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">va</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">va_centroid</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Virginia Centroid&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Centroid&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_46_1.png" src="../_images/notebooks_shape-measures_46_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">counties</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">ref_pt</span><span class="o">=</span><span class="n">va_centroid</span><span class="p">))</span>
+<span class="n">va_centroid</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Virginia Counties MOI about Virginia Centroid&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Virginia Counties MOI about Virginia Centroid&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_47_1.png" src="../_images/notebooks_shape-measures_47_1.png" />
+</div>
+</div>
+<p>As you can see, the MOI is lower for counties close to the centroid, and higher for counties farther away. In physical terms, you can think about the as swinging on a string about the centroid. The farther away they are, the more rotational force they have, and the higher the moment of inertia. In human geography, this can be used as a measure of population access to a point of interest.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module also has a function to quickly calculate the global moment of inertia for all shapes in a collection. It is more efficient that manually running a dissolve and calculating the MOI on the dissolved shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shape</span><span class="o">.</span><span class="n">moment_of_inertia_global</span><span class="p">(</span><span class="n">counties</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.58717002611019
+</pre></div></div>
+</div>
+<p>Of particular interest is the ability to calculate the moment of inertia for unevenly distributed populations (or other quantities of interest). In this case, the polygons must be assigned to <em>regions</em>, and the moment of inertia is calculated for each region, not each polygon in the collection. Region IDs can be passed in as an array of the same length as the collection (each polygon must be assigned to a region) or as the name of a column of region IDs in the geodataframe.</p>
+<p>In order to demonstrate this, we will assign each county to an <a class="reference external" href="https://www.vedp.org/regions">economic region</a>. We will also add 2020 populations for each county. Since the built-in Virginia dataset is from 2000, we will remove 3 independent cities that merged with their surrounding counties between 2000 and 2020.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Remove these independent cities</span>
+<span class="n">cities_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Bedford City&quot;</span><span class="p">,</span> <span class="s2">&quot;Clifton Forge&quot;</span><span class="p">,</span> <span class="s2">&quot;South Boston&quot;</span><span class="p">]</span>
+<span class="n">counties_2020</span> <span class="o">=</span> <span class="n">counties</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="o">~</span><span class="n">counties</span><span class="p">[</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">cities_to_remove</span><span class="p">)]</span>
+
+<span class="c1"># Function to remove holes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_holes</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">MultiPolygon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">MultiPolygon</span><span class="p">([</span><span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">geoms</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geom</span>
+
+<span class="c1"># Boolean mask for rows to modify</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">counties_2020</span><span class="p">[</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Bedford&quot;</span><span class="p">,</span> <span class="s2">&quot;Alleghany&quot;</span><span class="p">,</span> <span class="s2">&quot;Halifax&quot;</span><span class="p">])</span>
+
+<span class="c1"># Apply transformation only to rows that match the mask</span>
+<span class="n">counties_2020</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counties_2020</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_holes</span><span class="p">)</span>
+
+<span class="c1"># Reindex the GeoDataFrame</span>
+<span class="n">counties_2020</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 7&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 9&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 8&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 6&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 4&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 5&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 3&#39;</span><span class="p">,</span> <span class="s1">&#39;Region 1&#39;</span><span class="p">]</span>
+<span class="n">populations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">93355</span><span class="p">,</span> <span class="mi">427082</span><span class="p">,</span> <span class="mi">15060</span><span class="p">,</span> <span class="mi">27981</span><span class="p">,</span> <span class="mi">44630</span><span class="p">,</span> <span class="mi">1144474</span><span class="p">,</span> <span class="mi">41104</span><span class="p">,</span> <span class="mi">73935</span><span class="p">,</span> <span class="mi">484625</span><span class="p">,</span> <span class="mi">235463</span><span class="p">,</span> <span class="mi">14593</span><span class="p">,</span> <span class="mi">24478</span><span class="p">,</span> <span class="mi">7409</span><span class="p">,</span> <span class="mi">156788</span><span class="p">,</span> <span class="mi">84739</span><span class="p">,</span> <span class="mi">23750</span><span class="p">,</span> <span class="mi">16923</span><span class="p">,</span> <span class="mi">42674</span><span class="p">,</span> <span class="mi">53563</span><span class="p">,</span> <span class="mi">13931</span><span class="p">,</span> <span class="mi">160520</span><span class="p">,</span> <span class="mi">2265</span><span class="p">,</span> <span class="mi">77713</span><span class="p">,</span> <span class="mi">20850</span><span class="p">,</span> <span class="mi">51492</span><span class="p">,</span> <span class="mi">37208</span><span class="p">,</span> <span class="mi">143876</span><span class="p">,</span> <span class="mi">27468</span><span class="p">,</span> <span class="mi">28383</span><span class="p">,</span> <span class="mi">18683</span><span class="p">,</span> <span class="mi">113683</span><span class="p">,</span> <span class="mi">4123</span><span class="p">,</span> <span class="mi">31541</span><span class="p">,</span> <span class="mi">25765</span><span class="p">,</span> <span class="mi">10604</span><span class="p">,</span> <span class="mi">39012</span><span class="p">,</span> <span class="mi">9047</span><span class="p">,</span> <span class="mi">22574</span><span class="p">,</span> <span class="mi">22578</span><span class="p">,</span> <span class="mi">45863</span><span class="p">,</span> <span class="mi">14777</span><span class="p">,</span> <span class="mi">33326</span><span class="p">,</span> <span class="mi">12085</span><span class="p">,</span> <span class="mi">111652</span><span class="p">,</span> <span class="mi">27764</span><span class="p">,</span> <span class="mi">6676</span><span class="p">,</span> <span class="mi">14962</span><span class="p">,</span> <span class="mi">18232</span><span class="p">,</span> <span class="mi">25613</span><span class="p">,</span> <span class="mi">10876</span><span class="p">,</span> <span class="mi">31385</span><span class="p">,</span> <span class="mi">5671</span><span class="p">,</span> <span class="mi">7420</span><span class="p">,</span> <span class="mi">33875</span><span class="p">,</span> <span class="mi">16914</span><span class="p">,</span> <span class="mi">10774</span><span class="p">,</span> <span class="mi">9745</span><span class="p">,</span> <span class="mi">6612</span><span class="p">,</span> <span class="mi">334434</span><span class="p">,</span> <span class="mi">31074</span><span class="p">,</span> <span class="mi">4881</span><span class="p">,</span> <span class="mi">24139</span><span class="p">,</span> <span class="mi">80254</span><span class="p">,</span> <span class="mi">227595</span><span class="p">,</span> <span class="mi">39228</span><span class="p">,</span> <span class="mi">371610</span><span class="p">,</span> <span class="mi">16424</span><span class="p">,</span> <span class="mi">12115</span><span class="p">,</span> <span class="mi">19857</span><span class="p">,</span> <span class="mi">8517</span><span class="p">,</span> <span class="mi">13342</span><span class="p">,</span> <span class="mi">6686</span><span class="p">,</span> <span class="mi">16610</span><span class="p">,</span> <span class="mi">79255</span><span class="p">,</span> <span class="mi">80046</span><span class="p">,</span> <span class="mi">55398</span><span class="p">,</span> <span class="mi">96793</span><span class="p">,</span> <span class="mi">21932</span><span class="p">,</span> <span class="mi">70590</span><span class="p">,</span> <span class="mi">99159</span><span class="p">,</span> <span class="mi">39933</span><span class="p">,</span> <span class="mi">42873</span><span class="p">,</span> <span class="mi">98677</span><span class="p">,</span> <span class="mi">22944</span><span class="p">,</span> <span class="mi">25477</span><span class="p">,</span> <span class="mi">6211</span><span class="p">,</span> <span class="mi">13920</span><span class="p">,</span> <span class="mi">15597</span><span class="p">,</span> <span class="mi">18210</span><span class="p">,</span> <span class="mi">15564</span><span class="p">,</span> <span class="mi">28083</span><span class="p">,</span> <span class="mi">11475</span><span class="p">,</span> <span class="mi">6552</span><span class="p">,</span> <span class="mi">33365</span><span class="p">,</span> <span class="mi">33771</span><span class="p">,</span> <span class="mi">184774</span><span class="p">,</span> <span class="mi">54958</span><span class="p">,</span> <span class="mi">35727</span><span class="p">,</span> <span class="mi">12556</span><span class="p">,</span> <span class="mi">16505</span><span class="p">,</span> <span class="mi">39444</span><span class="p">,</span> <span class="mi">25635</span><span class="p">,</span> <span class="mi">60148</span><span class="p">,</span> <span class="mi">15560</span><span class="p">,</span> <span class="mi">11990</span><span class="p">,</span> <span class="mi">10793</span><span class="p">,</span> <span class="mi">137334</span><span class="p">,</span> <span class="mi">28219</span><span class="p">,</span> <span class="mi">33811</span><span class="p">,</span> <span class="mi">15868</span><span class="p">,</span> <span class="mi">29585</span><span class="p">,</span> <span class="mi">17988</span><span class="p">,</span> <span class="mi">235037</span><span class="p">,</span> <span class="mi">3620</span><span class="p">,</span> <span class="mi">457066</span><span class="p">,</span> <span class="mi">29158</span><span class="p">,</span> <span class="mi">53913</span><span class="p">,</span> <span class="mi">96638</span><span class="p">,</span> <span class="mi">11304</span><span class="p">,</span> <span class="mi">30431</span><span class="p">,</span> <span class="mi">22042</span><span class="p">,</span> <span class="mi">21504</span><span class="p">,</span> <span class="mi">17606</span><span class="p">,</span> <span class="mi">251153</span><span class="p">,</span> <span class="mi">50365</span><span class="p">,</span> <span class="mi">97299</span><span class="p">,</span> <span class="mi">15323</span><span class="p">,</span> <span class="mi">5633</span><span class="p">,</span> <span class="mi">13584</span><span class="p">,</span> <span class="mi">6698</span><span class="p">,</span> <span class="mi">8212</span><span class="p">,</span> <span class="mi">42239</span><span class="p">,</span> <span class="mi">17024</span><span class="p">]</span>
+
+<span class="n">counties_2020</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">regions</span>
+<span class="n">counties_2020</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">populations</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counties_2020</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;region&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Economic Regions of Virginia&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Economic Regions of Virginia&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_shape-measures_52_1.png" src="../_images/notebooks_shape-measures_52_1.png" />
+</div>
+</div>
+<p>In order to calculate the (unweighted) moment of inertia for each economic region, we pass either the list of region identifiers or the column name to the <code class="docutils literal notranslate"><span class="pre">moment_of_inertia_regions</span></code> function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shape</span><span class="o">.</span><span class="n">moment_of_inertia_regions</span><span class="p">(</span><span class="n">counties_2020</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Region 1    0.571706
+Region 2    0.747063
+Region 3    0.539548
+Region 4    0.793634
+Region 5    0.323609
+Region 6    0.642518
+Region 7    0.744163
+Region 8    0.477483
+Region 9    0.672687
+dtype: float64
+</pre></div></div>
+</div>
+<p>In order to calculate the mass moment of inertia, we pass in an array-like or column name of weights, which in this case represents the population of each county. We demonstrate the version here which normalizes by comparing with a reference circle having the same mass (population) and area as the shape.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shape</span><span class="o">.</span><span class="n">moment_of_inertia_regions</span><span class="p">(</span><span class="n">counties_2020</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;population&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Region 1    0.622823
+Region 2    0.988687
+Region 3    0.549320
+Region 4    2.192231
+Region 5    0.984835
+Region 6    0.568993
+Region 7    0.950173
+Region 8    0.529857
+Region 9    0.796767
+dtype: float64
+</pre></div></div>
+</div>
+<p>As you can see above, it <em>is</em> possible for the normalized mass moment of inertia to attain a value greater than one. The population (mass) of the reference circle is evenly distributed throughout its area, i.e., it is of uniform density. The shapes we are calculating NMMI for have varying density, and if a shape’s population is concentrated near its centroid, it will be <em>more</em> compact than the reference circle.</p>
+</section>
+<section id="Conclusion">
+<h1>Conclusion<a class="headerlink" href="#Conclusion" title="Link to this heading">¶</a></h1>
+<p>There are many more shape measures in the <code class="docutils literal notranslate"><span class="pre">esda.shape</span></code> module that are useful in a large variety of applications. The ones detailed here are the most common ones encountered in literatures on redistricting, which is only one special area where shape measurements are useful. For more information on shape measures, a good introductory conceptual paper on how shape is measured in geography is by <a class="reference external" href="https://doi.org/10.1111/j.1541-0064.2009.00304.x">Shlomo Angel et al. (2010)</a> .</p>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/shape-measures.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

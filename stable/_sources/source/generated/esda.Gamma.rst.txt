@@ -1,0 +1,17 @@
+﻿esda.Gamma
+==========
+
+.. currentmodule:: esda
+
+.. autoclass:: Gamma
+
+   
+   
+
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Gamma.p_sim
+   

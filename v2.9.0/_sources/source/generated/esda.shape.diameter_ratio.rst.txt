@@ -1,0 +1,6 @@
+﻿esda.shape.diameter\_ratio
+==========================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: diameter_ratio

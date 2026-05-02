@@ -1,0 +1,443 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "d493fac1",
+   "metadata": {},
+   "source": [
+    "# Global Spatial Autocorrelation with Moran's I\n",
+    "\n",
+    "This notebook  focuses on global spatial autocorrelation for a continuous attribute using Moran's I."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "72f63e59",
+   "metadata": {},
+   "source": [
+    "## Learning goals\n",
+    "\n",
+    "By the end of this notebook, you will be able to:\n",
+    "\n",
+    "- construct a spatial weights matrix for areal data\n",
+    "- compute a spatial lag for a continuous attribute\n",
+    "- interpret global Moran's $I$ as a summary measure of spatial autocorrelation\n",
+    "- compare the observed statistic to a permutation reference distribution\n",
+    "\n",
+    "The substantive question is whether neighborhoods with similar median Airbnb prices tend to be located near one another.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "87f43f65",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import libpysal as lps\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "\n",
+    "import esda"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "923fde0a",
+   "metadata": {},
+   "source": [
+    "Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the [GeoPython 2018 workshop](https://github.com/ljwolf/geopython) by [Levi Wolf](https://ljwolf.org) and [Serge Rey](https://sergerey.org). As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "82f4829b",
+   "metadata": {},
+   "source": [
+    "## Data preparation\n",
+    "\n",
+    "We begin by assembling neighborhood polygons and Airbnb listings, then aggregate listing prices to the neighborhood level. The resulting variable, `median_pri`, is the continuous attribute we will analyze throughout the notebook.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3993c125",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf = gpd.read_file(\"data/berlin-neighbourhoods.geojson\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4045601d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bl_df = pd.read_csv(\"data/berlin-listings.csv\")\n",
+    "geometry = gpd.points_from_xy(x=bl_df.longitude, y=bl_df.latitude, crs=\"epsg:4326\")\n",
+    "bl_gdf = gpd.GeoDataFrame(bl_df, geometry=geometry)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "32aafc31",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bl_gdf[\"price\"] = bl_gdf[\"price\"].astype(\"float32\")\n",
+    "sj_gdf = gpd.sjoin(\n",
+    "    gdf, bl_gdf, how=\"inner\", predicate=\"intersects\", lsuffix=\"left\", rsuffix=\"right\"\n",
+    ")\n",
+    "median_price_gb = sj_gdf[\"price\"].groupby([sj_gdf[\"neighbourhood_group\"]]).mean()\n",
+    "median_price_gb"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9c4be9d7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf = gdf.join(median_price_gb, on=\"neighbourhood_group\")\n",
+    "gdf.rename(columns={\"price\": \"median_pri\"}, inplace=True)\n",
+    "gdf.head(15)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4fc16534",
+   "metadata": {},
+   "source": [
+    "We have an `nan` to first deal with:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4f4c470f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pd.isnull(gdf[\"median_pri\"]).sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f64a7c2c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf[\"median_pri\"] = gdf[\"median_pri\"].fillna(gdf[\"median_pri\"].mean())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a1d86f93",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf.plot(column=\"median_pri\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "991a861f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
+    "gdf.plot(column=\"median_pri\", scheme=\"Quantiles\", k=5, cmap=\"GnBu\", legend=True, ax=ax)\n",
+    "# ax.set_xlim(150000, 160000)\n",
+    "# ax.set_ylim(208000, 215000)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "569b3d9f",
+   "metadata": {},
+   "source": [
+    "## Why Moran's I?\n",
+    "\n",
+    "A map can suggest clustering, but visual impressions are not enough. Moran's $I$ provides a formal global test of whether nearby areas tend to have similar values more often than would be expected under spatial randomness.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b64800e7",
+   "metadata": {},
+   "source": [
+    "## Global Spatial Autocorrelation\n",
+    "\n",
+    "### Moran's I"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "61ca247b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = gdf\n",
+    "wq = lps.weights.Queen.from_dataframe(df, use_index=False, silence_warnings=True)\n",
+    "wq.transform = \"r\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "073cd666",
+   "metadata": {},
+   "source": [
+    "### Attribute Similarity\n",
+    "So the spatial weight between neighborhoods $i$ and $j$ indicates if the two \n",
+    "are neighbors (i.e., geographically similar). What we also need is a measure of\n",
+    "attribute similarity to pair up with this concept of spatial similarity. The\n",
+    "**spatial lag** is a derived variable that accomplishes this for us. For neighborhood\n",
+    "$i$ the spatial lag is defined as: $$ylag_i = \\sum_j w_{i,j} y_j$$"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d1a27c31",
+   "metadata": {},
+   "source": [
+    "The key ingredients are:\n",
+    "\n",
+    "- **spatial proximity**, encoded in the weights matrix; and\n",
+    "- **attribute similarity**, summarized through the spatial lag.\n",
+    "\n",
+    "The next cells build that intuition before computing the test statistic itself.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6b0ceb50",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = df[\"median_pri\"]\n",
+    "ylag = lps.weights.lag_spatial(wq, y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e09db19d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ylag"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "19565980",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import mapclassify as mc\n",
+    "\n",
+    "ylagq5 = mc.Quantiles(ylag, k=5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "822db335",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "df.assign(cl=ylagq5.yb).plot(\n",
+    "    column=\"cl\",\n",
+    "    categorical=True,\n",
+    "    k=5,\n",
+    "    cmap=\"GnBu\",\n",
+    "    linewidth=0.1,\n",
+    "    ax=ax,\n",
+    "    edgecolor=\"white\",\n",
+    "    legend=True,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "plt.title(\"Spatial Lag Median Price (Quintiles)\")\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "00107e51",
+   "metadata": {},
+   "source": [
+    "The quintile map for the spatial lag tends to enhance the impression of value\n",
+    "similarity in space. It is, in effect, a local smoother."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "23c536a7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df[\"lag_median_pri\"] = ylag\n",
+    "f, ax = plt.subplots(1, 2, figsize=(2.16 * 4, 4))\n",
+    "df.plot(\n",
+    "    column=\"median_pri\", ax=ax[0], edgecolor=\"k\", scheme=\"quantiles\", k=5, cmap=\"GnBu\"\n",
+    ")\n",
+    "ax[0].axis(df.total_bounds[np.asarray([0, 2, 1, 3])])\n",
+    "ax[0].set_title(\"Price\")\n",
+    "df.plot(\n",
+    "    column=\"lag_median_pri\",\n",
+    "    ax=ax[1],\n",
+    "    edgecolor=\"k\",\n",
+    "    scheme=\"quantiles\",\n",
+    "    cmap=\"GnBu\",\n",
+    "    k=5,\n",
+    ")\n",
+    "ax[1].axis(df.total_bounds[np.asarray([0, 2, 1, 3])])\n",
+    "ax[1].set_title(\"Spatial Lag Price\")\n",
+    "ax[0].axis(\"off\")\n",
+    "ax[1].axis(\"off\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d27da937",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wq.transform = \"r\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0ea7437a",
+   "metadata": {},
+   "source": [
+    "Moran's I is a test for global autocorrelation for a continuous attribute:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "13148aa3",
+   "metadata": {},
+   "source": [
+    "## Computing global Moran's I\n",
+    "\n",
+    "With the outcome and weights in place, we can calculate Moran's $I$. Positive values indicate that similar values are more likely to be neighbors; negative values indicate a checkerboard pattern of dissimilar neighbors.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f7434938",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(12345)\n",
+    "mi = esda.moran.Moran(y, wq)\n",
+    "mi.I"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3e0f5e11",
+   "metadata": {},
+   "source": [
+    "Again, our value for the statistic needs to be interpreted against a reference\n",
+    "distribution under the null of CSR. PySAL uses a similar approach as we saw in\n",
+    "the join count analysis: random spatial permutations."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "33dbe33b",
+   "metadata": {},
+   "source": [
+    "## Permutation-based inference\n",
+    "\n",
+    "The observed value of Moran's $I$ is only meaningful relative to a null model. Here, the null hypothesis is that the observed attribute values are randomly arranged over the fixed neighborhood structure. Permutation inference lets us assess how unusual the observed statistic is under that null.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a8252cc3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import seaborn as sbn\n",
+    "\n",
+    "sbn.kdeplot(mi.sim, fill=True)\n",
+    "plt.vlines(mi.I, 0, 1, color=\"r\")\n",
+    "plt.vlines(mi.EI, 0, 1)\n",
+    "plt.xlabel(\"Moran's I\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b427dcc4",
+   "metadata": {},
+   "source": [
+    "Here our observed value is again in the upper tail, although visually it does\n",
+    "not look as extreme relative to the binary case. Yet, it is still statistically significant:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8bf334d9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mi.p_sim"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "afc6997e",
+   "metadata": {},
+   "source": [
+    "## Takeaways\n",
+    "\n",
+    "This notebook showed how to move from a visual impression of clustering to a formal global test for a continuous variable. In practice, global Moran's $I$ is often the first ESDA step: it tells you whether spatial dependence is present overall, but not **where** it is concentrated. That motivates the local methods in the companion notebook on local spatial autocorrelation.\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

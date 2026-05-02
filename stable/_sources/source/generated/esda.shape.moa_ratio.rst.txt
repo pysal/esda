@@ -1,0 +1,6 @@
+﻿esda.shape.moa\_ratio
+=====================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: moa_ratio

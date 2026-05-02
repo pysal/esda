@@ -1,0 +1,6 @@
+﻿esda.completeness
+=================
+
+.. currentmodule:: esda
+
+.. autofunction:: completeness

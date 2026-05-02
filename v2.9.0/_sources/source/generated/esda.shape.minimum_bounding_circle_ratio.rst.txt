@@ -1,0 +1,6 @@
+﻿esda.shape.minimum\_bounding\_circle\_ratio
+===========================================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: minimum_bounding_circle_ratio

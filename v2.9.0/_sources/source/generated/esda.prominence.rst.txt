@@ -1,0 +1,6 @@
+﻿esda.prominence
+===============
+
+.. currentmodule:: esda
+
+.. autofunction:: prominence

@@ -1,0 +1,29 @@
+﻿esda.NP\_Mixture\_Smoother
+==========================
+
+.. currentmodule:: esda
+
+.. autoclass:: NP_Mixture_Smoother
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NP_Mixture_Smoother.combine
+      ~NP_Mixture_Smoother.em
+      ~NP_Mixture_Smoother.getGradient
+      ~NP_Mixture_Smoother.getLikelihood
+      ~NP_Mixture_Smoother.getMaxGradient
+      ~NP_Mixture_Smoother.getMinGradient
+      ~NP_Mixture_Smoother.getMixedProb
+      ~NP_Mixture_Smoother.getRateEstimates
+      ~NP_Mixture_Smoother.getSeed
+      ~NP_Mixture_Smoother.getStepsize
+      ~NP_Mixture_Smoother.mixalg
+      ~NP_Mixture_Smoother.update
+      ~NP_Mixture_Smoother.vem
+   
+
+   

@@ -1,0 +1,6 @@
+﻿esda.shape.isoareal\_quotient
+=============================
+
+.. currentmodule:: esda.shape
+
+.. autofunction:: isoareal_quotient

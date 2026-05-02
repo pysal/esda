@@ -1,0 +1,600 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "13adc166",
+   "metadata": {},
+   "source": [
+    "# Local Spatial Autocorrelation\n",
+    "\n",
+    "This notebook  focuses on local indicators of spatial association (LISA)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cda06fa4",
+   "metadata": {},
+   "source": [
+    "## Learning goals\n",
+    "\n",
+    "By the end of this notebook, you will be able to:\n",
+    "\n",
+    "- compute local Moran statistics for each areal unit\n",
+    "- interpret the Moran scatterplot quadrants\n",
+    "- identify statistically significant hot spots, cold spots, and spatial outliers\n",
+    "- distinguish global evidence of autocorrelation from local patterns\n",
+    "\n",
+    "Local indicators of spatial association (LISA) answer the question that global Moran's $I$ cannot: **where** is the clustering occurring?\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "87f43f65",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import libpysal as lps\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "\n",
+    "import esda"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "923fde0a",
+   "metadata": {},
+   "source": [
+    "Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the [GeoPython 2018 workshop](https://github.com/ljwolf/geopython) by [Levi Wolf](https://ljwolf.org) and [Serge Rey](https://sergerey.org). As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6f89270f",
+   "metadata": {},
+   "source": [
+    "## Data preparation\n",
+    "\n",
+    "We use the same Berlin neighborhood data and median Airbnb price variable as in the global analysis. Keeping the data and weights constant makes it easier to connect the local results back to the global Moran's $I$ statistic.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3993c125",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf = gpd.read_file(\"data/berlin-neighbourhoods.geojson\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4045601d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bl_df = pd.read_csv(\"data/berlin-listings.csv\")\n",
+    "geometry = gpd.points_from_xy(x=bl_df.longitude, y=bl_df.latitude, crs=\"epsg:4326\")\n",
+    "bl_gdf = gpd.GeoDataFrame(bl_df, geometry=geometry)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "32aafc31",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bl_gdf[\"price\"] = bl_gdf[\"price\"].astype(\"float32\")\n",
+    "sj_gdf = gpd.sjoin(\n",
+    "    gdf, bl_gdf, how=\"inner\", predicate=\"intersects\", lsuffix=\"left\", rsuffix=\"right\"\n",
+    ")\n",
+    "median_price_gb = sj_gdf[\"price\"].groupby([sj_gdf[\"neighbourhood_group\"]]).mean()\n",
+    "median_price_gb"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9c4be9d7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf = gdf.join(median_price_gb, on=\"neighbourhood_group\")\n",
+    "gdf.rename(columns={\"price\": \"median_pri\"}, inplace=True)\n",
+    "gdf.head(15)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4fc16534",
+   "metadata": {},
+   "source": [
+    "We have an `nan` to first deal with:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4f4c470f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pd.isnull(gdf[\"median_pri\"]).sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f64a7c2c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf[\"median_pri\"] = gdf[\"median_pri\"].fillna(gdf[\"median_pri\"].mean())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a1d86f93",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gdf.plot(column=\"median_pri\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "991a861f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
+    "gdf.plot(column=\"median_pri\", scheme=\"Quantiles\", k=5, cmap=\"GnBu\", legend=True, ax=ax)\n",
+    "# ax.set_xlim(150000, 160000)\n",
+    "# ax.set_ylim(208000, 215000)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "da8cc891",
+   "metadata": {},
+   "source": [
+    "## From global to local autocorrelation\n",
+    "\n",
+    "A significant global statistic tells us that the map is spatially structured overall, but it does not reveal which neighborhoods are driving that result. Local Moran statistics decompose that global pattern into unit-level contributions.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "47666ee0",
+   "metadata": {},
+   "source": [
+    "## Local Spatial Autocorrelation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bf46a4bc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = gdf\n",
+    "wq = lps.weights.Queen.from_dataframe(df, use_index=False, silence_warnings=True)\n",
+    "wq.transform = \"r\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d6502cc4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = df[\"median_pri\"]\n",
+    "ylag = lps.weights.lag_spatial(wq, y)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bf8fd283",
+   "metadata": {},
+   "source": [
+    "The Moran scatterplot is a useful bridge between visualization and inference. It relates each neighborhood's value to the average value of its neighbors and organizes the observations into the familiar four quadrants of high-high, low-low, high-low, and low-high association.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "30b53092",
+   "metadata": {},
+   "source": [
+    "## Local Autocorrelation: Hot Spots, Cold Spots, and Spatial Outliers\n",
+    "In addition to the Global autocorrelation statistics, PySAL has many local\n",
+    "autocorrelation statistics. Let's compute a local Moran statistic for the same\n",
+    "d"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4a4ae2bd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(12345)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cf763c76",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wq.transform = \"r\"\n",
+    "lag_price = lps.weights.lag_spatial(wq, df[\"median_pri\"])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3dd1c1f5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "price = df[\"median_pri\"]\n",
+    "b, a = np.polyfit(price, lag_price, 1)\n",
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "\n",
+    "plt.plot(price, lag_price, \".\", color=\"firebrick\")\n",
+    "\n",
+    "# dashed vert at mean of the price\n",
+    "plt.vlines(price.mean(), lag_price.min(), lag_price.max(), linestyle=\"--\")\n",
+    "# dashed horizontal at mean of lagged price\n",
+    "plt.hlines(lag_price.mean(), price.min(), price.max(), linestyle=\"--\")\n",
+    "\n",
+    "# red line of best fit using global I as slope\n",
+    "plt.plot(price, a + b * price, \"r\")\n",
+    "plt.title(\"Moran Scatterplot\")\n",
+    "plt.ylabel(\"Spatial Lag of Price\")\n",
+    "plt.xlabel(\"Price\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2bc9489a",
+   "metadata": {},
+   "source": [
+    "Now, instead of a single $I$ statistic, we have an *array* of local $I_i$\n",
+    "statistics, stored in the `.Is` attribute, and p-values from the simulation are\n",
+    "in `p_sim`."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "377dad0d",
+   "metadata": {},
+   "source": [
+    "## Computing local Moran statistics\n",
+    "\n",
+    "Each observation receives its own local statistic and permutation-based p-value. This allows us to distinguish places that are merely high or low in value from places that are embedded in statistically significant local structure.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "821ed40c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "li = esda.moran.Moran_Local(y, wq)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a2b6c390",
+   "metadata": {},
+   "source": [
+    "We can again test for local clustering using permutations, but here we use\n",
+    "conditional random permutations (different distributions for each focal location)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "95c708fb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "(li.p_sim < 0.05).sum()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "142a0e48",
+   "metadata": {},
+   "source": [
+    "## Interpreting cluster types\n",
+    "\n",
+    "The quadrant labels correspond to substantively different local relationships:\n",
+    "\n",
+    "- **High-High**: a hot spot\n",
+    "- **Low-Low**: a cold spot\n",
+    "- **High-Low**: a high-value spatial outlier\n",
+    "- **Low-High**: a low-value spatial outlier\n",
+    "\n",
+    "In practice, we usually map only those observations that are statistically significant under the permutation test.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ac672587",
+   "metadata": {},
+   "source": [
+    "We can distinguish the specific type of local spatial association reflected in\n",
+    "the four quadrants of the Moran Scatterplot above:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "746485b7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sig = li.p_sim < 0.05\n",
+    "hotspot = sig * li.q == 1\n",
+    "coldspot = sig * li.q == 3\n",
+    "doughnut = sig * li.q == 2\n",
+    "diamond = sig * li.q == 4"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "22f34a6b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "spots = [\"n.sig.\", \"hot spot\"]\n",
+    "labels = [spots[i] for i in hotspot * 1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bdbac902",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df\n",
+    "from matplotlib import colors\n",
+    "\n",
+    "hmap = colors.ListedColormap([\"red\", \"lightgrey\"])\n",
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "df.assign(cl=labels).plot(\n",
+    "    column=\"cl\",\n",
+    "    categorical=True,\n",
+    "    k=2,\n",
+    "    cmap=hmap,\n",
+    "    linewidth=0.1,\n",
+    "    ax=ax,\n",
+    "    edgecolor=\"white\",\n",
+    "    legend=True,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d043b0b0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "spots = [\"n.sig.\", \"cold spot\"]\n",
+    "labels = [spots[i] for i in coldspot * 1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d79c7f3d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df\n",
+    "from matplotlib import colors\n",
+    "\n",
+    "hmap = colors.ListedColormap([\"blue\", \"lightgrey\"])\n",
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "df.assign(cl=labels).plot(\n",
+    "    column=\"cl\",\n",
+    "    categorical=True,\n",
+    "    k=2,\n",
+    "    cmap=hmap,\n",
+    "    linewidth=0.1,\n",
+    "    ax=ax,\n",
+    "    edgecolor=\"white\",\n",
+    "    legend=True,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "38bacfb1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "spots = [\"n.sig.\", \"doughnut\"]\n",
+    "labels = [spots[i] for i in doughnut * 1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e5969217",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df\n",
+    "from matplotlib import colors\n",
+    "\n",
+    "hmap = colors.ListedColormap([\"lightblue\", \"lightgrey\"])\n",
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "df.assign(cl=labels).plot(\n",
+    "    column=\"cl\",\n",
+    "    categorical=True,\n",
+    "    k=2,\n",
+    "    cmap=hmap,\n",
+    "    linewidth=0.1,\n",
+    "    ax=ax,\n",
+    "    edgecolor=\"white\",\n",
+    "    legend=True,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "383e7a9b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "spots = [\"n.sig.\", \"diamond\"]\n",
+    "labels = [spots[i] for i in diamond * 1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3b778f97",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df\n",
+    "from matplotlib import colors\n",
+    "\n",
+    "hmap = colors.ListedColormap([\"pink\", \"lightgrey\"])\n",
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "df.assign(cl=labels).plot(\n",
+    "    column=\"cl\",\n",
+    "    categorical=True,\n",
+    "    k=2,\n",
+    "    cmap=hmap,\n",
+    "    linewidth=0.1,\n",
+    "    ax=ax,\n",
+    "    edgecolor=\"white\",\n",
+    "    legend=True,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "47f86622",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sig = 1 * (li.p_sim < 0.05)\n",
+    "hotspot = 1 * (sig * li.q == 1)\n",
+    "coldspot = 3 * (sig * li.q == 3)\n",
+    "doughnut = 2 * (sig * li.q == 2)\n",
+    "diamond = 4 * (sig * li.q == 4)\n",
+    "spots = hotspot + coldspot + doughnut + diamond\n",
+    "spots"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b063282b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "spot_labels = [\"0 ns\", \"1 hot spot\", \"2 doughnut\", \"3 cold spot\", \"4 diamond\"]\n",
+    "labels = [spot_labels[i] for i in spots]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2ce43e51",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from matplotlib import colors\n",
+    "\n",
+    "hmap = colors.ListedColormap([\"lightgrey\", \"red\", \"lightblue\", \"blue\", \"pink\"])\n",
+    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "df.assign(cl=labels).plot(\n",
+    "    column=\"cl\",\n",
+    "    categorical=True,\n",
+    "    k=2,\n",
+    "    cmap=hmap,\n",
+    "    linewidth=0.1,\n",
+    "    ax=ax,\n",
+    "    edgecolor=\"white\",\n",
+    "    legend=True,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "10a17565",
+   "metadata": {},
+   "source": [
+    "## Takeaways\n",
+    "\n",
+    "Local Moran analysis moves from a single global summary to place-specific diagnostics. This is often the most interpretable stage of ESDA because it reveals where clustering and outliers are located on the map. At the same time, these local results should always be interpreted in the context of the global pattern, the choice of spatial weights, and the multiple-testing issues that arise when many local statistics are examined at once.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "53c3dbbf-6119-4209-a76f-c9d931df9587",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

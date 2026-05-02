@@ -1,0 +1,22 @@
+﻿esda.Moran\_Local\_BV
+=====================
+
+.. currentmodule:: esda
+
+.. autoclass:: Moran_Local_BV
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Moran_Local_BV.by_col
+      ~Moran_Local_BV.explore
+      ~Moran_Local_BV.get_cluster_labels
+      ~Moran_Local_BV.plot
+      ~Moran_Local_BV.plot_combination
+      ~Moran_Local_BV.plot_scatter
+   
+
+   

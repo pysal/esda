@@ -1,0 +1,11 @@
+﻿esda.G
+======
+
+.. currentmodule:: esda
+
+.. autoclass:: G
+
+   
+   
+
+   
