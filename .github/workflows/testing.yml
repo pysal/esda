@@ -58,22 +58,22 @@
        - name: checkout repo
          uses: actions/checkout@v6
          with:
-          fetch-depth: 0 # Fetch all history for all branches and tags.
+           fetch-depth: 0 # Fetch all history for all branches and tags.
 
        - name: setup micromamba
          uses: mamba-org/setup-micromamba@v3
          with:
-            micromamba-version: "latest"
-            environment-file: ${{ matrix.environment-file }}
+           micromamba-version: "latest"
+           environment-file: ${{ matrix.environment-file }}
 
        - name: environment info
          run: |
            micromamba info
            micromamba list
 
-      - name: install package
-        run: |
-          pip install -e . --no-deps
+       - name: install package
+         run: |
+           pip install -e . --no-deps
 
        - name: spatial versions
          run: |
