@@ -8,7 +8,7 @@ from esda.crand import crand as _crand_plus
 from esda.crand import njit as _njit
 
 
-class Geary_Local(BaseEstimator):  # noqa: N801
+class Geary_Local(BaseEstimator):
     """Local Geary - Univariate"""
 
     def __init__(
@@ -43,7 +43,8 @@ class Geary_Local(BaseEstimator):  # noqa: N801
                            Default significance threshold used for
                            creation of labels groups.
         permutations : int, np.ndarray
-            Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+            Number of permutations for conditional randomisation, or the
+            permutation array itself. Providing an integer will test the
             conditional random null hypothesis for each site. Permutations
             might be specified as an array of indices if the user needs to add
             structure to this conditional permutation null hypothesis. Common
@@ -111,7 +112,7 @@ class Geary_Local(BaseEstimator):  # noqa: N801
 
         Notes
         -----
-        Technical details and derivations can be found in :cite:`Anselin1995`.
+        Technical details and derivations can be found in :cite:`Anselin95`.
 
         Examples
         --------
@@ -211,7 +212,7 @@ class Geary_Local(BaseEstimator):  # noqa: N801
 
 
 @_njit(fastmath=True)
-def _local_geary(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def _local_geary(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001 - Unused function argument: `scaling`
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)
     return (zi - zrand) ** 2 @ other_weights

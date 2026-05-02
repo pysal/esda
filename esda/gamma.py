@@ -6,7 +6,6 @@ Gamma index for spatial autocorrelation
 
 __author__ = "Luc Anselin <luc.anselin@asu.edu> Serge Rey <sjsrey@gmail.com>"
 
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -14,7 +13,6 @@ from libpysal.weights import W, lag_spatial
 
 from .crand import _prepare_univariate
 from .crand import njit as _njit
-from .tabular import _univariate_handler
 
 __all__ = ["Gamma"]
 
@@ -273,28 +271,6 @@ class Gamma:
         if psim > 0.5:
             psim = (self.permutations - larger + 1.0) / (self.permutations + 1.0)
         return psim
-
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        msg = (
-            "The `.by_col()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname=cls.__name__.lower(),
-            **stat_kws,
-        )
 
 
 # --------------------------------------------------------------

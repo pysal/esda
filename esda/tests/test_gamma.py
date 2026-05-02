@@ -80,24 +80,3 @@ class TestGamma:
         np.testing.assert_allclose(g4.g, 20.0)
         np.testing.assert_allclose(g4.g_z, 3.1879280354548638)
         np.testing.assert_allclose(g4.p_sim_g, 0.0030000000000000001)
-
-    @parametrize_lat
-    def test_by_col(self, w):
-        import pandas as pd
-
-        g = Gamma(self.y, w)
-
-        df = pd.DataFrame(self.y, columns=["y"])
-        r1 = Gamma.by_col(df, ["y"], w=w)
-        assert "y_gamma" in r1.columns
-        assert "y_p_sim" in r1.columns
-        this_gamma = np.unique(r1.y_gamma.values)
-        this_pval = np.unique(r1.y_p_sim.values)
-
-        np.testing.assert_allclose(this_gamma, g.g)
-        np.testing.assert_allclose(this_pval, g.p_sim)
-        Gamma.by_col(df, ["y"], inplace=True, operation="s", w=w)
-        this_gamma = np.unique(df.y_gamma.values)
-        this_pval = np.unique(df.y_p_sim.values)
-        np.testing.assert_allclose(this_gamma, 8.0)
-        np.testing.assert_allclose(this_pval, 0.001)

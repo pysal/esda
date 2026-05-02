@@ -2,15 +2,19 @@
 Centralised conditional randomisation engine. Numba accelerated.
 """
 
+import importlib
 import os
 import warnings
-from .significance import _permutation_significance
+
 import numpy as np
+
+from .significance import _permutation_significance
 
 try:
     from numba import boolean, njit, prange
 except (ImportError, ModuleNotFoundError):
     from libpysal.common import jit as njit
+
     prange = range
     boolean = bool
 
@@ -23,9 +27,7 @@ __all__ = ["crand"]
 
 
 @njit(fastmath=True)
-def vec_permutations(
-    max_card: int, n: int, k_replications: int, seed: int
-    ):
+def vec_permutations(max_card: int, n: int, k_replications: int, seed: int):
     """
     Generate `max_card` permuted IDs, sampled from `n` without replacement,
     `k_replications` times
@@ -65,7 +67,7 @@ def crand(
     scaling=None,
     seed=None,
     island_weight=0,
-    alternative=None
+    alternative=None,
 ):
     """
     Conduct conditional randomization of a given input using the provided
@@ -81,7 +83,8 @@ def crand(
     observed : ndarray
         (N,) array with observed values
     permutations : int, np.ndarray
-        Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+        Number of permutations for conditional randomisation, or
+        the permutation array itself. Providing an integer will test the
         conditional random null hypothesis for each site. Permutations
         might be specified as an array of indices if the user needs to add
         structure to this conditional permutation null hypothesis. Common
@@ -150,17 +153,19 @@ def crand(
             "The alternative hypothesis for conditional randomization"
             " is changing in the next major release of esda. We recommend"
             " setting alternative='two-sided', which will generally"
-            " double the p-value returned." 
+            " double the p-value returned."
             " To retain the current behavior, set alternative='directed'."
             " We strongly recommend moving to alternative='two-sided'.",
             DeprecationWarning,
+            stacklevel=2,
         )
         # TODO: replace this with 'two-sided' by next major release
-        alternative = 'directed'
+        alternative = "directed"
     if alternative not in ("two-sided", "greater", "lesser", "directed", "folded"):
         raise ValueError(
             f"alternative='{alternative}' provided, but is not"
-            f" one of the supported options: 'two-sided', 'greater', 'lesser', 'directed', 'folded')"
+            " one of the supported options: 'two-sided', 'greater', "
+            "'lesser', 'directed', 'folded')"
         )
 
     # paralellise over permutations?
@@ -179,7 +184,7 @@ def crand(
         adj_matrix.setdiag(0)
         adj_matrix.eliminate_zeros()
     # extract the weights from a now no-self-weighted adj_matrix
-    other_weights = adj_matrix.data.astype(z.dtype) # cast is forced by @ in numba
+    other_weights = adj_matrix.data.astype(z.dtype)  # cast is forced by @ in numba
     # use the non-self weight as the cardinality, since
     # this is the set we have to randomize.
     # if there is a self-neighbor, we need to *not* shuffle the
@@ -191,7 +196,8 @@ def crand(
         # Random permutation array
         if int(permutations) != permutations:
             raise ValueError(
-            f"An integer number of permutations is required, but {permutations} was provided."
+                "An integer number of permutations is required, "
+                f"but {permutations} was provided."
             )
         permuted_ids = vec_permutations(max_card, n, permutations, seed)
     elif np.ndim(permutations) == 2:
@@ -206,11 +212,11 @@ def crand(
             )
         if permuted_ids.shape[1] < max_card:
             raise ValueError(
-            f"The `permutations` provided were shape {permuted_ids.shape}"
-            f", but must be ({permutations, max_card}) in order to supply"
-            f" enough possible neighbors to shuffle every observation."
-            f" Consider supplying a wider permutation matrix, with"
-            f" {max_card-permuted_ids.shape[1]} more columns."
+                f"The `permutations` provided were shape {permuted_ids.shape}"
+                f", but must be ({permutations, max_card}) in order to supply"
+                f" enough possible neighbors to shuffle every observation."
+                f" Consider supplying a wider permutation matrix, with"
+                f" {max_card - permuted_ids.shape[1]} more columns."
             )
     else:
         raise ValueError(
@@ -219,18 +225,15 @@ def crand(
             f" number of permutations to run and k is the largest amount of"
             f" shuffled pairs that must be considered at a given site, but"
             f" {permutations} was provided."
-            )    
-    if n_jobs != 1:
-        try:
-            import joblib  # noqa: F401
-        except (ModuleNotFoundError, ImportError):
-            warnings.warn(
-                f"Parallel processing is requested (n_jobs={n_jobs}),"
-                f" but joblib cannot be imported. n_jobs will be set"
-                f" to 1.",
-                stacklevel=2,
-            )
-            n_jobs = 1
+        )
+    if n_jobs != 1 and not importlib.util.find_spec("joblib"):
+        warnings.warn(
+            f"Parallel processing is requested (n_jobs={n_jobs}),"
+            f" but joblib cannot be imported. n_jobs will be set"
+            f" to 1.",
+            stacklevel=2,
+        )
+        n_jobs = 1
 
     if n_jobs == 1:
         p_sims, rlocals = compute_chunk(
@@ -246,7 +249,7 @@ def crand(
             keep,  # whether or not to keep the local statistics
             stat_func,
             island_weight,
-            alternative=alternative
+            alternative=alternative,
         )
     else:
         if n_jobs == -1:
@@ -266,7 +269,7 @@ def crand(
             keep,
             stat_func,
             island_weight,
-            alternative=alternative
+            alternative=alternative,
         )
 
     return p_sims, rlocals
@@ -286,7 +289,7 @@ def compute_chunk(
     keep: bool,
     stat_func,
     island_weight: float,
-    alternative: str 
+    alternative: str,
 ):
     """
     Compute conditional randomisation for a single chunk
@@ -353,7 +356,6 @@ def compute_chunk(
     p_permutations, k_max_card = permuted_ids.shape
     p_sims = np.zeros((chunk_n,), dtype=np.float32)
     rlocals = np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
-
 
     mask = np.ones((n_samples,), dtype=np.int8) == 1
     wloc = 0
@@ -501,7 +503,7 @@ def parallel_crand(
     keep: bool,
     stat_func,
     island_weight,
-    alternative: str = 'directed'
+    alternative: str = "directed",
 ):
     """
     Conduct conditional randomization in parallel using numba
@@ -589,12 +591,18 @@ def parallel_crand(
     with parallel_backend("loky", inner_max_num_threads=1):
         worker_out = Parallel(n_jobs=n_jobs)(
             delayed(compute_chunk)(
-                *pars, permuted_ids, scaling, keep, stat_func, island_weight, alternative
+                *pars,
+                permuted_ids,
+                scaling,
+                keep,
+                stat_func,
+                island_weight,
+                alternative,
             )
             for pars in chunks
         )
 
-    p_sims, rlocals = zip(*worker_out)
+    p_sims, rlocals = zip(*worker_out, strict=True)
     p_sims = np.hstack(p_sims).squeeze()
     rlocals = np.row_stack(rlocals).squeeze()
     return p_sims, rlocals
@@ -637,6 +645,6 @@ def _prepare_bivariate(i, z, permuted_ids, weights_i):
 
 
 @njit(fastmath=True)
-def local(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def local(i, z, permuted_ids, weights_i, scaling):
     raise NotImplementedError
     # returns (k_permutations,) array of random statistics for observation i

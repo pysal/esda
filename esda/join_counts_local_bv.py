@@ -10,7 +10,7 @@ from esda.crand import njit as _njit
 PERMUTATIONS = 999
 
 
-class Join_Counts_Local_BV(BaseEstimator):  # noqa: N801
+class Join_Counts_Local_BV(BaseEstimator):
     """Univariate Local Join Count Statistic"""
 
     def __init__(
@@ -31,7 +31,8 @@ class Join_Counts_Local_BV(BaseEstimator):  # noqa: N801
         connectivity : W | Graph
             spatial weights instance as W or Graph aligned with y
         permutations : int, np.ndarray
-            Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+            Number of permutations for conditional randomisation, or the
+            permutation array itself. Providing an integer will test the
             conditional random null hypothesis for each site. Permutations
             might be specified as an array of indices if the user needs to add
             structure to this conditional permutation null hypothesis. Common
@@ -246,7 +247,7 @@ class Join_Counts_Local_BV(BaseEstimator):  # noqa: N801
 
 
 @_njit(fastmath=True)
-def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001 - Unused function argument: `scaling`
     zx = z[:, 0]
     zy = z[:, 1]
     other_weights = weights_i[1:]
@@ -255,7 +256,7 @@ def _ljc_bv_case1(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
 
 
 @_njit(fastmath=True)
-def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def _ljc_bv_case2(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001 - Unused function argument: `scaling`
     zy = z[:, 1]
     other_weights = weights_i[1:]
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, other_weights)

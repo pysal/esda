@@ -7,44 +7,42 @@
 import contextlib
 from importlib.metadata import PackageNotFoundError, version
 
-from . import adbscan, shape  # noqa F401
-from .correlogram import correlogram  # noqa F401
-from .gamma import Gamma  # noqa F401
-from .geary import Geary  # noqa F401
-from .geary_local import Geary_Local  # noqa F401
-from .geary_local_mv import Geary_Local_MV  # noqa F401
-from .getisord import G, G_Local  # noqa F401
-from .join_counts import Join_Counts  # noqa F401
-from .join_counts_local import Join_Counts_Local  # noqa F401
-from .join_counts_local_bv import Join_Counts_Local_BV  # noqa F401
-from .join_counts_local_mv import Join_Counts_Local_MV  # noqa F401
-from .lee import Spatial_Pearson, Spatial_Pearson_Local  # noqa F401
-from .losh import LOSH  # noqa F401
+from . import adbscan, shape
+from .correlogram import correlogram
+from .gamma import Gamma
+from .geary import Geary
+from .geary_local import Geary_Local
+from .geary_local_mv import Geary_Local_MV
+from .getisord import G, G_Local
+from .join_counts import Join_Counts
+from .join_counts_local import Join_Counts_Local
+from .join_counts_local_bv import Join_Counts_Local_BV
+from .join_counts_local_mv import Join_Counts_Local_MV
+from .lee import Spatial_Pearson, Spatial_Pearson_Local
+from .losh import LOSH
 from .map_comparison import (
     areal_entropy,
-    completeness,  # noqa F401
+    completeness,
     external_entropy,
     homogeneity,
     overlay_entropy,
 )
+from .mixture_smoothing import NP_Mixture_Smoother
 from .moran import (
     Moran,
     Moran_BV,
     Moran_BV_matrix,
-    Moran_Local,  # noqa F401
+    Moran_Local,
     Moran_Local_BV,
     Moran_Local_Rate,
     Moran_Rate,
     plot_moran_facet,
 )
-from .moran_local_mv import (
-    MoranLocalPartial,
-    MoranLocalConditional
-)
-from .silhouettes import boundary_silhouette, path_silhouette  # noqa F401
-from .smaup import Smaup  # noqa F401
-from .topo import isolation, prominence  # noqa F401
-from .util import fdr  # noqa F401
+from .moran_local_mv import MoranLocalConditional, MoranLocalPartial
+from .silhouettes import boundary_silhouette, path_silhouette
+from .smaup import Smaup
+from .topo import isolation, prominence
+from .util import fdr
 
 with contextlib.suppress(PackageNotFoundError):
     __version__ = version("esda")

@@ -10,7 +10,7 @@ from esda.crand import njit as _njit
 PERMUTATIONS = 999
 
 
-class Join_Counts_Local(BaseEstimator):  # noqa: N801
+class Join_Counts_Local(BaseEstimator):
     """Univariate Local Join Count Statistic"""
 
     def __init__(
@@ -31,7 +31,8 @@ class Join_Counts_Local(BaseEstimator):  # noqa: N801
         connectivity : W | Graph
             spatial weights instance as W or Graph aligned with y
         permutations : int, np.ndarray
-            Number of permutations for conditional randomisation, or the permutation array itself. Providing an integer will test the
+            Number of permutations for conditional randomisation, or the
+            permutation array itself. Providing an integer will test the
             conditional random null hypothesis for each site. Permutations
             might be specified as an array of indices if the user needs to add
             structure to this conditional permutation null hypothesis. Common
@@ -187,7 +188,7 @@ class Join_Counts_Local(BaseEstimator):  # noqa: N801
 
 
 @_njit(fastmath=True)
-def _ljc_uni(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001
+def _ljc_uni(i, z, permuted_ids, weights_i, scaling):  # noqa: ARG001 - Unused function argument: `scaling`
     # self_weight = weights_i[0]
     other_weights = weights_i[1:]
     zi, zrand = _prepare_univariate(i, z, permuted_ids, other_weights)

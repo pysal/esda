@@ -59,16 +59,3 @@ class TestGeary:
         np.testing.assert_allclose(c.VC_sim, 0.010631247074115058)
         np.testing.assert_allclose(c.p_sim, 0.001)
         np.testing.assert_allclose(c.p_z_sim, 1.4207015378575605e-06)
-
-    @parametrize_w
-    def test_by_col(self, w):
-        import pandas as pd
-
-        df = pd.DataFrame(self.y, columns=["y"])
-        np.random.seed(12345)
-        r1 = geary.Geary.by_col(df, ["y"], w=w, permutations=999)
-        this_geary = np.unique(r1.y_geary.values)
-        this_pval = np.unique(r1.y_p_sim.values)
-        c = geary.Geary(self.y, w, permutations=999)
-        np.testing.assert_allclose(this_geary, c.C)
-        np.testing.assert_allclose(this_pval, c.p_sim)

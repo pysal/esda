@@ -1,3 +1,4 @@
+import importlib
 import warnings
 
 import numpy as np
@@ -9,7 +10,9 @@ try:
     import pandas as pd
     import sklearn.metrics as sk
     import sklearn.metrics.pairwise as skp
-    from sklearn.preprocessing import LabelEncoder  # noqa: F401
+    from sklearn.preprocessing import (
+        LabelEncoder,  # noqa: F401 - imported but unused (keeping this one here for simplicity)
+    )
 
     HAS_REQUIREMENTS = True
 except ImportError:
@@ -18,14 +21,9 @@ except ImportError:
 
 def _raise_initial_error():
     missing = []
-    try:
-        import sklearn  # noqa: F401
-    except ImportError:
-        missing.append("scikit-learn")
-    try:
-        import pandas  # noqa: F401
-    except ImportError:
-        missing.append("pandas")
+    for dep in ["sklearn", "pandas"]:
+        if not importlib.util.find_spec(dep):
+            missing.append(dep)
     raise ImportError(
         "This function requires scikit-learn and "
         f"pandas to be installed. Missing {','.join(missing)}."

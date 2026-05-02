@@ -189,7 +189,7 @@ class Moran:
         self.w = w
         self.permutations = permutations
         self.__moments()
-        self.I = self.__calc(self.z)  # noqa: E741
+        self.I = self.__calc(self.z)
         self.z_norm = (self.I - self.EI) / self.seI_norm
         self.z_rand = (self.I - self.EI) / self.seI_rand
 
@@ -313,6 +313,13 @@ class Moran:
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _univariate_handler(
             df,
             cols,
@@ -409,7 +416,7 @@ class Moran:
         )
 
 
-class Moran_BV:  # noqa: N801
+class Moran_BV:
     """
     Bivariate Moran's I
 
@@ -527,7 +534,7 @@ class Moran_BV:  # noqa: N801
         self.den = n - 1.0  # zx'zx = zy'zy = n-1
         w = _transform(w, transformation)
         self.w = w
-        self.I = self.__calc(zy)  # noqa: E741
+        self.I = self.__calc(zy)
         if permutations:
             nrp = np.random.permutation
             sim = [self.__calc(nrp(zy)) for i in range(permutations)]
@@ -609,6 +616,13 @@ class Moran_BV:  # noqa: N801
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _bivariate_handler(
             df,
             x,
@@ -689,7 +703,7 @@ class Moran_BV:  # noqa: N801
         )
 
 
-def Moran_BV_matrix(variables, w, permutations=0, varnames=None):  # noqa: N802
+def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
     """
     Bivariate Moran Matrix
 
@@ -766,7 +780,7 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):  # noqa: N802
     return results
 
 
-def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):  # noqa: N802
+def _Moran_BV_Matrix_array(variables, w, permutations=0, varnames=None):
     """
     Base calculation for MORAN_BV_Matrix
     """
@@ -897,7 +911,7 @@ def plot_moran_facet(
     return axarr
 
 
-class Moran_Rate(Moran):  # noqa: N801
+class Moran_Rate(Moran):
     """
     Adjusted Moran's I Global Autocorrelation Statistic for Rate
     Variables :cite:`Assuncao1999`
@@ -1080,6 +1094,7 @@ class Moran_Rate(Moran):  # noqa: N801
         the relevant columns attached.
 
         """
+
         if not inplace:
             new = df.copy()
             cls.by_col(
@@ -1094,6 +1109,13 @@ class Moran_Rate(Moran):  # noqa: N801
                 **stat_kws,
             )
             return new
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         if isinstance(events, str):
             events = [events]
         if isinstance(populations, str):
@@ -1141,7 +1163,7 @@ class Moran_Rate(Moran):  # noqa: N801
 # -----------------------------------------------------------------------------#
 
 
-class Moran_Local:  # noqa: N801
+class Moran_Local:
     """Local Moran Statistics.
 
 
@@ -1306,7 +1328,7 @@ class Moran_Local:  # noqa: N801
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,  # noqa: ARG002
+        island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1472,6 +1494,13 @@ class Moran_Local:  # noqa: N801
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _univariate_handler(
             df,
             cols,
@@ -1657,7 +1686,7 @@ class Moran_Local:  # noqa: N801
         )
 
 
-class Moran_Local_BV:  # noqa: N801
+class Moran_Local_BV:
     """Bivariate Local Moran Statistics.
 
 
@@ -1784,7 +1813,7 @@ class Moran_Local_BV:  # noqa: N801
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,  # noqa: ARG002
+        island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1918,6 +1947,13 @@ class Moran_Local_BV:  # noqa: N801
         the relevant columns attached.
 
         """
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         return _bivariate_handler(
             df,
             x,
@@ -2105,7 +2141,7 @@ class Moran_Local_BV:  # noqa: N801
         )
 
 
-class Moran_Local_Rate(Moran_Local):  # noqa: N801
+class Moran_Local_Rate(Moran_Local):
     """
     Adjusted Local Moran Statistics for Rate Variables :cite:`Assuncao1999`.
 
@@ -2239,7 +2275,7 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
         n_jobs=1,
         keep_simulations=True,
         seed=None,
-        island_weight=0,  # noqa: ARG002
+        island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -2323,6 +2359,13 @@ class Moran_Local_Rate(Moran_Local):  # noqa: N801
                 **stat_kws,
             )
             return new
+
+        msg = (
+            "The `.by_col()` methods are deprecated and will be "
+            "removed in a future version of `esda`."
+        )
+        warn(msg, FutureWarning, stacklevel=2)
+
         if isinstance(events, str):
             events = [events]
         if isinstance(populations, str):

@@ -4,13 +4,10 @@ Geary's C statistic for spatial autocorrelation
 
 __author__ = "Serge Rey <sjsrey@gmail.com> "
 
-import warnings
 
 import numpy as np
 import scipy.stats as stats
 from libpysal import graph, weights
-
-from .tabular import _univariate_handler
 
 __all__ = ["Geary"]
 
@@ -190,63 +187,3 @@ class Geary:
         num = (self._weights * ((y[self._focal_ix] - y[self._neighbor_ix]) ** 2)).sum()
         a = (self.n - 1) * num
         return a / self.den
-
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        """
-        Function to compute a Geary statistic on a dataframe
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            a pandas dataframe with a geometry column
-        cols : string or list of string
-            name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
-        inplace : bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, with default configurations,
-            the derived columns will be named like 'column_geary' and 'column_p_sim'
-        pvalue  : string
-            a string denoting which pvalue should be returned. Refer to the
-            the Geary statistic's documentation for available p-values
-        outvals : list of strings
-            list of arbitrary attributes to return as columns from the
-            Geary statistic
-        **stat_kws : dict
-            options to pass to the underlying statistic. For this, see the
-            documentation for the Geary statistic.
-
-        Returns
-        --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
-
-        Notes
-        -----
-        Technical details and derivations can be found in :cite:`cliff81`.
-
-        """
-
-        msg = (
-            "The `.by_col()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname=cls.__name__.lower(),
-            **stat_kws,
-        )

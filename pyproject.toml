@@ -70,6 +70,11 @@ docs = [
     "sphinx",
     "sphinxcontrib-bibtex",
     "sphinx_bootstrap_theme",
+    "mkdocs-jupyter",
+    "myst-parser",
+    "sphinx-immaterial",
+    "myst_nb",
+    "sphinx-copybutton"
 ]
 notebooks = [
     "matplotlib-scalebar",
@@ -85,22 +90,19 @@ line-length = 88
 extend-include = ["*.ipynb"]
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 lint.ignore = [
-    "B006",
-    "B008",
-    "B009",
-    "B010",
-    "C408",
-    "E731",
-    "F401",
-    "F403",
-    "N803",
-    "N806",
-    "N999",
-    "UP007"
+    "B006",  # Do not use mutable data structures for argument defaults
+    "C408",  # Unnecessary `*` call (rewrite as a literal)
+    "N801",  # Class name `*` should use CapWords convention
+    "N802",  # Function name `*` should be lowercase
+    "N803",  # Argument name * should be lowercase
+    "N806",  # Variable * in function should be lowercase
 ]
-exclude = ["docs/*"]
+
 
 [tool.ruff.lint.per-file-ignores]
+"esda/__init__.py" = [
+    "F401",  #  `*` imported but unused; consider removing, adding to `__all__`, or using a redundant alias
+]
 "*.ipynb" = [
     "E402",  # Module level import not at top of cell
 ]
@@ -118,3 +120,11 @@ exclude_lines = [
 ]
 ignore_errors = true
 omit = ["esda/tests/*", "docs/conf.py"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:Geometry is in a geographic CRS",
+    "ignore:divide by zero encountered",
+    "ignore:invalid value encountered",
+    "ignore:Numba not imported, so alpha shape construction may be slower",
+]
