@@ -21,11 +21,9 @@ __author__ = (
 from functools import reduce
 
 import numpy as np
-from libpysal.cg import (
-    KDTree,
-)
 from libpysal.weights.distance import Kernel
 from libpysal.weights.spatial_lag import lag_spatial as slag
+from scipy.spatial import KDTree
 from scipy.stats import chi2, gamma, norm, poisson
 
 __all__ = [
