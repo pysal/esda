@@ -1,13 +1,9 @@
 import numpy as np
 import pandas as pd
 from libpysal import weights
-from packaging.version import Version
 from scipy import stats
-from sklearn import __version__ as sklearn_version
 from sklearn.base import BaseEstimator
 from sklearn.utils import check_array
-
-SKL_GE_16 = Version(sklearn_version) >= Version("1.6")
 
 
 class Geary_Local_MV(BaseEstimator):
@@ -80,14 +76,12 @@ class Geary_Local_MV(BaseEstimator):
         >>> lG_mv.p_sim[0:5]
         """
 
-        all_finite_kwarg = "ensure_all_finite" if SKL_GE_16 else "force_all_finite"
-
         self.variables = check_array(
             variables,
             accept_sparse=False,
             dtype="float",
             estimator=self,
-            **{all_finite_kwarg: True},
+            ensure_all_finite=True,
         )
 
         w = self.connectivity

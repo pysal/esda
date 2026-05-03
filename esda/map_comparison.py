@@ -2,7 +2,6 @@ import contextlib
 
 import numpy
 import pandas
-from packaging.version import Version
 from scipy.special import entr
 
 with contextlib.suppress(ImportError, ModuleNotFoundError):
@@ -36,9 +35,6 @@ def _cast(collection):
         raise type(exception)(
             "shapely and geopandas are required for map comparison statistics."
         ) from None
-
-    if Version(shapely.__version__) < Version("2"):
-        raise ImportError("Shapely 2.0 or newer is required.")
 
     if isinstance(collection, geopandas.GeoSeries | geopandas.GeoDataFrame):
         return numpy.asarray(collection.geometry.array)
