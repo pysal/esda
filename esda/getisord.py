@@ -214,6 +214,9 @@ class G_Local:
         value to use as a weight for the "fake" neighbor for every island.
         If numpy.nan, will propagate to the final local statistic depending
         on the `stat_func`. If 0, then the lag is always zero for islands.
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization.
+        See ``crand.crand()`` for complete description.
 
     Attributes
     ----------
@@ -358,6 +361,7 @@ class G_Local:
         n_jobs=-1,
         seed=None,
         island_weight=0,
+        alternative=None,
     ):
         y = np.asarray(y).flatten()
         self.n = len(y)
@@ -385,6 +389,7 @@ class G_Local:
                 scaling=y.sum(),
                 seed=seed,
                 island_weight=island_weight,
+                alternative=alternative,
             )
             if keep_simulations:
                 self.sim = sim = self.rGs.T
