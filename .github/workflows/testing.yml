@@ -30,10 +30,8 @@
        matrix:
          os: [ubuntu-latest]
          environment-file:
-           - ci/311-oldest.yaml
-           - ci/311-numba-oldest.yaml
-           - ci/311-latest.yaml
-           - ci/311-numba-latest.yaml
+           - ci/312-oldest.yaml
+           - ci/312-numba-oldest.yaml
            - ci/312-latest.yaml
            - ci/312-numba-latest.yaml
            - ci/313-latest.yaml
