@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.MoranLocalPartial &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.MoranLocalPartial &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -173,12 +173,11 @@
 <h1>esda.MoranLocalPartial<a class="headerlink" href="#esda-moranlocalpartial" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">MoranLocalPartial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran_local_mv.html#MoranLocalPartial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.MoranLocalPartial" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">MoranLocalPartial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran_local_mv.html#MoranLocalPartial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.MoranLocalPartial" title="Link to this definition">¶</a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/moran_local_mv.html#MoranLocalPartial.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.MoranLocalPartial.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Compute the Multivariable Local Moran statistics under
-partial dependence <span id="id1">[<a class="reference internal" href="../references.html#id24" title="Levi John Wolf. Confounded Local Inference: extending local moran statistics to handle confounding. Annals of the American Association of Geographers, in press(in press):0-0, 2024.">Wol24</a>]</span></p>
+<dd><p>Compute the Multivariable Local Moran statistics under partial dependence <span id="id1">[<a class="reference internal" href="../references.html#id24" title="Levi John Wolf. Confounded Local Inference: extending local moran statistics to handle confounding. Annals of the American Association of Geographers, in press(in press):0-0, 2024.">Wol24</a>]</span></p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
 <dl class="simple">
@@ -190,13 +189,12 @@ normalizes the variance of the data at inupt, ensuring that
 the covariance statistics are not overwhelmed by any single
 covariate’s large variance.</p>
 </dd>
-<dt>partial_labels<span class="classifier">bool, default=True</span></dt><dd><p>whether to calculate the classification based on the part-regressive
+<dt>partial_labels<span class="classifier">bool, default=True</span></dt><dd><p>whether to calculate the classification based on the part-regressive 
 quadrant classification or the univariate quadrant classification,
-like a classical Moran’s I. When mvquads is True,
-the variables are labelled as:
-- label 1: observations with large y - rho * x that also have large Wy values.
+like a classical Moran’s I. When mvquads is True, the variables are labelled as:
+- label 1: observations with large y - rho * x that also have large Wy values. 
 - label 2: observations with small y - rho * x values that also have large Wy values.
-- label 3: observations with small y - rho * x values that also have small Wy values.
+- label 3: observations with small y - rho * x values that also have small Wy values. 
 - label 4: observations with large y - rho * x values that have small Wy values.</p>
 </dd>
 <dt>alternative<span class="classifier">str (default: ‘two-sided’)</span></dt><dd><p>the alternative hypothesis for the inference. One of
@@ -220,8 +218,7 @@ of y and X.</p>
 <dt><strong>association_</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> N,P <code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">multivariable</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">LISA</span></code> statistics.</span></dt><dd><p>the first column, lmos[:,1] is the LISAs corresponding
 to the relationship between Wy and y conditioning on X.</p>
 </dd>
-<dt><strong>reference_distribution_</strong></dt><dd><p>the (N, permutations, P+1) realizations from the conditional
-randomization to generate reference distributions for
+<dt><strong>reference_distribution_</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">permutations</span></code>, P+1) <code class="xref py py-obj docutils literal notranslate"><span class="pre">realizations</span></code> from <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">conditional</span></code></span></dt><dd><p>randomization to generate reference distributions for
 each Local Moran statistic. rlmos_[:,:,1] pertain to
 the reference distribution of y and Wy.</p>
 </dd>
@@ -279,7 +276,7 @@ for more information.</p>
 </table>
 <dl class="py property">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial.association_">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">association_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.association_" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">association_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.association_" title="Link to this definition">¶</a></dt>
 <dd><p>The association between y and the local average of y,
 removing the correlation due to x and the local average of y</p>
 </dd></dl>
@@ -297,8 +294,7 @@ to account for their covariance with Y.</p>
 <dt><strong>y</strong><span class="classifier">(N,1) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>array of data that is the targeted “outcome” covariate
 to compute the multivariable Moran’s I</p>
 </dd>
-<dt><strong>W</strong><span class="classifier">(N,N) <code class="xref py py-obj docutils literal notranslate"><span class="pre">weights</span></code> <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>spatial weights instance as W or Graph aligned with y.
-Immediately row-standardized.</p>
+<dt><strong>W</strong><span class="classifier">(N,N) <code class="xref py py-obj docutils literal notranslate"><span class="pre">weights</span></code> <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>spatial weights instance as W or Graph aligned with y. Immediately row-standardized.</p>
 </dd>
 </dl>
 </dd>
@@ -313,7 +309,7 @@ Immediately row-standardized.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial.labels_">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">labels_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.labels_" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">labels_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.labels_" title="Link to this definition">¶</a></dt>
 <dd><p>The classifications (in terms of cluster-type and outlier-type)
 for the <a href="#id7"><span class="problematic" id="id8">association_</span></a> statistics. If the quads requested are
 <em>mvquads</em>, then the classification is done with respect to the
@@ -349,7 +345,7 @@ The cluster typology is:</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial.partials_">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">partials_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.partials_" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partials_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.partials_" title="Link to this definition">¶</a></dt>
 <dd><p>The components of the local statistic. The first column is the
 structural exogenous component of the data, and the second is the
 local average of y.</p>
@@ -357,7 +353,7 @@ local average of y.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial.reference_distribution_">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">reference_distribution_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.reference_distribution_" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_distribution_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.reference_distribution_" title="Link to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Simulated distribution of <a href="#id11"><span class="problematic" id="id12">association_</span></a>, assuming that there is</dt><dd><ul class="simple">
 <li><p>no structural relationship between y and its local average;</p></li>
@@ -369,7 +365,7 @@ local average of y.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="esda.MoranLocalPartial.significance_">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">significance_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.significance_" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">significance_</span></span><a class="headerlink" href="#esda.MoranLocalPartial.significance_" title="Link to this definition">¶</a></dt>
 <dd><p>The pseudo-p-value built using map randomization for the
 structural relationship between y and its local average,
 removing the correlation due to the relationship between x
@@ -400,7 +396,7 @@ and the local average of y.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

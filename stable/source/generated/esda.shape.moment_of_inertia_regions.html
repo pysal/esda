@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.shape.moment_of_inertia_regions &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.shape.moment_of_inertia_regions &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -177,19 +177,19 @@ mass (sum of weights in the region). Default is False.</p>
 </dd>
 <dt><strong>ref_pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Shapely</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Points</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a> of shape</span></dt><dd><p>(2,) or (n, 2), or dict of any of these, optional
 If provided, shifts moment to be with respect to this point or points.
-The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment
+The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment 
 about the centroid of each region or geometry. If <cite>regions</cite> is
 provided, this must be a <cite>dict</cite> with one item per region, with the key
 equal to the region identifier and the value equal to a point geometry
 or point coordinates. See <cite>moment_of_inertia</cite> for details.</p>
 </dd>
-<dt><strong>regions</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, optional</span></dt><dd><p>An iterable of region identifiers of the same length as <cite>collection</cite>
-that each geometry is assigned to, or the name of a column in the
-GeoDataFrame to use for region assignment. If None (default), moment of inertia
+<dt><strong>regions</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, optional</span></dt><dd><p>An iterable of region identifiers of the same length as <cite>collection</cite> 
+that each geometry is assigned to, or the name of a column in the 
+GeoDataFrame to use for region assignment. If None (default), moment of inertia 
 is calculated for each geometry in <cite>collection</cite> without regionalization.</p>
 </dd>
-<dt><strong>weights</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a>, optional</span></dt><dd><p>An iterable of weights (e.g., population) of the same length as
-<cite>collection</cite> that are applied to each geometry in <cite>collection</cite>, or the
+<dt><strong>weights</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a>, optional</span></dt><dd><p>An iterable of weights (e.g., population) of the same length as 
+<cite>collection</cite> that are applied to each geometry in <cite>collection</cite>, or the 
 name of a column in the GeoDataFrame to use for weights. If None (default),
 calculates second moment of area using the shoelace formula.</p>
 </dd>
@@ -197,8 +197,8 @@ calculates second moment of area using the shoelace formula.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></dt><dd><p>If <cite>regions</cite> is provided, returns a <cite>pandas.Series</cite> indexed
-by unique region IDs, containing moments per region. If <cite>regions</cite> is
+<dt><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v3.0.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.Series</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></dt><dd><p>If <cite>regions</cite> is provided, returns a <cite>pandas.Series</cite> indexed 
+by unique region IDs, containing moments per region. If <cite>regions</cite> is 
 omitted, retuns an <cite>numpy.ndarray</cite> of moments per geometry in <cite>collection</cite>.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Calculates</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">mass</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">moment</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">inertia</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">regions</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">defined</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">by</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">assignment</span></code> of</dt><dd></dd>
@@ -213,7 +213,7 @@ omitted, retuns an <cite>numpy.ndarray</cite> of moments per geometry in <cite>c
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>See <cite>moment_of_inertia</cite> for an introduction. Note that moment of
+<p>See <cite>moment_of_inertia</cite> for an introduction. Note that moment of 
 intertia and second moment of area are used interchangeably in some
 disciplines (see Li, et al 2013). In this discussion “mass moment of
 inertia” is used to represent a weighted moment of inertia, and “second
@@ -223,29 +223,29 @@ area only.</p>
 <p>This function extends the <cite>moment_of_inertia</cite> implementation to allow
 regionalization and/or weighting. Region identifiers are provided via
 the <cite>regions</cite> parameter. Weighting is provided via the <cite>weights</cite> parameter.</p>
-<p>If region identifiers are provided, the geometries in <cite>collection</cite> are
-subareas within larger regions defined by the region identifier. The moment
-of inertia (possibly weighted) is calculated for each region as a whole. If
+<p>If region identifiers are provided, the geometries in <cite>collection</cite> are 
+subareas within larger regions defined by the region identifier. The moment 
+of inertia (possibly weighted) is calculated for each region as a whole. If 
 omitted, moments are calculated for each geometry in <cite>collection</cite>.</p>
-<p>If weights are provided, the mass moment of inertia is calculated using a
-value of interest, such as population, as the mass of the
+<p>If weights are provided, the mass moment of inertia is calculated using a 
+value of interest, such as population, as the mass of the 
 shape. Implementation details vary with whether regions are provided
-or normalization is requested. This is discussed in detail below. First,
+or normalization is requested. This is discussed in detail below. First, 
 if weights are <strong>not</strong> provided, each geometry is weighted by area, and
 the result is equivalent to the second moment of area. If weights are
 provided and normalization is requested, the mass of the shape
-and the reference circle cancel, and the result is equivalent to
+and the reference circle cancel, and the result is equivalent to 
 the normalized second moment of area.</p>
-<p>The mass moment of inertia of a point is equal to its mass times the
+<p>The mass moment of inertia of a point is equal to its mass times the 
 distance to a reference point squared. For a shape rotating about its
 centroid the moment of inertia is:</p>
 <div class="math notranslate nohighlight">
 \[I = \sum_{i} m_i r_i^2\]</div>
-<p>where <span class="math notranslate nohighlight">\(r_i\)</span> is the distance from the point to a reference point,
-<span class="math notranslate nohighlight">\(m_i\)</span> is the mass at each point, and there are an infinite number
+<p>where <span class="math notranslate nohighlight">\(r_i\)</span> is the distance from the point to a reference point, 
+<span class="math notranslate nohighlight">\(m_i\)</span> is the mass at each point, and there are an infinite number 
 of points filling the shape.</p>
-<p>The mass moment of inertia can be calculated for an area of uniform density
-or an area of varying density. For areas of uniform density, this is the
+<p>The mass moment of inertia can be calculated for an area of uniform density 
+or an area of varying density. For areas of uniform density, this is the 
 equivalent of the second moment of area times the mass of the shape
 divided by the area. If <cite>regions</cite> is not provided, the mass moment of inertia
 is calculated for each geometry in <cite>collection</cite> as an area of uniform
@@ -254,54 +254,54 @@ density. This is implemented as:</p>
 \[I_M = I_A m / A\]</div>
 <p>where <span class="math notranslate nohighlight">\(I_A\)</span> is the second moment of area (calculated by <cite>moment_of_inertia</cite>)
 and <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(A\)</span> are the mass and area of the shape, respectively.</p>
-<p>For a region of varying density, region identifiers must be provided via
-the <cite>regions</cite> parameter. <span class="math notranslate nohighlight">\(I_M\)</span> is calculated for each geometry in
-<cite>collection</cite> per the equation above, with each geometry representing a
+<p>For a region of varying density, region identifiers must be provided via 
+the <cite>regions</cite> parameter. <span class="math notranslate nohighlight">\(I_M\)</span> is calculated for each geometry in 
+<cite>collection</cite> per the equation above, with each geometry representing a 
 subarea of the region with mass given
-by <cite>weights</cite>. The mass moment of inertia of the region is then the sum of
+by <cite>weights</cite>. The mass moment of inertia of the region is then the sum of 
 the mass moments of inertia of each subarea shifted to the reference point
-(using the parallel axis theorem) by adding <span class="math notranslate nohighlight">\(m d^2\)</span>, where <span class="math notranslate nohighlight">\(d\)</span>
-is the distance from the centroid of each subarea to the reference point
+(using the parallel axis theorem) by adding <span class="math notranslate nohighlight">\(m d^2\)</span>, where <span class="math notranslate nohighlight">\(d\)</span> 
+is the distance from the centroid of each subarea to the reference point 
 for the region.</p>
-<p>If reference points are not provided, the mass moment of inertia is
+<p>If reference points are not provided, the mass moment of inertia is 
 calculated with respect to the centroid of each region (calculated by the
 algorithm). If provided, <cite>ref_pt</cite> may be a single point about which the
 mass moment of inertia is calculated for all regions, or it may be a <cite>dict</cite>
-with one item per region indicating the reference point (value) to use for
+with one item per region indicating the reference point (value) to use for 
 that region (key). If any region identifier does not appear as a <cite>dict</cite> key,
-an error is raise. Extra keys in the <cite>dict</cite> that do not correspond to any
+an error is raise. Extra keys in the <cite>dict</cite> that do not correspond to any 
 region identifiers are ignored with a warning.</p>
-<p>The mass moment of inertia can be normalized to provide a compactness
+<p>The mass moment of inertia can be normalized to provide a compactness 
 measure using the formula from Fan, et al. (2015):</p>
 <div class="math notranslate nohighlight">
 \[C_{NMMI} = \frac{M A}{2 \pi I_M}\]</div>
-<p>where <span class="math notranslate nohighlight">\(I_M\)</span> is the mass moment of inertia of the shape. This
-represents the ratio of the mass moment of inertia of a circle with the
+<p>where <span class="math notranslate nohighlight">\(I_M\)</span> is the mass moment of inertia of the shape. This 
+represents the ratio of the mass moment of inertia of a circle with the 
 same area and mass as the shape to the mass moment of inertia of the shape.
-In this case, the measure can exceed 1, as will happen when mass is
-concentrated near the centroid of the shape. This can be interpreted as a
+In this case, the measure can exceed 1, as will happen when mass is 
+concentrated near the centroid of the shape. This can be interpreted as a 
 more compact distribution than a uniform circle.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="rd9a01154cb5b-1" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<p>Weaver, James B., and Sidney W. Hess. 1963. “A Procedure for Nonpartisan
-Districting: Development of Computer Techniques.”
-Yale Law Journal 73 (2): 288–308. <a class="reference external" href="https://doi.org/10.2307/794769">https://doi.org/10.2307/794769</a></p>
+<p>Weaver, James B., and Sidney W. Hess. 1963. “A Procedure for Nonpartisan 
+Districting: Development of Computer Techniques.” Yale Law Journal 73 (2): 288–308. 
+<a class="reference external" href="https://doi.org/10.2307/794769">https://doi.org/10.2307/794769</a></p>
 </div>
 <div class="citation" id="rd9a01154cb5b-2" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
-<p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient
-Measure of Compactness for Two-Dimensional Shapes and Its Application in
-Regionalization Problems.” International Journal of Geographical Information
-Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p>
+<p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient Measure 
+of Compactness for Two-Dimensional Shapes and Its Application in Regionalization 
+Problems.” International Journal of Geographical Information Science 27 (6): 1227–50. 
+<a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p>
 </div>
 <div class="citation" id="rd9a01154cb5b-3" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
 <p>Fan, Chao, Wenwen Li, Levi J. Wolf and Soe W. Myint. 2015 “A Spatiotemporal
-Compactness Pattern Analysis of Congressional Districts to Assess Partisan
-Gerrymandering: A Case Study with California and North Carolina.” Annals of the
-Association of American Geographers 105 (4): 736-753.
+Compactness Pattern Analysis of Congressional Districts to Assess Partisan 
+Gerrymandering: A Case Study with California and North Carolina.” Annals of the 
+Association of American Geographers 105 (4): 736-753. 
 <a class="reference external" href="https://doi.org/10.1080/00045608.2015.1039109">https://doi.org/10.1080/00045608.2015.1039109</a></p>
 </div>
 </div>
@@ -329,7 +329,7 @@ Association of American Geographers 105 (4): 736-753.
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

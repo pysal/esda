@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.getisord &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.getisord &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -170,6 +170,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.crand</span><span class="w"> </span><span class="kn">import</span> <span class="n">_prepare_univariate</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.crand</span><span class="w"> </span><span class="kn">import</span> <span class="n">crand</span> <span class="k">as</span> <span class="n">_crand_plus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.crand</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span> <span class="k">as</span> <span class="n">_njit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.tabular</span><span class="w"> </span><span class="kn">import</span> <span class="n">_univariate_handler</span>
 
 <span class="n">PERMUTATIONS</span> <span class="o">=</span> <span class="mi">999</span>
 
@@ -345,13 +346,71 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardized accessor for esda statistics&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
+
+<div class="viewcode-block" id="G.by_col">
+<a class="viewcode-back" href="../../source/generated/esda.G.html#esda.G.by_col">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to compute a G statistic on a dataframe</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pandas.DataFrame</span>
+<span class="sd">            a pandas dataframe with a geometry column</span>
+<span class="sd">        cols : string or list of string</span>
+<span class="sd">            name or list of names of columns to use to compute the statistic</span>
+<span class="sd">        w : pysal weights object</span>
+<span class="sd">            a weights object aligned with the dataframe. If not provided, this</span>
+<span class="sd">            is searched for in the dataframe&#39;s metadata</span>
+<span class="sd">        inplace : bool</span>
+<span class="sd">            a boolean denoting whether to operate on the dataframe inplace or to</span>
+<span class="sd">            return a series contaning the results of the computation. If</span>
+<span class="sd">            operating inplace, the derived columns will be named &#39;column_g&#39;</span>
+<span class="sd">        pvalue : string</span>
+<span class="sd">            a string denoting which pvalue should be returned. Refer to the</span>
+<span class="sd">            the G statistic&#39;s documentation for available p-values</span>
+<span class="sd">        outvals : list of strings</span>
+<span class="sd">            list of arbitrary attributes to return as columns from the G statistic</span>
+<span class="sd">        **stat_kws : dict</span>
+<span class="sd">            options to pass to the underlying statistic. For this, see the</span>
+<span class="sd">            documentation for the G statistic.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        If inplace, None, and operation is conducted on dataframe</span>
+<span class="sd">        in memory. Otherwise, returns a copy of the dataframe with</span>
+<span class="sd">        the relevant columns attached.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `.by_cols()` methods are deprecated and will be &quot;</span>
+            <span class="s2">&quot;removed in a future version of `esda`.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_univariate_handler</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">cols</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="o">**</span><span class="n">stat_kws</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="G_Local">
 <a class="viewcode-back" href="../../source/generated/esda.G_Local.html#esda.G_Local">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">G_Local</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">G_Local</span><span class="p">:</span>  <span class="c1"># noqa: N801</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generalized Local G Autocorrelation</span>
 
@@ -560,13 +619,6 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__crand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_simulations</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;G_Local.__crand is deprecated and will be removed in a future release. &quot;</span>
-            <span class="s2">&quot;Use the current conditional randomization implementation based on &quot;</span>
-            <span class="s2">&quot;`esda.crand.crand` instead.&quot;</span><span class="p">,</span>
-            <span class="ne">DeprecationWarning</span><span class="p">,</span>
-            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
         <span class="k">if</span> <span class="n">keep_simulations</span><span class="p">:</span>
             <span class="n">rGs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">))</span>
@@ -601,7 +653,7 @@
         <span class="n">larger</span><span class="p">[</span><span class="n">below</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">-</span> <span class="n">larger</span><span class="p">[</span><span class="n">below</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p_sim</span> <span class="o">=</span> <span class="p">(</span><span class="n">larger</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">__getCardinalities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getCardinalities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># noqa: N802</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
             <span class="n">ido</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">id_order</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">[</span><span class="n">ido</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)])</span>
@@ -653,7 +705,67 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Standardized accessor for esda statistics&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gs</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gs</span>
+
+<div class="viewcode-block" id="G_Local.by_col">
+<a class="viewcode-back" href="../../source/generated/esda.G_Local.html#esda.G_Local.by_col">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">by_col</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pvalue</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="n">outvals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">stat_kws</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to compute a G_Local statistic on a dataframe</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pandas.DataFrame</span>
+<span class="sd">            a pandas dataframe with a geometry column</span>
+<span class="sd">        cols : string or list of string</span>
+<span class="sd">            name or list of names of columns to use to compute the statistic</span>
+<span class="sd">        w : W | Graph</span>
+<span class="sd">            spatial weights instance as W or Graph aligned with the dataframe. If not</span>
+<span class="sd">            provided, this is searched for in the dataframe&#39;s metadata</span>
+<span class="sd">        inplace : bool</span>
+<span class="sd">            a boolean denoting whether to operate on the dataframe inplace or to</span>
+<span class="sd">            return a series contaning the results of the computation. If</span>
+<span class="sd">            operating inplace, the derived columns will be named &#39;column_g_local&#39;</span>
+<span class="sd">        pvalue : string</span>
+<span class="sd">            a string denoting which pvalue should be returned. Refer to the</span>
+<span class="sd">            the G_Local statistic&#39;s documentation for available p-values</span>
+<span class="sd">        outvals : list of strings</span>
+<span class="sd">            list of arbitrary attributes to return as columns from the</span>
+<span class="sd">            G_Local statistic</span>
+<span class="sd">        **stat_kws : dict</span>
+<span class="sd">            options to pass to the underlying statistic. For this, see the</span>
+<span class="sd">            documentation for the G_Local statistic.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">                        If inplace, None, and operation is conducted on dataframe</span>
+<span class="sd">                        in memory. Otherwise, returns a copy of the dataframe with</span>
+<span class="sd">                        the relevant columns attached.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `.by_col()` methods are deprecated and will be &quot;</span>
+            <span class="s2">&quot;removed in a future version of `esda`.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_univariate_handler</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">,</span>
+            <span class="n">cols</span><span class="p">,</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
+            <span class="n">pvalue</span><span class="o">=</span><span class="n">pvalue</span><span class="p">,</span>
+            <span class="n">outvals</span><span class="o">=</span><span class="n">outvals</span><span class="p">,</span>
+            <span class="n">stat</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span>
+            <span class="n">swapname</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="o">**</span><span class="n">stat_kws</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
 
 
 
@@ -751,6 +863,41 @@
     <span class="n">other_weights</span> <span class="o">=</span> <span class="n">weights_i</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">zi</span><span class="p">,</span> <span class="n">zrand</span> <span class="o">=</span> <span class="n">_prepare_univariate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">other_weights</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">zrand</span> <span class="o">@</span> <span class="n">other_weights</span> <span class="o">+</span> <span class="n">self_weight</span> <span class="o">*</span> <span class="n">zi</span><span class="p">)</span> <span class="o">/</span> <span class="n">scaling</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">examples</span><span class="p">,</span> <span class="n">weights</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;NAT.shp&quot;</span><span class="p">))</span>
+
+    <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">Rook</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">star</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">getisord</span><span class="o">.</span><span class="n">G_Local</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">GI89</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="n">star</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">_calc2</span><span class="p">()</span>
+            <span class="p">(</span>
+                <span class="n">statistic</span><span class="p">,</span>
+                <span class="n">expected_value</span><span class="p">,</span>
+                <span class="n">expected_variance</span><span class="p">,</span>
+                <span class="n">z_scores</span><span class="p">,</span>
+                <span class="n">empirical_mean</span><span class="p">,</span>
+                <span class="n">empirical_variance</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="n">out</span>
+
+            <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">Gs</span><span class="p">)</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_value</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">EGs</span><span class="p">)</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">expected_variance</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">VGs</span><span class="p">)</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">z_scores</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">Zs</span><span class="p">)</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">empirical_mean</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">yl_mean</span><span class="p">)</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">empirical_variance</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">s2</span><span class="p">)</span>
+
+    <span class="c1"># Also check that the None configuration works</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">getisord</span><span class="o">.</span><span class="n">G_Local</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">GI89</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -768,7 +915,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>
