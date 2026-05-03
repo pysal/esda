@@ -14,12 +14,12 @@ dependencies:
   # testing
   - codecov
   - folium
+  - geodatasets
   - mapclassify
   - matplotlib
   - seaborn
   - pytest
   - pytest-cov
   - pytest-xdist
-  - geodatasets
   # optional
   - rtree

@@ -14,36 +14,29 @@ dependencies:
   # testing
   - codecov
   - folium
+  - geodatasets
   - mapclassify
   - matplotlib
   - seaborn
   - pytest
   - pytest-cov
   - pytest-xdist
-  - geodatasets
   # optional
   - rtree
   # for docs build action (this env only)
+  - contextily
+  - ipykernel
+  - ipywidgets
+  - mkdocs-jupyter
+  - myst-nb
+  - myst-parser
   - nbsphinx
   - numpydoc
   - pandoc
-  - ipykernel
-  - ipywidgets
-  - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme
-  - mkdocs-jupyter
-  - myst-parser
-  - sphinx-immaterial
-  - myst-nb
   - sphinx-copybutton
-  - pandoc
-  - seaborn
+  - sphinx-immaterial
   - statsmodels
   - watermark
-  - contextily
-  - pip
-  - pip:
-    - pulp
-
