@@ -106,6 +106,15 @@ def crand(
                 Scaling value to apply to every local statistic
      seed : None/int
         Seed to ensure reproducibility of conditional randomizations
+    alternative = None | str
+        The alternative hypothesis for conditional randomization. The current behavior
+        is ``None``, which defaults to ``'directed'``. We strongly recommend moving
+        to ``'two-sided'``. Valid alternives include:
+            * 'two-sided'
+            * 'greater'
+            * 'lesser'
+            * 'directed' -- C
+            * 'folded'
 
     Returns
     -------
