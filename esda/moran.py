@@ -1281,6 +1281,9 @@ class Moran_Local:
         Seed to ensure reproducibility of conditional randomizations.
         Must be set here, and not outside of the function, since numba does
         not correctly interpret external seeds nor numpy.random.RandomState instances.
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization.
+        See ``crand.crand()`` for complete description.
 
     Notes
     -----
@@ -1323,6 +1326,7 @@ class Moran_Local:
         keep_simulations=True,
         seed=None,
         island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
+        alternative=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1359,6 +1363,7 @@ class Moran_Local:
                 n_jobs=n_jobs,
                 stat_func=_moran_local_crand,
                 seed=seed,
+                alternative=alternative,
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1722,6 +1727,9 @@ class Moran_Local_BV:
         value to use as a weight for the "fake" neighbor for every island.
         If numpy.nan, will propagate to the final local statistic depending
         on the `stat_func`. If 0, then the lag is always zero for islands.
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization.
+        See ``crand.crand()`` for complete description.
 
     Attributes
     ----------
@@ -1802,6 +1810,7 @@ class Moran_Local_BV:
         keep_simulations=True,
         seed=None,
         island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
+        alternative=None,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1844,6 +1853,7 @@ class Moran_Local_BV:
                 n_jobs=n_jobs,
                 stat_func=_moran_local_bv_crand,
                 seed=seed,
+                alternative=alternative,
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
