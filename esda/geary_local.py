@@ -22,6 +22,7 @@ class Geary_Local(BaseEstimator):
         seed=None,
         island_weight=0,
         drop_islands=True,
+        alternative=None,
     ):
         """
         Initialize a Local_Geary estimator
@@ -70,6 +71,9 @@ class Geary_Local(BaseEstimator):
             list. By default, observations with no neighbors do not appear
             in the adjacency list. If islands are kept, they are coded as
             self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        alternative : None | str = None
+            The alternative hypothesis for conditional randomization.
+            See ``crand.crand()`` for complete description.
 
         Attributes
         ----------
@@ -92,6 +96,7 @@ class Geary_Local(BaseEstimator):
         self.seed = seed
         self.island_weight = island_weight
         self.drop_islands = drop_islands
+        self.alternative = alternative
 
     def fit(self, x):
         """
@@ -146,6 +151,7 @@ class Geary_Local(BaseEstimator):
                 n_jobs=n_jobs,
                 stat_func=_local_geary,
                 island_weight=self.island_weight,
+                alternative=self.alternative,
             )
 
         if self.labels:
