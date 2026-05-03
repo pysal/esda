@@ -22,5 +22,5 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - numba=0.60
+  - numba=0.61
   - rtree=1.3

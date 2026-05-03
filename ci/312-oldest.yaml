@@ -1,4 +1,4 @@
-name: py312_esda-oldest
+name: test
 channels:
   - conda-forge
 dependencies:
