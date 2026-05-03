@@ -1,6 +1,0 @@
-﻿esda.isolation
-==============
-
-.. currentmodule:: esda
-
-.. autofunction:: isolation

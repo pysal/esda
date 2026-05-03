@@ -5,19 +5,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Measures of shape &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>Measures of shape &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,7 +45,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -545,13 +545,12 @@ Text(0.5, 1.0, &#39;length-width difference&#39;)
 <section id="Ideal-Shape-Measures">
 <h1>Ideal Shape Measures<a class="headerlink" href="#Ideal-Shape-Measures" title="Link to this heading">¶</a></h1>
 <p>The next class of shape measures are usually taken to be <em>ideal shape</em> measures of compactness. This means that they construct the relationship between one (or more) aspects of the polygon (such as its perimeter or area) and compares this to an analogous value for an “ideal” shape.</p>
-<p>Ideal shapes come in a few flavors.</p>
-<ul class="simple">
-<li><p>“relative ideal shapes” are shapes whose properties are fixed relative to the original shape. For example, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, compares the area of a polygon to the area of the circle wit the same perimeter as the original polygon. Mathematically, these measures generally are constructed so that they vary between zero and one, and equal <span class="math notranslate nohighlight">\(1\)</span> when the shape is the same as its relative ideal shape. Measures in this family include the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code> and
-<code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, as well as our implementation of the <code class="docutils literal notranslate"><span class="pre">fractal_dimension</span></code>, as will be discussed later.</p></li>
-<li><p>“absolute ideal shapes” are shapes that have some fixed, known relationship to the original shape and serve as a “bound” on that shape in some manner. For example, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> compares the area of a polygon to the area of its convex hull. Since a convex hull is guaranteeed to be at least as large as the original shape, this measure also is between zero and one, with <span class="math notranslate nohighlight">\(1\)</span> meaning that a polygon is its own convex hull. Measures in this family include the
-<code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">diameter_ratio</span></code>, and the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>.</p></li>
-</ul>
+<div class="line-block">
+<div class="line">Ideal shapes come in a few flavors. - “relative ideal shapes” are shapes whose properties are fixed relative to the original shape. For example, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, compares the area of a polygon to the area of the circle wit the same perimeter as the original polygon. Mathematically, these measures generally are constructed so that they vary between zero and one, and equal <span class="math notranslate nohighlight">\(1\)</span> when the shape is the same as its relative ideal shape. Measures in this family include the
+<code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code> and <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code>, as well as our implementation of the <code class="docutils literal notranslate"><span class="pre">fractal_dimension</span></code>, as will be discussed later.</div>
+<div class="line">- “absolute ideal shapes” are shapes that have some fixed, known relationship to the original shape and serve as a “bound” on that shape in some manner. For example, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> compares the area of a polygon to the area of its convex hull. Since a convex hull is guaranteeed to be at least as large as the original shape, this measure also is between zero and one, with <span class="math notranslate nohighlight">\(1\)</span> meaning that a polygon is its own convex hull. Measures in this family include the
+<code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>, the <code class="docutils literal notranslate"><span class="pre">diameter_ratio</span></code>, and the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>.</div>
+</div>
 <section id="Absolute-Ideal-Shape-Measures">
 <h2>Absolute Ideal Shape Measures<a class="headerlink" href="#Absolute-Ideal-Shape-Measures" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code> and <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> are two simple and very-related measures of shape regularity. The boundary amplitude is the perimeter of the convex hull divided by the perimeter of the original shape. This varies between zero and one, where <span class="math notranslate nohighlight">\(1\)</span> indicates the case where the polygon is its own convex hull. This is because the convex hull will always have <em>at most</em> the perimeter of the original shape; it will be shorter than the original shape when the shape has many
@@ -1142,7 +1141,7 @@ dtype: float64
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>
