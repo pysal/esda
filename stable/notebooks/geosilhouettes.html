@@ -5,19 +5,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Geosilhouettes: geographical measures of cluster fit &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>Geosilhouettes: geographical measures of cluster fit &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
-    <script src="../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,7 +45,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -293,13 +293,7 @@ Interactive online version:
 <section id="The-Silhouette-Score">
 <h1>The Silhouette Score<a class="headerlink" href="#The-Silhouette-Score" title="Link to this heading">¶</a></h1>
 <p>The standard silhouette score used in classification/grouping problems as measure of how well-fit an observation is to its current group. The measure is fairly robust, well-studied, and is common in many different problem areas.</p>
-<p>Statistically, the silhouette score is composed of a few components:</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(c\)</span>, the cluster in which <span class="math notranslate nohighlight">\(i\)</span> is assigned</p></li>
-<li><p><span class="math notranslate nohighlight">\(k\)</span>, another cluster in which <span class="math notranslate nohighlight">\(i\)</span> is not currently assigned</p></li>
-<li><p><span class="math notranslate nohighlight">\(d_i(c)\)</span>: the dissimilarity between observation <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i\)</span>’s own cluster <span class="math notranslate nohighlight">\(c\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(d_i(k)\)</span>: the dissimilarity between observation <span class="math notranslate nohighlight">\(i\)</span> and a cluster <span class="math notranslate nohighlight">\(k\)</span> that <span class="math notranslate nohighlight">\(i\)</span> is not in.</p></li>
-</ul>
+<p>Statistically, the silhouette score is composed of a few components: - <span class="math notranslate nohighlight">\(c\)</span>, the cluster in which <span class="math notranslate nohighlight">\(i\)</span> is assigned - <span class="math notranslate nohighlight">\(k\)</span>, another cluster in which <span class="math notranslate nohighlight">\(i\)</span> is not currently assigned - <span class="math notranslate nohighlight">\(d_i(c)\)</span>: the dissimilarity between observation <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(i\)</span>’s own cluster <span class="math notranslate nohighlight">\(c\)</span> - <span class="math notranslate nohighlight">\(d_i(k)\)</span>: the dissimilarity between observation <span class="math notranslate nohighlight">\(i\)</span> and a cluster <span class="math notranslate nohighlight">\(k\)</span> that <span class="math notranslate nohighlight">\(i\)</span> is not in.</p>
 <p>Here, we define <span class="math notranslate nohighlight">\(d\)</span> as an arbitrary dissimilarity metric. For most cases, it’s normally the euclidean distance. So, if you see <span class="math notranslate nohighlight">\(d_i(c)\)</span>, this is the average dissimilarity between observation <span class="math notranslate nohighlight">\(i\)</span> and all other observations <span class="math notranslate nohighlight">\(j\)</span> in cluster <span class="math notranslate nohighlight">\(c\)</span>.</p>
 <p>Then, we need to define the <em>second best choice cluster</em>, <span class="math notranslate nohighlight">\(\hat{k}\)</span>, which is a cluster that <span class="math notranslate nohighlight">\(i\)</span> is most similar to, but of which <span class="math notranslate nohighlight">\(i\)</span> is not currently a member:</p>
 <div class="math notranslate nohighlight">
@@ -711,12 +705,8 @@ category does not.</p>
 <img alt="../_images/notebooks_geosilhouettes_56_0.png" src="../_images/notebooks_geosilhouettes_56_0.png" />
 </div>
 </div>
-<p>From this, you can see things like:</p>
-<ul class="simple">
-<li><p>All the tracts on the Mississippi-Louisiana border have more similar Gini values to those in Louisiana.</p></li>
-<li><p>North and South Alabama differ significantly in their similarities to Mississippi; in the north, boundary tracts are much more “Alabaman” than in the south.</p></li>
-<li><p>The boundary between Alabama and Georgia is quite weak; most of the silhouttes are very close to zero, suggesting the dissimilarity in this area is rather gradual, and that the border tracts between the two are quite similar to either Alabama or Georgia.</p></li>
-</ul>
+<p>From this, you can see things like: - All the tracts on the Mississippi-Louisiana border have more similar Gini values to those in Louisiana. - North and South Alabama differ significantly in their similarities to Mississippi; in the north, boundary tracts are much more “Alabaman” than in the south. - The boundary between Alabama and Georgia is quite weak; most of the silhouttes are very close to zero, suggesting the dissimilarity in this area is rather gradual, and that the border tracts
+between the two are quite similar to either Alabama or Georgia.</p>
 </section>
 <section id="Conclusion">
 <h1>Conclusion<a class="headerlink" href="#Conclusion" title="Link to this heading">¶</a></h1>
@@ -748,7 +738,7 @@ category does not.</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

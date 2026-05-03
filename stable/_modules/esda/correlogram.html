@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.correlogram &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.correlogram &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -153,25 +153,23 @@
       
   <h1>Source code for esda.correlogram</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Spatial Correlograms</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.cg.kdtree</span><span class="w"> </span><span class="kn">import</span> <span class="n">KDTree</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNN</span><span class="p">,</span> <span class="n">DistanceBand</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_points_array</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">linalg</span><span class="p">,</span> <span class="n">spatial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise_distances</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">linalg</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.moran</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_stat</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;helper function for computing parallel statistics at multiple</span>
-<span class="sd">    Graph specifications</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;helper function for computing parallel statistics at multiple Graph specifications</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -181,8 +179,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pandas.Series</span>
-<span class="sd">        a pandas series with the computed autocorrelation</span>
-<span class="sd">        statistic and its simulated p-value</span>
+<span class="sd">        a pandas series with the computed autocorrelation statistic and its simulated p-value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="p">(</span>
         <span class="n">y</span><span class="p">,</span>  <span class="c1"># y variable</span>
@@ -246,9 +243,9 @@
 <span class="sd">    weights_kwargs : dict</span>
 <span class="sd">        additional keyword arguments passed to the ``libpysal.weights.W`` class</span>
 <span class="sd">    stat_kwargs : dict</span>
-<span class="sd">        additional keyword arguments passed to the ``esda`` autocorrelation statistic</span>
-<span class="sd">        class. For example for faster results with no statistical inference, set the</span>
-<span class="sd">        number of permutations to zero with ``stat_kwargs={permutations: 0}``</span>
+<span class="sd">        additional keyword arguments passed to the ``esda`` autocorrelation statistic class.</span>
+<span class="sd">        For example for faster results with no statistical inference, set the number</span>
+<span class="sd">        of permutations to zero with ``stat_kwargs={permutations: 0}``</span>
 <span class="sd">    select_numeric : bool</span>
 <span class="sd">        if True, only return numeric attributes from the original class. This is useful</span>
 <span class="sd">        e.g. to prevent lists inside a &quot;cell&quot; of a dataframe</span>
@@ -395,11 +392,9 @@
 <span class="sd">        1D array of distance values to evaluate the correlogram at</span>
 <span class="sd">    metric : str</span>
 <span class="sd">        distance metric to use. Any metric from sklearn.metrics.pairwise_distances</span>
-<span class="sd">        is allowed. If &#39;precomputed&#39;, then coordinates is assumed</span>
-<span class="sd">        to be a distance matrix</span>
+<span class="sd">        is allowed. If &#39;precomputed&#39;, then coordinates is assumed to be a distance matrix</span>
 <span class="sd">    lowess_args : keyword arguments</span>
-<span class="sd">        additional keyword arguments passed to</span>
-<span class="sd">        statsmodels.nonparametric.smoothers_lowess.lowess</span>
+<span class="sd">        additional keyword arguments passed to statsmodels.nonparametric.smoothers_lowess.lowess</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -479,7 +474,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

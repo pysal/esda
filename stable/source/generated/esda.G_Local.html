@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.G_Local &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.G_Local &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,6 +127,7 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">esda.G_Local</a><ul>
 <li><a class="reference internal" href="#esda.G_Local"><code class="docutils literal notranslate"><span class="pre">G_Local</span></code></a><ul>
+<li><a class="reference internal" href="#esda.G_Local.by_col"><code class="docutils literal notranslate"><span class="pre">G_Local.by_col()</span></code></a></li>
 <li><a class="reference internal" href="#esda.G_Local.calc"><code class="docutils literal notranslate"><span class="pre">G_Local.calc()</span></code></a></li>
 </ul>
 </li>
@@ -165,7 +166,7 @@
 <h1>esda.G_Local<a class="headerlink" href="#esda-g-local" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="esda.G_Local">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">G_Local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'R'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">star</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_simulations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">island_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/getisord.html#G_Local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.G_Local" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">G_Local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'R'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">star</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_simulations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">island_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/getisord.html#G_Local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.G_Local" title="Link to this definition">¶</a></dt>
 <dd><p>Generalized Local G Autocorrelation</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -188,50 +189,6 @@ handled by the function itself.</p>
 <dt><strong>island_weight:</strong></dt><dd><p>value to use as a weight for the “fake” neighbor for every island.
 If numpy.nan, will propagate to the final local statistic depending
 on the <cite>stat_func</cite>. If 0, then the lag is always zero for islands.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Attributes<span class="colon">:</span></dt>
-<dd class="field-even"><dl>
-<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
-</dd>
-<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with y</p>
-</dd>
-<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of permutations</p>
-</dd>
-<dt><strong>Gs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, the value of the orginal G statistic in Getis &amp; Ord (1992)</p>
-</dd>
-<dt><strong>EGs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>expected value of Gs under normality assumption
-the values is scalar, since the expectation is identical
-across all observations</p>
-</dd>
-<dt><strong>VGs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, variance values of Gs under normality assumption</p>
-</dd>
-<dt><strong>Zs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, standardized Gs</p>
-</dd>
-<dt><strong>p_norm</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, p-value under normality assumption (one-sided)
-for two-sided tests, this value should be multiplied by 2</p>
-</dd>
-<dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of arrays of floats (if permutations&gt;0), vector of I values
-for permutated samples</p>
-</dd>
-<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, p-value based on permutations (one-sided)
-null - spatial randomness
-alternative - the observed G is extreme</p>
-<blockquote>
-<div><p>(it is either extremely high or extremely low)</p>
-</div></blockquote>
-</dd>
-<dt><strong>EG_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, average value of G from permutations</p>
-</dd>
-<dt><strong>VG_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, variance of G from permutations</p>
-</dd>
-<dt><strong>seG_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, standard deviation of G under permutations.</p>
-</dd>
-<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, standardized G based on permutations</p>
-</dd>
-<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, p-value based on standard normal approximation from
-permutations (one-sided)</p>
 </dd>
 </dl>
 </dd>
@@ -322,6 +279,52 @@ For row-standardized weights object, the weight value for self is
 <span class="go">0.101</span>
 </pre></div>
 </div>
+<dl class="field-list">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with y</p>
+</dd>
+<dt><strong>permutations</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>the number of permutations</p>
+</dd>
+<dt><strong>Gs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, the value of the orginal G statistic in Getis &amp; Ord (1992)</p>
+</dd>
+<dt><strong>EGs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>expected value of Gs under normality assumption
+the values is scalar, since the expectation is identical
+across all observations</p>
+</dd>
+<dt><strong>VGs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, variance values of Gs under normality assumption</p>
+</dd>
+<dt><strong>Zs</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, standardized Gs</p>
+</dd>
+<dt><strong>p_norm</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, p-value under normality assumption (one-sided)
+for two-sided tests, this value should be multiplied by 2</p>
+</dd>
+<dt><strong>sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of arrays of floats (if permutations&gt;0), vector of I values
+for permutated samples</p>
+</dd>
+<dt><strong>p_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, p-value based on permutations (one-sided)
+null - spatial randomness
+alternative - the observed G is extreme</p>
+<blockquote>
+<div><p>(it is either extremely high or extremely low)</p>
+</div></blockquote>
+</dd>
+<dt><strong>EG_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, average value of G from permutations</p>
+</dd>
+<dt><strong>VG_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, variance of G from permutations</p>
+</dd>
+<dt><strong>seG_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, standard deviation of G under permutations.</p>
+</dd>
+<dt><strong>z_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, standardized G based on permutations</p>
+</dd>
+<dt><strong>p_z_sim</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of floats, p-value based on standard normal approximation from
+permutations (one-sided)</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -330,6 +333,46 @@ For row-standardized weights object, the weight value for self is
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="esda.G_Local.by_col">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">by_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">stat_kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/getisord.html#G_Local.by_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.G_Local.by_col" title="Link to this definition">¶</a></dt>
+<dd><p>Function to compute a G_Local statistic on a dataframe</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a></span></dt><dd><p>a pandas dataframe with a geometry column</p>
+</dd>
+<dt><strong>cols</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>name or list of names of columns to use to compute the statistic</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with the dataframe. If not
+provided, this is searched for in the dataframe’s metadata</p>
+</dd>
+<dt><strong>inplace</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>a boolean denoting whether to operate on the dataframe inplace or to
+return a series contaning the results of the computation. If
+operating inplace, the derived columns will be named ‘column_g_local’</p>
+</dd>
+<dt><strong>pvalue</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>a string denoting which pvalue should be returned. Refer to the
+the G_Local statistic’s documentation for available p-values</p>
+</dd>
+<dt><strong>outvals</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">strings</span></code></span></dt><dd><p>list of arbitrary attributes to return as columns from the
+G_Local statistic</p>
+</dd>
+<dt><strong>**stat_kws</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>options to pass to the underlying statistic. For this, see the
+documentation for the G_Local statistic.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a></dt><dd><p>If inplace, None, and operation is conducted on dataframe
+in memory. Otherwise, returns a copy of the dataframe with
+the relevant columns attached.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="esda.G_Local.calc">
 <span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/getisord.html#G_Local.calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.G_Local.calc" title="Link to this definition">¶</a></dt>
@@ -359,7 +402,7 @@ For row-standardized weights object, the weight value for self is
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

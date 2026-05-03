@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.NP_Mixture_Smoother &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.NP_Mixture_Smoother &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -125,25 +125,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">esda.NP_Mixture_Smoother</a><ul>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother</span></code></a><ul>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.combine"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.combine()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.em"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.em()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getGradient"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getGradient()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getLikelihood"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getLikelihood()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getMaxGradient"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getMaxGradient()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getMinGradient"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getMinGradient()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getMixedProb"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getMixedProb()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getRateEstimates"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getRateEstimates()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getSeed"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getSeed()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.getStepsize"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.getStepsize()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.mixalg"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.mixalg()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.update"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.update()</span></code></a></li>
-<li><a class="reference internal" href="#esda.NP_Mixture_Smoother.vem"><code class="docutils literal notranslate"><span class="pre">NP_Mixture_Smoother.vem()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">esda.NP_Mixture_Smoother</a></li>
 </ul>
 </ul>
 </li>
@@ -175,218 +157,6 @@
       
   <section id="esda-np-mixture-smoother">
 <h1>esda.NP_Mixture_Smoother<a class="headerlink" href="#esda-np-mixture-smoother" title="Link to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">NP_Mixture_Smoother</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother" title="Link to this definition">¶</a></dt>
-<dd><p>Empirical Bayesian Rate Smoother Using Mixture Prior Distributions
-It goes through 1) defining an initial set of subpopulations,
-2) VEM algorithm to determine the number of major subpopulations,
-3) EM algorithm, 4) combining simialr subpopulations, and 5) estimating
-EB rates from a mixture of prior distributions from subpopulation
-models.</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>e</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a></span></dt><dd><p>event variable measured across n spatial units</p>
-</dd>
-<dt><strong>b</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a></span></dt><dd><p>population at risk variable measured across n spatial units</p>
-</dd>
-<dt><strong>k</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integer</span></code></span></dt><dd><p>a seed number to specify the number of subpopulations</p>
-</dd>
-<dt><strong>acc</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>convergence criterion; VEM and EM loops stop
-when the increase of log likelihood is less than acc</p>
-</dd>
-<dt><strong>numiter</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integer</span></code></span></dt><dd><p>the maximum number of iterations for VEM and EM loops</p>
-</dd>
-<dt><strong>limit</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>a parameter to cotrol the limit for combing subpopulation
-models</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Attributes<span class="colon">:</span></dt>
-<dd class="field-even"><dl>
-<dt><strong>e</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>same as e in parameters</p>
-</dd>
-<dt><strong>b</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>same as b in parameters</p>
-</dd>
-<dt><strong>n</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integer</span></code></span></dt><dd><p>the number of observations</p>
-</dd>
-<dt><strong>w</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>a global weight value, 1 devided by n</p>
-</dd>
-<dt><strong>k</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integer</span></code></span></dt><dd><p>the number of subpopulations</p>
-</dd>
-<dt><strong>acc</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>same as acc in parameters</p>
-</dd>
-<dt><strong>numiter</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integer</span></code></span></dt><dd><p>same as numiter in parameters</p>
-</dd>
-<dt><strong>limit</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>same as limit in parameters</p>
-</dd>
-<dt><strong>p</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(k, 1), the proportions of individual subpopulations</p>
-</dd>
-<dt><strong>t</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(k, 1), prior risks of individual subpopulations</p>
-</dd>
-<dt><strong>r</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(n, 1), estimated rate values</p>
-</dd>
-<dt><strong>category</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>(n, 1), indices of subpopulations to which each observation belongs</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>importing numpy, and NP_Mixture_Smoother</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.mixture_smoothing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NP_Mixture_Smoother</span>
-</pre></div>
-</div>
-<p>creating an arrary including event values</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>creating an array including population-at-risk values</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>applying non-parametric mixture smoothing to e and b</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span> <span class="o">=</span> <span class="n">NP_Mixture_Smoother</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>extracting the smoothed rates through the property
-r of the NP_Mixture_Smoother instance</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span><span class="o">.</span><span class="n">r</span>
-<span class="go">array([0.10982278, 0.03445531, 0.11018404, 0.11018604])</span>
-</pre></div>
-</div>
-<p>Checking the subpopulations to which each observation belongs</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span><span class="o">.</span><span class="n">category</span>
-<span class="go">array([1, 0, 1, 1])</span>
-</pre></div>
-</div>
-<p>computing an initial set of prior distributions for the subpopulations</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span><span class="o">.</span><span class="n">getSeed</span><span class="p">()</span>
-<span class="go">(array([0.5, 0.5]), array([0.03333333, 0.15      ]))</span>
-</pre></div>
-</div>
-<p>applying the mixture algorithm</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span><span class="o">.</span><span class="n">mixalg</span><span class="p">()</span>
-<span class="go">{&#39;accuracy&#39;: 1.0, &#39;k&#39;: 1, &#39;p&#39;: array([1.]), &#39;grid&#39;: array([11.27659574]), &#39;gradient&#39;: array([0.]), &#39;mix_den&#39;: array([0., 0., 0., 0.])}</span>
-</pre></div>
-</div>
-<p>estimating empirical Bayesian smoothed rates</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span><span class="o">.</span><span class="n">getRateEstimates</span><span class="p">()</span>
-<span class="go">(array([0.0911574, 0.0911574, 0.0911574, 0.0911574]), array([1, 1, 1, 1]))</span>
-</pre></div>
-</div>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.combine" title="esda.NP_Mixture_Smoother.combine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine</span></code></a>(res)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.em" title="esda.NP_Mixture_Smoother.em"><code class="xref py py-obj docutils literal notranslate"><span class="pre">em</span></code></a>(nstep, grid, p)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getGradient" title="esda.NP_Mixture_Smoother.getGradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getGradient</span></code></a>(mix, p)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getLikelihood" title="esda.NP_Mixture_Smoother.getLikelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getLikelihood</span></code></a>(mix_den)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getMaxGradient" title="esda.NP_Mixture_Smoother.getMaxGradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getMaxGradient</span></code></a>(gradient)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getMinGradient" title="esda.NP_Mixture_Smoother.getMinGradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getMinGradient</span></code></a>(gradient, p)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getMixedProb" title="esda.NP_Mixture_Smoother.getMixedProb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getMixedProb</span></code></a>(grid)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getRateEstimates" title="esda.NP_Mixture_Smoother.getRateEstimates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getRateEstimates</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getSeed" title="esda.NP_Mixture_Smoother.getSeed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getSeed</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.getStepsize" title="esda.NP_Mixture_Smoother.getStepsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getStepsize</span></code></a>(mix_den, ht)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.mixalg" title="esda.NP_Mixture_Smoother.mixalg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mixalg</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.update" title="esda.NP_Mixture_Smoother.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(p, grid)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#esda.NP_Mixture_Smoother.vem" title="esda.NP_Mixture_Smoother.vem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vem</span></code></a>(mix, p, grid)</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.combine">
-<span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.combine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.combine" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.em">
-<span class="sig-name descname"><span class="pre">em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.em"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.em" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getGradient">
-<span class="sig-name descname"><span class="pre">getGradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getGradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getGradient" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getLikelihood">
-<span class="sig-name descname"><span class="pre">getLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mix_den</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getLikelihood" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getMaxGradient">
-<span class="sig-name descname"><span class="pre">getMaxGradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getMaxGradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getMaxGradient" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getMinGradient">
-<span class="sig-name descname"><span class="pre">getMinGradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getMinGradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getMinGradient" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getMixedProb">
-<span class="sig-name descname"><span class="pre">getMixedProb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getMixedProb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getMixedProb" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getRateEstimates">
-<span class="sig-name descname"><span class="pre">getRateEstimates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getRateEstimates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getRateEstimates" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getSeed">
-<span class="sig-name descname"><span class="pre">getSeed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getSeed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getSeed" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.getStepsize">
-<span class="sig-name descname"><span class="pre">getStepsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mix_den</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ht</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.getStepsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.getStepsize" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.mixalg">
-<span class="sig-name descname"><span class="pre">mixalg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.mixalg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.mixalg" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.update" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="esda.NP_Mixture_Smoother.vem">
-<span class="sig-name descname"><span class="pre">vem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/mixture_smoothing.html#NP_Mixture_Smoother.vem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.NP_Mixture_Smoother.vem" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 
 
@@ -409,7 +179,7 @@ r of the NP_Mixture_Smoother instance</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

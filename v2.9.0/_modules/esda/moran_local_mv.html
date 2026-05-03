@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.moran_local_mv &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.moran_local_mv &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -153,30 +153,29 @@
       
   <h1>Source code for esda.moran_local_mv</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">lag_spatial</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">.moran</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran_Local</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.significance</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_significance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">lag_spatial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm.auto</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">tqdm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># noqa: ARG001 - Unused function argument: `kwargs`</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tqdm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_calc_quad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_calc_quad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This is a simpler solution to calculate a cartesian quadrant.</span>
+<span class="sd">    This is a simpler solution to calculate a cartesian quadrant. </span>
 
-<span class="sd">    To explain graphically, let the tuple below be (off_sign[i], neg_y[i]*2).</span>
+<span class="sd">    To explain graphically, let the tuple below be (off_sign[i], neg_y[i]*2). </span>
 
-<span class="sd">    If sign(x[i]) != sign(y[i]), we are on the negative diagonal.</span>
-<span class="sd">    If y is negative, we are on the bottom of the plot.</span>
+<span class="sd">    If sign(x[i]) != sign(y[i]), we are on the negative diagonal. </span>
+<span class="sd">    If y is negative, we are on the bottom of the plot. </span>
 
-<span class="sd">    Therefore, the sum (off_sign + neg_y*2 + 1) gives you the cartesian quadrant.</span>
+<span class="sd">    Therefore, the sum (off_sign + neg_y*2 + 1) gives you the cartesian quadrant. </span>
 
 <span class="sd">     II  |   I</span>
 <span class="sd">     1,0 | 0,0</span>
@@ -186,25 +185,19 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">off_sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">neg_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span>
-    <span class="k">return</span> <span class="n">off_sign</span> <span class="o">+</span> <span class="n">neg_y</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
-
+    <span class="n">neg_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">off_sign</span> <span class="o">+</span> <span class="n">neg_y</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
 
 <div class="viewcode-block" id="MoranLocalPartial">
 <a class="viewcode-back" href="../../source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">MoranLocalPartial</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MoranLocalPartial</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <div class="viewcode-block" id="MoranLocalPartial.__init__">
 <a class="viewcode-back" href="../../generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span>
-        <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">partial_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;two-sided&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the Multivariable Local Moran statistics under</span>
-<span class="sd">        partial dependence :cite:`wolf2024confounded`</span>
+<span class="sd">        Compute the Multivariable Local Moran statistics under partial dependence :cite:`wolf2024confounded`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
@@ -217,13 +210,12 @@
 <span class="sd">            the covariance statistics are not overwhelmed by any single</span>
 <span class="sd">            covariate&#39;s large variance.</span>
 <span class="sd">        partial_labels : bool, default=True</span>
-<span class="sd">            whether to calculate the classification based on the part-regressive</span>
+<span class="sd">            whether to calculate the classification based on the part-regressive </span>
 <span class="sd">            quadrant classification or the univariate quadrant classification,</span>
-<span class="sd">            like a classical Moran&#39;s I. When mvquads is True,</span>
-<span class="sd">            the variables are labelled as:</span>
-<span class="sd">            - label 1: observations with large y - rho * x that also have large Wy values.</span>
+<span class="sd">            like a classical Moran&#39;s I. When mvquads is True, the variables are labelled as:</span>
+<span class="sd">            - label 1: observations with large y - rho * x that also have large Wy values. </span>
 <span class="sd">            - label 2: observations with small y - rho * x values that also have large Wy values.</span>
-<span class="sd">            - label 3: observations with small y - rho * x values that also have small Wy values.</span>
+<span class="sd">            - label 3: observations with small y - rho * x values that also have small Wy values. </span>
 <span class="sd">            - label 4: observations with large y - rho * x values that have small Wy values.</span>
 <span class="sd">        alternative : str (default: &#39;two-sided&#39;)</span>
 <span class="sd">            the alternative hypothesis for the inference. One of</span>
@@ -245,8 +237,7 @@
 <span class="sd">        association_ : the N,P matrix of multivariable LISA statistics.</span>
 <span class="sd">            the first column, lmos[:,1] is the LISAs corresponding</span>
 <span class="sd">            to the relationship between Wy and y conditioning on X.</span>
-<span class="sd">        reference_distribution_ :</span>
-<span class="sd">            the (N, permutations, P+1) realizations from the conditional</span>
+<span class="sd">        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional</span>
 <span class="sd">            randomization to generate reference distributions for</span>
 <span class="sd">            each Local Moran statistic. rlmos_[:,:,1] pertain to</span>
 <span class="sd">            the reference distribution of y and Wy.</span>
@@ -264,14 +255,14 @@
 <span class="sd">            describing the relationship between y and Wy.</span>
 <span class="sd">        labels_ : the (N,) array of quadrant classifications for the</span>
 <span class="sd">            part-regressive relationships. See the partial_labels argument</span>
-<span class="sd">            for more information.</span>
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">            for more information. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span> <span class="o">=</span> <span class="n">unit_scale</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partial_labels</span> <span class="o">=</span> <span class="n">partial_labels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alternative</span> <span class="o">=</span> <span class="n">alternative</span></div>
 
-
+    
 <div class="viewcode-block" id="MoranLocalPartial.fit">
 <a class="viewcode-back" href="../../source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
@@ -280,16 +271,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : (N,p) array</span>
+<span class="sd">        X   : (N,p) array</span>
 <span class="sd">            array of data that is used as &quot;confounding factors&quot;</span>
 <span class="sd">            to account for their covariance with Y.</span>
-<span class="sd">        y : (N,1) array</span>
+<span class="sd">        y   : (N,1) array</span>
 <span class="sd">            array of data that is the targeted &quot;outcome&quot; covariate</span>
 <span class="sd">            to compute the multivariable Moran&#39;s I</span>
-<span class="sd">        W : (N,N) weights object</span>
-<span class="sd">            spatial weights instance as W or Graph aligned with y.</span>
-<span class="sd">            Immediately row-standardized.</span>
-
+<span class="sd">        W   : (N,N) weights object</span>
+<span class="sd">            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.</span>
+<span class="sd">      </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self    :   object</span>
@@ -325,10 +315,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_p_sim_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">P</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_p_sim_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_significance</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_lmos_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">],</span>
-                        <span class="n">alternative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_p_sim_</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_significance</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_lmos_</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_rlmos_</span><span class="p">[:,:,</span><span class="n">i</span><span class="p">],</span> 
+                        <span class="n">alternative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative</span>
                     <span class="p">)</span>
 
         <span class="n">component_quads</span> <span class="o">=</span> <span class="p">[]</span>
@@ -339,16 +329,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_partials_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
-                <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_left_component_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_left_component_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
             <span class="p">]</span>
         <span class="p">)</span>
 
         <span class="n">uvquads</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">negative_lag</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="n">negative_lag</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="n">off_sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">R</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">off_sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">R</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">quads</span> <span class="o">=</span> <span class="n">negative_lag</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">off_sign</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">uvquads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">quads</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
 
@@ -358,7 +348,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>  <span class="c1"># NOQA because ternary is confusing</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span> <span class="c1"># NOQA because ternary is confusing</span>
             <span class="n">Wz</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">Wz</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
@@ -384,7 +374,7 @@
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_neighbs</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="n">straight_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>  <span class="c1"># NOQA</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span> <span class="c1"># NOQA</span>
             <span class="n">id_order</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">unique_ids</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">id_order</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">id_order</span>
@@ -402,7 +392,7 @@
             <span class="n">shuffled_Wyi</span> <span class="o">=</span> <span class="p">(</span><span class="n">shuffled_ys</span> <span class="o">*</span> <span class="n">these_weights</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
                 <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
             <span class="p">)</span>  <span class="c1"># these are N-permutations by 1 now</span>
-            <span class="c1"># shuffled_X = X[randomized_permutations, :]</span>
+            <span class="c1"># shuffled_X = X[randomized_permutations, :] </span>
             <span class="c1"># #these are still N-permutations, N-neighbs, N-covariates</span>
             <span class="k">if</span> <span class="n">X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">local_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -497,26 +487,26 @@
         <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span>
         <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">transformer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;two-sided&quot;</span><span class="p">,</span>
+        <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a local Moran statistic on the regression residuals</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
-<span class="sd">        permutations : int (default: 999)</span>
-<span class="sd">            the number of permutations to run for the inference,</span>
-<span class="sd">            driven by conditional randomization.</span>
-<span class="sd">        unit_scale : bool (default: True)</span>
-<span class="sd">            whether or not to convert the input data to a unit normal scale.</span>
-<span class="sd">        transformer : callable (default: scikit regression)</span>
-<span class="sd">            should transform X into a predicted y. If not provided, will use</span>
-<span class="sd">            the standard scikit OLS regression of y on X.</span>
-<span class="sd">        alternative : str (default: &#39;two-sided&#39;)</span>
-<span class="sd">            the alternative hypothesis for the inference. One of</span>
-<span class="sd">            &#39;two-sided&#39;, &#39;greater&#39;, &#39;lesser&#39;, &#39;directed&#39;, or &#39;folded&#39;.</span>
-<span class="sd">            See the esda.significance.calculate_significance() documentation</span>
-<span class="sd">            for more information.</span>
+<span class="sd">        permutations    : int (default: 999)</span>
+<span class="sd">                          the number of permutations to run for the inference,</span>
+<span class="sd">                          driven by conditional randomization.</span>
+<span class="sd">        unit_scale      : bool (default: True)</span>
+<span class="sd">                          whether or not to convert the input data to a unit normal scale.</span>
+<span class="sd">        transformer     : callable (default: scikit regression)</span>
+<span class="sd">                          should transform X into a predicted y. If not provided, will use</span>
+<span class="sd">                          the standard scikit OLS regression of y on X.</span>
+<span class="sd">        alternative     : str (default: &#39;two-sided&#39;)</span>
+<span class="sd">                          the alternative hypothesis for the inference. One of</span>
+<span class="sd">                          &#39;two-sided&#39;, &#39;greater&#39;, &#39;lesser&#39;, &#39;directed&#39;, or &#39;folded&#39;.</span>
+<span class="sd">                          See the esda.significance.calculate_significance() documentation</span>
+<span class="sd">                          for more information.</span>
 
 <span class="sd">        Attributes</span>
 <span class="sd">        ----------</span>
@@ -525,8 +515,7 @@
 <span class="sd">        association_ : the N,P matrix of multivariable LISA statistics.</span>
 <span class="sd">            the first column, lmos[:,1] is the LISAs corresponding</span>
 <span class="sd">            to the relationship between Wy and y conditioning on X.</span>
-<span class="sd">        reference_distribution_ :</span>
-<span class="sd">            the (N, permutations, P+1) realizations from the conditional</span>
+<span class="sd">        reference_distribution_ : the (N, permutations, P+1) realizations from the conditional</span>
 <span class="sd">            randomization to generate reference distributions for</span>
 <span class="sd">            each Local Moran statistic. rlmos_[:,:,1] pertain to</span>
 <span class="sd">            the reference distribution of y and Wy.</span>
@@ -544,7 +533,7 @@
 <span class="sd">            describing the relationship between y and Wy.</span>
 <span class="sd">        labels_ : the (N,) array of quadrant classifications for the</span>
 <span class="sd">            part-regressive relationships. See the partial_labels argument</span>
-<span class="sd">            for more information.</span>
+<span class="sd">            for more information. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="n">permutations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unit_scale</span> <span class="o">=</span> <span class="n">unit_scale</span>
@@ -565,9 +554,8 @@
 <span class="sd">            array of data that is used as &quot;confounding factors&quot;</span>
 <span class="sd">            to account for their covariance with Y.</span>
 <span class="sd">        W : (N,N) weights object</span>
-<span class="sd">            spatial weights instance as W or Graph aligned with y.</span>
-<span class="sd">            Immediately row-standardized.</span>
-
+<span class="sd">            spatial weights instance as W or Graph aligned with y. Immediately row-standardized.</span>
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        A fitted MoranLocalConditional() estimator</span>
@@ -585,19 +573,15 @@
             <span class="n">Wyf</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">y_filtered_</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">W</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
-            <span class="n">Wyf</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">y_filtered_</span><span class="p">)</span>  <span class="c1"># TODO: graph</span>
+            <span class="n">Wyf</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">y_filtered_</span><span class="p">)</span> <span class="c1"># TODO: graph</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connectivity</span> <span class="o">=</span> <span class="n">W</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partials_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">y_filtered_</span><span class="p">,</span> <span class="n">Wyf</span><span class="p">))</span>
         <span class="n">y_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_filtered_</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">association_</span> <span class="o">=</span> <span class="p">((</span><span class="n">y_out</span> <span class="o">*</span> <span class="n">Wyf</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_out</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">y_out</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_crand</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">significance_</span> <span class="o">=</span> <span class="n">calculate_significance</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">association_</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reference_distribution_</span><span class="p">,</span>
-                <span class="n">alternative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="n">quads</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">significance_</span> <span class="o">=</span> <span class="n">calculate_significance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">association_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_distribution_</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alternative</span><span class="p">)</span>
+        <span class="n">quads</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">left_component_cluster</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_filtered_</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">right_component_cluster</span> <span class="o">=</span> <span class="p">(</span><span class="n">Wyf</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">quads</span> <span class="o">=</span> <span class="n">quads</span><span class="p">[</span><span class="n">left_component_cluster</span><span class="p">,</span> <span class="n">right_component_cluster</span><span class="p">]</span>
@@ -674,7 +658,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

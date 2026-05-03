@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.shape.moment_of_inertia_global &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.shape.moment_of_inertia_global &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -163,22 +163,19 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="esda.shape.moment_of_inertia_global">
 <span class="sig-prename descclassname"><span class="pre">esda.shape.</span></span><span class="sig-name descname"><span class="pre">moment_of_inertia_global</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_pt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/esda/shape.html#moment_of_inertia_global"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.shape.moment_of_inertia_global" title="Link to this definition">¶</a></dt>
-<dd><p>Compute moment of inertia (second moment of area)
-for an entire collection of geometries combined.</p>
+<dd><p>Compute moment of inertia (second moment of area) for an entire collection of geometries combined.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>collection</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDataFrame</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Input collection of polygons or multipolygons.</p>
 </dd>
-<dt><strong>normalize</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, optional</span></dt><dd><p>If True, returns moment normalized by reference cricle of same area.
-Default is False.</p>
+<dt><strong>normalize</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, optional</span></dt><dd><p>If True, returns moment normalized by reference cricle of same area. Default is False.</p>
 </dd>
 <dt><strong>ref_pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Shapely</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code>, or <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a> of shape (2,), optional</span></dt><dd><p>If provided, shifts moment to be with respect to this point.
-The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment
+The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment 
 about the centroid of the entire <cite>collection</cite>. Point may be passed as
 as array-like of coordinates or a point geometry (which can include a
-GeoSeries of length 1). To return moment about the origin,
-explicitly set to (0, 0).</p>
+GeoSeries of length 1). To return moment about the origin, explicitly set to (0, 0).</p>
 </dd>
 </dl>
 </dd>
@@ -192,21 +189,13 @@ explicitly set to (0, 0).</p>
 <p class="rubric">Notes</p>
 <p>This is a convenience function to calculate the second moment of area for
 an entire collection, which will usually be faster than running a geospatial
-dissolve on the geometries and then running <cite>moment_of_inertia</cite> on the
+dissolve on the geometries and then running <cite>moment_of_inertia</cite> on the 
 result.</p>
 <p>This will <em>not</em> calculate a mass moment of inertia. To calculate the mass
-moment of inertia for an entire collection, weighted by the masses of the
+moment of inertia for an entire collection, weighted by the masses of the 
 geometries in the collection, assign all geometries to the same region:</p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
-moment_of_inertia_regions(</p>
-<blockquote>
-<div><p>collection,
-regions=numpy.repeat(1, len(collection))</p>
-</div></blockquote>
-<section id="weights-weights-vector">
-<h2>), weights=&lt;weights vector&gt;<a class="headerlink" href="#weights-weights-vector" title="Link to this heading">¶</a></h2>
+<p><cite>moment_of_inertia_regions(collection, regions=numpy.repeat(1, len(collection))), weights=&lt;weights vector&gt;</cite></p>
 <p>The <cite>normalize</cite> and <cite>ref_pt</cite> parameters may be used as usual.</p>
-</section>
 </dd></dl>
 
 </section>
@@ -231,7 +220,7 @@ regions=numpy.repeat(1, len(collection))</p>
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

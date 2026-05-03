@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.Join_Counts &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.Join_Counts &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -130,6 +130,7 @@
 <li><a class="reference internal" href="#">esda.Join_Counts</a><ul>
 <li><a class="reference internal" href="#esda.Join_Counts"><code class="docutils literal notranslate"><span class="pre">Join_Counts</span></code></a><ul>
 <li><a class="reference internal" href="#esda.Join_Counts.__init__"><code class="docutils literal notranslate"><span class="pre">Join_Counts.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#esda.Join_Counts.by_col"><code class="docutils literal notranslate"><span class="pre">Join_Counts.by_col()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
 <h1>esda.Join_Counts<a class="headerlink" href="#esda-join-counts" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="esda.Join_Counts">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Join_Counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Join_Counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts" title="Link to this definition">¶</a></dt>
 <dd><p>Binary Join Counts</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -180,8 +181,55 @@
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Attributes<span class="colon">:</span></dt>
-<dd class="field-even"><dl>
+</dl>
+<p class="rubric">Notes</p>
+<p>Technical details and derivations can be found in <span id="id1">[<a class="reference internal" href="../references.html#id7" title="A.D. Cliff and J.K. Ord. Spatial Processes: Models and Applications. Pion, London, 1981.">CO81</a>]</span>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.join_counts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span> <span class="o">=</span> <span class="n">Join_Counts</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span>
+<span class="go">4.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">J</span>
+<span class="go">24.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
+<span class="go">999</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bb</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.003</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">5.547</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">999</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bw</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">12.811811811811811</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">24.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
+<span class="go">7.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">chi2_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.004</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_chi2</span>
+<span class="go">0.002</span>
+</pre></div>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
 <dt><strong>y</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>original variable</p>
 </dd>
 <dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></span></dt><dd><p>original w object</p>
@@ -246,51 +294,6 @@ self-neighbors with zero weight. See <code class="docutils literal notranslate">
 </dl>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>Technical details and derivations can be found in <span id="id1">[<a class="reference internal" href="../references.html#id7" title="A.D. Cliff and J.K. Ord. Spatial Processes: Models and Applications. Pion, London, 1981.">CO81</a>]</span>.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.join_counts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span> <span class="o">=</span> <span class="n">Join_Counts</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span>
-<span class="go">10.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span>
-<span class="go">4.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span>
-<span class="go">10.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">J</span>
-<span class="go">24.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
-<span class="go">999</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bb</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.003</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">5.547</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
-<span class="go">10.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">)</span>
-<span class="go">0.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
-<span class="go">999</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bw</span>
-<span class="go">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
-<span class="go">12.811811811811811</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
-<span class="go">24.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bw</span><span class="p">)</span>
-<span class="go">7.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">chi2_p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.004</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_chi2</span>
-<span class="go">0.002</span>
-</pre></div>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="esda.Join_Counts.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_islands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts.__init__" title="Link to this definition">¶</a></dt>
@@ -302,8 +305,51 @@ self-neighbors with zero weight. See <code class="docutils literal notranslate">
 <tr class="row-odd"><td><p><a class="reference internal" href="#esda.Join_Counts.__init__" title="esda.Join_Counts.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(y, w[, permutations, drop_islands])</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/generated/esda.Join_Counts.html#esda.Join_Counts.by_col" title="esda.Join_Counts.by_col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_col</span></code></a>(df, cols[, w, inplace, pvalue, outvals])</p></td>
+<td><p>Function to compute a Join_Count statistic on a dataframe</p></td>
+</tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="esda.Join_Counts.by_col">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">by_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sim'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">stat_kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/esda/join_counts.html#Join_Counts.by_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts.by_col" title="Link to this definition">¶</a></dt>
+<dd><p>Function to compute a Join_Count statistic on a dataframe</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>df</strong><span class="classifier"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a></span></dt><dd><p>a pandas dataframe with a geometry column</p>
+</dd>
+<dt><strong>cols</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>name or list of names of columns to use to compute the statistic</p>
+</dd>
+<dt><strong>w</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></span></dt><dd><p>spatial weights instance as W or Graph aligned with the dataframe. If not
+provided, this is searched for in the dataframe’s metadata</p>
+</dd>
+<dt><strong>inplace</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>a boolean denoting whether to operate on the dataframe inplace or to
+return a series contaning the results of the computation. If
+operating inplace, the derived columns will be named
+‘column_join_count’</p>
+</dd>
+<dt><strong>pvalue</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>a string denoting which pvalue should be returned. Refer to the
+the Join_Count statistic’s documentation for available p-values</p>
+</dd>
+<dt><strong>outvals</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">strings</span></code></span></dt><dd><p>list of arbitrary attributes to return as columns from the
+Join_Count statistic</p>
+</dd>
+<dt><strong>**stat_k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>options to pass to the underlying statistic. For this, see the
+documentation for the Join_Count statistic.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">If</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace</span></code>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">and</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">is</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">conducted</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">on</span></code></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> memory. <code class="xref py py-obj docutils literal notranslate"><span class="pre">Otherwise</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">returns</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3/library/copy.html#module-copy" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">relevant</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">columns</span></code> attached.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -328,7 +374,7 @@ self-neighbors with zero weight. See <code class="docutils literal notranslate">
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

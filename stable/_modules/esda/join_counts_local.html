@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>esda.join_counts_local &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.join_counts_local &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="icon" href="../../_static/pysal_favicon.ico"/>
@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -166,7 +166,7 @@
 
 <div class="viewcode-block" id="Join_Counts_Local">
 <a class="viewcode-back" href="../../source/generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Join_Counts_Local</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Join_Counts_Local</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>  <span class="c1"># noqa: N801</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Univariate Local Join Count Statistic&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Join_Counts_Local.__init__">
@@ -344,7 +344,7 @@
 
 
 <span class="nd">@_njit</span><span class="p">(</span><span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_ljc_uni</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">weights_i</span><span class="p">,</span> <span class="n">scaling</span><span class="p">):</span>  <span class="c1"># noqa: ARG001 - Unused function argument: `scaling`</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ljc_uni</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">weights_i</span><span class="p">,</span> <span class="n">scaling</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
     <span class="c1"># self_weight = weights_i[0]</span>
     <span class="n">other_weights</span> <span class="o">=</span> <span class="n">weights_i</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">zi</span><span class="p">,</span> <span class="n">zrand</span> <span class="o">=</span> <span class="n">_prepare_univariate</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">permuted_ids</span><span class="p">,</span> <span class="n">other_weights</span><span class="p">)</span>
@@ -366,7 +366,7 @@
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>

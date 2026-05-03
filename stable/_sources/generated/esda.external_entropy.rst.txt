@@ -1,6 +1,0 @@
-﻿esda.external\_entropy
-======================
-
-.. currentmodule:: esda
-
-.. autofunction:: external_entropy

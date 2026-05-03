@@ -1,6 +1,0 @@
-﻿esda.homogeneity
-================
-
-.. currentmodule:: esda
-
-.. autofunction:: homogeneity

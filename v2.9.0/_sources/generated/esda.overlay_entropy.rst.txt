@@ -1,6 +1,0 @@
-﻿esda.overlay\_entropy
-=====================
-
-.. currentmodule:: esda
-
-.. autofunction:: overlay_entropy

@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>esda.shape.second_moment_of_area &#8212; esda v20260425.dev58+g37a2a0807 Manual</title>
+    <title>esda.shape.second_moment_of_area &#8212; esda v2.9 Manual</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="../_static/documentation_options.js?v=6358a976"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/documentation_options.js?v=3cf3cae0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,7 +44,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>20260425.dev58+g37a2a0807</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -173,15 +173,14 @@
 <dd class="field-odd"><dl>
 <dt><strong>collection</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoDataFrame</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Input collection of polygons or multipolygons.</p>
 </dd>
-<dt><strong>normalize</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, optional</span></dt><dd><p>If True, returns moment normalized by reference cricle of same area.
-Default is False.</p>
+<dt><strong>normalize</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.14)"><span class="xref std std-ref">bool</span></a>, optional</span></dt><dd><p>If True, returns moment normalized by reference cricle of same area. Default is False.</p>
 </dd>
 <dt><strong>ref_pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeoSeries</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Shapely</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Points</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.4)"><span>array_like</span></a> of shape (2,) or (<code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code>, 2), optional</span></dt><dd><p>If provided, shifts moment to be with respect to this point or points.
-The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment
+The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment 
 about the centroid of each geometry. Points may be passed as
 as array-like of coordinates or point geometries. If a single point,
 all moments are calculated with respect to that reference point. If
-of length equal to collection, the moment for each geometry in
+of length equal to collection, the moment for each geometry in 
 collection is calculated with respect to the reference point with
 the same index. To return moment about the origin, explicitly set to (0, 0).</p>
 </dd>
@@ -196,56 +195,56 @@ the same index. To return moment about the origin, explicitly set to (0, 0).</p>
 </dl>
 <p class="rubric">Notes</p>
 <p>Calculates the moment of inertia of each geometry in the collection. Can handle
-polygons with holes and multipolygons by summing the moments of inertia of each
-part. The moment of inertia is calculated about the centroid of each geometry
-by default, but can also be calculated about a specified reference point or points.</p>
-<p>The moment of inertia is the variance of the distance of all points in a shape to a
-reference point, which can be interpreted as an axis of rotation  perpendicular to
-the plane of the shape. The first parameter should be a GeoDataFrame or array-like
-of Polygons or MultiPolygons. If normalization is requested, the moment of inertia
-is compared with that of a circle of equal area. This is discussed in detail below.</p>
-<p>Moments of inertia with weights (such as population) may be calculated using
-<cite>moment_of_inertia_regions</cite>. Without weights, the moment of inertia is known as the
-area moment of inertia or the second moment of area, and can be quickly calculated
-from the polygon vertices using the shoelace formula. The second moments of area
-about the x and y axes are calculated as:</p>
+polygons with holes and multipolygons by summing the moments of inertia of each part.
+The moment of inertia is calculated about the centroid of each geometry by default,
+but can also be calculated about a specified reference point or points.</p>
+<p>The moment of inertia is the variance of the distance of all points
+in a shape to a reference point, which can be interpreted as an axis of rotation 
+perpendicular to the plane of the shape. The first parameter should be a GeoDataFrame or 
+array-like of Polygons or MultiPolygons. If normalization is
+requested, the moment of inertia is compared with that of a circle of equal area. This
+is discussed in detail below.</p>
+<p>Moments of inertia with weights (such as population) may be calculated using 
+<cite>moment_of_inertia_regions</cite>. Without weights, the moment of inertia is known as the 
+area moment of inertia or the second moment of area, and can be quickly calculated from 
+the polygon vertices using the shoelace formula. The second moments of area about the 
+x and y axes are calculated as:</p>
 <div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}I_x = \frac{1}{12}\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(y_i^2 + y_i y_{i+1} + y_{i+1}^2)\\I_y = \frac{1}{12}\sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1}y_i)(x_i^2 + x_i x_{i+1} + x_{i+1}^2)\end{aligned}\end{align} \]</div>
 <p>where indices wrap around (n+1 = 1).</p>
-<p>The moments are then adjusted to be relative to a reference point using the
-parallel axis theorem. The moment of inertia is then the sum of <span class="math notranslate nohighlight">\(I_x\)</span> and
-<span class="math notranslate nohighlight">\(I_y\)</span>. In geographic contexts, the reference point is typically the
-centroid, which is the default if no reference point is provided. However, other
-points of interest may be used, such as a capital city or the residence of
+<p>The moments are then adjusted to be relative to a reference point using the 
+parallel axis theorem. The moment of inertia is then the sum of <span class="math notranslate nohighlight">\(I_x\)</span> and 
+<span class="math notranslate nohighlight">\(I_y\)</span>. In geographic contexts, the reference point is typically the 
+centroid, which is the default if no reference point is provided.
+However, other points of interest may be used, such as a capital city or the residence of
 a political representative.</p>
-<p>The moment of inertia can be normalized to provide a compactness measure
-by comparing it with the moment of inertia of a circle of equal area.
-This is calculated as the ratio of the moment of inertia of the circle
-to that of the shape about its centroid:</p>
+<p>The moment of inertia can be normalized to provide a compactness measure by comparing
+it with the moment of inertia of a circle of equal area. This is calculated
+as the ratio of the moment of inertia of the circle to that of the shape about its centroid:</p>
 <div class="math notranslate nohighlight">
 \[C_{MI} = \frac{I_{circle}}{I_{shape}}
        = \frac{A^2}{2 \pi I_{shape}}\]</div>
-<p>where <span class="math notranslate nohighlight">\(A\)</span> is the area of the polygon and <span class="math notranslate nohighlight">\(I_{shape}\)</span> is the moment of
-inertia of the polygon. This formulation is from Li, et al (2013). The value of
-<span class="math notranslate nohighlight">\(C_{MI}\)</span> is bounded between 0 and 1, with 1 representing a perfect circle,
+<p>where <span class="math notranslate nohighlight">\(A\)</span> is the area of the polygon and <span class="math notranslate nohighlight">\(I_{shape}\)</span> is the moment of inertia
+of the polygon. This formulation is from Li, et al (2013). The value of 
+<span class="math notranslate nohighlight">\(C_{MI}\)</span> is bounded between 0 and 1, with 1 representing a perfect circle, 
 the most compact shape by this measure.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="rc751cf0cf911-1" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <p>Godwin, A. N. 1980. “Simple Calculation of Moments of Inertia for Polygons.”
-International Journal of Mathematical Education in Science and Technology
-11 (4): 577–86. <a class="reference external" href="https://doi.org/10.1080/0020739800110414">https://doi.org/10.1080/0020739800110414</a>.</p>
+International Journal of Mathematical Education in Science and Technology 11 (4): 577–86. 
+<a class="reference external" href="https://doi.org/10.1080/0020739800110414">https://doi.org/10.1080/0020739800110414</a>.</p>
 </div>
 <div class="citation" id="rc751cf0cf911-2" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
-<p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient
-Measure of Compactness for Two-Dimensional Shapes and Its Application in
-Regionalization Problems.” International Journal of Geographical Information
-Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p>
+<p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient Measure 
+of Compactness for Two-Dimensional Shapes and Its Application in Regionalization 
+Problems.” International Journal of Geographical Information Science 27 (6): 1227–50. 
+<a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p>
 </div>
-<div class="citation" id="rc751cf0cf911-3" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<div class="citation" id="id1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area">https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area</a></p>
 </div>
 </div>
@@ -273,7 +272,7 @@ Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/1
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 9.1.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
     </p>
   </div>
 </footer>
