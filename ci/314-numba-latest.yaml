@@ -5,7 +5,7 @@ dependencies:
   - python=3.14
   # required
   - geopandas
-  - libpysal>=4.12
+  - libpysal
   - numpy
   - pandas
   - scikit-learn
@@ -14,13 +14,13 @@ dependencies:
   # testing
   - codecov
   - folium
+  - geodatasets
   - mapclassify
   - matplotlib
   - seaborn
   - pytest
   - pytest-cov
   - pytest-xdist
-  - geodatasets
   # optional
   - numba
   - rtree

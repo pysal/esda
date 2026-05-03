@@ -4,7 +4,6 @@ import geopandas
 import numpy
 import pandas
 import shapely
-from packaging.version import Version
 
 from .crand import njit
 
@@ -14,23 +13,6 @@ __author__ = (
     "Alan Murray <amurray@ucsb.edu>",
     "Jiwan Baik <jiwon.baik@geog.ucsb.edu>",
 )
-
-
-# -------------------- UTILITIES --------------------#
-# shapely.orient_polygons not available in shapely<2.1. Check version, and if
-# not available, use shapely.normalize (to make exterior rings clockwise) +
-# shapely.reverse. This is about 30% slower than shapely.orient_polygons.
-# Remove and use shapely.orient_polygons when shapely 2.1+ is required.
-
-if Version(shapely.__version__) >= Version("2.1.0"):
-    orient_polygons = shapely.orient_polygons
-else:
-
-    def orient_polygons(geometry, exterior_cw=False):
-        g = shapely.normalize(geometry)
-        if not exterior_cw:
-            g = shapely.reverse(g)
-        return g
 
 
 def _cast(collection):
@@ -605,7 +587,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
     .. [3] https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area
     """  # noqa: E501
     ga = _cast(collection)
-    ga = orient_polygons(ga)  # shapely.orient_polygons(ga) #
+    ga = shapely.orient_polygons(ga)
 
     if ref_pt is not None:
         coords = _cast_pts_as_array(ref_pt)
@@ -805,7 +787,7 @@ def moment_of_inertia_regions(
     """
 
     ga = _cast(collection)
-    ga = orient_polygons(ga)  # shapely.orient_polygons(ga)
+    ga = shapely.orient_polygons(ga)
 
     # Handle weights (masses).
     if weights is not None:
@@ -1035,7 +1017,7 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
     The `normalize` and `ref_pt` parameters may be used as usual.
     """
     ga = _cast(collection)
-    ga = orient_polygons(ga)  # shapely.orient_polygons(ga)
+    ga = shapely.orient_polygons(ga)
 
     A, Cx, Cy, Ixx, Iyy, J = _moments_about_centroid(ga)
 

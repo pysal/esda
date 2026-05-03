@@ -4,9 +4,8 @@ channels:
 dependencies:
   - python=3.14
   # required
-  - geodatasets
   - geopandas
-  - libpysal>=4.12
+  - libpysal
   - numpy
   - pandas
   - scikit-learn
@@ -15,6 +14,7 @@ dependencies:
   # testing
   - codecov
   - folium
+  - geodatasets
   - mapclassify
   - pytest
   - pytest-cov

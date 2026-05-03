@@ -5,16 +5,16 @@ dependencies:
   - python=3.12
   # required
   - geopandas
-  - libpysal>=4.12
+  - libpysal
   - numpy
   - pandas
   - scikit-learn
   - scipy
   - shapely
   # testing
-  - geodatasets
   - codecov
   - folium
+  - geodatasets
   - mapclassify
   - matplotlib
   - seaborn
