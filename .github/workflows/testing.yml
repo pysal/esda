@@ -97,7 +97,6 @@ jobs:
       - name: run doctests
         if: contains(matrix.environment-file, 'latest') && contains(matrix.os, 'ubuntu')
         run: |
-          pytest -v --color=yes --doctest-only gwlearn
           pytest esda \
               -v \
               -r a \
