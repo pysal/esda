@@ -81,7 +81,14 @@ jobs:
           from libpysal.examples import load_example as ex
           [
              ex(e) for e in [
-                "columbus", "desmith", "Guerry", "NCOVR", "sids2", "stl", "Sacramento1",
+                "Bostonhsg",
+                "columbus",
+                "desmith",
+                "Guerry",
+                "NCOVR",
+                "sids2",
+                "stl",
+                "Sacramento1",
              ]
           ]
           '
