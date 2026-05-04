@@ -58,6 +58,7 @@ tests = [
     "mapclassify>=2.7",
     "pytest",
     "pytest-cov",
+    "pytest-doctestplus",
     "pytest-xdist",
 ]
 dev = [

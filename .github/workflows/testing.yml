@@ -1,88 +1,111 @@
+---
  name: Continuous Integration
 
- on:
-   push:
-     branches: [main]
-   pull_request:
-     branches:
-     - "*"
-   schedule:
-     - cron: "59 21 * * *"
-   workflow_dispatch:
-     inputs:
-       version:
-         description: Manual Test Run
-         default: test
-         required: false
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+    - "*"
+  schedule:
+    - cron: "59 21 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual Test Run
+        default: test
+        required: false
 
- jobs:
-   unittests:
-     env:
-       FETCH_DATA: |
-         python -c 'from libpysal.examples import load_example as ex; [ex(e) for e in ["columbus", "desmith", "NCOVR", "sids2", "stl", "Sacramento1"]]'
-       RUN_TEST: |
-         pytest esda -v -r a -n auto --cov esda --cov-report xml --color yes --cov-append --cov-report term-missing
-     name: CI (${{ matrix.os }}, ${{ matrix.environment-file }})
-     runs-on: ${{ matrix.os }}
-     timeout-minutes: 25
-     strategy:
-       matrix:
-         os: [ubuntu-latest]
-         environment-file:
-           - ci/312-oldest.yaml
-           - ci/312-numba-oldest.yaml
-           - ci/312-latest.yaml
-           - ci/312-numba-latest.yaml
-           - ci/313-latest.yaml
-           - ci/313-numba-latest.yaml
-           - ci/314-min.yaml
-           - ci/314-latest.yaml
-           - ci/314-dev.yaml
-           - ci/314-numba-dev.yaml
-         include:
-           - environment-file: ci/314-numba-latest.yaml
-             os: macos-15-intel # Intel
-           - environment-file: ci/314-numba-latest.yaml
-             os: macos-latest # Apple Silicon
-           - environment-file: ci/314-numba-latest.yaml
-             os: windows-latest
-       fail-fast: false
-     defaults:
-       run:
+jobs:
+  unittests:
+    name: CI (${{ matrix.os }}, ${{ matrix.environment-file }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        environment-file:
+          - ci/312-oldest.yaml
+          - ci/312-numba-oldest.yaml
+          - ci/312-latest.yaml
+          - ci/312-numba-latest.yaml
+          - ci/313-latest.yaml
+          - ci/313-numba-latest.yaml
+          - ci/314-min.yaml
+          - ci/314-latest.yaml
+          - ci/314-dev.yaml
+          - ci/314-numba-dev.yaml
+        include:
+          - environment-file: ci/314-numba-latest.yaml
+            os: macos-15-intel # Intel
+          - environment-file: ci/314-numba-latest.yaml
+            os: macos-latest # Apple Silicon
+          - environment-file: ci/314-numba-latest.yaml
+            os: windows-latest
+      fail-fast: false
+    defaults:
+      run:
         shell: bash -l {0}
 
-     steps:
-       - name: checkout repo
-         uses: actions/checkout@v6
-         with:
-           fetch-depth: 0 # Fetch all history for all branches and tags.
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags.
 
-       - name: setup micromamba
-         uses: mamba-org/setup-micromamba@v3
-         with:
-           micromamba-version: "latest"
-           environment-file: ${{ matrix.environment-file }}
+      - name: setup micromamba
+        uses: mamba-org/setup-micromamba@v3
+        with:
+          micromamba-version: "latest"
+          environment-file: ${{ matrix.environment-file }}
 
-       - name: environment info
-         run: |
-           micromamba info
-           micromamba list
+      - name: environment info
+        run: |
+          micromamba info
+          micromamba list
 
-       - name: install package
-         run: |
-           pip install -e . --no-deps
+      - name: install package
+        run: |
+          pip install -e . --no-deps
 
-       - name: spatial versions
-         run: |
-           python -c "import geopandas; geopandas.show_versions();"
+      - name: spatial versions
+        run: |
+          python -c '
+          import geopandas
+          geopandas.show_versions()
+          '
 
-       - name: run tests - bash
-         run: |
-           ${{ env.FETCH_DATA }}
-           ${{ env.RUN_TEST }}
+      - name: fetch data
+        run: |
+          python -c '
+          from libpysal.examples import load_example as ex
+          [ex(e) for e in ["columbus", "desmith", "NCOVR", "sids2", "stl", "Sacramento1"]]
+          '
 
-       - name: ${{ matrix.os }}, ${{ matrix.environment-file }}
-         uses: codecov/codecov-action@v6
-         with:
-           token: ${{ secrets.CODECOV_TOKEN }}
-           name: esda-codecov
+      - name: run tests
+        run: |
+          pytest esda \
+              -v \
+              -r a \
+              -n auto \
+              --cov esda \
+              --cov-report xml \
+              --color yes \
+              --cov-append \
+              --cov-report term-missing
+
+      - name: run doctests
+        if: contains(matrix.environment-file, 'latest') && contains(matrix.os, 'ubuntu')
+        run: |
+          pytest -v --color=yes --doctest-only gwlearn
+          pytest esda \
+              -v \
+              -r a \
+              -n auto \
+              --color yes \
+              --doctest-only
+
+      - name: codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
