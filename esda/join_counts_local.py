@@ -96,8 +96,9 @@ class Join_Counts_Local(BaseEstimator):
         Examples
         --------
         >>> import libpysal
+        >>> import numpy
         >>> w = libpysal.weights.lat2W(4, 4)
-        >>> y = np.ones(16)
+        >>> y = numpy.ones(16)
         >>> y[0:8] = 0
         >>> from esda import Join_Counts_Local
         >>> LJC_uni = Join_Counts_Local(
