@@ -9,7 +9,9 @@ from sklearn.utils import check_array
 class Geary_Local_MV(BaseEstimator):
     """Local Geary - Multivariate"""
 
-    def __init__(self, connectivity=None, permutations=999, drop_islands=True):
+    def __init__(
+        self, connectivity=None, permutations=999, seed=None, drop_islands=True
+    ):
         """
         Initialize a Local_Geary_MV estimator
 
@@ -21,6 +23,10 @@ class Geary_Local_MV(BaseEstimator):
                            (default=999)
                            number of random permutations for calculation
                            of pseudo p_values
+        seed : None | int
+            Seed to ensure reproducibility of conditional randomizations. Must be set
+            here, and not outside  of the function, since numba does not correctly
+            interpret external seeds nor numpy.random.RandomState instances.
         drop_islands : bool (default True)
             Whether or not to preserve islands as entries in the adjacency
             list. By default, observations with no neighbors do not appear
@@ -39,6 +45,7 @@ class Geary_Local_MV(BaseEstimator):
 
         self.connectivity = connectivity
         self.permutations = permutations
+        self.seed = seed
         self.drop_islands = drop_islands
 
     def fit(self, variables):
@@ -61,6 +68,7 @@ class Geary_Local_MV(BaseEstimator):
         Guerry data replication GeoDa tutorial
 
         >>> import libpysal
+        >>> import numpy
         >>> import geopandas as gpd
         >>> from esda import Geary_Local_MV
         >>> guerry = libpysal.examples.load_example('Guerry')
@@ -68,11 +76,12 @@ class Geary_Local_MV(BaseEstimator):
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)
         >>> x1 = guerry_ds['Donatns']
         >>> x2 = guerry_ds['Suicids']
-        >>> lG_mv = Geary_Local_MV(connectivity=w).fit([x1, x2])
+        >>> numpy.random.seed(12345)
+        >>> lG_mv = Geary_Local_MV(connectivity=w, seed=12345).fit([x1, x2])
         >>> lG_mv.localG[0:5]
         array([0.15381853, 0.30355953, 2.95472008, 0.12313959, 0.38795991])
         >>> lG_mv.p_sim[0:5]
-        array([0.012, 0.003, 0.011, 0.015, 0.243])
+        array([0.012, 0.001, 0.019, 0.015, 0.219])
         """
 
         self.variables = check_array(
@@ -103,7 +112,7 @@ class Geary_Local_MV(BaseEstimator):
         self.localG = stat(variables, zvariables, w, self.drop_islands)
 
         if permutations:
-            self._crand(zvariables)
+            self._crand(zvariables, seed=self.seed)
             sim = np.transpose(self.Gs)
             above = sim >= self.localG
             larger = above.sum(0)
@@ -162,7 +171,7 @@ class Geary_Local_MV(BaseEstimator):
 
         return localG
 
-    def _crand(self, zvariables):
+    def _crand(self, zvariables, seed):
         """
         conditional randomization
 
@@ -194,6 +203,7 @@ class Geary_Local_MV(BaseEstimator):
             w = list(self.w.weights.values())
             wc = self.w.cardinalities.tolist()
 
+        np.random.seed(seed)
         for i in range(self.w.n):
             idsi = ids[ids != i]
             np.random.shuffle(idsi)
