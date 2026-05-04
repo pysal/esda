@@ -81,12 +81,12 @@ class Gamma:
     use same example as for join counts to show similarity
 
     >>> import libpysal, numpy as np
-    >>> from esda.gamma import Gamma
-    >>> w = libpysal.weights.lat2W(4,4)
+    >>> from esda import Gamma
+    >>> w = libpysal.weights.lat2W(4, 4)
     >>> y=np.ones(16)
     >>> y[0:8]=0
     >>> np.random.seed(12345)
-    >>> g = Gamma(y,w)
+    >>> g = Gamma(y, w)
     >>> g.g
     np.float64(20.0)
     >>> round(g.g_z, 3)
@@ -100,7 +100,7 @@ class Gamma:
     >>> g.mean_g
     np.float64(11.093093093093094)
     >>> np.random.seed(12345)
-    >>> g1 = Gamma(y,w,operation='s')
+    >>> g1 = Gamma(y, w, operation='s')
     >>> g1.g
     np.float64(8.0)
     >>> round(g1.g_z, 3)
@@ -114,7 +114,7 @@ class Gamma:
     >>> g1.mean_g
     np.float64(25.623623623623622)
     >>> np.random.seed(12345)
-    >>> g2 = Gamma(y,w,operation='a')
+    >>> g2 = Gamma(y, w, operation='a')
     >>> g2.g
     np.float64(8.0)
     >>> round(g2.g_z, 3)
@@ -128,7 +128,7 @@ class Gamma:
     >>> g2.mean_g
     np.float64(25.623623623623622)
     >>> np.random.seed(12345)
-    >>> g3 = Gamma(y,w,standardize=True)
+    >>> g3 = Gamma(y, w, standardize=True)
     >>> g3.g
     np.float64(32.0)
     >>> round(g3.g_z, 3)
@@ -142,11 +142,11 @@ class Gamma:
     >>> g3.mean_g
     np.float64(-3.2472472472472473)
     >>> np.random.seed(12345)
-    >>> def func(z,i,j):
-    ...     q = z[i]*z[j]
+    >>> def func(z, i, j):
+    ...     q = z[i] * z[j]
     ...     return q
     ...
-    >>> g4 = Gamma(y,w,operation=func)
+    >>> g4 = Gamma(y, w, operation=func)
     >>> g4.g
     np.float64(20.0)
     >>> round(g4.g_z, 3)

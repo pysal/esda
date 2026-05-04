@@ -116,15 +116,21 @@ class Geary_Local(BaseEstimator):
         Examples
         --------
         Guerry data replication GeoDa tutorial
-        >>> import libpysal as lp
+
+        >>> import libpysal
         >>> import geopandas as gpd
-        >>> guerry = lp.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+        >>> from esda import Geary_Local
+        >>> guerry = libpysal.examples.load_example('Guerry')
+        >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)
         >>> y = guerry_ds['Donatns']
-        >>> lG = Local_Geary(connectivity=w).fit(y)
+        >>> lG = Geary_Local(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
+        ... ).fit(y)
         >>> lG.localG[0:5]
+        array([0.18208704, 0.56001403, 0.97529461, 0.21590694, 0.61737256])
         >>> lG.p_sim[0:5]
+        array([0.413, 0.091, 0.129, 0.321, 0.927], dtype=float32)
         """
         x = np.asarray(x).flatten()
 
@@ -150,6 +156,7 @@ class Geary_Local(BaseEstimator):
                 keep=keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_local_geary,
+                seed=self.seed,
                 island_weight=self.island_weight,
                 alternative=self.alternative,
             )
