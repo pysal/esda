@@ -79,7 +79,11 @@ jobs:
         run: |
           python -c '
           from libpysal.examples import load_example as ex
-          [ex(e) for e in ["columbus", "desmith", "NCOVR", "sids2", "stl", "Sacramento1"]]
+          [
+             ex(e) for e in [
+                "columbus", "desmith", "Guerry", "NCOVR", "sids2", "stl", "Sacramento1",
+             ]
+          ]
           '
 
       - name: run tests
