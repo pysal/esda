@@ -158,9 +158,6 @@ class Gamma:
     -----
 
     For further technical details see :cite:`Hubert_1981`.
-
-
-
     """
 
     def __init__(

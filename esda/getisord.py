@@ -98,7 +98,7 @@ class G:
 
     Applying Getis and Ord G test
 
-    >>> from esda.getisord import G
+    >>> from esda import G
     >>> g = G(y, w)
 
     Examining the results
@@ -108,7 +108,6 @@ class G:
 
     >>> round(g.p_norm, 3)
     np.float64(0.173)
-
     """
 
     def __init__(self, y, w, permutations=PERMUTATIONS):
@@ -294,7 +293,7 @@ class G_Local:
 
     Applying Getis and Ord local G test using a binary weights object
 
-    >>> from esda.getisord import G_Local
+    >>> from esda import G_Local
     >>> lg = G_Local(y, w, transform='B', seed=12345, alternative='two-sided')
 
     Examining the results
@@ -349,7 +348,6 @@ class G_Local:
             1.28024388])
     >>> round(lg_star.p_sim[0], 3)
     np.float32(0.209)
-
     """
 
     def __init__(
