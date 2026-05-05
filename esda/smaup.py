@@ -55,28 +55,25 @@ class Smaup:
     -----
     Technical details and derivations can be found in :cite:`duque18`.
 
-
     Examples
     --------
-    >>> import libpysal
-    >>> import numpy as np
-    >>> from esda.moran import Moran
-    >>> from esda.smaup import Smaup
+    >>> import libpysal, numpy
+    >>> from esda import Moran, Smaup
     >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
-    >>> y = np.array(f.by_col['HR8893'])
-    >>> rho = Moran(y,  w).I
+    >>> y = numpy.array(f.by_col['HR8893'])
+    >>> rho = Moran(y, w).I
     >>> n = len(y)
     >>> k = int(n/2)
-    >>> s = Smaup(n,k,rho)
-    >>> s.smaup
-    0.15221341690376405
+    >>> s = Smaup(n, k, rho)
+    >>> round(s.smaup, 6)
+    np.float64(0.152213)
     >>> s.critical_01
-    0.38970613333333337
+    np.float64(0.38970613333333337)
     >>> s.critical_05
-    0.3557221333333333
+    np.float64(0.3557221333333333)
     >>> s.critical_1
-    0.3157950666666666
+    np.float64(0.3157950666666666)
     >>> s.summary
     'Pseudo p-value > 0.10 (H0 is not rejected)'
 
@@ -84,23 +81,22 @@ class Smaup:
 
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
-    >>> SIDR = np.array(f.by_col("SIDR74"))
+    >>> SIDR = numpy.array(f.by_col("SIDR74"))
     >>> from esda.moran import Moran
-    >>> rho = Moran(SIDR,  w).I
+    >>> rho = Moran(SIDR, w).I
     >>> n = len(y)
     >>> k = int(n/2)
-    >>> s = Smaup(n,k,rho)
-    >>> s.smaup
-    0.15176796553181948
+    >>> s = Smaup(n, k, rho)
+    >>> round(s.smaup, 6)
+    np.float64(0.151768)
     >>> s.critical_01
-    0.38970613333333337
+    np.float64(0.38970613333333337)
     >>> s.critical_05
-    0.3557221333333333
+    np.float64(0.3557221333333333)
     >>> s.critical_1
-    0.3157950666666666
+    np.float64(0.3157950666666666)
     >>> s.summary
     'Pseudo p-value > 0.10 (H0 is not rejected)'
-
     """
 
     def __init__(self, n, k, rho):
