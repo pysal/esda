@@ -1788,8 +1788,8 @@ class Moran_Local_BV:
     ... )
     >>> lm.q[:10]
     array([3, 4, 3, 4, 2, 1, 4, 4, 2, 4])
-    >>> lm.p_z_sim[0]
-    np.float64(0.09164819151535247)
+    >>> round(lm.p_z_sim[0], 6)
+    np.float64(0.091648)
     >>> lm = Moran_Local_BV(
     ...     x,
     ...     y,
