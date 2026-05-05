@@ -21,6 +21,7 @@ from scipy import sparse
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
 from .crand import njit as _njit
+from .significance import calculate_significance
 from .smoothing import assuncao_rate
 from .tabular import _bivariate_handler, _univariate_handler
 
@@ -1354,6 +1355,7 @@ class Moran_Local:
         self.__quads()
         self.__moments()
         if permutations:
+            effective_alternative = "directed" if alternative is None else alternative
             self.p_sim, self.rlisas = _crand_plus(
                 z,
                 w,
@@ -1368,11 +1370,11 @@ class Moran_Local:
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
-                above = sim >= self.Is
-                larger = above.sum(0)
-                low_extreme = (self.permutations - larger) < larger
-                larger[low_extreme] = self.permutations - larger[low_extreme]
-                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                self.p_sim = calculate_significance(
+                    self.Is,
+                    self.rlisas,
+                    alternative=effective_alternative,
+                )
                 self.sim = sim
                 self.EI_sim = self.sim.mean(axis=0)
                 self.seI_sim = self.sim.std(axis=0)
@@ -1844,6 +1846,7 @@ class Moran_Local_BV:
         self.quads = quads
         self.__quads()
         if permutations:
+            effective_alternative = "directed" if alternative is None else alternative
             self.p_sim, self.rlisas = _crand_plus(
                 np.column_stack((zx, zy)),
                 w,
@@ -1858,11 +1861,11 @@ class Moran_Local_BV:
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
                 sim = np.transpose(self.rlisas)
-                above = sim >= self.Is
-                larger = above.sum(0)
-                low_extreme = (self.permutations - larger) < larger
-                larger[low_extreme] = self.permutations - larger[low_extreme]
-                self.p_sim = (larger + 1.0) / (permutations + 1.0)
+                self.p_sim = calculate_significance(
+                    self.Is,
+                    self.rlisas,
+                    alternative=effective_alternative,
+                )
                 self.sim = sim
                 self.EI_sim = sim.mean(axis=0)
                 self.seI_sim = sim.std(axis=0)
