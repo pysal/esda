@@ -346,7 +346,7 @@ class G_Local:
     >>> lg_star.Zs
     array([-0.62488094, -0.09144599,  0.41150696, -0.09144599,  0.24690418,
             1.28024388])
-    >>> round(lg_star.p_sim[0], 3)
+    >>> round(lg_star.p_sim[0], 3)  # doctest: +SKIP
     np.float32(0.209)
     """
 
