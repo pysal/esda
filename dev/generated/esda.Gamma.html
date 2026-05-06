@@ -2109,7 +2109,7 @@
 <h1 id="esda-gamma">esda.Gamma<a class="headerlink" href="#esda-gamma" title="Link to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="esda.Gamma">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Gamma</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.y" title="esda.Gamma.__init__.y (Python parameter) — variable measured across n spatial units"><span class="n"><span class="pre">y</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.w" title="esda.Gamma.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with y can be binary or row-standardized"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.operation" title="esda.Gamma.__init__.operation (Python parameter) — attribute similarity function where, 'c' cross product 's' squared difference 'a' absolute difference"><span class="n"><span class="pre">operation</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;c&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.standardize" title="esda.Gamma.__init__.standardize (Python parameter) — standardize variables first False, keep as is True, standardize to mean zero and variance one"><span class="n"><span class="pre">standardize</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.permutations" title="esda.Gamma.__init__.permutations (Python parameter) — number of random permutations for calculation of pseudo-p_values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/gamma.py#L22-L273"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Gamma" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Gamma</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.y" title="esda.Gamma.__init__.y (Python parameter) — variable measured across n spatial units"><span class="n"><span class="pre">y</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.w" title="esda.Gamma.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with y can be binary or row-standardized"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.operation" title="esda.Gamma.__init__.operation (Python parameter) — attribute similarity function where, 'c' cross product 's' squared difference 'a' absolute difference"><span class="n"><span class="pre">operation</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;c&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.standardize" title="esda.Gamma.__init__.standardize (Python parameter) — standardize variables first False, keep as is True, standardize to mean zero and variance one"><span class="n"><span class="pre">standardize</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Gamma.__init__.permutations" title="esda.Gamma.__init__.permutations (Python parameter) — number of random permutations for calculation of pseudo-p_values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/gamma.py#L22-L270"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Gamma" title="Link to this definition">¶</a></dt>
 <dd><p>Gamma index for spatial autocorrelation</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Gamma-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Gamma-parameters" title="Permalink to this headline">¶</a></dt>
@@ -2263,78 +2263,78 @@ implemented as a two-sided test</p>
 <p class="example rubric">Examples</p>
 <p>use same example as for join counts to show similarity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span><span class="o">,</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.gamma</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gamma</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">Gamma</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">g</span>
-<span class="go">20.0</span>
+<span class="go">np.float64(20.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">3.188</span>
+<span class="go">np.float64(3.188)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">p_sim_g</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.003</span>
+<span class="go">np.float64(0.003)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">min_g</span>
-<span class="go">0.0</span>
+<span class="go">np.float64(0.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">max_g</span>
-<span class="go">20.0</span>
+<span class="go">np.float64(20.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">mean_g</span>
-<span class="go">11.093093093093094</span>
+<span class="go">np.float64(11.093093093093094)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">g</span>
-<span class="go">8.0</span>
+<span class="go">np.float64(8.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g1</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">-3.706</span>
+<span class="go">np.float64(-3.706)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">p_sim_g</span>
-<span class="go">0.001</span>
+<span class="go">np.float64(0.001)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">min_g</span>
-<span class="go">14.0</span>
+<span class="go">np.float64(14.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">max_g</span>
-<span class="go">48.0</span>
+<span class="go">np.float64(48.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span><span class="o">.</span><span class="n">mean_g</span>
-<span class="go">25.623623623623622</span>
+<span class="go">np.float64(25.623623623623622)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">g</span>
-<span class="go">8.0</span>
+<span class="go">np.float64(8.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g2</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">-3.706</span>
+<span class="go">np.float64(-3.706)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">p_sim_g</span>
-<span class="go">0.001</span>
+<span class="go">np.float64(0.001)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">min_g</span>
-<span class="go">14.0</span>
+<span class="go">np.float64(14.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">max_g</span>
-<span class="go">48.0</span>
+<span class="go">np.float64(48.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g2</span><span class="o">.</span><span class="n">mean_g</span>
-<span class="go">25.623623623623622</span>
+<span class="go">np.float64(25.623623623623622)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">standardize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">standardize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">g</span>
-<span class="go">32.0</span>
+<span class="go">np.float64(32.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g3</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">3.706</span>
+<span class="go">np.float64(3.706)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">p_sim_g</span>
-<span class="go">0.001</span>
+<span class="go">np.float64(0.001)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">min_g</span>
-<span class="go">-48.0</span>
+<span class="go">np.float64(-48.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">max_g</span>
-<span class="go">20.0</span>
+<span class="go">np.float64(20.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g3</span><span class="o">.</span><span class="n">mean_g</span>
-<span class="go">-3.2472472472472473</span>
+<span class="go">np.float64(-3.2472472472472473)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">q</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">q</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">q</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g4</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">operation</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g4</span> <span class="o">=</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g4</span><span class="o">.</span><span class="n">g</span>
-<span class="go">20.0</span>
+<span class="go">np.float64(20.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g4</span><span class="o">.</span><span class="n">g_z</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">3.188</span>
+<span class="go">np.float64(3.188)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">g4</span><span class="o">.</span><span class="n">p_sim_g</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.003</span>
+<span class="go">np.float64(0.003)</span>
 </code></pre></div>
 </div>
 <p class="rubric">Notes</p>

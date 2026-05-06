@@ -920,6 +920,18 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#esda.G_Local.__init__.seed" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="esda.G_Local.__init__.seed (Python parameter) — Seed to ensure reproducibility of conditional randomizations."><span>seed</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#esda.G_Local.__init__.island_weight" class="md-nav__link">
     
       <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
@@ -1913,6 +1925,18 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#esda.G_Local.__init__.seed" class="md-nav__link">
+    
+      <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
+    
+    <span class="md-ellipsis">
+      <span title="esda.G_Local.__init__.seed (Python parameter) — Seed to ensure reproducibility of conditional randomizations."><span>seed</span></span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#esda.G_Local.__init__.island_weight" class="md-nav__link">
     
       <span aria-label="Python parameter" class="objinfo-icon objinfo-icon__sub-data" title="Python parameter">p</span>
@@ -2405,7 +2429,7 @@
 <h1 id="esda-g-local">esda.G_Local<a class="headerlink" href="#esda-g-local" title="Link to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="esda.G_Local">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">G_Local</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.y" title="esda.G_Local.__init__.y (Python parameter) — variable"><span class="n"><span class="pre">y</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.w" title="esda.G_Local.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with y"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.transform" title="esda.G_Local.__init__.transform (Python parameter) — the type of w, either 'B' (binary) or 'R' (row-standardized)"><span class="n"><span class="pre">transform</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;R&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.permutations" title="esda.G_Local.__init__.permutations (Python parameter) — the number of random permutations for calculating pseudo p values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.star" title="esda.G_Local.__init__.star (Python parameter) — whether or not to include focal observation in sums (default: False) if the row-transformed weight is provided, then this is the default value to use within the spatial lag."><span class="n"><span class="pre">star</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local" title="esda.G_Local.__init__.keep_simulations (Python parameter)"><span class="n"><span class="pre">keep_simulations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local" title="esda.G_Local.__init__.n_jobs (Python parameter)"><span class="n"><span class="pre">n_jobs</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="o">-</span><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local" title="esda.G_Local.__init__.seed (Python parameter)"><span class="n"><span class="pre">seed</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.island_weight" title="esda.G_Local.__init__.island_weight (Python parameter) — value to use as a weight for the &quot;fake&quot; neighbor for every island. If numpy.nan, will propagate to the final local statistic depending on the stat_func."><span class="n"><span class="pre">island_weight</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">0</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.alternative" title="esda.G_Local.__init__.alternative (Python parameter) — The alternative hypothesis for conditional randomization. See crand.crand() for complete description."><span class="n"><span class="pre">alternative</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/getisord.py#L192-L493"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.G_Local" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">G_Local</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.y" title="esda.G_Local.__init__.y (Python parameter) — variable"><span class="n"><span class="pre">y</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.w" title="esda.G_Local.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with y"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.transform" title="esda.G_Local.__init__.transform (Python parameter) — the type of w, either 'B' (binary) or 'R' (row-standardized)"><span class="n"><span class="pre">transform</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;R&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.permutations" title="esda.G_Local.__init__.permutations (Python parameter) — the number of random permutations for calculating pseudo p values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.star" title="esda.G_Local.__init__.star (Python parameter) — whether or not to include focal observation in sums (default: False) if the row-transformed weight is provided, then this is the default value to use within the spatial lag."><span class="n"><span class="pre">star</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local" title="esda.G_Local.__init__.keep_simulations (Python parameter)"><span class="n"><span class="pre">keep_simulations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local" title="esda.G_Local.__init__.n_jobs (Python parameter)"><span class="n"><span class="pre">n_jobs</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="o">-</span><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.seed" title="esda.G_Local.__init__.seed (Python parameter) — Seed to ensure reproducibility of conditional randomizations."><span class="n"><span class="pre">seed</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.island_weight" title="esda.G_Local.__init__.island_weight (Python parameter) — value to use as a weight for the &quot;fake&quot; neighbor for every island. If numpy.nan, will propagate to the final local statistic depending on the stat_func."><span class="n"><span class="pre">island_weight</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">0</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.G_Local.__init__.alternative" title="esda.G_Local.__init__.alternative (Python parameter) — The alternative hypothesis for conditional randomization. See crand.crand() for complete description."><span class="n"><span class="pre">alternative</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/getisord.py#L191-L493"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.G_Local" title="Link to this definition">¶</a></dt>
 <dd><p>Generalized Local G Autocorrelation</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.G_Local-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.G_Local-parameters" title="Permalink to this headline">¶</a></dt>
@@ -2424,6 +2448,10 @@ if the row-transformed weight is provided, then this is the default
 value to use within the spatial lag. Generally, weights should be
 provided in binary form, and standardization/self-weighting will be
 handled by the function itself.</p>
+</dd>
+<dt id="esda.G_Local.__init__.seed"><span class="sig-name descname">seed</span><span class="p"> : </span><span class="desctype"><span class="desctype">None | <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.G_Local.__init__.seed" title="Permalink to this definition">¶</a></dt><dd><p>Seed to ensure reproducibility of conditional randomizations. Must be set here,
+and not outside  of the function, since numba does not correctly interpret
+external seeds nor numpy.random.RandomState instances.</p>
 </dd>
 <dt id="esda.G_Local.__init__.island_weight"><span class="n sig-name">island_weight</span><span class="o">=</span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">0</span></code><a class="headerlink" href="#esda.G_Local.__init__.island_weight" title="Permalink to this definition">¶</a></dt><dd><p>value to use as a weight for the “fake” neighbor for every island.
 If numpy.nan, will propagate to the final local statistic depending
@@ -2619,8 +2647,6 @@ For row-standardized weights object, the weight value for self is
 <p>For technical details see <span id="id1">[<a class="reference internal" href="../references.html#id9" title="Arthur Getis and J. K. Ord. The analysis of spatial association by use of distance statistics. Geographical Analysis, 24(3):189–206, Sep 2010. URL: http://dx.doi.org/10.1111/j.1538-4632.1992.tb00261.x, doi:10.1111/j.1538-4632.1992.tb00261.x.">Getis and Ord, 2010</a>]</span> and <span id="id2">[<a class="reference internal" href="../references.html#id10" title="J. K. Ord and Arthur Getis. Local spatial autocorrelation statistics: distributional issues and an application. Geographical Analysis, 27(4):286–306, Sep 2010. URL: http://dx.doi.org/10.1111/j.1538-4632.1995.tb00912.x, doi:10.1111/j.1538-4632.1995.tb00912.x.">Ord and Getis, 2010</a>]</span>.</p>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Preparing a point data set</p>
@@ -2628,16 +2654,17 @@ For row-standardized weights object, the weight value for self is
 </code></pre></div>
 </div>
 <p>Creating a weights object from points</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">DistanceBand</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">threshold</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">DistanceBand</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Preparing a variable</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
 </code></pre></div>
 </div>
 <p>Applying Getis and Ord local G test using a binary weights object</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda.getisord</span><span class="w"> </span><span class="kn">import</span> <span class="n">G_Local</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lg</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">G_Local</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lg</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Examining the results</p>
@@ -2645,17 +2672,18 @@ For row-standardized weights object, the weight value for self is
 <span class="go">array([-1.0136729 , -0.04361589,  1.31558703, -0.31412676,  1.15373986,</span>
 <span class="go">        1.77833941])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.101</span>
+<span class="go">np.float32(0.413)</span>
 </code></pre></div>
 </div>
-<p>p-value based on standard normal approximation from permutations
-&gt;&gt;&gt; round(lg.p_z_sim[0], 3)
-0.154</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<p>p-value based on standard normal approximation from permutations</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">p_z_sim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">np.float64(0.153)</span>
 </code></pre></div>
 </div>
 <p>Applying Getis and Ord local G* test using a binary weights object</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lg_star</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">star</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lg_star</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Examining the results</p>
@@ -2663,14 +2691,11 @@ For row-standardized weights object, the weight value for self is
 <span class="go">array([-1.39727626, -0.28917762,  0.65064964, -0.28917762,  1.23452088,</span>
 <span class="go">        2.02424331])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">lg_star</span><span class="o">.</span><span class="n">p_sim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.101</span>
-</code></pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="go">np.float32(0.413)</span>
 </code></pre></div>
 </div>
 <p>Applying Getis and Ord local G test using a row-standardized weights object</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lg</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lg</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Examining the results</p>
@@ -2678,14 +2703,13 @@ For row-standardized weights object, the weight value for self is
 <span class="go">array([-0.62074534, -0.01780611,  1.31558703, -0.12824171,  0.28843496,</span>
 <span class="go">        1.77833941])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.103</span>
-</code></pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">np.float32(0.413)</span>
 </code></pre></div>
 </div>
 <p>Applying Getis and Ord local G* test using a row-standardized weights object</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lg_star</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">star</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">lg_star</span> <span class="o">=</span> <span class="n">G_Local</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
 </code></pre></div>
 </div>
 <p>Examining the results</p>
@@ -2693,7 +2717,7 @@ For row-standardized weights object, the weight value for self is
 <span class="go">array([-0.62488094, -0.09144599,  0.41150696, -0.09144599,  0.24690418,</span>
 <span class="go">        1.28024388])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">lg_star</span><span class="o">.</span><span class="n">p_sim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.101</span>
+<span class="go">np.float32(0.209)</span>
 </code></pre></div>
 </div>
 <p class="rubric">Methods</p>

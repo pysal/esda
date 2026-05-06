@@ -937,7 +937,7 @@
       <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span>
     
     <span class="md-ellipsis">
-      <span title="esda.completeness (Python function) — The completeness of the partitions of polygons in a to those in a. Closer to 1 when all polygons in a are fully contained within polygons in b. From nowosad2018"><span>esda.<wbr>completeness</span></span>
+      <span title="esda.completeness (Python function) — The completeness of the partitions of polygons in a to those in b. Closer to 1 when all polygons in a are fully contained within polygons in b. From nowosad2018"><span>esda.<wbr>completeness</span></span>
     </span>
   </a>
   
@@ -1438,7 +1438,7 @@
       <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span>
     
     <span class="md-ellipsis">
-      <span title="esda.completeness (Python function) — The completeness of the partitions of polygons in a to those in a. Closer to 1 when all polygons in a are fully contained within polygons in b. From nowosad2018"><span>esda.<wbr>completeness</span></span>
+      <span title="esda.completeness (Python function) — The completeness of the partitions of polygons in a to those in b. Closer to 1 when all polygons in a are fully contained within polygons in b. From nowosad2018"><span>esda.<wbr>completeness</span></span>
     </span>
   </a>
   
@@ -1541,8 +1541,8 @@
 <h1 id="esda-completeness">esda.completeness<a class="headerlink" href="#esda-completeness" title="Link to this heading">¶</a></h1>
 <dl class="py function objdesc">
 <dt class="sig sig-object highlight py" id="esda.completeness">
-<span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">completeness</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.a" title="esda.completeness.a (Python parameter) — array of polygons"><span class="n"><span class="pre">a</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.b" title="esda.completeness.b (Python parameter) — array of polygons"><span class="n"><span class="pre">b</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.local" title="esda.completeness.local (Python parameter) — whether or not to provide local scores for each polygon."><span class="n"><span class="pre">local</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.base" title="esda.completeness.base (Python parameter) — what base to use for the entropy calculations."><span class="n"><span class="pre">base</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mf">2.718281828459045</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/map_comparison.py#L101-L142"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.completeness" title="Link to this definition">¶</a></dt>
-<dd><p>The completeness of the partitions of polygons in a to those in a.
+<span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">completeness</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.a" title="esda.completeness.a (Python parameter) — array of polygons"><span class="n"><span class="pre">a</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.b" title="esda.completeness.b (Python parameter) — array of polygons"><span class="n"><span class="pre">b</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.local" title="esda.completeness.local (Python parameter) — whether or not to provide local scores for each polygon."><span class="n"><span class="pre">local</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.completeness.base" title="esda.completeness.base (Python parameter) — what base to use for the entropy calculations."><span class="n"><span class="pre">base</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mf">2.718281828459045</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/map_comparison.py#L104-L148"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.completeness" title="Link to this definition">¶</a></dt>
+<dd><p>The completeness of the partitions of polygons in a to those in b.
 Closer to 1 when all polygons in a are fully contained within polygons in b.
 From <span id="id1">[<a class="reference internal" href="../references.html#id16" title="J Nowosad and T Stepinski. Spatial association between regionalizations using the information-theoretical V-measure. International Journal of Geographic Information Science, 32:2386–2401, 2018. doi:10.1080/13658816.2018.1511794.">Nowosad and Stepinski, 2018</a>]</span></p>
 <dl class="field-list simple">
@@ -1569,9 +1569,13 @@ which means entropy is measured in “nats.”</p>
 </dd>
 </dl>
 <p class="example rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;tests/regions.zip&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;regions1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;tests/regions.zip&#39;</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s1">&#39;regions2&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">completeness</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">completeness</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">geodatasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston1&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston2&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">completeness</span><span class="p">(</span><span class="n">ch1</span><span class="p">,</span> <span class="n">ch2</span><span class="p">)</span>
+<span class="go">np.float64(0.7929256909435175)</span>
 </code></pre></div>
 </div>
 </dd></dl>
