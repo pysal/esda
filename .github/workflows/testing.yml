@@ -83,7 +83,7 @@ jobs:
              ex(e) for e in [
                 "Bostonhsg",
                 "Charleston1",
-                "Charleston2"
+                "Charleston2",
                 "columbus",
                 "desmith",
                 "Guerry",
