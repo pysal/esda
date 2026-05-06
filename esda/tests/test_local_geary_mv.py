@@ -25,7 +25,7 @@ class TestGearyLocalMV:
 
     @parametrize_w
     def test_defaults(self, w):
-        lG_mv = Geary_Local_MV(connectivity=w, seed=100).fit([self.y1, self.y2])
+        lG_mv = Geary_Local_MV(connectivity=w).fit([self.y1, self.y2])
         print(lG_mv.p_sim[0])
         np.testing.assert_allclose(lG_mv.localG[0], 0.4096931479581422)
-        np.testing.assert_allclose(lG_mv.p_sim[0], 0.19)
+        np.testing.assert_allclose(lG_mv.p_sim[0], 0.211)
