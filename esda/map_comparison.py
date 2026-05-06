@@ -73,10 +73,13 @@ def external_entropy(a, b, balance=0, base=numpy.e):
 
     Example
     -------
-
-    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
-    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
-    >>> external_entropy(r1, r2)
+    >>> import geopandas
+    >>> from esda import external_entropy
+    >>> from geodatasets import get_path
+    >>> ch1 = geopandas.read_file(get_path('geoda.charleston1'))
+    >>> ch2 = geopandas.read_file(get_path('geoda.charleston2'))
+    >>> external_entropy(ch1, ch2)
+    np.float64(0.7941995421208056)
     """
     a = _cast(a)
     b = _cast(b)
@@ -100,7 +103,7 @@ def external_entropy(a, b, balance=0, base=numpy.e):
 
 def completeness(a, b, local=False, base=numpy.e):
     """
-    The completeness of the partitions of polygons in a to those in a.
+    The completeness of the partitions of polygons in a to those in b.
     Closer to 1 when all polygons in a are fully contained within polygons in b.
     From :cite:`nowosad2018`
 
@@ -126,10 +129,13 @@ def completeness(a, b, local=False, base=numpy.e):
 
     Example
     -------
-
-    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
-    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
-    >>> completeness(r1, r2)
+    >>> import geopandas
+    >>> from esda import completeness
+    >>> from geodatasets import get_path
+    >>> ch1 = geopandas.read_file(get_path('geoda.charleston1'))
+    >>> ch2 = geopandas.read_file(get_path('geoda.charleston2'))
+    >>> completeness(ch1, ch2)
+    np.float64(0.7929256909435175)
     """
     a = _cast(a)
     b = _cast(b)
@@ -174,10 +180,13 @@ def homogeneity(a, b, local=False, base=numpy.e):
 
     Example
     -------
-
-    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
-    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
-    >>> homogeneity(r1, r2)
+    >>> import geopandas
+    >>> from esda import homogeneity
+    >>> from geodatasets import get_path
+    >>> ch1 = geopandas.read_file(get_path('geoda.charleston1'))
+    >>> ch2 = geopandas.read_file(get_path('geoda.charleston2'))
+    >>> homogeneity(ch1, ch2)
+    np.float64(0.7954774928194752)
     """
     return completeness(b, a, local=local, base=base)
 
@@ -209,10 +218,13 @@ def overlay_entropy(a, b, standardize=True, local=False, base=numpy.e):
 
     Example
     -------
-
-    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
-    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
-    >>> overlay_entropy(r1, r2)
+    >>> import geopandas
+    >>> from esda import overlay_entropy
+    >>> from geodatasets import get_path
+    >>> ch1 = geopandas.read_file(get_path('geoda.charleston1'))
+    >>> ch2 = geopandas.read_file(get_path('geoda.charleston2'))
+    >>> overlay_entropy(ch1, ch2)
+    np.float64(9.50199583370311)
     """
     a = _cast(a)
     b = _cast(b)
@@ -268,10 +280,15 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
 
     Example
     -------
-
-    >>> r1 = geopandas.read_file('tests/regions.zip', layer='regions1')
-    >>> r2 = geopandas.read_file('tests/regions.zip', layer='regions2')
-    >>> areal_entropy(polygons=r1)
+    >>> import geopandas
+    >>> from esda import areal_entropy
+    >>> from geodatasets import get_path
+    >>> ch1 = geopandas.read_file(get_path('geoda.charleston1'))
+    >>> ch2 = geopandas.read_file(get_path('geoda.charleston2'))
+    >>> areal_entropy(polygons=ch1)
+    np.float64(3.4511996832516347)
+    >>> areal_entropy(polygons=ch2)
+    np.float64(3.469953687764581)
     """
     assert not ((polygons is None) & (areas is None)), (
         "Either polygons or precomputed areas must be provided."

@@ -90,7 +90,7 @@ class NP_Mixture_Smoother:
 
     applying non-parametric mixture smoothing to e and b
 
-    >>> mixture = NP_Mixture_Smoother(e,b)
+    >>> mixture = NP_Mixture_Smoother(e, b)
 
     extracting the smoothed rates through the property
     r of the NP_Mixture_Smoother instance

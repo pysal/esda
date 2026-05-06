@@ -59,21 +59,20 @@ class Geary_Local_MV(BaseEstimator):
         Examples
         --------
         Guerry data replication GeoDa tutorial
+
         >>> import libpysal
         >>> import geopandas as gpd
-        >>> guerry = lp.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> import libpysal
-        >>> import geopandas as gpd
-        >>> guerry = lp.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+        >>> from esda import Geary_Local_MV
+        >>> guerry = libpysal.examples.load_example('Guerry')
+        >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)
         >>> x1 = guerry_ds['Donatns']
         >>> x2 = guerry_ds['Suicids']
-        >>> lG_mv = Local_Geary(connectivity=w).fit([x1,x2])
+        >>> lG_mv = Geary_Local_MV(connectivity=w).fit([x1, x2])
         >>> lG_mv.localG[0:5]
-        >>> lG_mv.p_sim[0:5]
+        array([0.15381853, 0.30355953, 2.95472008, 0.12313959, 0.38795991])
+        >>> lG_mv.p_sim[0:5]  # doctest: +SKIP
+        array([0.012, 0.004, 0.016, 0.021, 0.252])
         """
 
         self.variables = check_array(
