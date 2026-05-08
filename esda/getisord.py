@@ -191,7 +191,7 @@ class G:
 class G_Local:
     """
     Generalized Local G Autocorrelation
-    
+
     Parameters
     ----------
     y : array
@@ -220,7 +220,7 @@ class G_Local:
     alternative : None or str, optional
         The alternative hypothesis for conditional randomization. See
         ``crand.crand()`` for complete description.
-    
+
     Attributes
     ----------
     y : array
@@ -257,85 +257,85 @@ class G_Local:
     p_z_sim : array
         P-values based on the standard normal approximation from permutations
         (one-sided).
-    
+
     Notes
     -----
     To compute moments of Gs under the normality assumption, PySAL considers
     w to be either binary or row-standardized. For a binary weights object,
     the weight value for self is 1. For a row-standardized weights object,
     the weight value for self is 1 / (the number of its neighbors + 1).
-    
+
     For technical details see :cite:`Getis_2010` and :cite:`Ord_2010`.
-    
+
     Examples
     --------
     >>> import libpysal
-    
+
     Preparing a point data set.
-    
+
     >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-    
+
     Creating a weights object from points.
-    
+
     >>> w = libpysal.weights.DistanceBand(points, threshold=15)
-    
+
     Preparing a variable.
-    
+
     >>> import numpy
     >>> y = numpy.array([2, 3, 3.2, 5, 8, 7])
-    
+
     Applying Getis and Ord local G test using a binary weights object.
-    
+
     >>> from esda import G_Local
     >>> lg = G_Local(y, w, transform='B', seed=12345, alternative='two-sided')
-    
+
     Examining the results.
-    
+
     >>> lg.Zs
     array([-1.0136729 , -0.04361589,  1.31558703, -0.31412676,  1.15373986,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
     np.float32(0.413)
-    
+
     P-value based on standard normal approximation from permutations.
-    
+
     >>> round(lg.p_z_sim[0], 3)
     np.float64(0.153)
-    
+
     Applying Getis and Ord local G* test using a binary weights object.
-    
+
     >>> lg_star = G_Local(
     ...     y, w, transform='B', star=True, seed=12345, alternative='two-sided',
     ... )
-    
+
     Examining the results.
-    
+
     >>> lg_star.Zs
     array([-1.39727626, -0.28917762,  0.65064964, -0.28917762,  1.23452088,
            2.02424331])
     >>> round(lg_star.p_sim[0], 3)
     np.float32(0.413)
-    
+
     Applying Getis and Ord local G test using a row-standardized weights object.
-    
+
     >>> lg = G_Local(y, w, transform='R', seed=12345, alternative='two-sided')
-    
+
     Examining the results.
-    
+
     >>> lg.Zs
     array([-0.62074534, -0.01780611,  1.31558703, -0.12824171,  0.28843496,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
     np.float32(0.413)
-    
+
     Applying Getis and Ord local G* test using a row-standardized weights object.
-    
+
     >>> lg_star = G_Local(
     ...     y, w, transform='R', star=True, seed=12345, alternative='two-sided',
     ... )
-    
+
     Examining the results.
-    
+
     >>> lg_star.Zs
     array([-0.62488094, -0.09144599,  0.41150696, -0.09144599,  0.24690418,
            1.28024388])
