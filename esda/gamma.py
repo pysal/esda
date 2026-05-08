@@ -81,86 +81,83 @@ class Gamma:
     use same example as for join counts to show similarity
 
     >>> import libpysal, numpy as np
-    >>> from esda.gamma import Gamma
-    >>> w = libpysal.weights.lat2W(4,4)
+    >>> from esda import Gamma
+    >>> w = libpysal.weights.lat2W(4, 4)
     >>> y=np.ones(16)
     >>> y[0:8]=0
     >>> np.random.seed(12345)
-    >>> g = Gamma(y,w)
+    >>> g = Gamma(y, w)
     >>> g.g
-    20.0
+    np.float64(20.0)
     >>> round(g.g_z, 3)
-    3.188
+    np.float64(3.188)
     >>> round(g.p_sim_g, 3)
-    0.003
+    np.float64(0.003)
     >>> g.min_g
-    0.0
+    np.float64(0.0)
     >>> g.max_g
-    20.0
+    np.float64(20.0)
     >>> g.mean_g
-    11.093093093093094
+    np.float64(11.093093093093094)
     >>> np.random.seed(12345)
-    >>> g1 = Gamma(y,w,operation='s')
+    >>> g1 = Gamma(y, w, operation='s')
     >>> g1.g
-    8.0
+    np.float64(8.0)
     >>> round(g1.g_z, 3)
-    -3.706
+    np.float64(-3.706)
     >>> g1.p_sim_g
-    0.001
+    np.float64(0.001)
     >>> g1.min_g
-    14.0
+    np.float64(14.0)
     >>> g1.max_g
-    48.0
+    np.float64(48.0)
     >>> g1.mean_g
-    25.623623623623622
+    np.float64(25.623623623623622)
     >>> np.random.seed(12345)
-    >>> g2 = Gamma(y,w,operation='a')
+    >>> g2 = Gamma(y, w, operation='a')
     >>> g2.g
-    8.0
+    np.float64(8.0)
     >>> round(g2.g_z, 3)
-    -3.706
+    np.float64(-3.706)
     >>> g2.p_sim_g
-    0.001
+    np.float64(0.001)
     >>> g2.min_g
-    14.0
+    np.float64(14.0)
     >>> g2.max_g
-    48.0
+    np.float64(48.0)
     >>> g2.mean_g
-    25.623623623623622
+    np.float64(25.623623623623622)
     >>> np.random.seed(12345)
-    >>> g3 = Gamma(y,w,standardize=True)
+    >>> g3 = Gamma(y, w, standardize=True)
     >>> g3.g
-    32.0
+    np.float64(32.0)
     >>> round(g3.g_z, 3)
-    3.706
+    np.float64(3.706)
     >>> g3.p_sim_g
-    0.001
+    np.float64(0.001)
     >>> g3.min_g
-    -48.0
+    np.float64(-48.0)
     >>> g3.max_g
-    20.0
+    np.float64(20.0)
     >>> g3.mean_g
-    -3.2472472472472473
+    np.float64(-3.2472472472472473)
     >>> np.random.seed(12345)
-    >>> def func(z,i,j):
-    ...     q = z[i]*z[j]
+    >>> def func(z, i, j):
+    ...     q = z[i] * z[j]
     ...     return q
     ...
-    >>> g4 = Gamma(y,w,operation=func)
+    >>> g4 = Gamma(y, w, operation=func)
     >>> g4.g
-    20.0
+    np.float64(20.0)
     >>> round(g4.g_z, 3)
-    3.188
+    np.float64(3.188)
     >>> round(g4.p_sim_g, 3)
-    0.003
+    np.float64(0.003)
 
     Notes
     -----
 
     For further technical details see :cite:`Hubert_1981`.
-
-
-
     """
 
     def __init__(

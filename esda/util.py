@@ -27,10 +27,7 @@ def fdr(pvalues, alpha=0.05):
 
     Notes
     -----
-
-    For technical details see :cite:`Benjamini:2001` and
-    :cite:`Castro:2006tz`.
-
+    For technical details see :cite:`Benjamini:2001` and :cite:`Castro:2006tz`.
 
     Examples
     --------
@@ -40,14 +37,23 @@ def fdr(pvalues, alpha=0.05):
     >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
     >>> y = np.array(f.by_col['HR8893'])
-    >>> from esda.moran import Moran_Local
+    >>> from esda import Moran_Local
     >>> from esda import fdr
-    >>> lm = Moran_Local(y, w, transformation = "r", permutations = 999)
+    >>> lm = Moran_Local(
+    ...     y,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=999,
+    ...     seed=12345,
+    ...     alternative='two-sided',
+    ... )
     >>> fdr(lm.p_sim, 0.1)
-    0.002564102564102564
-    >>> fdr(lm.p_sim, 0.05) #return the conservative Bonferroni bound
-    0.000641025641025641
+    np.float64(0.003846153846153847)
 
+    Return the conservative Bonferroni bound
+
+    >>> fdr(lm.p_sim, 0.05)
+    0.000641025641025641
     """
 
     n = len(pvalues)

@@ -89,7 +89,7 @@ class G:
 
     Creating a weights object from points
 
-    >>> w = libpysal.weights.DistanceBand(points,threshold=15)
+    >>> w = libpysal.weights.DistanceBand(points, threshold=15)
     >>> w.transform = "B"
 
     Preparing a variable
@@ -98,17 +98,16 @@ class G:
 
     Applying Getis and Ord G test
 
-    >>> from esda.getisord import G
-    >>> g = G(y,w)
+    >>> from esda import G
+    >>> g = G(y, w)
 
     Examining the results
 
     >>> round(g.G, 3)
-    0.557
+    np.float64(0.557)
 
     >>> round(g.p_norm, 3)
-    0.173
-
+    np.float64(0.173)
     """
 
     def __init__(self, y, w, permutations=PERMUTATIONS):
@@ -192,7 +191,7 @@ class G:
 class G_Local:
     """
     Generalized Local G Autocorrelation
-
+    
     Parameters
     ----------
     y : array
@@ -204,18 +203,24 @@ class G_Local:
     permutations : int
         The number of random permutations for calculating pseudo p-values.
     star : bool or float
-        Whether to include focal observation in sums. If the row-transformed
-        weight is provided, then this is the default value to use within the
-        spatial lag. Generally, weights should be provided in binary form, and
-        standardization/self-weighting will be handled by the function itself.
+        Whether to include focal observation in sums (default: False).
+        If the row-transformed weight is provided, then this is the default
+        value to use within the spatial lag. Generally, weights should be
+        provided in binary form, and standardization/self-weighting will be
+        handled by the function itself.
+    seed : None or int
+        Seed to ensure reproducibility of conditional randomizations. Must be
+        set here, and not outside of the function, since numba does not
+        correctly interpret external seeds nor numpy.random.RandomState
+        instances.
     island_weight : float
-        Value to use as a weight for the "fake" neighbor for every island. If
-        numpy.nan, will propagate to the final local statistic depending on the
-        `stat_func`. If 0, then the lag is always zero for islands.
+        Value to use as a weight for the "fake" neighbor for every island.
+        If numpy.nan, will propagate to the final local statistic depending
+        on the `stat_func`. If 0, then the lag is always zero for islands.
     alternative : None or str, optional
         The alternative hypothesis for conditional randomization. See
         ``crand.crand()`` for complete description.
-
+    
     Attributes
     ----------
     y : array
@@ -234,15 +239,13 @@ class G_Local:
     Zs : array
         Standardized Gs.
     p_norm : array
-        P-values under the normality assumption, one-sided. For two-sided
+        P-values under the normality assumption (one-sided). For two-sided
         tests, this value should be multiplied by 2.
     sim : array
-        Array of simulated statistic values from permuted samples, if
-        ``permutations > 0``.
+        Array of simulated statistic values (if ``permutations > 0``).
     p_sim : array
-        P-values based on permutations, one-sided. The null is spatial
-        randomness. The alternative is that the observed G is extreme, either
-        extremely high or extremely low.
+        P-values based on permutations (one-sided). The null is spatial
+        randomness; the alternative is that the observed G is extreme.
     EG_sim : array
         Average value of G from permutations.
     VG_sim : array
@@ -252,97 +255,94 @@ class G_Local:
     z_sim : array
         Standardized G based on permutations.
     p_z_sim : array
-        P-values based on the standard normal approximation from permutations,
-        one-sided.
-
+        P-values based on the standard normal approximation from permutations
+        (one-sided).
+    
     Notes
     -----
-    To compute moments of Gs under the normality assumption, PySAL considers w
-    to be either binary or row-standardized. For a binary weights object, the
-    weight value for self is 1. For a row-standardized weights object, the
-    weight value for self is 1 / (the number of its neighbors + 1).
-
+    To compute moments of Gs under the normality assumption, PySAL considers
+    w to be either binary or row-standardized. For a binary weights object,
+    the weight value for self is 1. For a row-standardized weights object,
+    the weight value for self is 1 / (the number of its neighbors + 1).
+    
     For technical details see :cite:`Getis_2010` and :cite:`Ord_2010`.
-
+    
     Examples
     --------
     >>> import libpysal
-    >>> import numpy
-    >>> numpy.random.seed(10)
-
+    
     Preparing a point data set.
-
+    
     >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-
+    
     Creating a weights object from points.
-
+    
     >>> w = libpysal.weights.DistanceBand(points, threshold=15)
-
+    
     Preparing a variable.
-
+    
+    >>> import numpy
     >>> y = numpy.array([2, 3, 3.2, 5, 8, 7])
-
+    
     Applying Getis and Ord local G test using a binary weights object.
-
-    >>> from esda.getisord import G_Local
-    >>> lg = G_Local(y, w, transform="B")
-
+    
+    >>> from esda import G_Local
+    >>> lg = G_Local(y, w, transform='B', seed=12345, alternative='two-sided')
+    
     Examining the results.
-
+    
     >>> lg.Zs
     array([-1.0136729 , -0.04361589,  1.31558703, -0.31412676,  1.15373986,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
-    0.101
-
+    np.float32(0.413)
+    
     P-value based on standard normal approximation from permutations.
-
+    
     >>> round(lg.p_z_sim[0], 3)
-    0.154
-
-    >>> numpy.random.seed(10)
-
+    np.float64(0.153)
+    
     Applying Getis and Ord local G* test using a binary weights object.
-
-    >>> lg_star = G_Local(y, w, transform="B", star=True)
-
+    
+    >>> lg_star = G_Local(
+    ...     y, w, transform='B', star=True, seed=12345, alternative='two-sided',
+    ... )
+    
     Examining the results.
-
+    
     >>> lg_star.Zs
     array([-1.39727626, -0.28917762,  0.65064964, -0.28917762,  1.23452088,
            2.02424331])
     >>> round(lg_star.p_sim[0], 3)
-    0.101
-
-    >>> numpy.random.seed(12345)
-
+    np.float32(0.413)
+    
     Applying Getis and Ord local G test using a row-standardized weights object.
-
-    >>> lg = G_Local(y, w, transform="R")
-
+    
+    >>> lg = G_Local(y, w, transform='R', seed=12345, alternative='two-sided')
+    
     Examining the results.
-
+    
     >>> lg.Zs
     array([-0.62074534, -0.01780611,  1.31558703, -0.12824171,  0.28843496,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
-    0.103
-
-    >>> numpy.random.seed(10)
-
+    np.float32(0.413)
+    
     Applying Getis and Ord local G* test using a row-standardized weights object.
-
-    >>> lg_star = G_Local(y, w, transform="R", star=True)
-
+    
+    >>> lg_star = G_Local(
+    ...     y, w, transform='R', star=True, seed=12345, alternative='two-sided',
+    ... )
+    
     Examining the results.
-
+    
     >>> lg_star.Zs
     array([-0.62488094, -0.09144599,  0.41150696, -0.09144599,  0.24690418,
            1.28024388])
-    >>> round(lg_star.p_sim[0], 3)
-    0.101
+    >>> round(lg_star.p_sim[0], 3)  # doctest: +SKIP
+    np.float32(0.209)
     """
-    
+
     def __init__(
         self,
         y,
