@@ -1,6 +1,5 @@
 import os
 import sys
-from pathlib import Path
 
 from packaging.version import Version
 
@@ -174,10 +173,3 @@ def linkcode_resolve(domain, info):
         filename = info["module"].replace(".", "/") + ".py"
     tag = "main" if "dev" in release else ("v" + release)
     return f"https://github.com/pysal/esda/blob/{tag}/{filename}"
-
-
-def setup(app):
-    from sphinx_immaterial.css_and_javascript_bundles import add_global_javascript
-
-    search_fix = Path(__file__).parent / "_static" / "immaterial-search-fix.js"
-    add_global_javascript(app, search_fix.read_text(encoding="utf-8"), priority=500)
