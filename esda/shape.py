@@ -530,7 +530,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
 
     Notes
     -----
-    Calculates the moment of inertia of each geometry in the collection. Can handle
+    Calculates the moment of inertia [1]_ of each geometry in the collection. Can handle
     polygons with holes and multipolygons by summing the moments of inertia of each
     part. The moment of inertia is calculated about the centroid of each geometry
     by default, but can also be calculated about a specified reference point or points.
@@ -543,7 +543,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
 
     Moments of inertia with weights (such as population) may be calculated using
     `moment_of_inertia_regions`. Without weights, the moment of inertia is known as the
-    area moment of inertia or the second moment of area, and can be quickly calculated
+    area moment of inertia or the second moment of area [3]_, and can be quickly calculated
     from the polygon vertices using the shoelace formula. The second moments of area
     about the x and y axes are calculated as:
 
@@ -571,7 +571,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
                = \\frac{A^2}{2 \\pi I_{shape}}
 
     where :math:`A` is the area of the polygon and :math:`I_{shape}` is the moment of
-    inertia of the polygon. This formulation is from Li, et al (2013). The value of
+    inertia of the polygon. This formulation is from [2]_. The value of
     :math:`C_{MI}` is bounded between 0 and 1, with 1 representing a perfect circle,
     the most compact shape by this measure.
 
@@ -688,7 +688,7 @@ def moment_of_inertia_regions(
     -----
     See `moment_of_inertia` for an introduction. Note that moment of
     intertia and second moment of area are used interchangeably in some
-    disciplines (see Li, et al 2013). In this discussion "mass moment of
+    disciplines (see [1]_ and  [2]_). In this discussion "mass moment of
     inertia" is used to represent a weighted moment of inertia, and "second
     moment of area" is used for an unweighted moment of inertia. This
     module's `moment_of_inertia` function returns the second moment of
@@ -758,7 +758,7 @@ def moment_of_inertia_regions(
     region identifiers are ignored with a warning.
 
     The mass moment of inertia can be normalized to provide a compactness
-    measure using the formula from Fan, et al. (2015):
+    measure using the formula from [3]_:
 
     .. math::
         C_{NMMI} = \\frac{M A}{2 \\pi I_M}
@@ -981,12 +981,12 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
     collection : GeoSeries, GeoDataFrame, numpy.ndarray, list
         Input collection of polygons or multipolygons.
     normalize : bool, optional
-        If True, returns moment normalized by reference cricle of same area.
+        If True, returns moment normalized by reference circle of same area.
         Default is False.
     ref_pt : GeoSeries, Shapely Point, or array-like of shape (2,), optional
         If provided, shifts moment to be with respect to this point.
         The default behavior (default: ``None``) is to calculate the moment
-        about the centroid of the entire `collection`. Point may be passed as
+        about the centroid of the entire `collection`. Point may be passed
         as array-like of coordinates or a point geometry (which can include a
         GeoSeries of length 1). To return moment about the origin,
         explicitly set to (0, 0).
@@ -997,7 +997,7 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
         Moment of inertia for the entire collection.
 
     Notes
-    -------
+    -----
     This is a convenience function to calculate the second moment of area for
     an entire collection, which will usually be faster than running a geospatial
     dissolve on the geometries and then running `moment_of_inertia` on the
@@ -1007,12 +1007,13 @@ def moment_of_inertia_global(collection, normalize=False, ref_pt=None):
     moment of inertia for an entire collection, weighted by the masses of the
     geometries in the collection, assign all geometries to the same region:
 
-    ```
-    moment_of_inertia_regions(
-        collection,
-        regions=numpy.repeat(1, len(collection))
-    ), weights=<weights vector>
-    ````
+    .. code-block:: python
+
+        moment_of_inertia_regions(
+            collection,
+            regions=numpy.repeat(1, len(collection)),
+            weights=<weights vector>
+        )
 
     The `normalize` and `ref_pt` parameters may be used as usual.
     """
