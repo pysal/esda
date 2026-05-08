@@ -71,7 +71,7 @@ docs = [
     "nbsphinx",
     "numpydoc",
     "pandoc",
-    "sphinx",
+    "sphinx>7.0,<8.0",  # See P$ #488
     "sphinxcontrib-bibtex",
     "sphinx_bootstrap_theme",
     "sphinx-copybutton",
