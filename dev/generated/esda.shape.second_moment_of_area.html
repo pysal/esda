@@ -1951,7 +1951,7 @@
 <dt id="esda.shape.second_moment_of_area.normalize"><span class="sig-name descname">normalize</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a>, optional</span></span><a class="headerlink" href="#esda.shape.second_moment_of_area.normalize" title="Permalink to this definition">¶</a></dt><dd><p>If True, returns moment normalized by reference cricle of same area.
 Default is False.</p>
 </dd>
-<dt id="esda.shape.second_moment_of_area.ref_pt"><span class="sig-name descname">ref_pt</span><span class="p"> : </span><span class="desctype"><span class="desctype">GeoSeries, Shapely Point or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a> of Points, array-like of shape (2,) or (<a class="reference internal" href="esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.n" title="esda.NP_Mixture_Smoother.n (Python attribute) — the number of observations">n</a>, 2), optional</span></span><a class="headerlink" href="#esda.shape.second_moment_of_area.ref_pt" title="Permalink to this definition">¶</a></dt><dd><p>If provided, shifts moment to be with respect to this point or points.
+<dt id="esda.shape.second_moment_of_area.ref_pt"><span class="sig-name descname">ref_pt</span><span class="p"> : </span><span class="desctype"><span class="desctype">GeoSeries, Shapely Point or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a> of Points, array-like of shape (2,) or (n, 2), optional</span></span><a class="headerlink" href="#esda.shape.second_moment_of_area.ref_pt" title="Permalink to this definition">¶</a></dt><dd><p>If provided, shifts moment to be with respect to this point or points.
 The default behavior (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) is to calculate the moment
 about the centroid of each geometry. Points may be passed as
 as array-like of coordinates or point geometries. If a single point,
@@ -2071,7 +2071,7 @@ Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/1
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    9.1.0.
+    8.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   

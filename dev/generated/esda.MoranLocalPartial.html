@@ -2469,7 +2469,7 @@
 <h1 id="esda-moranlocalpartial">esda.MoranLocalPartial<a class="headerlink" href="#esda-moranlocalpartial" title="Link to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="esda.MoranLocalPartial">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">MoranLocalPartial</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.permutations" title="esda.MoranLocalPartial.__init__.permutations (Python parameter) — the number of permutations to run for the inference, driven by conditional randomization."><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.unit_scale" title="esda.MoranLocalPartial.__init__.unit_scale (Python parameter) — whether to enforce unit variance in the local statistics."><span class="n"><span class="pre">unit_scale</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.partial_labels" title="esda.MoranLocalPartial.__init__.partial_labels (Python parameter) — whether to calculate the classification based on the part-regressive quadrant classification or the univariate quadrant classification, like a classical Moran's I."><span class="n"><span class="pre">partial_labels</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.alternative" title="esda.MoranLocalPartial.__init__.alternative (Python parameter) — the alternative hypothesis for the inference."><span class="n"><span class="pre">alternative</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;two-sided&#39;</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/moran_local_mv.py#L39-L318"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.MoranLocalPartial" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">MoranLocalPartial</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.permutations" title="esda.MoranLocalPartial.__init__.permutations (Python parameter) — the number of permutations to run for the inference, driven by conditional randomization."><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.unit_scale" title="esda.MoranLocalPartial.__init__.unit_scale (Python parameter) — whether to enforce unit variance in the local statistics."><span class="n"><span class="pre">unit_scale</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.partial_labels" title="esda.MoranLocalPartial.__init__.partial_labels (Python parameter) — whether to calculate the classification based on the part-regressive quadrant classification or the univariate quadrant classification, like a classical Moran's I."><span class="n"><span class="pre">partial_labels</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.MoranLocalPartial.__init__.alternative" title="esda.MoranLocalPartial.__init__.alternative (Python parameter) — the alternative hypothesis for the inference."><span class="n"><span class="pre">alternative</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;two-sided&#39;</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/moran_local_mv.py#L39-L318"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.MoranLocalPartial" title="Link to this definition">¶</a></dt>
 <dd><p>Compute the Multivariable Local Moran statistics under
 partial dependence <span id="id1">[<a class="reference internal" href="../references.html#id24" title="Levi John Wolf. Confounded Local Inference: extending local moran statistics to handle confounding. Annals of the American Association of Geographers, in press(in press):0-0, 2024.">Wolf, 2024</a>]</span></p>
 <dl class="field-list simple">
@@ -2583,7 +2583,7 @@ the relationship between y and Wy. The mean is not classified,
 since it’s just binary above/below mean usually.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.MoranLocalPartial.significance_-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.MoranLocalPartial.significance_-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p>the (N, <a class="reference internal" href="#esda.MoranLocalPartial.P" title="esda.MoranLocalPartial.P (Python attribute) — the number of parameters. 1 if X is not provided.">P</a>) matrix of quadrant classifications for the</p>
+<dd class="field-odd"><p>the (N, P) matrix of quadrant classifications for the</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2647,7 +2647,7 @@ for more information.</p>
 </table>
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="id0">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">association_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">association_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
 <dd><p>The association between y and the local average of y,
 removing the correlation due to x and the local average of y</p>
 </dd></dl>
@@ -2659,7 +2659,7 @@ removing the correlation due to x and the local average of y</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.MoranLocalPartial.fit-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.MoranLocalPartial.fit-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.MoranLocalPartial.fit.X"><span class="sig-name descname">X</span><span class="p"> : </span><span class="desctype"><span class="desctype">(N,<a class="reference internal" href="esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.p" title="esda.NP_Mixture_Smoother.p (Python attribute) — (k, 1), the proportions of individual subpopulations">p</a>) array</span></span><a class="headerlink" href="#esda.MoranLocalPartial.fit.X" title="Permalink to this definition">¶</a></dt><dd><p>array of data that is used as “confounding factors”
+<dt id="esda.MoranLocalPartial.fit.X"><span class="sig-name descname">X</span><span class="p"> : </span><span class="desctype"><span class="desctype">(N,p) array</span></span><a class="headerlink" href="#esda.MoranLocalPartial.fit.X" title="Permalink to this definition">¶</a></dt><dd><p>array of data that is used as “confounding factors”
 to account for their covariance with Y.</p>
 </dd>
 <dt id="esda.MoranLocalPartial.fit.y"><span class="sig-name descname">y</span><span class="p"> : </span><span class="desctype"><span class="desctype">(N,1) array</span></span><a class="headerlink" href="#esda.MoranLocalPartial.fit.y" title="Permalink to this definition">¶</a></dt><dd><p>array of data that is the targeted “outcome” covariate
@@ -2681,7 +2681,7 @@ Immediately row-standardized.</p>
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="id2">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">labels_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">labels_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
 <dd><p>The classifications (in terms of cluster-type and outlier-type)
 for the <a href="#id10"><span class="problematic" id="id11">association_</span></a> statistics. If the quads requested are
 <em>mvquads</em>, then the classification is done with respect to the
@@ -2717,7 +2717,7 @@ The cluster typology is:</p>
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="id3">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">partials_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partials_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
 <dd><p>The components of the local statistic. The first column is the
 structural exogenous component of the data, and the second is the
 local average of y.</p>
@@ -2725,7 +2725,7 @@ local average of y.</p>
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="id4">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">reference_distribution_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_distribution_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
 <dd><p>Simulated distribution of <a href="#id14"><span class="problematic" id="id15">association_</span></a>, assuming that there is
 - no structural relationship between y and its local average;
 - the same observed structural relationship between y and x.</p>
@@ -2733,7 +2733,7 @@ local average of y.</p>
 
 <dl class="py property objdesc">
 <dt class="sig sig-object highlight py" id="id5">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">significance_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">significance_</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
 <dd><p>The pseudo-p-value built using map randomization for the
 structural relationship between y and its local average,
 removing the correlation due to the relationship between x
@@ -2787,7 +2787,7 @@ and the local average of y.</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    9.1.0.
+    8.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
