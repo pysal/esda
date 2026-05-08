@@ -1970,7 +1970,7 @@ the same index. To return moment about the origin, explicitly set to (0, 0).</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Calculates the moment of inertia of each geometry in the collection. Can handle
+<p>Calculates the moment of inertia <a class="footnote-reference brackets" href="#id4" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> of each geometry in the collection. Can handle
 polygons with holes and multipolygons by summing the moments of inertia of each
 part. The moment of inertia is calculated about the centroid of each geometry
 by default, but can also be calculated about a specified reference point or points.</p>
@@ -1981,7 +1981,7 @@ of Polygons or MultiPolygons. If normalization is requested, the moment of inert
 is compared with that of a circle of equal area. This is discussed in detail below.</p>
 <p>Moments of inertia with weights (such as population) may be calculated using
 <cite>moment_of_inertia_regions</cite>. Without weights, the moment of inertia is known as the
-area moment of inertia or the second moment of area, and can be quickly calculated
+area moment of inertia or the second moment of area <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, and can be quickly calculated
 from the polygon vertices using the shoelace formula. The second moments of area
 about the x and y axes are calculated as:</p>
 <div class="math notranslate nohighlight">
@@ -2001,26 +2001,26 @@ to that of the shape about its centroid:</p>
 \[C_{MI} = \frac{I_{circle}}{I_{shape}}
        = \frac{A^2}{2 \pi I_{shape}}\]</div>
 <p>where <span class="math notranslate nohighlight">\(A\)</span> is the area of the polygon and <span class="math notranslate nohighlight">\(I_{shape}\)</span> is the moment of
-inertia of the polygon. This formulation is from Li, et al (2013). The value of
+inertia of the polygon. This formulation is from <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. The value of
 <span class="math notranslate nohighlight">\(C_{MI}\)</span> is bounded between 0 and 1, with 1 representing a perfect circle,
 the most compact shape by this measure.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id1" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Godwin, A. N. 1980. “Simple Calculation of Moments of Inertia for Polygons.”
 International Journal of Mathematical Education in Science and Technology
 11 (4): 577–86. <a class="reference external" href="https://doi.org/10.1080/0020739800110414">https://doi.org/10.1080/0020739800110414</a>.</p>
 </aside>
-<aside class="footnote brackets" id="id2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
 <p>Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient
 Measure of Compactness for Two-Dimensional Shapes and Its Application in
 Regionalization Problems.” International Journal of Geographical Information
 Science 27 (6): 1227–50. <a class="reference external" href="https://doi.org/10.1080/13658816.2012.752093">https://doi.org/10.1080/13658816.2012.752093</a>.</p>
 </aside>
-<aside class="footnote brackets" id="id3" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">3</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area">https://en.wikipedia.org/wiki/Second_moment_of_area#List_of_second_moments_of_area</a></p>
 </aside>
 </aside>
