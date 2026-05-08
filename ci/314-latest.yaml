@@ -34,7 +34,7 @@ dependencies:
   - nbsphinx
   - numpydoc
   - pandoc
-  - sphinx
+  - sphinx>=8,<9
   - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme
   - sphinx-copybutton
