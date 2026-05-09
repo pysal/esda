@@ -15,9 +15,11 @@ installation
 :maxdepth: 2
 
 Overview <user-guide/index>
+Getting Started <user-guide/getting_started>
 Global Spatial Autocorrelation <user-guide/global>
 Local Spatial Autocorrelation <user-guide/local>
 Spatial Diagnostics <user-guide/diagnostics>
+Spatial Clustering <user-guide/clustering>
 Geometry <user-guide/geometry>
 Topology <user-guide/topology>
 references
@@ -26,7 +28,7 @@ references
 ```{toctree}
 :hidden:
 :caption: API
-:maxdepth: 1j
+:maxdepth: 1
 
 API reference <api>
 ```
