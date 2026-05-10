@@ -259,6 +259,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+
+
 #######################################################################
 # JUNKYARD
 # Suspected no longer needed (@leehach 2026-01-23)
@@ -297,3 +299,11 @@ tools/changelog_2.4.0.md
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+
+#######################################################################
+# Gaboardi addition [2026-05-10]
+################################
+
+# baseline image creation from `image_comparison` testing
+result_images/
