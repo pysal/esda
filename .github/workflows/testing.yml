@@ -6,7 +6,7 @@ on:
     branches: [main]
   pull_request:
     branches:
-    - "*"
+      - "*"
   schedule:
     - cron: "59 21 * * *"
   workflow_dispatch:
@@ -78,6 +78,7 @@ jobs:
       - name: fetch data
         run: |
           python -c '
+          import geodatasets
           from libpysal.examples import load_example as ex
           [
              ex(e) for e in [
@@ -93,6 +94,9 @@ jobs:
                 "Sacramento1",
              ]
           ]
+          geodatasets.fetch("geoda lansing1")
+          geodatasets.fetch("geoda charleston1")
+          geodatasets.fetch("geoda charleston2")
           '
 
       - name: run tests
