@@ -149,6 +149,7 @@ nb_merge_streams = True
 nb_execution_raise_on_error = True
 nb_execution_show_tb = True
 autodoc_typehints = "none"
+myst_heading_anchors = 4  # Generates anchors for H1, H2, H3, and H4  headers
 
 
 def linkcode_resolve(domain, info):
