@@ -51,8 +51,9 @@ master_doc = "index"
 templates_path = [
     "_templates",
 ]
-exclude_patterns = []
-
+exclude_patterns = [
+    "user-guide/data/berlin.ipynb",
+]
 intersphinx_mapping = {
     "geopandas": ("https://geopandas.org/en/latest", None),
     "python": ("https://docs.python.org/3", None),
