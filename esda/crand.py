@@ -18,6 +18,22 @@ except (ImportError, ModuleNotFoundError):
 
 __all__ = ["crand"]
 
+# Integer codes for alternative hypotheses — avoids string handling inside
+# Numba parallel loops where unicode support is inconsistent across backends.
+_ALT_DIRECTED = 0
+_ALT_TWO_SIDED = 1
+_ALT_GREATER = 2
+_ALT_LESSER = 3
+_ALT_FOLDED = 4
+
+_ALTERNATIVE_CODES = {
+    "directed": _ALT_DIRECTED,
+    "two-sided": _ALT_TWO_SIDED,
+    "greater": _ALT_GREATER,
+    "lesser": _ALT_LESSER,
+    "folded": _ALT_FOLDED,
+}
+
 #######################################################################
 #                   Utilities for all functions                       #
 #######################################################################
@@ -51,6 +67,157 @@ def vec_permutations(max_card: int, n: int, k_replications: int, seed: int):
     for k in prange(k_replications):
         result[k] = np.random.choice(n - 1, size=max_card, replace=False)
     return result
+
+
+@njit(fastmath=True)
+def _p_sim_one(observed_i, rstats, alt_code):
+    """Compute pseudo-p-value for a single observation's permutation distribution.
+
+    Parameters
+    ----------
+    observed_i : float
+        Observed statistic for observation i.
+    rstats : ndarray
+        (permutations,) simulated statistics under the null.
+    alt_code : int
+        One of the _ALT_* integer codes.
+
+    Returns
+    -------
+    float32
+        Pseudo-p-value.
+    """
+    # Scalar loops instead of array ops: Numba optimises these better than
+    # vectorised expressions inside a parallel region.
+    p = rstats.shape[0]
+    if alt_code == _ALT_DIRECTED:
+        larger = np.int64(0)
+        for v in rstats:
+            if v >= observed_i:
+                larger += 1
+        # pick the smaller tail
+        if (p - larger) < larger:
+            larger = p - larger
+        return np.float32((larger + 1.0) / (p + 1.0))
+    elif alt_code == _ALT_GREATER:
+        larger = np.int64(0)
+        for v in rstats:
+            if v >= observed_i:
+                larger += 1
+        return np.float32((larger + 1.0) / (p + 1.0))
+    elif alt_code == _ALT_LESSER:
+        lesser = np.int64(0)
+        for v in rstats:
+            if v <= observed_i:
+                lesser += 1
+        return np.float32((lesser + 1.0) / (p + 1.0))
+    elif alt_code == _ALT_TWO_SIDED:
+        # mirror _permutation_significance: find the symmetric tail cutoffs
+        # then count observations outside both tails
+        n_below = np.int64(0)
+        for v in rstats:
+            if v <= observed_i:
+                n_below += 1
+        pct = n_below / p * 100.0
+        p_low = min(pct, 100.0 - pct)
+        low = np.percentile(rstats, p_low)
+        high = np.percentile(rstats, 100.0 - p_low)
+        n_outside = np.int64(0)
+        for v in rstats:
+            if v <= low or v >= high:
+                n_outside += 1
+        return np.float32((n_outside + 1.0) / (p + 1.0))
+    else:  # FOLDED
+        mean = rstats.mean()
+        folded_obs = abs(observed_i - mean)
+        n_extreme = np.int64(0)
+        for v in rstats:
+            if abs(v - mean) >= folded_obs:
+                n_extreme += 1
+        return np.float32((n_extreme + 1.0) / (p + 1.0))
+
+
+@njit(parallel=True, fastmath=True)
+def _compute_prange(
+    z,
+    observed,
+    cardinalities,
+    self_weights,
+    other_weights,
+    w_indptr,
+    permuted_ids,
+    scaling,
+    keep,
+    stat_func,
+    island_weight,
+    alt_code,
+):
+    """Conditional randomisation using Numba prange for observation-level parallelism.
+
+    Uses the same pre-generated ``permuted_ids`` array as the serial path so
+    results are numerically identical to ``compute_chunk``.  Parallelism comes
+    from ``prange`` over observations rather than joblib chunks, eliminating
+    Python-level dispatch overhead and allowing Numba to schedule threads
+    directly.
+
+    Parameters
+    ----------
+    z : ndarray
+        (n,) standardised observed values.
+    observed : ndarray
+        (n,) observed statistics.
+    cardinalities : ndarray
+        (n,) neighbour counts.
+    self_weights : ndarray
+        (n,) self-weights (usually zero).
+    other_weights : ndarray
+        Flat neighbour-weight buffer (CSR data array, self-weights removed).
+    w_indptr : ndarray
+        (n+1,) cumulative sum of cardinalities; offsets into ``other_weights``.
+    permuted_ids : ndarray
+        (permutations, max_cardinality) array from ``vec_permutations``.
+    scaling : float
+        Scaling factor passed to ``stat_func``.
+    keep : bool
+        If True, store all simulated statistics in the returned array.
+    stat_func : callable
+        Numba-compiled statistic function with signature
+        ``(i, z, permuted_ids, weights_i, scaling) -> (permutations,) array``.
+    island_weight : float
+        Weight assigned to the synthetic neighbour of isolated observations.
+    alt_code : int
+        One of the _ALT_* integer codes.
+
+    Returns
+    -------
+    p_sims : ndarray
+        (n,) float32 pseudo-p-values.
+    rlocals : ndarray
+        (n, permutations) simulated statistics if ``keep`` is True;
+        otherwise a (1, 1) placeholder.
+    """
+    n = z.shape[0]
+    p_sims = np.zeros(n, dtype=np.float32)
+    rlocals = np.empty((n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
+
+    for i in prange(n):
+        cardinality = cardinalities[i]
+        if cardinality == 0:
+            # island: give it one synthetic zero-weight neighbour
+            weights_i = np.zeros(2, dtype=other_weights.dtype)
+            weights_i[1] = island_weight
+        else:
+            # weights_i[0] = self-weight; weights_i[1:] = neighbour weights
+            weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
+            weights_i[0] = self_weights[i]
+            weights_i[1:] = other_weights[w_indptr[i] : w_indptr[i + 1]]
+
+        rstats = stat_func(i, z, permuted_ids, weights_i, scaling)
+        p_sims[i] = _p_sim_one(observed[i], rstats, alt_code)
+        if keep:
+            rlocals[i] = rstats
+
+    return p_sims, rlocals
 
 
 def crand(
@@ -177,57 +344,37 @@ def crand(
     # if there is a self-neighbor, we need to *not* shuffle the
     # self neighbor, since conditional randomization conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
-    max_card = cardinalities.max()
+
+    # Cumulative offsets into other_weights for random access by observation.
+    # (Cannot reuse adj_matrix.indptr directly — diagonal was stripped above.)
+    w_indptr = np.concatenate(([0], np.cumsum(cardinalities))).astype(np.int64)
+
+    # n_jobs is accepted for API compatibility but Numba manages its own thread
+    # pool; set NUMBA_NUM_THREADS to control parallelism instead.
+    if n_jobs != 1:
+        warnings.warn(
+            "n_jobs is ignored by the prange engine; "
+            "set NUMBA_NUM_THREADS to control thread count.",
+            stacklevel=2,
+        )
+
+    max_card = int(cardinalities.max()) if len(cardinalities) > 0 else 1
     permuted_ids = vec_permutations(max_card, n, permutations, seed)
 
-    if n_jobs != 1:
-        try:
-            import joblib  # noqa: F401
-        except (ModuleNotFoundError, ImportError):
-            warnings.warn(
-                f"Parallel processing is requested (n_jobs={n_jobs}),"
-                f" but joblib cannot be imported. n_jobs will be set"
-                f" to 1.",
-                stacklevel=2,
-            )
-            n_jobs = 1
-
-    if n_jobs == 1:
-        p_sims, rlocals = compute_chunk(
-            0,  # chunk start
-            z,  # chunked z, for serial this is the entire data
-            z,  # all z, for serial this is also the entire data
-            observed,  # observed statistics
-            cardinalities,  # cardinalities conforming to chunked z
-            self_weights,  # n-length vector containing the self-weights.
-            other_weights,  # flat weights buffer
-            permuted_ids,  # permuted ids
-            scaling,  # scaling applied to all statistics
-            keep,  # whether or not to keep the local statistics
-            stat_func,
-            island_weight,
-            alternative=alternative,
-        )
-    else:
-        if n_jobs == -1:
-            n_jobs = os.cpu_count()
-        if n_jobs > len(z):
-            n_jobs = len(z)
-        # Parallel implementation
-        p_sims, rlocals = parallel_crand(
-            z,
-            observed,
-            cardinalities,
-            self_weights,
-            other_weights,
-            permuted_ids,
-            scaling,
-            n_jobs,
-            keep,
-            stat_func,
-            island_weight,
-            alternative=alternative,
-        )
+    p_sims, rlocals = _compute_prange(
+        z,
+        observed,
+        cardinalities,
+        self_weights,
+        other_weights,
+        w_indptr,
+        permuted_ids,
+        scaling,
+        keep,
+        stat_func,
+        island_weight,
+        _ALTERNATIVE_CODES[alternative],
+    )
 
     return p_sims, rlocals
 
