@@ -82,17 +82,16 @@ class Geary:
     Examples
     --------
     >>> import libpysal
-    >>> from esda.geary import Geary
+    >>> import numpy
+    >>> from esda import Geary
     >>> w = libpysal.io.open(libpysal.examples.get_path("book.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("book.txt"))
-    >>> y = np.array(f.by_col['y'])
-    >>> c = Geary(y,w,permutations=0)
-    >>> round(c.C,7)
-    0.3330108
-    >>> round(c.p_norm,7)
-    9.2e-05
-    >>>
-
+    >>> y = numpy.array(f.by_col['y'])
+    >>> c = Geary(y, w, permutations=0)
+    >>> round(c.C, 7)
+    np.float64(0.3330108)
+    >>> round(c.p_norm, 7)
+    np.float64(9.2e-05)
 
     Notes
     -----

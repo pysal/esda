@@ -1,31 +1,39 @@
-name: esda
+name: test
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python=3.14
   # required
   - geopandas
-  - libpysal>=4.12
+  - libpysal
   - numpy
   - pandas
   - scikit-learn
   - scipy
   - shapely
-  # optional, testing, etc.
+  # testing
   - folium
+  - geodatasets
   - mapclassify
   - matplotlib
-  - numba
+  - seaborn
+  # optional
   - rtree
-  # docs
+  - numba
+  # for docs build action
+  - contextily
+  - ipykernel
+  - ipywidgets
+  - mkdocs-jupyter
+  - myst-nb
+  - myst-parser
   - nbsphinx
   - numpydoc
   - pandoc
-  - sphinx
+  - sphinx>=8,<9
   - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme
-  - mkdocs-jupyter
-  - myst-parser
-  - sphinx-immaterial
-  - myst-nb
   - sphinx-copybutton
+  - sphinx-immaterial
+  - statsmodels
+  - watermark

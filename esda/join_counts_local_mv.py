@@ -22,6 +22,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         seed=None,
         island_weight=0,
         drop_islands=True,
+        alternative=None,
     ):
         """
         Initialize a Local_Join_Counts_MV estimator
@@ -52,6 +53,9 @@ class Join_Counts_Local_MV(BaseEstimator):
             list. By default, observations with no neighbors do not appear
             in the adjacency list. If islands are kept, they are coded as
             self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        alternative : None | str = None
+            The alternative hypothesis for conditional randomization.
+            See ``crand.crand()`` for complete description.
         """
 
         self.connectivity = connectivity
@@ -61,6 +65,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         self.seed = seed
         self.island_weight = island_weight
         self.drop_islands = drop_islands
+        self.alternative = alternative
 
     def fit(self, variables, n_jobs=1, permutations=999):
         """
@@ -79,32 +84,50 @@ class Join_Counts_Local_MV(BaseEstimator):
         Examples
         --------
         >>> import libpysal
+        >>> import numpy
         >>> w = libpysal.weights.lat2W(4, 4)
-        >>> x = np.ones(16)
+        >>> x = numpy.ones(16)
         >>> x[0:8] = 0
         >>> z = [0,1,0,1,1,1,1,1,0,0,1,1,0,0,1,1]
         >>> y = [0,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1]
-        >>> LJC_MV = Local_Join_Counts_MV(connectivity=w).fit([x, y, z])
+        >>> LJC_MV = Join_Counts_Local_MV(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
+        ... ).fit([x, y, z])
         >>> LJC_MV.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 1., 2.])
         >>> LJC_MV.p_sim
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan, 0.677,   nan,   nan, 0.661, 0.746], dtype=float32)
 
         Guerry data extending GeoDa tutorial
-        >>> import libpysal
+
         >>> import geopandas as gpd
         >>> guerry = libpysal.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
+        >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
         >>> guerry_ds['infq5'] = 0
         >>> guerry_ds['donq5'] = 0
         >>> guerry_ds['suic5'] = 0
         >>> guerry_ds.loc[(guerry_ds['Infants'] > 23574), 'infq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10973), 'donq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Suicids'] > 55564), 'suic5'] = 1
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_MV = Local_Join_Counts_MV(
-        ...     connectivity=w
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=True)
+        >>> LJC_MV = Join_Counts_Local_MV(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
         ... ).fit([guerry_ds['infq5'], guerry_ds['donq5'], guerry_ds['suic5']])
         >>> LJC_MV.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         >>> LJC_MV.p_sim
+        array([nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+               nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+               nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+               nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+               nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+               nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+               nan, nan, nan, nan, nan, nan, nan], dtype=float32)
         """
 
         w = self.connectivity
@@ -135,7 +158,9 @@ class Join_Counts_Local_MV(BaseEstimator):
                 keep=True,
                 n_jobs=n_jobs,
                 stat_func=_ljc_mv,
+                seed=self.seed,
                 island_weight=self.island_weight,
+                alternative=self.alternative,
             )
             # Set p-values for those with LJC of 0 to NaN
             self.p_sim[self.LJC == 0] = "NaN"

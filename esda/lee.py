@@ -247,20 +247,3 @@ class Spatial_Pearson_Local(BaseEstimator):
 def _local_spatial_pearson_crand(i, z, permuted_ids, weights_i, scaling):
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
     return (zyrand @ weights_i) * (zxrand @ weights_i) * scaling
-
-
-if __name__ == "__main__":
-    import geopandas
-    import libpysal
-
-    df = geopandas.read_file(libpysal.examples.get_path("columbus.shp"))
-    x = df[["HOVAL"]].values
-    y = df[["CRIME"]].values
-    zx = preprocessing.StandardScaler().fit_transform(x)
-    zy = preprocessing.StandardScaler().fit_transform(y)
-    w = libpysal.weights.Queen.from_dataframe(df)
-    w.transform = "r"
-    numpy.random.seed(2478879)
-    testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x, y)
-    numpy.random.seed(2478879)
-    testlocal = Spatial_Pearson_Local(connectivity=w.sparse).fit(x, y)

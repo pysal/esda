@@ -85,9 +85,9 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
     >>> from esda.adbscan import ADBSCAN
     >>> import numpy as np
     >>> np.random.seed(10)
-    >>> db = pandas.DataFrame({'X': np.random.random(25), \
-                               'Y': np.random.random(25) \
-                              })
+    >>> db = pandas.DataFrame(
+    ...     {'X': np.random.random(25), 'Y': np.random.random(25)}
+    ... )
 
     ADBSCAN can be run following scikit-learn like API as:
 
@@ -95,9 +95,10 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
     >>> clusterer = ADBSCAN(0.03, 3, reps=10, keep_solus=True)
     >>> _ = clusterer.fit(db)
     >>> clusterer.labels_
-    array(['-1', '-1', '-1', '0', '-1', '-1', '-1', '0', '-1', '-1', '-1',
-           '-1', '-1', '-1', '0', '0', '0', '-1', '0', '-1', '0', '-1', '-1',
-           '-1', '-1'], dtype=object)
+    <StringArray>
+    ['-1', '-1', '-1',  '0', '-1', '-1', '-1',  '0', '-1', '-1', '-1', '-1', '-1',
+     '-1',  '0',  '0',  '0', '-1',  '0', '-1',  '0', '-1', '-1', '-1', '-1']
+    Length: 25, dtype: str
 
     We can inspect the winning label for each observation, as well as the
     proportion of votes:
@@ -121,8 +122,6 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
     3      0      1      1      0      0      1      1      1      0      0
     4      0      1      1      1      0      1      0      1      0      1
 
-
-
     If we select only one replication and the proportion of the entire dataset
     that is sampled to 100%, we obtain a traditional DBSCAN:
 
@@ -130,10 +129,10 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
     >>> np.random.seed(10)
     >>> _ = clusterer.fit(db)
     >>> clusterer.labels_
-    array(['0', '-1', '0', '0', '0', '-1', '-1', '0', '-1', '-1', '0', '-1',
-           '-1', '-1', '0', '0', '0', '-1', '0', '0', '0', '-1', '-1', '0',
-           '-1'], dtype=object)
-
+    <StringArray>
+    [ '0', '-1',  '0',  '0',  '0', '-1', '-1',  '0', '-1', '-1',  '0', '-1', '-1',
+     '-1',  '0',  '0',  '0', '-1',  '0',  '0',  '0', '-1', '-1',  '0', '-1']
+    Length: 25, dtype: str
     """
 
     def __init__(
@@ -294,15 +293,17 @@ def remap_lbls(solus, xys, xy=["X", "Y"], n_jobs=1):
 
     Examples
     --------
-
     >>> import pandas
-    >>> db = pandas.DataFrame({"X": [0, 0.1, 4, 6, 5], \
-                               "Y": [0, 0.2, 5, 7, 5] \
-                              })
-    >>> solus = pandas.DataFrame({"rep-00": [0, 0, 7, 7, -1], \
-                                  "rep-01": [4, 4, -1, 6, 6], \
-                                  "rep-02": [5, 5, 8, 8, 8] \
-                                 })
+    >>> db = pandas.DataFrame(
+    ...     {"X": [0, 0.1, 4, 6, 5], "Y": [0, 0.2, 5, 7, 5]}
+    ... )
+    >>> solus = pandas.DataFrame(
+    ...     {
+    ...         "rep-00": [0, 0, 7, 7, -1],
+    ...         "rep-01": [4, 4, -1, 6, 6],
+    ...         "rep-02": [5, 5, 8, 8, 8],
+    ...     }
+    ... )
     >>> print(remap_lbls(solus, db).to_string())
        rep-00  rep-01  rep-02
     0       0       0       0
@@ -407,15 +408,17 @@ def ensemble(solus_relabelled):
 
     Examples
     --------
-
     >>> import pandas
-    >>> db = pandas.DataFrame({"X": [0, 0.1, 4, 6, 5], \
-                               "Y": [0, 0.2, 5, 7, 5] \
-                              })
-    >>> solus = pandas.DataFrame({"rep-00": [0, 0, 7, 7, -1], \
-                                  "rep-01": [4, 4, -1, 6, 6], \
-                                  "rep-02": [5, 5, 8, 8, 8] \
-                                 })
+    >>> db = pandas.DataFrame(
+    ...     {"X": [0, 0.1, 4, 6, 5], "Y": [0, 0.2, 5, 7, 5]}
+    ... )
+    >>> solus = pandas.DataFrame(
+    ...     {
+    ...         "rep-00": [0, 0, 7, 7, -1],
+    ...         "rep-01": [4, 4, -1, 6, 6],
+    ...         "rep-02": [5, 5, 8, 8, 8],
+    ...     }
+    ... )
     >>> solus_rl = remap_lbls(solus, db)
     >>> print(round(ensemble(solus_rl), 2).to_string())
        lbls   pct
@@ -424,7 +427,6 @@ def ensemble(solus_relabelled):
     2     7  0.67
     3     7  1.00
     4     7  0.67
-
     """
 
     counts = np.array(
@@ -498,9 +500,9 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     >>> from esda.adbscan import ADBSCAN, get_cluster_boundary
     >>> import numpy as np
     >>> np.random.seed(10)
-    >>> db = pandas.DataFrame({'X': np.random.random(25), \
-                               'Y': np.random.random(25) \
-                              })
+    >>> db = pandas.DataFrame(
+    ...     {'X': np.random.random(25), 'Y': np.random.random(25)}
+    ... )
 
     ADBSCAN can be run following scikit-learn like API as:
 
@@ -509,7 +511,7 @@ def get_cluster_boundary(labels, xys, xy=["X", "Y"], n_jobs=1, crs=None, step=1)
     >>> _ = clusterer.fit(db)
     >>> labels = pandas.Series(clusterer.labels_, index=db.index)
     >>> polys = get_cluster_boundary(labels, db)
-    >>> polys[0].wkt
+    >>> polys.squeeze().wkt
     'POLYGON ((0.7217553174317995 0.8192869956700687, 0.7605307121989587 0.9086488808086682, 0.9177741225129434 0.8568503024577332, 0.8126209616521135 0.6262871483113925, 0.6125260668293881 0.5475861559192435, 0.5425443680112613 0.7546476915298572, 0.7217553174317995 0.8192869956700687))'
     """  # noqa: E501
 

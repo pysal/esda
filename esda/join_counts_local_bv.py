@@ -22,6 +22,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         seed=None,
         island_weight=0,
         drop_islands=True,
+        alternative=None,
     ):
         """
         Initialize a Local_Join_Counts_BV estimator
@@ -53,6 +54,9 @@ class Join_Counts_Local_BV(BaseEstimator):
             list. By default, observations with no neighbors do not appear
             in the adjacency list. If islands are kept, they are coded as
             self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        alternative : None | str = None
+            The alternative hypothesis for conditional randomization.
+            See ``crand.crand()`` for complete description.
         """
 
         self.connectivity = connectivity
@@ -62,6 +66,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         self.seed = seed
         self.island_weight = island_weight
         self.drop_islands = drop_islands
+        self.alternative = alternative
 
     def fit(self, x, z, case="CLC", n_jobs=1, permutations=999):
         """
@@ -82,46 +87,87 @@ class Join_Counts_Local_BV(BaseEstimator):
         Examples
         --------
         >>> import libpysal
+        >>> import numpy
         >>> w = libpysal.weights.lat2W(4, 4)
-        >>> x = np.ones(16)
+        >>> x = numpy.ones(16)
         >>> x[0:8] = 0
         >>> z = [0,1,0,1,1,1,1,1,0,0,1,1,0,0,1,1]
-        >>> LJC_BV_C1 = Local_Join_Counts_BV(connectivity=w).fit(x, z, case="BJC")
-        >>> LJC_BV_C2 = Local_Join_Counts_BV(connectivity=w).fit(x, z, case="CLC")
+        >>> LJC_BV_C1 = Join_Counts_Local_BV(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
+        ... ).fit(x, z, case="BJC")
+        >>> LJC_BV_C2 = Join_Counts_Local_BV(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
+        ... ).fit(x, z, case="CLC")
         >>> LJC_BV_C1.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0.])
         >>> LJC_BV_C1.p_sim
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 1.   ,
+               0.234,   nan,   nan,   nan,   nan,   nan,   nan], dtype=float32)
         >>> LJC_BV_C2.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 2., 0., 0., 2., 2.])
         >>> LJC_BV_C2.p_sim
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan, 0.389, 0.509,   nan,   nan, 0.488, 0.65 ], dtype=float32)
 
         Commpop data replicating GeoDa tutorial (Case 1)
-        >>> import libpysal
+
         >>> import geopandas as gpd
         >>> commpop = gpd.read_file(
         ...     "https://github.com/jeffcsauer/GSOC2020/raw/master/"
         ...     "validation/data/commpop.gpkg"
         ... )
-        >>> w = libpysal.weights.Queen.from_dataframe(commpop)
-        >>> LJC_BV_Case1 = Local_Join_Counts_BV(
-        ...     connectivity=w
+        >>> w = libpysal.weights.Queen.from_dataframe(commpop, use_index=True)
+        >>> LJC_BV_Case1 = Join_Counts_Local_BV(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
         ... ).fit(commpop['popneg'], commpop['popplus'], case='BJC')
         >>> LJC_BV_Case1.LJC
+        array([2., 0., 1., 1., 0., 0., 0., 0., 0., 0., 1., 0., 1., 1., 2., 1., 3.,
+               0., 0., 0., 1., 0., 0., 1., 2., 2., 0., 1., 0., 1., 0., 2., 4., 0.,
+               0., 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 4., 0., 0., 1., 0., 1., 2., 0., 0., 0., 0., 3., 1., 0., 0., 1.,
+               0., 1., 2., 0., 0., 1., 0., 0., 0.])
         >>> LJC_BV_Case1.p_sim
+        array([0.386,   nan, 1.   , 1.   ,   nan,   nan,   nan,   nan,   nan,
+                 nan, 0.576,   nan, 0.539, 1.   , 0.7  , 1.   , 0.372,   nan,
+                 nan,   nan, 1.   ,   nan,   nan, 1.   , 0.306, 0.306,   nan,
+               1.   ,   nan, 1.   ,   nan, 0.301, 0.12 ,   nan,   nan, 0.368,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.26 ,   nan,
+                 nan, 1.   ,   nan, 1.   , 0.694,   nan,   nan,   nan,   nan,
+               0.274, 1.   ,   nan,   nan, 1.   ,   nan, 1.   , 0.325,   nan,
+                 nan, 1.   ,   nan,   nan,   nan], dtype=float32)
 
         Guerry data replicating GeoDa tutorial (Case 2)
+
         >>> import libpysal
         >>> import geopandas as gpd
         >>> guerry = libpysal.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
+        >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
         >>> guerry_ds['infq5'] = 0
         >>> guerry_ds['donq5'] = 0
         >>> guerry_ds.loc[(guerry_ds['Infants'] > 23574), 'infq5'] = 1
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10973), 'donq5'] = 1
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_BV_Case2 = Local_Join_Counts_BV(
-        ...     connectivity=w
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=True)
+        >>> LJC_BV_Case2 = Join_Counts_Local_BV(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
         ... ).fit(guerry_ds['infq5'], guerry_ds['donq5'], case='CLC')
         >>> LJC_BV_Case2.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0.])
         >>> LJC_BV_Case2.p_sim
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan, 0.788,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 1.   ,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.827,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan, 0.786,   nan,   nan,   nan,   nan,   nan, 0.828,
+                 nan,   nan,   nan,   nan], dtype=float32)
         """
         # Need to ensure that the np.array() are of dtype='float' for numba
         x = np.array(x, dtype="float")
@@ -155,7 +201,9 @@ class Join_Counts_Local_BV(BaseEstimator):
                     keep=True,
                     n_jobs=n_jobs,
                     stat_func=_ljc_bv_case1,
+                    seed=self.seed,
                     island_weight=self.island_weight,
+                    alternative=self.alternative,
                 )
                 # Set p-values for those with LJC of 0 to NaN
                 self.p_sim[self.LJC == 0] = "NaN"
@@ -168,7 +216,9 @@ class Join_Counts_Local_BV(BaseEstimator):
                     keep=True,
                     n_jobs=n_jobs,
                     stat_func=_ljc_bv_case2,
+                    seed=self.seed,
                     island_weight=self.island_weight,
+                    alternative=self.alternative,
                 )
                 # Set p-values for those with LJC of 0 to NaN
                 self.p_sim[self.LJC == 0] = "NaN"

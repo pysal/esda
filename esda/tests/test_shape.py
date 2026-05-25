@@ -317,7 +317,14 @@ def test_mir_with_regions_and_ref_pts():
 
 
 def test_second_areal_moment():
-    observed = esda.shape.second_areal_moment(testbench.geometry)
+    with pytest.warns(
+        DeprecationWarning,
+        match=(
+            "`second_areal_moment` is deprecated and "
+            "will be removed in a future version"
+        ),
+    ):
+        observed = esda.shape.second_areal_moment(testbench.geometry)
     testing.assert_allclose(
         observed,
         [0.23480628, 0.11458333, 1.57459077, 1.58210246, 14.18946959],
@@ -326,7 +333,20 @@ def test_second_areal_moment():
 
 
 def test_moa():
-    observed = esda.shape.moa_ratio(shape)
+    with (
+        pytest.warns(
+            DeprecationWarning,
+            match=(
+                "`second_areal_moment` is deprecated and "
+                "will be removed in a future version"
+            ),
+        ),
+        pytest.warns(
+            DeprecationWarning,
+            match="`moa_ratio` is deprecated and will be removed in a future version.",
+        ),
+    ):
+        observed = esda.shape.moa_ratio(shape)
     testing.assert_allclose(observed, 5.35261, atol=ATOL)
 
 

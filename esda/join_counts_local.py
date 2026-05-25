@@ -22,6 +22,7 @@ class Join_Counts_Local(BaseEstimator):
         seed=None,
         island_weight=0,
         drop_islands=True,
+        alternative=None,
     ):
         """
         Initialize a Local_Join_Count estimator
@@ -54,6 +55,9 @@ class Join_Counts_Local(BaseEstimator):
             list. By default, observations with no neighbors do not appear
             in the adjacency list. If islands are kept, they are coded as
             self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        alternative : None | str = None
+            The alternative hypothesis for conditional randomization.
+            See ``crand.crand()`` for complete description.
 
         Attributes
         ----------
@@ -73,6 +77,7 @@ class Join_Counts_Local(BaseEstimator):
         self.seed = seed
         self.island_weight = island_weight
         self.drop_islands = drop_islands
+        self.alternative = alternative
 
     def fit(self, y, n_jobs=1, permutations=999):
         """
@@ -91,24 +96,48 @@ class Join_Counts_Local(BaseEstimator):
         Examples
         --------
         >>> import libpysal
+        >>> import numpy
         >>> w = libpysal.weights.lat2W(4, 4)
-        >>> y = np.ones(16)
+        >>> y = numpy.ones(16)
         >>> y[0:8] = 0
-        >>> LJC_uni = Local_Join_Count(connectivity=w).fit(y)
+        >>> from esda import Join_Counts_Local
+        >>> LJC_uni = Join_Counts_Local(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
+        ... ).fit(y)
         >>> LJC_uni.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 2., 3., 3., 2., 2., 3., 3., 2.])
         >>> LJC_uni.p_sim
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.21 ,
+               0.086, 0.086, 0.21 , 0.465, 0.21 , 0.21 , 0.465], dtype=float32)
 
         Guerry data replicating GeoDa tutorial
-        >>> import libpysal
+
         >>> import geopandas as gpd
         >>> guerry = libpysal.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
+        >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
         >>> guerry_ds['SELECTED'] = 0
         >>> guerry_ds.loc[(guerry_ds['Donatns'] > 10997), 'SELECTED'] = 1
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> LJC_uni = Local_Join_Count(connectivity=w).fit(guerry_ds['SELECTED'])
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)
+        >>> LJC_uni = Join_Counts_Local(
+        ...     connectivity=w, seed=12345, alternative='two-sided',
+        ... ).fit(guerry_ds['SELECTED'])
         >>> LJC_uni.LJC
+        array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 3., 3., 0.,
+               1., 0., 0., 0., 0., 0., 0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 1.,
+               0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 2., 0., 3., 0., 0.])
         >>> LJC_uni.p_sim
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan, 0.651,   nan, 0.379, 0.379,   nan, 0.548,
+                 nan,   nan,   nan,   nan,   nan,   nan, 0.563,   nan, 0.707,
+                 nan,   nan,   nan,   nan,   nan,   nan, 0.566,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.596,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
+                 nan,   nan, 0.425,   nan,   nan,   nan,   nan,   nan, 0.507,
+                 nan, 0.36 ,   nan,   nan], dtype=float32)
         """
         # Need to ensure that the np.array() are of
         # dtype='float' for numba
@@ -141,7 +170,9 @@ class Join_Counts_Local(BaseEstimator):
                 keep=keep_simulations,
                 n_jobs=n_jobs,
                 stat_func=_ljc_uni,
+                seed=self.seed,
                 island_weight=self.island_weight,
+                alternative=self.alternative,
             )
             # Set p-values for those with LJC of 0 to NaN
             self.p_sim[self.LJC == 0] = "NaN"

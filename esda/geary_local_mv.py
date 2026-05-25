@@ -1,13 +1,9 @@
 import numpy as np
 import pandas as pd
 from libpysal import weights
-from packaging.version import Version
 from scipy import stats
-from sklearn import __version__ as sklearn_version
 from sklearn.base import BaseEstimator
 from sklearn.utils import check_array
-
-SKL_GE_16 = Version(sklearn_version) >= Version("1.6")
 
 
 class Geary_Local_MV(BaseEstimator):
@@ -58,36 +54,33 @@ class Geary_Local_MV(BaseEstimator):
 
         Notes
         -----
-        Technical details and derivations can be found in :cite:`Anselin1995`.
+        Technical details and derivations can be found in :cite:`Anselin95`.
 
         Examples
         --------
         Guerry data replication GeoDa tutorial
+
         >>> import libpysal
         >>> import geopandas as gpd
-        >>> guerry = lp.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
-        >>> import libpysal
-        >>> import geopandas as gpd
-        >>> guerry = lp.examples.load_example('Guerry')
-        >>> guerry_ds = gpd.read_file(guerry.get_path('Guerry.shp'))
-        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds)
+        >>> from esda import Geary_Local_MV
+        >>> guerry = libpysal.examples.load_example('Guerry')
+        >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
+        >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)
         >>> x1 = guerry_ds['Donatns']
         >>> x2 = guerry_ds['Suicids']
-        >>> lG_mv = Local_Geary(connectivity=w).fit([x1,x2])
+        >>> lG_mv = Geary_Local_MV(connectivity=w).fit([x1, x2])
         >>> lG_mv.localG[0:5]
-        >>> lG_mv.p_sim[0:5]
+        array([0.15381853, 0.30355953, 2.95472008, 0.12313959, 0.38795991])
+        >>> lG_mv.p_sim[0:5]  # doctest: +SKIP
+        array([0.012, 0.004, 0.016, 0.021, 0.252])
         """
-
-        all_finite_kwarg = "ensure_all_finite" if SKL_GE_16 else "force_all_finite"
 
         self.variables = check_array(
             variables,
             accept_sparse=False,
             dtype="float",
             estimator=self,
-            **{all_finite_kwarg: True},
+            ensure_all_finite=True,
         )
 
         w = self.connectivity

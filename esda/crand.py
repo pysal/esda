@@ -106,6 +106,15 @@ def crand(
                 Scaling value to apply to every local statistic
      seed : None/int
         Seed to ensure reproducibility of conditional randomizations
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization. The current behavior
+        is ``None``, which defaults to ``'directed'``. We strongly recommend moving
+        to ``'two-sided'``. Valid alternatives include:
+            * 'two-sided'
+            * 'greater'
+            * 'lesser'
+            * 'directed' -- Current default behavior
+            * 'folded'
 
     Returns
     -------
@@ -130,14 +139,14 @@ def crand(
         else:
             raise NotImplementedError(
                 f"multivariable input is not yet supported in "
-                f"conditional randomization. Recieved `z` of shape {z.shape}"
+                f"conditional randomization. Received `z` of shape {z.shape}"
             )
     elif z.ndim == 1:
         scaling = (n - 1) / (z * z).sum() if (scaling is None) else scaling
     else:
         raise NotImplementedError(
             f"multivariable input is not yet supported in "
-            f"conditional randomization. Recieved `z` of shape {z.shape}"
+            f"conditional randomization. Received `z` of shape {z.shape}"
         )
 
     if alternative is None:
@@ -563,7 +572,7 @@ def parallel_crand(
 
     p_sims, rlocals = zip(*worker_out, strict=True)
     p_sims = np.hstack(p_sims).squeeze()
-    rlocals = np.row_stack(rlocals).squeeze()
+    rlocals = np.vstack(rlocals).squeeze()
     return p_sims, rlocals
 
 

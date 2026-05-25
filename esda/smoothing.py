@@ -21,11 +21,9 @@ __author__ = (
 from functools import reduce
 
 import numpy as np
-from libpysal.cg import (
-    KDTree,
-)
 from libpysal.weights.distance import Kernel
 from libpysal.weights.spatial_lag import lag_spatial as slag
+from scipy.spatial import KDTree
 from scipy.stats import chi2, gamma, norm, poisson
 
 __all__ = [
@@ -67,7 +65,6 @@ def flatten(l, unique=True):  # noqa: E741 - Ambiguous variable name: `l`
 
     Examples
     --------
-
     Creating a sample list whose elements are lists of integers
 
     >>> l = [[1, 2], [3, 4, ], [5, 6]]
@@ -76,7 +73,6 @@ def flatten(l, unique=True):  # noqa: E741 - Ambiguous variable name: `l`
 
     >>> flatten(l)
     [1, 2, 3, 4, 5, 6]
-
     """
     l = reduce(lambda x, y: x + y, l)  # noqa: E741 - Ambiguous variable name: `l`
     if not unique:
@@ -105,7 +101,6 @@ def weighted_median(d, w):
 
     Examples
     --------
-
     Creating an array including five integers.
     We will get the median of these integers.
 
@@ -120,8 +115,7 @@ def weighted_median(d, w):
     Applying weighted_median function
 
     >>> weighted_median(d, w)
-    4
-
+    np.int64(4)
     """
     dtype = [("w", f"{w.dtype}"), ("v", f"{d.dtype}")]
     d_w = np.array(list(zip(w, d, strict=True)), dtype=dtype)
@@ -155,7 +149,6 @@ def sum_by_n(d, w, n):
 
     Examples
     --------
-
     Creating an array including four integers.
     We will compute weighted means for every two elements.
 
@@ -173,7 +166,6 @@ def sum_by_n(d, w, n):
 
     >>> sum_by_n(d, w, n)
     array([ 5.9, 30. ])
-
     """
     t = len(d)
     h = t // n  # must be floor!
@@ -205,7 +197,6 @@ def crude_age_standardization(e, b, n):
 
     Examples
     --------
-
     Creating an array of an event variable (e.g., the number of cancer patients)
     for 2 regions in each of which 4 age groups are available.
     The first 4 values are event values for 4 age groups in the region 1,
@@ -227,7 +218,6 @@ def crude_age_standardization(e, b, n):
 
     >>> crude_age_standardization(e, b, n)
     array([0.2375    , 0.26666667])
-
     """
     r = e * 1.0 / b
     b_by_n = sum_by_n(b, 1.0, n)
@@ -264,7 +254,6 @@ def direct_age_standardization(e, b, s, n, alpha=0.05):
 
     Examples
     --------
-
     Creating an array of an event variable (e.g., the number of cancer patients)
     for 2 regions in each of which 4 age groups are available.
     The first 4 values are event values for 4 age groups in the region 1,
@@ -295,10 +284,9 @@ def direct_age_standardization(e, b, s, n, alpha=0.05):
 
     >>> a, b = [i[0] for i in direct_age_standardization(e, b, s, n)]
     >>> round(a, 4)
-    0.0237
+    np.float64(0.0237)
     >>> round(b, 4)
-    0.0267
-
+    np.float64(0.0267)
     """
     age_weight = (1.0 / b) * (s * 1.0 / sum_by_n(s, 1.0, n).repeat(len(s) // n))
     adjusted_r = sum_by_n(e, age_weight, n)
@@ -355,7 +343,6 @@ def indirect_age_standardization(e, b, s_e, s_b, n, alpha=0.05):
 
     Examples
     --------
-
     Creating an array of an event variable (e.g., the number of cancer patients)
     for 2 regions in each of which 4 age groups are available.
     The first 4 values are event values for 4 age groups in the region 1,
@@ -388,8 +375,7 @@ def indirect_age_standardization(e, b, s_e, s_b, n, alpha=0.05):
     Applying indirect_age_standardization function to e and b
 
     >>> [i[0] for i in indirect_age_standardization(e, b, s_e, s_b, n)]
-    [0.23723821989528798, 0.2610803324099723]
-
+    [np.float64(0.23723821989528798), np.float64(0.2610803324099723)]
     """
     smr = standardized_mortality_ratio(e, b, s_e, s_b, n)
     s_r_all = sum(s_e * 1.0) / sum(s_b * 1.0)
@@ -437,7 +423,6 @@ def standardized_mortality_ratio(e, b, s_e, s_b, n):
 
     Examples
     --------
-
     Creating an array of an event variable (e.g., the number of cancer patients)
     for 2 regions in each of which 4 age groups are available.
     The first 4 values are event values for 4 age groups in the region 1,
@@ -466,10 +451,9 @@ def standardized_mortality_ratio(e, b, s_e, s_b, n):
 
     >>> a, b = standardized_mortality_ratio(e, b, s_e, s_b, n)
     >>> round(a, 4)
-    2.4869
+    np.float64(2.4869)
     >>> round(b, 4)
-    2.7368
-
+    np.float64(2.7368)
     """
     s_r = s_e * 1.0 / s_b
     e_by_n = sum_by_n(e, 1.0, n)
@@ -502,7 +486,6 @@ def choynowski(e, b, n, threshold=None):
 
     Examples
     --------
-
     Creating an array of an event variable (e.g., the number of cancer patients)
     for 2 regions in each of which 4 age groups are available.
     The first 4 values are event values for 4 age groups in the region 1,
@@ -524,10 +507,9 @@ def choynowski(e, b, n, threshold=None):
 
     >>> a,b = choynowski(e, b, n)
     >>> round(a, 3)
-    0.304
+    np.float64(0.304)
     >>> round(b, 3)
-    0.294
-
+    np.float64(0.294)
     """
     e_by_n = sum_by_n(e, 1.0, n)
     b_by_n = sum_by_n(b, 1.0, n)
@@ -567,7 +549,6 @@ def assuncao_rate(e, b):
 
     Examples
     --------
-
     Creating an array of an event variable (e.g., the number of cancer patients)
     for 8 regions.
 
@@ -583,7 +564,6 @@ def assuncao_rate(e, b):
 
     >>> assuncao_rate(e, b)[:4]
     array([ 1.03843594, -0.04099089, -0.56250375, -1.73061861])
-
     """
 
     y = e * 1.0 / b
@@ -614,9 +594,9 @@ class Excess_Risk:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
+
     >>> import libpysal
     >>> stl = libpysal.io.open(libpysal.examples.get_path('stl_hom.csv'), 'r')
 
@@ -643,7 +623,6 @@ class Excess_Risk:
            [0.17020994],
            [0.3052372 ],
            [0.25821905]])
-
     """
 
     def __init__(self, e, b):
@@ -670,7 +649,6 @@ class Empirical_Bayes:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
@@ -701,7 +679,6 @@ class Empirical_Bayes:
            [2.03064590e-05],
            [3.31152999e-05],
            [3.02748380e-05]])
-
     """
 
     def __init__(self, e, b):
@@ -736,7 +713,6 @@ class Spatial_Empirical_Bayes:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
@@ -824,7 +800,6 @@ class Spatial_Rate:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
@@ -899,7 +874,6 @@ class Kernel_Smoother:
 
     Examples
     --------
-
     Creating an array including event values for 6 regions
 
     >>> e = np.array([10, 1, 3, 4, 2, 5])
@@ -976,7 +950,6 @@ class Age_Adjusted_Smoother:
 
     Examples
     --------
-
     Creating an array including 12 values for the 6 regions with 2 age groups
 
     >>> e = np.array([10, 8, 1, 4, 3, 5, 4, 3, 2, 1, 5, 3])
@@ -1053,7 +1026,6 @@ class Disk_Smoother:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
@@ -1094,7 +1066,6 @@ class Disk_Smoother:
            [2.36924573e-05],
            [3.48801587e-05],
            [3.09511832e-05]])
-
     """
 
     def __init__(self, e, b, w):
@@ -1137,7 +1108,6 @@ class Spatial_Median_Rate:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 
@@ -1209,7 +1179,6 @@ class Spatial_Median_Rate:
     array([3.61363528e-05, 4.46449551e-05, 3.61363528e-05, 3.61363528e-05,
            4.46449551e-05, 3.61363528e-05, 3.61363528e-05, 4.46449551e-05,
            3.61363528e-05, 4.46449551e-05])
-    >>>
     """
 
     def __init__(self, e, b, w, aw=None, iteration=1):
@@ -1275,7 +1244,6 @@ class Spatial_Filtering:
 
     Examples
     --------
-
     Reading data in stl_hom.csv into stl to extract values
     for event and population-at-risk variables
 

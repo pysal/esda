@@ -94,51 +94,48 @@ class Join_Counts:
         in the adjacency list. If islands are kept, they are coded as
         self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
-
-
     Examples
     --------
-
     >>> import numpy as np
     >>> import libpysal
     >>> w = libpysal.weights.lat2W(4, 4)
     >>> y = np.ones(16)
     >>> y[0:8] = 0
     >>> np.random.seed(12345)
-    >>> from esda.join_counts import Join_Counts
+    >>> from esda import Join_Counts
     >>> jc = Join_Counts(y, w)
     >>> jc.bb
-    10.0
+    np.float64(10.0)
     >>> jc.bw
-    4.0
+    np.float64(4.0)
     >>> jc.ww
-    10.0
+    np.float64(10.0)
     >>> jc.J
-    24.0
+    np.float64(24.0)
     >>> len(jc.sim_bb)
     999
     >>> round(jc.p_sim_bb, 3)
-    0.003
+    np.float64(0.003)
     >>> round(np.mean(jc.sim_bb), 3)
-    5.547
+    np.float64(5.547)
     >>> np.max(jc.sim_bb)
-    10.0
+    np.float64(10.0)
     >>> np.min(jc.sim_bb)
-    0.0
+    np.float64(0.0)
     >>> len(jc.sim_bw)
     999
     >>> jc.p_sim_bw
-    1.0
+    np.float64(1.0)
     >>> np.mean(jc.sim_bw)
-    12.811811811811811
+    np.float64(12.811811811811811)
     >>> np.max(jc.sim_bw)
-    24.0
+    np.float64(24.0)
     >>> np.min(jc.sim_bw)
-    7.0
+    np.float64(7.0)
     >>> round(jc.chi2_p, 3)
-    0.004
+    np.float64(0.004)
     >>> jc.p_sim_chi2
-    0.002
+    np.float64(0.008)
 
     Notes
     -----

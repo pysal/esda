@@ -68,24 +68,28 @@ class LOSH(BaseEstimator):
 
         Examples
         --------
-        >>> import libpysal
+        >>> import libpysal, numpy
         >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
         >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
-        >>> y = np.array(f.by_col['HR8893'])
-        >>> from esda import losh
-        >>> ls = losh(connectivity=w, inference="chi-square").fit(y)
-        >>> np.round(ls.Hi[0], 3)
-        >>> np.round(ls.pval[0], 3)
+        >>> y = numpy.array(f.by_col['HR8893'])
+        >>> from esda import LOSH
+        >>> ls = LOSH(connectivity=w, inference="chi-square").fit(y)
+        >>> numpy.round(ls.Hi[0], 3)
+        np.float64(0.776)
+        >>> numpy.round(ls.pval[0], 3)
+        np.float64(0.228)
 
         Boston housing data replicating R spdep::LOSH()
-        >>> import libpysal
+
         >>> import geopandas as gpd
         >>> boston = libpysal.examples.load_example('Bostonhsg')
         >>> boston_ds = gpd.read_file(boston.get_path('boston.shp'))
-        >>> w = libpysal.weights.Queen.from_dataframe(boston_ds)
-        >>> ls = losh(connectivity=w, inference="chi-square").fit(boston['NOX'])
-        >>> np.round(ls.Hi[0], 3)
-        >>> np.round(ls.VarHi[0], 3)
+        >>> w = libpysal.weights.Queen.from_dataframe(boston_ds, use_index=False)
+        >>> ls = LOSH(connectivity=w, inference="chi-square").fit(boston_ds['NOX'])
+        >>> numpy.round(ls.Hi[0], 3)
+        np.float64(0.197)
+        >>> numpy.round(ls.VarHi[0], 3)
+        np.float64(0.814)
         """
         y = np.asarray(y).flatten()
 

@@ -143,41 +143,39 @@ class Moran:
     -----
     Technical details and derivations can be found in :cite:`cliff81`.
 
-
     Examples
     --------
-    >>> import libpysal
+    >>> import libpysal, numpy
     >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
-    >>> y = np.array(f.by_col['HR8893'])
-    >>> from esda.moran import Moran
+    >>> y = numpy.array(f.by_col['HR8893'])
+    >>> from esda import Moran
     >>> mi = Moran(y,  w)
     >>> round(mi.I, 3)
-    0.244
+    np.float64(0.244)
     >>> mi.EI
     -0.012987012987012988
-    >>> mi.p_norm
-    0.00027147862770937614
+    >>> round(mi.p_norm, 6)
+    np.float64(0.000271)
 
     SIDS example replicating OpenGeoda
 
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
-    >>> SIDR = np.array(f.by_col("SIDR74"))
+    >>> SIDR = numpy.array(f.by_col("SIDR74"))
     >>> mi = Moran(SIDR,  w)
     >>> round(mi.I, 3)
-    0.248
+    np.float64(0.248)
     >>> mi.p_norm
-    0.0001158330781489969
+    np.float64(0.00011583307814905095)
 
     One-tailed
 
     >>> mi_1 = Moran(SIDR,  w, two_tailed=False)
     >>> round(mi_1.I, 3)
-    0.248
+    np.float64(0.248)
     >>> round(mi_1.p_norm, 4)
-    0.0001
-
+    np.float64(0.0001)
     """  # noqa: E501
 
     def __init__(
@@ -311,7 +309,6 @@ class Moran:
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
-
         """
 
         msg = (
@@ -408,22 +405,22 @@ class Moran:
 
         Examples
         --------
-        >>> import libpysal
+        >>> import libpysal, numpy
         >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
         >>> f = libpysal.io.open(libpysal.examples.get_path("stl_hom.txt"))
-        >>> y = np.array(f.by_col['HR8893'])
-        >>> from esda.moran import Moran
+        >>> y = numpy.array(f.by_col['HR8893'])
+        >>> from esda import Moran
         >>> mi = Moran(y,  w)
 
         Default plot:
 
-        >>> mi.plot_simulation()
+        >>> mi.plot_simulation()  # doctest: +SKIP
 
         Customized styling that turns the distribution into a pink line and line
         indicating I to a black line:
 
-        >>> mi.plot_simulation(fitline_kwds={"color": "k"}, color="pink", shade=False)
-        """
+        >>> mi.plot_simulation(fitline_kwds={"color": "k"}, color="pink", shade=False)  # doctest: +SKIP
+        """  # noqa: E501
         return _simulation_plot(
             self,
             ax=ax,
@@ -497,25 +494,23 @@ class Moran_BV:
 
     Notes
     -----
-
     Inference is only based on permutations as analytical results are not too
     reliable.
 
     Examples
     --------
-    >>> import libpysal
-    >>> import numpy as np
+    >>> import libpysal, numpy
 
     Set random number generator seed so we can replicate the example
 
-    >>> np.random.seed(10)
+    >>> numpy.random.seed(10)
 
     Open the sudden infant death dbf file and read in rates for 74 and 79
     converting each to a numpy array
 
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
-    >>> SIDR74 = np.array(f.by_col['SIDR74'])
-    >>> SIDR79 = np.array(f.by_col['SIDR79'])
+    >>> SIDR74 = numpy.array(f.by_col['SIDR74'])
+    >>> SIDR79 = numpy.array(f.by_col['SIDR79'])
 
     Read a GAL file and construct our spatial weights object
 
@@ -523,20 +518,18 @@ class Moran_BV:
 
     Create an instance of Moran_BV
 
-    >>> from esda.moran import Moran_BV
+    >>> from esda import Moran_BV
     >>> mbi = Moran_BV(SIDR79,  SIDR74,  w)
 
     What is the bivariate Moran's I value
 
     >>> round(mbi.I, 3)
-    0.156
+    np.float64(0.156)
 
     Based on 999 permutations, what is the p-value of our statistic
 
     >>> round(mbi.p_z_sim, 3)
-    0.001
-
-
+    np.float64(0.001)
     """  # noqa: E501
 
     def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS):
@@ -632,7 +625,6 @@ class Moran_BV:
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
-
         """
 
         msg = (
@@ -749,7 +741,6 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     Examples
     --------
-
     open dbf
 
     >>> import libpysal
@@ -766,16 +757,15 @@ def Moran_BV_matrix(variables, w, permutations=0, varnames=None):
 
     create an instance of Moran_BV_matrix
 
-    >>> from esda.moran import Moran_BV_matrix
-    >>> res = Moran_BV_matrix(vars,  w,  varnames = varnames)
+    >>> from esda import Moran_BV_matrix
+    >>> res = Moran_BV_matrix(vars, w, varnames=varnames)
 
     check values
 
-    >>> round(res[(0,  1)].I,7)
-    0.1936261
-    >>> round(res[(3,  0)].I,7)
-    0.3770138
-
+    >>> round(res[(0, 1)].I, 7)
+    np.float64(0.1936261)
+    >>> round(res[(3, 0)].I, 7)
+    np.float64(0.3770138)
     """
     try:
         # check if pandas is installed
@@ -1024,12 +1014,12 @@ class Moran_Rate(Moran):
 
     Examples
     --------
-    >>> import libpysal
+    >>> import libpysal, numpy
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
-    >>> e = np.array(f.by_col('SID79'))
-    >>> b = np.array(f.by_col('BIR79'))
-    >>> from esda.moran import Moran_Rate
+    >>> e = numpy.array(f.by_col('SID79'))
+    >>> b = numpy.array(f.by_col('BIR79'))
+    >>> from esda import Moran_Rate
     >>> mi = Moran_Rate(e, b,  w, two_tailed=False)
     >>> "%6.4f" % mi.I
     '0.1662'
@@ -1184,7 +1174,6 @@ class Moran_Rate(Moran):
 class Moran_Local:
     """Local Moran Statistics.
 
-
     Parameters
     ----------
     y : array
@@ -1225,7 +1214,6 @@ class Moran_Local:
 
     Attributes
     ----------
-
     y : array
         original variable
     w : W | Graph
@@ -1299,35 +1287,47 @@ class Moran_Local:
         Seed to ensure reproducibility of conditional randomizations.
         Must be set here, and not outside of the function, since numba does
         not correctly interpret external seeds nor numpy.random.RandomState instances.
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization.
+        See ``crand.crand()`` for complete description.
 
     Notes
     -----
-
     For technical details see :cite:`Anselin95`.
-
 
     Examples
     --------
-    >>> import libpysal
-    >>> import numpy as np
-    >>> np.random.seed(10)
+    >>> import libpysal, numpy
+    >>> numpy.random.seed(10)
     >>> w = libpysal.io.open(libpysal.examples.get_path("desmith.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("desmith.txt"))
     >>> y = np.array(f.by_col['z'])
-    >>> from esda.moran import Moran_Local
-    >>> lm = Moran_Local(y, w, transformation = "r", permutations = 99)
+    >>> from esda import Moran_Local
+    >>> lm = Moran_Local(
+    ...     y,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=99,
+    ...     seed=12345,
+    ...     alternative="two-sided",
+    ... )
     >>> lm.q
     array([4, 4, 4, 2, 3, 3, 1, 4, 3, 3])
     >>> lm.p_z_sim[0]
-    0.24669152541631179
-    >>> lm = Moran_Local(y, w, transformation = "r", permutations = 99, \
-                            geoda_quads=True)
+    np.float64(0.24226691753791402)
+    >>> lm = Moran_Local(
+    ...     y,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=99,
+    ...     geoda_quads=True,
+    ...     seed=12345,
+    ...     alternative="two-sided",
+    ... )
     >>> lm.q
     array([4, 4, 4, 3, 2, 2, 1, 4, 2, 2])
-
-    Note random components result is slightly different values across
-    architectures so the results have been removed from doctests and will be
-    moved into unittests that are conditional on architectures.
+    >>> lm.p_z_sim[0]
+    np.float64(0.24226691753791402)
     """  # noqa: E501
 
     def __init__(
@@ -1341,6 +1341,7 @@ class Moran_Local:
         keep_simulations=True,
         seed=None,
         island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
+        alternative=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -1377,6 +1378,7 @@ class Moran_Local:
                 n_jobs=n_jobs,
                 stat_func=_moran_local_crand,
                 seed=seed,
+                alternative=alternative,
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1504,7 +1506,6 @@ class Moran_Local:
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
-
         """
 
         msg = (
@@ -1737,7 +1738,6 @@ class Moran_Local:
 class Moran_Local_BV:
     """Bivariate Local Moran Statistics.
 
-
     Parameters
     ----------
     x : array
@@ -1776,10 +1776,12 @@ class Moran_Local_BV:
         value to use as a weight for the "fake" neighbor for every island.
         If numpy.nan, will propagate to the final local statistic depending
         on the `stat_func`. If 0, then the lag is always zero for islands.
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization.
+        See ``crand.crand()`` for complete description.
 
     Attributes
     ----------
-
     zx : array
         original x variable standardized by mean and std
     zy : array
@@ -1822,26 +1824,40 @@ class Moran_Local_BV:
 
     Examples
     --------
-    >>> import libpysal
-    >>> import numpy as np
-    >>> np.random.seed(10)
+    >>> import libpysal, numpy
+    >>> numpy.random.seed(10)
     >>> w = libpysal.io.open(libpysal.examples.get_path("sids2.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("sids2.dbf"))
-    >>> x = np.array(f.by_col['SIDR79'])
-    >>> y = np.array(f.by_col['SIDR74'])
-    >>> from esda.moran import Moran_Local_BV
-    >>> lm =Moran_Local_BV(x, y, w, transformation = "r", \
-                               permutations = 99)
+    >>> x = numpy.array(f.by_col['SIDR79'])
+    >>> y = numpy.array(f.by_col['SIDR74'])
+    >>> from esda import Moran_Local_BV
+    >>> lm = Moran_Local_BV(
+    ...     x,
+    ...     y,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=99,
+    ...     seed=12345,
+    ...     alternative="two-sided",
+    ... )
     >>> lm.q[:10]
     array([3, 4, 3, 4, 2, 1, 4, 4, 2, 4])
-    >>> lm = Moran_Local_BV(x, y, w, transformation = "r", \
-                               permutations = 99, geoda_quads=True)
+    >>> round(lm.p_z_sim[0], 6)
+    np.float64(0.091648)
+    >>> lm = Moran_Local_BV(
+    ...     x,
+    ...     y,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=99,
+    ...     geoda_quads=True,
+    ...     seed=12345,
+    ...     alternative="two-sided",
+    ... )
     >>> lm.q[:10]
     array([2, 4, 2, 4, 3, 1, 4, 4, 3, 4])
-
-    Note random components result is slightly different values across
-    architectures so the results have been removed from doctests and will be
-    moved into unittests that are conditional on architectures.
+    >>> round(lm.p_z_sim[0], 6)
+    np.float64(0.091648)
     """  # noqa: E501
 
     def __init__(
@@ -1856,6 +1872,7 @@ class Moran_Local_BV:
         keep_simulations=True,
         seed=None,
         island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
+        alternative=None,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -1898,6 +1915,7 @@ class Moran_Local_BV:
                 n_jobs=n_jobs,
                 stat_func=_moran_local_bv_crand,
                 seed=seed,
+                alternative=alternative,
             )
             self.sim = np.transpose(self.rlisas)
             if keep_simulations:
@@ -1986,7 +2004,6 @@ class Moran_Local_BV:
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
-
         """
 
         msg = (
@@ -2226,6 +2243,9 @@ class Moran_Local_Rate(Moran_Local):
         value to use as a weight for the "fake" neighbor for every island.
         If numpy.nan, will propagate to the final local statistic depending
         on the `stat_func`. If 0, then the lag is always zero for islands.
+    alternative : None | str = None
+        The alternative hypothesis for conditional randomization.
+        See ``crand.crand()`` for complete description.
 
     Attributes
     ----------
@@ -2283,19 +2303,33 @@ class Moran_Local_Rate(Moran_Local):
     >>> e = np.array(f.by_col('SID79'))
     >>> b = np.array(f.by_col('BIR79'))
     >>> from esda.moran import Moran_Local_Rate
-    >>> lm = Moran_Local_Rate(e, b, w, transformation="r", permutations=99)
+    >>> lm = Moran_Local_Rate(
+    ...     e,
+    ...     b,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=99,
+    ...     seed=12345,
+    ...     alternative="two-sided",
+    ... )
     >>> lm.q[:10]
     array([2, 4, 3, 1, 2, 1, 1, 4, 2, 4])
+    >>> lm.p_z_sim[0]
+    np.float64(0.48921877308350953)
     >>> lm = Moran_Local_Rate(
-    ...     e, b, w, transformation = "r", permutations=99, geoda_quads=True
-    )
+    ...     e,
+    ...     b,
+    ...     w,
+    ...     transformation="r",
+    ...     permutations=99,
+    ...     seed=12345,
+    ...     alternative="two-sided",
+    ...     geoda_quads=True,
+    ... )
     >>> lm.q[:10]
     array([3, 4, 2, 1, 3, 1, 1, 4, 3, 4])
-
-    Note random components result is slightly different values across
-    architectures so the results have been removed from doctests and will be
-    moved into unittests that are conditional on architectures
-
+    >>> lm.p_z_sim[0]
+    np.float64(0.48921877308350953)
     """  # noqa: E501
 
     def __init__(
@@ -2311,6 +2345,7 @@ class Moran_Local_Rate(Moran_Local):
         keep_simulations=True,
         seed=None,
         island_weight=0,  # noqa: ARG002 - Unused method argument: `island_weight`
+        alternative=None,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -2325,6 +2360,7 @@ class Moran_Local_Rate(Moran_Local):
             n_jobs=n_jobs,
             keep_simulations=keep_simulations,
             seed=seed,
+            alternative=alternative,
         )
 
     @classmethod
@@ -2378,7 +2414,6 @@ class Moran_Local_Rate(Moran_Local):
         If inplace, None, and operation is conducted on dataframe
         in memory. Otherwise, returns a copy of the dataframe with
         the relevant columns attached.
-
         """
         if not inplace:
             new = df.copy()
