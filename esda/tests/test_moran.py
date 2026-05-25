@@ -275,6 +275,7 @@ class TestMoran:
 
     @parametrize_sac
     def test_plot_scatter_losh(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
         import matplotlib
 
         matplotlib.use("Agg")
