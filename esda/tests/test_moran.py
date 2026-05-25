@@ -358,6 +358,41 @@ class TestMoranLocal:
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
 
+    @parametrize_desmith
+    def test_alternative_respected_with_kept_simulations(self, w):
+        kwargs = dict(
+            y=self.y,
+            w=w,
+            transformation="r",
+            permutations=99,
+            seed=SEED,
+        )
+
+        directed_keep = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=True,
+            alternative="directed",
+        )
+        directed_drop = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=False,
+            alternative="directed",
+        )
+        two_sided_keep = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=True,
+            alternative="two-sided",
+        )
+        two_sided_drop = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=False,
+            alternative="two-sided",
+        )
+
+        np.testing.assert_allclose(directed_keep.p_sim, directed_drop.p_sim)
+        np.testing.assert_allclose(two_sided_keep.p_sim, two_sided_drop.p_sim)
+        assert not np.allclose(directed_keep.p_sim, two_sided_keep.p_sim)
+
     @parametrize_sac
     def test_labels(self, w):
         with pytest.WARN_ALT_HYPOTHESIS_DEPR:
@@ -732,6 +767,42 @@ class TestMoranLocalBV:
         np.testing.assert_allclose(lm.Is[0], 1.4649221250620736)
         np.testing.assert_allclose(lm.z_sim[0], 1.330673752886702)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.09164819151535242)
+
+    @parametrize_sids
+    def test_alternative_respected_with_kept_simulations(self, w):
+        kwargs = dict(
+            x=self.x,
+            y=self.y,
+            w=w,
+            transformation="r",
+            permutations=99,
+            seed=SEED,
+        )
+
+        directed_keep = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=True,
+            alternative="directed",
+        )
+        directed_drop = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=False,
+            alternative="directed",
+        )
+        two_sided_keep = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=True,
+            alternative="two-sided",
+        )
+        two_sided_drop = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=False,
+            alternative="two-sided",
+        )
+
+        np.testing.assert_allclose(directed_keep.p_sim, directed_drop.p_sim)
+        np.testing.assert_allclose(two_sided_keep.p_sim, two_sided_drop.p_sim)
+        assert not np.allclose(directed_keep.p_sim, two_sided_keep.p_sim)
 
     @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):
