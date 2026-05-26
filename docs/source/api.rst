@@ -68,7 +68,7 @@ Inspection plots
 .. autosummary::
    :toctree: generated/
 
-    esda.GIPlot
+    LocalCrossPlot
 
 .. _join_api:
 
@@ -112,7 +112,7 @@ Map Comparison
     homogeneity
     overlay_entropy
 
-    
+
 Mixture Smoothing
 -----------------
 
@@ -120,7 +120,7 @@ Mixture Smoothing
    :toctree: generated/
 
     NP_Mixture_Smoother
-    
+
 
 Modifiable Areal Unit Tests
 ---------------------------
