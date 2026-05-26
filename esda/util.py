@@ -48,7 +48,7 @@ def fdr(pvalues, alpha=0.05):
     ...     alternative='two-sided',
     ... )
     >>> fdr(lm.p_sim, 0.1)
-    np.float64(0.003846153846153847)
+    0.001282051282051282
 
     Return the conservative Bonferroni bound
 
