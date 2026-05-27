@@ -11,12 +11,12 @@ class LocalCrossPlot:
     The local G-I-LOSH cross plot is a joint diagnostic that places standardized
     Getis-Ord :math:`G_i` values on the x-axis and standardized Local
     Moran statistics on the y-axis while scaling symbol sizes by local
-    spatial heteroscedasticity (LOSH), proposed by :cite:`westerholt_2026_19421814`.
+    spatial heteroscedasticity (LOSH), proposed by :cite:t:`westerholt_2026_19421814`.
     This provides a compact view of
     local clustering, local association, and local variance structure in
     a single graphic.
 
-    For details refer to :cite:`westerholt_2026_19421814`.
+    For details refer to :cite:t:`westerholt_2026_19421814`.
 
     Parameters
     ----------
