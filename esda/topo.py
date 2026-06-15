@@ -1,8 +1,8 @@
 import numpy
 import pandas
 from libpysal import graph, weights
-from scipy.spatial import distance
 from scipy.sparse import csr_matrix
+from scipy.spatial import distance
 from scipy.stats import mode as most_common_value
 from sklearn.utils import check_array
 
@@ -441,7 +441,9 @@ def _check_connectivity(connectivity_or_coordinates):
             f"Connectivity matrix must be square, but is {shape}."
         )
         return connectivity_or_coordinates
-    if issubclass(type(connectivity_or_coordinates), weights.W) or isinstance(connectivity_or_coordinates, graph.Graph):
+    if issubclass(type(connectivity_or_coordinates), weights.W) or isinstance(
+        connectivity_or_coordinates, graph.Graph
+    ):
         return csr_matrix(connectivity_or_coordinates.sparse)
     else:
         from libpysal.weights import Voronoi
