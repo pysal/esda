@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#isolation-and-prominence-of-country-populations" class="md-skip">
+        <a href="#learning-goals" class="md-skip">
           Skip to content
         </a>
       
@@ -382,6 +382,30 @@
   
   
     <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="global.html" class="md-nav__link">
         
   
@@ -454,6 +478,30 @@
   
   
     <li class="md-nav__item">
+      <a href="clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="geometry.html" class="md-nav__link">
         
   
@@ -487,7 +535,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -504,14 +552,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_8">
             <span class="md-nav__icon md-icon"></span>
             <span>Topology</span>
           </label>
@@ -572,10 +620,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#isolation-and-prominence-of-country-populations" class="md-nav__link">
     
     <span class="md-ellipsis">
       <span>Isolation and Prominence of country populations</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaways" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Takeaways</span>
     </span>
   </a>
   
@@ -825,10 +893,30 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#isolation-and-prominence-of-country-populations" class="md-nav__link">
     
     <span class="md-ellipsis">
       <span>Isolation and Prominence of country populations</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaways" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Takeaways</span>
     </span>
   </a>
   
@@ -860,6 +948,14 @@
 
 <h1 id="topological-measures-of-geographical-surfaces">Topological Measures of Geographical Surfaces<a class="headerlink" href="#topological-measures-of-geographical-surfaces" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://github.com/ljwolf"><em>Levi John Wolf</em></a></p>
+<h2 id="learning-goals">Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">¶</a></h2>
+<p>By the end of this notebook, you will be able to:</p>
+<ul class="simple">
+<li><p>explain the concepts of <em>isolation</em> and <em>prominence</em> as borrowed from physical geography</p></li>
+<li><p>apply <code class="docutils literal notranslate"><span class="pre">topo.isolation</span></code> and <code class="docutils literal notranslate"><span class="pre">topo.prominence</span></code> to a vector dataset</p></li>
+<li><p>interpret the results to identify dominant features and transition zones in a geographical distribution</p></li>
+</ul>
+<p>These measures treat an attribute (e.g., population, income) as a virtual <em>elevation surface</em>, then use concepts from mountain topography to characterise the local maxima and their relative dominance.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -1576,6 +1672,14 @@
 <img alt="../_images/586036bcefa51c0088e132cea27f41bc3056e4d02670757840f5e374d43d1081.png" src="../_images/586036bcefa51c0088e132cea27f41bc3056e4d02670757840f5e374d43d1081.png" />
 </div>
 </div>
+<h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">isolation</span></code> measures <em>horizontal</em> dominance: how far you must travel from a local peak to reach a higher value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prominence</span></code> measures <em>vertical</em> dominance: how high a peak stands relative to the lowest point connecting it to any higher peak.</p></li>
+<li><p>Together, isolation and prominence identify which local maxima are genuinely dominant (high prominence, high isolation) versus sub-peaks of a larger feature.</p></li>
+<li><p>The algorithms work with any non-negative attribute and any distance metric or spatial graph.</p></li>
+<li><p>A Delaunay triangulation is used by default for <code class="docutils literal notranslate"><span class="pre">prominence</span></code> when no graph is supplied; a contiguity graph is a natural alternative for polygon data.</p></li>
+</ul>
 
 
 

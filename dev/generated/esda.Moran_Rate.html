@@ -380,6 +380,30 @@
   
   
     <li class="md-nav__item">
+      <a href="../user-guide/getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../user-guide/global.html" class="md-nav__link">
         
   
@@ -434,6 +458,30 @@
   
   <span class="md-ellipsis">
     <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
     
   </span>
   
@@ -3727,7 +3775,7 @@
 <dt class="sig sig-object highlight sig-wrap py" id="esda.Moran_Rate">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Moran_Rate</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.e" title="esda.Moran_Rate.__init__.e (Python parameter) — an event variable measured across n spatial units"><span class="n"><span class="pre">e</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.b" title="esda.Moran_Rate.__init__.b (Python parameter) — a population-at-risk variable measured across n spatial units"><span class="n"><span class="pre">b</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.w" title="esda.Moran_Rate.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with e and b"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.adjusted" title="esda.Moran_Rate.__init__.adjusted (Python parameter) — whether or not Moran's I needs to be adjusted for rate variable"><span class="n"><span class="pre">adjusted</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.transformation" title="esda.Moran_Rate.__init__.transformation (Python parameter) — weights transformation, default is row-standardized &quot;r&quot;. Other options include &quot;B&quot;: binary, &quot;D&quot;: doubly-standardized, &quot;O&quot;: restore original transformation (applicable only if w is  passed as W), &quot;V&quot;: variance-stabilizing."><span class="n"><span class="pre">transformation</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;r&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.permutations" title="esda.Moran_Rate.__init__.permutations (Python parameter) — number of random permutations for calculation of pseudo p_values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Moran_Rate.__init__.two_tailed" title="esda.Moran_Rate.__init__.two_tailed (Python parameter) — If True (default), analytical p-values for Moran's I are two-tailed, otherwise they are one tailed."><span class="n"><span class="pre">two_tailed</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/moran.py#L923-L1167"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Moran_Rate" title="Link to this definition">¶</a></dt>
 <dd><p>Adjusted Moran’s I Global Autocorrelation Statistic for Rate
-Variables <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id6" title="Renato M. Assuncao and Edna A. Reis. A new proposal to adjust Moran's I for population density. Statistics in Medicine, 18(16):2147–2162, Aug 1999. URL: http://dx.doi.org/10.1002/(sici)1097-0258(19990830)18:16&lt;2147::aid-sim179&gt;3.0.co;2-i, doi:10.1002/(sici)1097-0258(19990830)18:16&lt;2147::aid-sim179&gt;3.0.co;2-i.">Assuncao and Reis, 1999</a>]</span></p>
+Variables <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id4" title="Renato M. Assuncao and Edna A. Reis. A new proposal to adjust Moran's I for population density. Statistics in Medicine, 18(16):2147–2162, Aug 1999. URL: http://dx.doi.org/10.1002/(sici)1097-0258(19990830)18:16&lt;2147::aid-sim179&gt;3.0.co;2-i, doi:10.1002/(sici)1097-0258(19990830)18:16&lt;2147::aid-sim179&gt;3.0.co;2-i.">Assuncao and Reis, 1999</a>]</span></p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Moran_Rate-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Moran_Rate-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">

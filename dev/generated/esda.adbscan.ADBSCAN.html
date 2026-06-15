@@ -380,6 +380,30 @@
   
   
     <li class="md-nav__item">
+      <a href="../user-guide/getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../user-guide/global.html" class="md-nav__link">
         
   
@@ -434,6 +458,30 @@
   
   <span class="md-ellipsis">
     <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
     
   </span>
   
@@ -2630,12 +2678,12 @@
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight sig-wrap py" id="esda.adbscan.ADBSCAN">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.adbscan.</span></span><span class="sig-name descname"><span class="pre">ADBSCAN</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.eps" title="esda.adbscan.ADBSCAN.__init__.eps (Python parameter) — The maximum distance between two samples for them to be considered as in the same neighborhood."><span class="n"><span class="pre">eps</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.min_samples" title="esda.adbscan.ADBSCAN.__init__.min_samples (Python parameter) — The number of samples (or total weight) in a neighborhood for a point to be considered as a core point."><span class="n"><span class="pre">min_samples</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.algorithm" title="esda.adbscan.ADBSCAN.__init__.algorithm (Python parameter) — The algorithm to be used by the NearestNeighbors module to compute pointwise distances and find nearest neighbors. See NearestNeighbors module documentation for details."><span class="n"><span class="pre">algorithm</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;auto&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.n_jobs" title="esda.adbscan.ADBSCAN.__init__.n_jobs (Python parameter) — [Optional."><span class="n"><span class="pre">n_jobs</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.pct_exact" title="esda.adbscan.ADBSCAN.__init__.pct_exact (Python parameter) — [Optional."><span class="n"><span class="pre">pct_exact</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mf">0.1</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.reps" title="esda.adbscan.ADBSCAN.__init__.reps (Python parameter) — [Optional."><span class="n"><span class="pre">reps</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">100</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.keep_solus" title="esda.adbscan.ADBSCAN.__init__.keep_solus (Python parameter) — [Optional."><span class="n"><span class="pre">keep_solus</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.adbscan.ADBSCAN.__init__.pct_thr" title="esda.adbscan.ADBSCAN.__init__.pct_thr (Python parameter) — [Optional."><span class="n"><span class="pre">pct_thr</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mf">0.9</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/adbscan.py#L22-L236"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.adbscan.ADBSCAN" title="Link to this definition">¶</a></dt>
-<dd><p>A-DBSCAN, as introduced in <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id23" title="Daniel Arribas-Bel, M-À Garcia-López, and Elisabet Viladecans-Marsal. Building(s and) cities: delineating urban areas with a machine learning algorithm. Journal of Urban Economics, 125:103217, 2021. Delineation of Urban Areas. doi:10.1016/j.jue.2019.103217.">Arribas-Bel <em>et al.</em>, 2021</a>]</span>.</p>
+<dd><p>A-DBSCAN, as introduced in <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id14" title="Daniel Arribas-Bel, M-À Garcia-López, and Elisabet Viladecans-Marsal. Building(s and) cities: delineating urban areas with a machine learning algorithm. Journal of Urban Economics, 125:103217, 2021. Delineation of Urban Areas. doi:10.1016/j.jue.2019.103217.">Arribas-Bel <em>et al.</em>, 2021</a>]</span>.</p>
 <p>A-DSBCAN is an extension of the original DBSCAN algorithm that creates an
 ensemble of solutions generated by running DBSCAN on a random subset and
 “extending” the solution to the rest of the sample through
 nearest-neighbor regression.</p>
-<p>See the original reference (<span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id23" title="Daniel Arribas-Bel, M-À Garcia-López, and Elisabet Viladecans-Marsal. Building(s and) cities: delineating urban areas with a machine learning algorithm. Journal of Urban Economics, 125:103217, 2021. Delineation of Urban Areas. doi:10.1016/j.jue.2019.103217.">Arribas-Bel <em>et al.</em>, 2021</a>]</span>) for more details or
+<p>See the original reference (<span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id14" title="Daniel Arribas-Bel, M-À Garcia-López, and Elisabet Viladecans-Marsal. Building(s and) cities: delineating urban areas with a machine learning algorithm. Journal of Urban Economics, 125:103217, 2021. Delineation of Urban Areas. doi:10.1016/j.jue.2019.103217.">Arribas-Bel <em>et al.</em>, 2021</a>]</span>) for more details or
 the notebook guide for an illustration.
 …</p>
 <dl class="field-list simple">

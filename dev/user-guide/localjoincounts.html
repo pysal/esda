@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="local_spatial_autocorrelation.html">
+        <link rel="prev" href="local_getisord.html">
       
       
         <link rel="next" href="LOSH.html">
@@ -382,6 +382,30 @@
   
   
     <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="global.html" class="md-nav__link">
         
   
@@ -415,7 +439,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -432,14 +456,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
             <span class="md-nav__icon md-icon"></span>
             <span>Local Spatial Autocorrelation</span>
           </label>
@@ -458,7 +482,55 @@
   
   
   <span class="md-ellipsis">
-    <span>Local Spatial Autocorrelation</span>
+    <span>Local Spatial Autocorrelation with Moran’s I_<wbr>i</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="local_geary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Local Spatial Autocorrelation with Geary’s C_<wbr>i</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="local_getisord.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Hotspot Analysis with Getis-<wbr>Ord G and G*</span>
     
   </span>
   
@@ -643,6 +715,30 @@
   
   <span class="md-ellipsis">
     <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
     
   </span>
   
@@ -1031,10 +1127,10 @@
 </div>
 </div>
 </div>
-<p>We now make a Queen-contiguity weights object to describe the relationship between the units.</p>
+<p>We now make a Queen-contiguity graph object to describe the relationship between the units.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">geog</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1044,7 +1140,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">esda.join_counts_local</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts_Local</span>
 
-<span class="n">LJC_uni</span> <span class="o">=</span> <span class="n">Join_Counts_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;SELECTED&quot;</span><span class="p">])</span>
+<span class="n">LJC_uni</span> <span class="o">=</span> <span class="n">Join_Counts_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;SELECTED&quot;</span><span class="p">])</span>
 </code></pre></div>
 </div>
 </div>
@@ -1075,15 +1171,15 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-         nan,   nan,   nan, 0.429,   nan, 0.026, 0.026,   nan, 0.336,
-         nan,   nan,   nan,   nan,   nan,   nan, 0.335,   nan, 0.311,
-         nan,   nan,   nan,   nan,   nan,   nan, 0.323,   nan,   nan,
+         nan,   nan,   nan, 0.422,   nan, 0.031, 0.031,   nan, 0.321,
+         nan,   nan,   nan,   nan,   nan,   nan, 0.319,   nan, 0.308,
+         nan,   nan,   nan,   nan,   nan,   nan, 0.311,   nan,   nan,
          nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.459,
+         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.496,
          nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
          nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-         nan,   nan, 0.039,   nan,   nan,   nan,   nan,   nan, 0.121,
-         nan, 0.069,   nan,   nan], dtype=float32)
+         nan,   nan, 0.037,   nan,   nan,   nan,   nan,   nan, 0.145,
+         nan, 0.063,   nan,   nan], dtype=float32)
 </code></pre></div>
 </div>
 </div>
@@ -1137,7 +1233,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/64b34685404d21b8d0953ab03957a05777ccffe5fd9092e9d812c5c25e10cbd3.png" src="../_images/64b34685404d21b8d0953ab03957a05777ccffe5fd9092e9d812c5c25e10cbd3.png" />
+<img alt="../_images/04c4673237e26a7017ccc653a1d6a70fe53ea2f69d7366fe310c679c4df4c403.png" src="../_images/04c4673237e26a7017ccc653a1d6a70fe53ea2f69d7366fe310c679c4df4c403.png" />
 </div>
 </div>
 <h2 id="bivariate-ljc-case-1">Bivariate LJC (case 1)<a class="headerlink" href="#bivariate-ljc-case-1" title="Link to this heading">¶</a></h2>
@@ -1148,7 +1244,6 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
 
 <span class="n">commpop</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
     <span class="s2">&quot;https://github.com/jeffcsauer/GSOC2020/raw/master/validation/data/commpop.gpkg&quot;</span>
@@ -1157,10 +1252,10 @@
 </div>
 </div>
 </div>
-<p>We again make a Queen-contiguity weights object to describe the relationship between the units.</p>
+<p>We again make a Queen-contiguity graph object to describe the relationship between the units.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">commpop</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">geog</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">commpop</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1170,13 +1265,17 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">esda.join_counts_local_bv</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts_Local_BV</span>
 
-<span class="n">LJC_BV_Case1</span> <span class="o">=</span> <span class="n">Join_Counts_Local_BV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">LJC_BV_Case1</span> <span class="o">=</span> <span class="n">Join_Counts_Local_BV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;popneg&quot;</span><span class="p">],</span> <span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;popplus&quot;</span><span class="p">],</span> <span class="n">case</span><span class="o">=</span><span class="s2">&quot;BJC&quot;</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
+<p>from esda.join_counts_local_bv import Join_Counts_Local_BV</p>
+<p>LJC_BV_Case1 = Join_Counts_Local_BV(connectivity=w).fit(
+commpop[“popneg”], commpop[“popplus”], case=”BJC”
+)</p>
 <p>As before, we can map both the <code class="docutils literal notranslate"><span class="pre">LJC</span></code> and <code class="docutils literal notranslate"><span class="pre">p_sim</span></code> values after placing the results back into the <code class="docutils literal notranslate"><span class="pre">commpop</span></code> dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1198,7 +1297,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/fd4ebedc00099204c0294da9e8a9378d99ca36f0ba9f4fa584bfd1d5c12517cb.png" src="../_images/fd4ebedc00099204c0294da9e8a9378d99ca36f0ba9f4fa584bfd1d5c12517cb.png" />
+<img alt="../_images/8004548552ed4ec85ab060743b3e4d82830cc5942256b9600bef75a644be9f2b.png" src="../_images/8004548552ed4ec85ab060743b3e4d82830cc5942256b9600bef75a644be9f2b.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1218,7 +1317,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/d3f7b6d1d21041654eb542de8a850c191a818987bd93ca3bed1ad6369935073c.png" src="../_images/d3f7b6d1d21041654eb542de8a850c191a818987bd93ca3bed1ad6369935073c.png" />
+<img alt="../_images/e440742999057bacc5caab73de4516e7580f8d4e7b78fd9b5c076ab900ab780e.png" src="../_images/e440742999057bacc5caab73de4516e7580f8d4e7b78fd9b5c076ab900ab780e.png" />
 </div>
 </div>
 <h2 id="bivariate-ljc-case-2">Bivariate LJC (case 2)<a class="headerlink" href="#bivariate-ljc-case-2" title="Link to this heading">¶</a></h2>
@@ -1241,15 +1340,16 @@
 <p>We again make a Queen-contiguity weights object to describe the relationship between the units.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">geog</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
+<p>w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)</p>
 <p>We now run the <code class="docutils literal notranslate"><span class="pre">Local_Join_Count_BV</span></code> command, this time changing the <code class="docutils literal notranslate"><span class="pre">case</span></code> argument to <code class="docutils literal notranslate"><span class="pre">CLC</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_BV_Case2</span> <span class="o">=</span> <span class="n">Join_Counts_Local_BV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_BV_Case2</span> <span class="o">=</span> <span class="n">Join_Counts_Local_BV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;infq5&quot;</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;donq5&quot;</span><span class="p">],</span> <span class="n">case</span><span class="o">=</span><span class="s2">&quot;CLC&quot;</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -1292,7 +1392,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/e77db93f853b6faf430ff5a999c82c2bd9bbd65f04f505dcce247c8ac5741490.png" src="../_images/e77db93f853b6faf430ff5a999c82c2bd9bbd65f04f505dcce247c8ac5741490.png" />
+<img alt="../_images/461fd3f108bfeafb3e28a3c38ee01ab3b15d0f264402699b16f4a4d33aa710b8.png" src="../_images/461fd3f108bfeafb3e28a3c38ee01ab3b15d0f264402699b16f4a4d33aa710b8.png" />
 </div>
 </div>
 <h2 id="multivariate-ljc">Multivariate LJC<a class="headerlink" href="#multivariate-ljc" title="Link to this heading">¶</a></h2>
@@ -1319,20 +1419,12 @@ constructed from continuous-valued measures for those locations where the observ
 </div>
 </div>
 </div>
-<p>And agian create the Queen contiguity spatial weights object.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
 <p>We now load in the <code class="docutils literal notranslate"><span class="pre">Local_Join_Count_MV</span></code> function and apply it to all three variables:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">esda.join_counts_local_mv</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts_Local_MV</span>
 
-<span class="n">LJC_MV</span> <span class="o">=</span> <span class="n">Join_Counts_Local_MV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">LJC_MV</span> <span class="o">=</span> <span class="n">Join_Counts_Local_MV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="p">[</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;infq5&quot;</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;donq5&quot;</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;suic5&quot;</span><span class="p">]]</span>
 <span class="p">)</span>
 </code></pre></div>

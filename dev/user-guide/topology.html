@@ -377,6 +377,30 @@
   
   
     <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="global.html" class="md-nav__link">
         
   
@@ -449,6 +473,30 @@
   
   
     <li class="md-nav__item">
+      <a href="clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="geometry.html" class="md-nav__link">
         
   
@@ -483,7 +531,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -500,14 +548,14 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+              <label class="md-nav__link md-nav__link--active" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_8">
             <span class="md-nav__icon md-icon"></span>
             <span>Topology</span>
           </label>
@@ -849,8 +897,14 @@
   
 
 <h1 id="topology-and-spatial-relationships">Topology and Spatial Relationships<a class="headerlink" href="#topology-and-spatial-relationships" title="Link to this heading">¶</a></h1>
-<p><strong>Question:</strong> <em>How are spatial units connected or related structurally?</em></p>
-<p>Topology concerns adjacency, connectivity, and structural relationships.</p>
+<p><strong>Question:</strong> <em>Which features are dominant peaks in a geographical distribution, and how isolated are they?</em></p>
+<p>Topological measures borrow concepts from physical geography — mountain <em>isolation</em> and <em>prominence</em> — and apply them to any attribute that can be treated as a virtual elevation surface.</p>
+<p><strong>Key concepts:</strong></p>
+<ul class="simple">
+<li><p><strong>Isolation</strong> — the horizontal distance from a local peak to the nearest observation with a higher value. A large isolation value means the feature is a dominant high point with no nearby competitor.</p></li>
+<li><p><strong>Prominence</strong> — the vertical “drop” from a peak down to the saddle point connecting it to any higher peak. A large prominence means the feature stands well above its surroundings relative to its parent peak.</p></li>
+</ul>
+<p>Together, isolation and prominence identify which local maxima are genuinely self-contained (high on both metrics) versus sub-features of a larger regional trend.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="topo.html">Topological Measures of Geographical Surfaces</a></li>

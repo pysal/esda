@@ -377,6 +377,30 @@
   
   
     <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="global.html" class="md-nav__link">
         
   
@@ -435,7 +459,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -452,14 +476,14 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+              <label class="md-nav__link md-nav__link--active" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
             <span class="md-nav__icon md-icon"></span>
             <span>Spatial Diagnostics</span>
           </label>
@@ -479,30 +503,6 @@
   
   <span class="md-ellipsis">
     <span>Correlogram</span>
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="adbscan_berlin_example.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    <span>Cluster points and explore boundary blurriness with A-<wbr>DBSCAN</span>
     
   </span>
   
@@ -574,20 +574,34 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="adbscan_berlin_example.html" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>Cluster points and explore boundary blurriness with A-<wbr>DBSCAN</span>
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -883,12 +897,18 @@
   
 
 <h1 id="spatial-pattern-diagnostics">Spatial Pattern Diagnostics<a class="headerlink" href="#spatial-pattern-diagnostics" title="Link to this heading">¶</a></h1>
-<p><strong>Question:</strong> <em>What is the structure of spatial dependence across distance or density?</em></p>
-<p>These methods characterize spatial structure beyond global or local summaries.</p>
+<p><strong>Question:</strong> <em>How does spatial dependence change as the neighbourhood expands?</em></p>
+<p>A single global statistic collapses all scales into one number. The correlogram reveals the <em>scale structure</em> of spatial dependence by computing an autocorrelation statistic at a series of increasing distances or neighbourhood sizes.</p>
+<p><strong>Key concepts:</strong></p>
+<ul class="simple">
+<li><p><strong>Distance-band correlogram</strong> — computes the statistic for all pairs of observations within each successive distance band. Reveals whether autocorrelation drops off smoothly, has a secondary peak, or oscillates.</p></li>
+<li><p><strong>KNN correlogram</strong> — steps through <span class="math notranslate nohighlight">\(k = 1, 2, \ldots\)</span> nearest neighbours. Useful when observations are unevenly spaced and fixed distance bands would produce empty or overloaded bands.</p></li>
+<li><p><strong>Nonparametric (LOWESS)</strong> — fits a locally weighted regression of pairwise products against pairwise distances, providing a smooth curve without pre-defined bins.</p></li>
+</ul>
+<p>The correlogram accepts any <code class="docutils literal notranslate"><span class="pre">esda</span></code> global statistic (Moran’s <span class="math notranslate nohighlight">\(I\)</span>, Geary’s <span class="math notranslate nohighlight">\(C\)</span>, Getis-Ord <span class="math notranslate nohighlight">\(G\)</span>), so the profile shape changes depending on which aspect of spatial association is being measured.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="correlogram.html">Correlogram</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
 </ul>
 </div>
 
@@ -960,6 +980,8 @@
         <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>

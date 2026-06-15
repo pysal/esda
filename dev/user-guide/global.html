@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="index.html">
+        <link rel="prev" href="getting_started.html">
       
       
         <link rel="next" href="global_morans_i.html">
@@ -373,6 +373,30 @@
                 
   
   
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
     
@@ -387,7 +411,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -404,14 +428,14 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+              <label class="md-nav__link md-nav__link--active" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             <span>Global Spatial Autocorrelation</span>
           </label>
@@ -431,6 +455,54 @@
   
   <span class="md-ellipsis">
     <span>Global Spatial Autocorrelation with Moran’s I</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="geary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Geary’s C</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getisord.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation Getis-<wbr>Ord G</span>
     
   </span>
   
@@ -527,6 +599,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="geary.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Global Spatial Autocorrelation with Geary’s C</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="getisord.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Global Spatial Autocorrelation Getis-<wbr>Ord G</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="join_counts.html" class="md-nav__link">
     
     <span class="md-ellipsis">
@@ -583,6 +675,30 @@
   
   <span class="md-ellipsis">
     <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
     
   </span>
   
@@ -883,11 +999,21 @@
   
 
 <h1 id="global-spatial-structure">Global Spatial Structure<a class="headerlink" href="#global-spatial-structure" title="Link to this heading">¶</a></h1>
-<p><strong>Question:</strong> <em>Is there spatial autocorrelation in my data?</em></p>
-<p>These methods assess spatial dependence across the entire study area.</p>
+<p><strong>Question:</strong> <em>Is there spatial autocorrelation across my entire study area?</em></p>
+<p>Global statistics return a single summary value for the whole dataset, answering whether the overall pattern is more clustered or dispersed than expected under spatial randomness.</p>
+<p><strong>Choosing a method:</strong></p>
+<ul class="simple">
+<li><p><strong>Moran’s I</strong> — the standard choice for continuous variables. Compares each observation to its mean-centred value and its neighbours’ mean-centred values; positive <span class="math notranslate nohighlight">\(I\)</span> signals clustering, negative <span class="math notranslate nohighlight">\(I\)</span> signals dispersion.</p></li>
+<li><p><strong>Geary’s C</strong> — also for continuous variables but based on <em>squared differences</em> between neighbours rather than cross-products. More sensitive to local contrasts; <span class="math notranslate nohighlight">\(C &lt; 1\)</span> is positive autocorrelation, <span class="math notranslate nohighlight">\(C &gt; 1\)</span> is negative.</p></li>
+<li><p><strong>Getis-Ord G</strong> — tests for <em>spatial concentration</em> of raw (non-negative) values rather than deviations from the mean. Well-suited to counts, prices, and rates where the magnitude matters.</p></li>
+<li><p><strong>Join Counts</strong> — designed for binary or categorical variables; counts how often similar or dissimilar categories share a boundary.</p></li>
+</ul>
+<p>All methods support permutation-based inference, which avoids distributional assumptions and is recommended for small samples or skewed data.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="global_morans_i.html">Global Spatial Autocorrelation with Moran’s I</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geary.html">Global Spatial Autocorrelation with Geary’s C</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getisord.html">Global Spatial Autocorrelation Getis-Ord G</a></li>
 <li class="toctree-l1"><a class="reference internal" href="join_counts.html">Global Spatial Autocorrelation with Join Counts</a></li>
 </ul>
 </div>
@@ -960,6 +1086,8 @@
         <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>

@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installation" class="md-skip">
+        <a href="#introduction" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Exploratory Spatial Data Analysis in PySAL
+              esda
             
           </span>
         </div>
@@ -386,6 +386,30 @@
   
   
     <li class="md-nav__item">
+      <a href="user-guide/getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="user-guide/global.html" class="md-nav__link">
         
   
@@ -440,6 +464,30 @@
   
   <span class="md-ellipsis">
     <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
     
   </span>
   
@@ -724,41 +772,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+  <a href="#introduction" class="md-nav__link">
     
     <span class="md-ellipsis">
-      <span>Installation</span>
+      <span>Introduction</span>
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Installation">
+    <nav class="md-nav" aria-label="Introduction">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#conda-forge" class="md-nav__link">
+  <a href="#what-can-esda-do" class="md-nav__link">
     
     <span class="md-ellipsis">
-      <span>conda-<wbr>forge</span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pypi" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>Py<wbr>PI</span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#github" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>Git<wbr>Hub</span>
+      <span>What can esda do?</span>
     </span>
   </a>
   
@@ -770,30 +798,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     
     <span class="md-ellipsis">
-      <span>Requirements</span>
+      <span>Installation</span>
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-dependencies" class="md-nav__link">
+  <a href="#relationship-to-pysal" class="md-nav__link">
     
     <span class="md-ellipsis">
-      <span>Optional dependencies</span>
+      <span>Relationship to Py<wbr>SAL</span>
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#contribute" class="md-nav__link">
+  <a href="#contributing" class="md-nav__link">
     
     <span class="md-ellipsis">
-      <span>Contribute</span>
+      <span>Contributing</span>
     </span>
   </a>
   
@@ -804,6 +832,16 @@
     
     <span class="md-ellipsis">
       <span>Support</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Citation</span>
     </span>
   </a>
   
@@ -853,54 +891,107 @@
   
   
 
-<h1 id="exploratory-spatial-data-analysis-in-pysal">Exploratory Spatial Data Analysis in PySAL<a class="headerlink" href="#exploratory-spatial-data-analysis-in-pysal" title="Link to this heading">¶</a></h1>
+<h1 id="esda">esda<a class="headerlink" href="#esda" title="Link to this heading">¶</a></h1>
 <p><img alt="tag" src="https://img.shields.io/github/v/release/pysal/esda?include_prereleases&amp;sort=semver" />
 <a class="reference external" href="https://github.com/pysal/esda/actions/workflows/testing.yml"><img alt="Continuous Integration" src="https://github.com/pysal/esda/actions/workflows/testing.yml/badge.svg" /></a>
 <a class="reference external" href="https://codecov.io/gh/pysal/esda"><img alt="codecov" src="https://codecov.io/gh/pysal/esda/branch/main/graph/badge.svg" /></a>
 <a class="reference external" href="https://zenodo.org/badge/latestdoi/81873636"><img alt="DOI" src="https://zenodo.org/badge/81873636.svg" /></a></p>
-<p>Methods for testing for global and local autocorrelation in areal unit data.</p>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p><strong>esda</strong> is a library for exploratory spatial data analysis (ESDA). It is part of the PySAL (Python Spatial Analysis Library) ecosystem and provides methods for measuring, testing, and visualizing spatial autocorrelation and spatial association patterns in geospatial data.</p>
+<p>Built on top of NumPy, SciPy, GeoPandas, and libpysal, esda offers a comprehensive collection of global and local statistics for understanding spatial structure in areal and point-referenced data.</p>
+<h3 id="what-can-esda-do">What can esda do?<a class="headerlink" href="#what-can-esda-do" title="Link to this heading">¶</a></h3>
+<p>esda aims to provide a broad collection of methods for exploratory analysis of spatial data, enabling researchers and practitioners to identify spatial structure before proceeding to formal modeling.</p>
+<p>Some of the functionality that esda offers:</p>
+<ul class="simple">
+<li><p>Compute global spatial autocorrelation statistics such as Moran’s I, Geary’s C, and Getis-Ord G.</p></li>
+<li><p>Compute local indicators of spatial association (LISA), including Local Moran, Local Geary, and Local Getis-Ord statistics.</p></li>
+<li><p>Analyze binary and categorical spatial patterns using join-count statistics.</p></li>
+<li><p>Explore multivariate spatial association with bivariate and multivariate Moran statistics.</p></li>
+<li><p>Measure spatial clustering, hot spots, and cold spots.</p></li>
+<li><p>Quantify shape regularity and geometric characteristics of spatial features.</p></li>
+<li><p>Support permutation-based inference for statistical significance testing.</p></li>
+<li><p>Integrate seamlessly with GeoPandas, libpysal, and the broader PySAL ecosystem.</p></li>
+</ul>
+<p>See the <a class="reference external" href="http://pysal.org/esda/stable/user-guide/index.html">User Guide</a> for more details.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
-<p>Install <code class="docutils literal notranslate"><span class="pre">esda</span></code> by running:</p>
-<h3 id="conda-forge">conda-forge<a class="headerlink" href="#conda-forge" title="Link to this heading">¶</a></h3>
-<p><em>preferred</em></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code>$ conda install -c conda-forge esda
+<p>Install the latest release from PyPI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">pip</span> <span class="n">install</span> <span class="n">esda</span>
 </code></pre></div>
 </div>
-<h3 id="pypi">PyPI<a class="headerlink" href="#pypi" title="Link to this heading">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code>$ pip install esda
+<p>Or install using conda-forge:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">esda</span>
 </code></pre></div>
 </div>
-<h3 id="github">GitHub<a class="headerlink" href="#github" title="Link to this heading">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code>$ pip install git+https://github.com/pysal/esda@main
-</code></pre></div>
-</div>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
-<p><em>see currently supported versions in <a class="reference external" href="https://github.com/pysal/esda/blob/main/pyproject.toml"><code class="docutils literal notranslate"><span class="pre">pyproject.toml[dependencies]</span></code></a></em></p>
+<h2 id="relationship-to-pysal">Relationship to PySAL<a class="headerlink" href="#relationship-to-pysal" title="Link to this heading">¶</a></h2>
+<p>esda is one of the core packages in the PySAL ecosystem and works closely with:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">geopandas</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">libpysal</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numpy</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pandas</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scipy</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">shapely</span></code></p></li>
+<li><p>libpysal – spatial weights and data structures</p></li>
+<li><p>spreg – spatial econometric models</p></li>
+<li><p>segregation – segregation metrics</p></li>
+<li><p>pointpats – point pattern analysis</p></li>
+<li><p>giddy – spatial dynamics and mobility analysis</p></li>
 </ul>
-<h2 id="optional-dependencies">Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading">¶</a></h2>
-<p><em>see currently supported versions in <a class="reference external" href="https://github.com/pysal/esda/blob/main/pyproject.toml"><code class="docutils literal notranslate"><span class="pre">pyproject.toml[project.optional-dependencies]</span></code></a></em></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> - required for <code class="docutils literal notranslate"><span class="pre">esda.moran.explore()</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba</span></code> - used to accelerate computational geometry and permutation-based statistical inference.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rtree</span></code> - required for <code class="docutils literal notranslate"><span class="pre">esda.topo.isolation()</span></code></p></li>
-</ul>
-<h2 id="contribute">Contribute<a class="headerlink" href="#contribute" title="Link to this heading">¶</a></h2>
+<p>Learn more about the PySAL ecosystem at:</p>
+<p><a class="reference external" href="https://pysal.org">https://pysal.org</a></p>
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
 <p>PySAL-esda is under active development and contributors are welcome.</p>
+<p>Repository:</p>
+<p><a class="reference external" href="https://github.com/pysal/esda">https://github.com/pysal/esda</a></p>
 <p>If you have any suggestion, feature request, or bug report, please open a new <a class="reference external" href="https://github.com/pysal/esda/issues">issue</a> on GitHub. To submit patches, please follow the PySAL development <a class="reference external" href="https://github.com/pysal/pysal/wiki">guidelines</a> and open a <a class="reference external" href="https://github.com/pysal/esda">pull request</a>. Once your changes get merged, you’ll automatically be added to the <a class="reference external" href="https://github.com/pysal/esda/graphs/contributors">Contributors List</a>.</p>
 <h2 id="support">Support<a class="headerlink" href="#support" title="Link to this heading">¶</a></h2>
 <p>If you are having issues, please talk to us in the <a class="reference external" href="https://discord.gg/Re46DjyB9U"><code class="docutils literal notranslate"><span class="pre">esda</span></code> Discord channel</a>.</p>
+<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this heading">¶</a></h2>
+<p>If you use esda in research, please cite PySAL and the relevant methodological references associated with the statistics you employ:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="nd">@software</span><span class="p">{</span><span class="n">esda_2026</span><span class="p">,</span>
+  <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Sergio</span> <span class="n">Rey</span> <span class="ow">and</span>
+                  <span class="n">Levi</span> <span class="n">John</span> <span class="n">Wolf</span> <span class="ow">and</span>
+                  <span class="n">James</span> <span class="n">Gaboardi</span> <span class="ow">and</span>
+                  <span class="n">Dani</span> <span class="n">Arribas</span><span class="o">-</span><span class="n">Bel</span> <span class="ow">and</span>
+                  <span class="n">Lee</span> <span class="n">Hachadoorian</span> <span class="ow">and</span>
+                  <span class="n">Martin</span> <span class="n">Fleischmann</span> <span class="ow">and</span>
+                  <span class="n">Wei</span> <span class="n">Kang</span> <span class="ow">and</span>
+                  <span class="n">eli</span> <span class="n">knaap</span> <span class="ow">and</span>
+                  <span class="n">mhwang4</span> <span class="ow">and</span>
+                  <span class="n">Jay</span> <span class="n">Laura</span> <span class="ow">and</span>
+                  <span class="n">Philip</span> <span class="n">Stephens</span> <span class="ow">and</span>
+                  <span class="n">Charles</span> <span class="n">Schmidt</span> <span class="ow">and</span>
+                  <span class="n">Stefanie</span> <span class="n">Lumnitz</span> <span class="ow">and</span>
+                  <span class="n">David</span> <span class="n">C</span><span class="o">.</span> <span class="n">Folch</span> <span class="ow">and</span>
+                  <span class="n">Juan</span> <span class="n">C</span> <span class="n">Duque</span> <span class="ow">and</span>
+                  <span class="n">Luc</span> <span class="n">Anselin</span> <span class="ow">and</span>
+                  <span class="n">Nicholas</span> <span class="n">Malizia</span> <span class="ow">and</span>
+                  <span class="n">Filipe</span> <span class="ow">and</span>
+                  <span class="n">Thomas</span> <span class="n">Louf</span> <span class="ow">and</span>
+                  <span class="n">Germano</span> <span class="n">Barcelos</span> <span class="ow">and</span>
+                  <span class="n">Josiah</span> <span class="n">Parry</span> <span class="ow">and</span>
+                  <span class="n">Michael</span> <span class="n">Rariden</span> <span class="ow">and</span>
+                  <span class="n">matthewborish</span> <span class="ow">and</span>
+                  <span class="n">Jeff</span> <span class="n">Sauer</span> <span class="ow">and</span>
+                  <span class="n">JasonSteelmanCoder</span> <span class="ow">and</span>
+                  <span class="n">Leo</span> <span class="n">Morales</span> <span class="ow">and</span>
+                  <span class="n">mlyons</span><span class="o">-</span><span class="n">tcc</span> <span class="ow">and</span>
+                  <span class="n">Mridul</span> <span class="n">Seth</span> <span class="ow">and</span>
+                  <span class="n">Nathaniel</span> <span class="n">M</span><span class="o">.</span> <span class="n">Beaver</span><span class="p">},</span>
+  <span class="n">title</span>        <span class="o">=</span> <span class="p">{</span><span class="n">pysal</span><span class="o">/</span><span class="n">esda</span><span class="p">:</span> <span class="n">v2</span><span class="mf">.9.0</span><span class="p">},</span>
+  <span class="n">month</span>        <span class="o">=</span> <span class="n">mar</span><span class="p">,</span>
+  <span class="n">year</span>         <span class="o">=</span> <span class="mi">2026</span><span class="p">,</span>
+  <span class="n">publisher</span>    <span class="o">=</span> <span class="p">{</span><span class="n">Zenodo</span><span class="p">},</span>
+  <span class="n">version</span>      <span class="o">=</span> <span class="p">{</span><span class="n">v2</span><span class="mf">.9.0</span><span class="p">},</span>
+  <span class="n">doi</span>          <span class="o">=</span> <span class="p">{</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.19140557</span><span class="p">},</span>
+  <span class="n">url</span>          <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.19140557</span><span class="p">},</span>
+  <span class="n">swhid</span>        <span class="o">=</span> <span class="p">{</span><span class="n">swh</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="nb">dir</span><span class="p">:</span><span class="mi">52277964</span><span class="n">ad409a3710c0b71c80b787105b7f4028</span>
+                   <span class="p">;</span><span class="n">origin</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.1403275</span><span class="p">;</span><span class="n">vis</span>
+                   <span class="n">it</span><span class="o">=</span><span class="n">swh</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="n">snp</span><span class="p">:</span><span class="mi">102</span><span class="n">da65f4352acd135660b6bc187cae834329</span>
+                   <span class="mi">806</span><span class="p">;</span><span class="n">anchor</span><span class="o">=</span><span class="n">swh</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="n">rel</span><span class="p">:</span><span class="n">fb141a13a877f6c7cf991226c123f</span>
+                   <span class="mi">1569</span><span class="n">edce2f1</span><span class="p">;</span><span class="n">path</span><span class="o">=</span><span class="n">pysal</span><span class="o">-</span><span class="n">esda</span><span class="o">-</span><span class="n">e0975f5</span>
+                  <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
 <h2 id="license">License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
-<p>The project is licensed under the <a class="reference external" href="https://github.com/pysal/esda/blob/main/LICENSE">BSD 3-Clause license</a>.</p>
+<p>The project is licensed under the <a class="reference external" href="https://github.com/pysal/esda/blob/main/LICENSE.txt">BSD 3-Clause license</a>.</p>
 <h2 id="funding">Funding<a class="headerlink" href="#funding" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="https://www.nsf.gov/index.jsp"></a> National Science Foundation Award #1421935: <a class="reference external" href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1421935">New Approaches to Spatial Distribution Dynamics</a></p>
+<p>National Science Foundation Award #1421935: <a class="reference external" href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1421935">New Approaches to Spatial Distribution Dynamics</a></p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">

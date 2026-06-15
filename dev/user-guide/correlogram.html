@@ -14,7 +14,7 @@
         <link rel="prev" href="diagnostics.html">
       
       
-        <link rel="next" href="adbscan_berlin_example.html">
+        <link rel="next" href="clustering.html">
       
       
       <link rel="icon" href="../_static/pysal_favicon.ico">
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#distance-bands" class="md-skip">
+        <a href="#learning-goals" class="md-skip">
           Skip to content
         </a>
       
@@ -382,6 +382,30 @@
   
   
     <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="global.html" class="md-nav__link">
         
   
@@ -439,7 +463,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -456,14 +480,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
             <span class="md-nav__icon md-icon"></span>
             <span>Spatial Diagnostics</span>
           </label>
@@ -524,6 +548,16 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#distance-bands" class="md-nav__link">
     
     <span class="md-ellipsis">
@@ -553,11 +587,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#takeaways" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Takeaways</span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
     </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
   
 
               
@@ -570,27 +623,18 @@
   
   
     <li class="md-nav__item">
-      <a href="adbscan_berlin_example.html" class="md-nav__link">
+      <a href="clustering.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    <span>Cluster points and explore boundary blurriness with A-<wbr>DBSCAN</span>
+    <span>Spatial Clustering</span>
     
   </span>
   
 
       </a>
     </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
   
 
               
@@ -869,6 +913,16 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#distance-bands" class="md-nav__link">
     
     <span class="md-ellipsis">
@@ -893,6 +947,16 @@
     
     <span class="md-ellipsis">
       <span>Nonparametric</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#takeaways" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Takeaways</span>
     </span>
   </a>
   
@@ -923,22 +987,21 @@
   
 
 <h1 id="correlogram">Correlogram<a class="headerlink" href="#correlogram" title="Link to this heading">¶</a></h1>
+<h2 id="learning-goals">Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">¶</a></h2>
+<p>By the end of this notebook, you will be able to:</p>
+<ul class="simple">
+<li><p>explain what a spatial correlogram shows and how it differs from a single autocorrelation statistic</p></li>
+<li><p>construct correlograms using distance bands, k-nearest neighbours, and a non-parametric LOWESS smoother</p></li>
+<li><p>choose the appropriate autocorrelation statistic (Moran’s <span class="math notranslate nohighlight">\(I\)</span>, Geary’s <span class="math notranslate nohighlight">\(C\)</span>, Getis-Ord <span class="math notranslate nohighlight">\(G\)</span>) for a correlogram</p></li>
+<li><p>interpret how spatial autocorrelation changes with increasing distance or neighbourhood size</p></li>
+</ul>
+<p>A correlogram is the spatial analogue of a time-series autocorrelation function: instead of asking “is there autocorrelation at lag <span class="math notranslate nohighlight">\(k\)</span>?”, we ask “how does autocorrelation change as we expand the neighbourhood radius?”</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">load_ext</span> watermark
-<span class="o">%</span><span class="k">watermark</span> -a &#39;eli knaap&#39;
-<span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">examples</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">correlogram</span>
-</code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Author: eli knaap
 </code></pre></div>
 </div>
 </div>
@@ -1072,13 +1135,13 @@
       <td>0.086188</td>
       <td>9.314058e-01</td>
       <td>9.313166e-01</td>
-      <td>[-0.3765347610540078, 2.620354662294129, 1.310...</td>
-      <td>0.444</td>
-      <td>0.001614</td>
-      <td>0.682666</td>
-      <td>0.466032</td>
-      <td>0.082929</td>
-      <td>4.669540e-01</td>
+      <td>[0.2858081291494407, -0.5833480819221724, 0.03...</td>
+      <td>0.398</td>
+      <td>-0.058756</td>
+      <td>0.707070</td>
+      <td>0.499948</td>
+      <td>0.165447</td>
+      <td>4.342960e-01</td>
     </tr>
     <tr>
       <th>1000</th>
@@ -1096,13 +1159,13 @@
       <td>4.147088</td>
       <td>3.447621e-05</td>
       <td>3.367309e-05</td>
-      <td>[-0.05356215498478225, 0.04460764856106999, -0...</td>
+      <td>[0.12272779582456919, 0.1972512864719238, 0.04...</td>
       <td>0.001</td>
-      <td>0.000473</td>
-      <td>0.118945</td>
-      <td>0.014148</td>
-      <td>4.132972</td>
-      <td>1.790513e-05</td>
+      <td>0.006722</td>
+      <td>0.117901</td>
+      <td>0.013901</td>
+      <td>4.116580</td>
+      <td>1.922684e-05</td>
     </tr>
     <tr>
       <th>1500</th>
@@ -1120,13 +1183,13 @@
       <td>6.763620</td>
       <td>1.430242e-11</td>
       <td>1.345857e-11</td>
-      <td>[-0.04655450395078353, 0.0018143869405488429, ...</td>
+      <td>[0.0999519576218893, -0.006397417483893382, -0...</td>
       <td>0.001</td>
-      <td>-0.005392</td>
-      <td>0.067690</td>
-      <td>0.004582</td>
-      <td>6.800617</td>
-      <td>5.208611e-12</td>
+      <td>-0.008154</td>
+      <td>0.067910</td>
+      <td>0.004612</td>
+      <td>6.819220</td>
+      <td>4.576805e-12</td>
     </tr>
     <tr>
       <th>2000</th>
@@ -1144,13 +1207,13 @@
       <td>12.164298</td>
       <td>5.846476e-34</td>
       <td>4.815656e-34</td>
-      <td>[0.006968808722227509, 0.02206006855724746, -0...</td>
+      <td>[0.04069954010910209, -0.00978627964527193, -0...</td>
       <td>0.001</td>
-      <td>-0.002583</td>
-      <td>0.046310</td>
-      <td>0.002145</td>
-      <td>12.204187</td>
-      <td>1.476208e-34</td>
+      <td>-0.002569</td>
+      <td>0.045671</td>
+      <td>0.002086</td>
+      <td>12.374629</td>
+      <td>1.792731e-35</td>
     </tr>
     <tr>
       <th>2500</th>
@@ -1168,13 +1231,13 @@
       <td>13.102771</td>
       <td>3.974924e-39</td>
       <td>3.174519e-39</td>
-      <td>[-0.004597764331182623, 0.014387454119963753, ...</td>
+      <td>[0.05847503419127865, -0.1110552616921052, 0.0...</td>
       <td>0.001</td>
-      <td>-0.002244</td>
-      <td>0.038867</td>
-      <td>0.001511</td>
-      <td>12.950086</td>
-      <td>1.173458e-38</td>
+      <td>-0.003266</td>
+      <td>0.037133</td>
+      <td>0.001379</td>
+      <td>13.582587</td>
+      <td>2.540000e-42</td>
     </tr>
   </tbody>
 </table>
@@ -1314,6 +1377,14 @@
 <img alt="../_images/a32614a666a112d477b4a905a9423b5f8c108046a09591c9336b0bee954d5b3d.png" src="../_images/a32614a666a112d477b4a905a9423b5f8c108046a09591c9336b0bee954d5b3d.png" />
 </div>
 </div>
+<h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>A spatial correlogram plots an autocorrelation statistic against increasing distance (or k-nearest-neighbour count), revealing the <em>scale</em> of spatial dependence.</p></li>
+<li><p>Distance-band correlograms bin neighbours by Euclidean distance; KNN correlograms step through the number of nearest neighbours.</p></li>
+<li><p>The nonparametric LOWESS option estimates autocorrelation continuously over distance without pre-defined bins.</p></li>
+<li><p>Different statistics (Moran’s <span class="math notranslate nohighlight">\(I\)</span>, Geary’s <span class="math notranslate nohighlight">\(C\)</span>, Getis-Ord <span class="math notranslate nohighlight">\(G\)</span>) yield differently shaped correlograms because they measure different aspects of spatial association.</p></li>
+<li><p>A correlogram that decays from positive values toward zero as distance increases is consistent with a spatially dependent process — autocorrelation weakens as observations become more distant.</p></li>
+</ul>
 
 
 
