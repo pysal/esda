@@ -1235,6 +1235,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">esda.inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalCrossPlot</span>
 </code></pre></div>
 </div>
 </div>
@@ -1243,15 +1244,15 @@
 <p>We use the same Berlin neighborhood dataset as in the global Moran’s I and local Moran’s I notebooks so that results can be compared directly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
-<span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;OrRd&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;OrRd&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Median Airbnb price by neighbourhood (quintiles)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1268,8 +1269,7 @@
 <p>The global statistic <span class="math notranslate nohighlight">\(G\)</span> answers: <em>is there a statistically significant overall concentration of high or low values?</em> The local statistic <span class="math notranslate nohighlight">\(G_i^*\)</span> answers: <em>which specific locations are part of a hotspot or coldspot?</em></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gdf</span>
-<span class="c1"># G requires binary (not row-standardised) weights</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># G requires binary (not row-standardised) weights</span>
 <span class="n">geog</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
 </code></pre></div>
@@ -1305,7 +1305,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Zs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_local</span><span class="o">.</span><span class="n">Zs</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">column</span><span class="o">=</span><span class="s2">&quot;Zs&quot;</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;RdBu_r&quot;</span><span class="p">,</span>
@@ -1340,7 +1340,7 @@
 <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hotspot&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;coldspot&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;not significant&quot;</span><span class="p">:</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">}</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;spot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;spot&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -1351,10 +1351,10 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4552/1057195105.py:16: UserWarning: Legend does not support handles for PatchCollection instances.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4526/525111633.py:16: UserWarning: Legend does not support handles for PatchCollection instances.
 See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#implementing-a-custom-legend-handler
   ax.legend()
-/tmp/ipykernel_4552/1057195105.py:16: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+/tmp/ipykernel_4526/525111633.py:16: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
   ax.legend()
 </code></pre></div>
 </div>
@@ -1366,9 +1366,7 @@ See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#impl
 <p>One graphical device that can be used to explore the complementarities of the different local statistics is the local cross plot (<a class="reference external" href="https://doi.org/10.5281/zenodo.19421814">Westerholt 2026</a>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">esda.inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalCrossPlot</span>
-
-<span class="n">lcp</span> <span class="o">=</span> <span class="n">LocalCrossPlot</span><span class="p">(</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">lcp</span> <span class="o">=</span> <span class="n">LocalCrossPlot</span><span class="p">(</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
 <span class="n">lcp</span><span class="o">.</span><span class="n">plot</span><span class="p">();</span>
 </code></pre></div>
@@ -1379,7 +1377,7 @@ See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#impl
   self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
 </code></pre></div>
 </div>
-<img alt="../_images/718ac6b7b980b011c406622a6625427a46c1871e770d03c1e4b2aabd1ba63266.png" src="../_images/718ac6b7b980b011c406622a6625427a46c1871e770d03c1e4b2aabd1ba63266.png" />
+<img alt="../_images/b761a0845fc05976b2a46c502c7ba527832310a8bf0f90b8b90212b86222134a.png" src="../_images/b761a0845fc05976b2a46c502c7ba527832310a8bf0f90b8b90212b86222134a.png" />
 </div>
 </div>
 <h3 id="interpreting-the-local-cross-plot">Interpreting the Local Cross Plot<a class="headerlink" href="#interpreting-the-local-cross-plot" title="Link to this heading">¶</a></h3>

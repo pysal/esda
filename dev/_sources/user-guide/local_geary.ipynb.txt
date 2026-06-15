@@ -37,9 +37,9 @@
     "import warnings\n",
     "\n",
     "import geopandas as gpd\n",
-    "import libpysal as lps\n",
     "import matplotlib.pyplot as plt\n",
     "import numpy as np\n",
+    "from libpysal import graph\n",
     "\n",
     "warnings.filterwarnings(\"ignore\")\n",
     "\n",
@@ -71,7 +71,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "gdf = gpd.read_file(\"data/berlin-housing.gpkg\")"
+    "df = gpd.read_file(\"data/berlin-housing.gpkg\")"
    ]
   },
   {
@@ -81,7 +81,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "gdf.plot(column=\"median_pri\")"
+    "df.plot(column=\"median_pri\")"
    ]
   },
   {
@@ -91,10 +91,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
-    "gdf.plot(column=\"median_pri\", scheme=\"Quantiles\", k=5, cmap=\"GnBu\", legend=True, ax=ax)\n",
-    "# ax.set_xlim(150000, 160000)\n",
-    "# ax.set_ylim(208000, 215000)"
+    "df.plot(\n",
+    "    column=\"median_pri\",\n",
+    "    scheme=\"Quantiles\",\n",
+    "    k=5,\n",
+    "    cmap=\"GnBu\",\n",
+    "    legend=True,\n",
+    "    figsize=(12, 10),\n",
+    ")"
    ]
   },
   {
@@ -146,9 +150,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "df = gdf\n",
-    "wq = lps.weights.Queen.from_dataframe(df, use_index=False, silence_warnings=True)\n",
-    "wq.transform = \"r\""
+    "wq = graph.Graph.build_contiguity(df, rook=False).transform(\"r\")"
    ]
   },
   {
@@ -203,11 +205,9 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
-    "df[\"localC\"] = lg.localG\n",
-    "df.plot(column=\"localC\", cmap=\"plasma_r\", legend=True, ax=ax)\n",
+    "ax = df.plot(lg.localG, cmap=\"plasma_r\", legend=True, figsize=(12, 10))\n",
     "ax.set_axis_off()\n",
-    "ax.set_title(\"Local Geary $c_i$ (lower = more similar to neighbours)\")"
+    "ax.set_title(\"Local Geary $c_i$ (lower = more similar to neighbours)\");"
    ]
   },
   {
@@ -243,7 +243,7 @@
     "\n",
     "import matplotlib.patches as mpatches\n",
     "\n",
-    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
+    "fig, ax = plt.subplots(figsize=(12, 10))\n",
     "\n",
     "legend_handles = []\n",
     "\n",
@@ -333,11 +333,8 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "w = lps.weights.Queen.from_dataframe(gdf)\n",
-    "w.transform = \"r\"\n",
-    "\n",
-    "lg = esda.Geary_Local(connectivity=w, labels=True, permutations=999, seed=12345).fit(\n",
-    "    gdf[\"median_pri\"]\n",
+    "lg = esda.Geary_Local(connectivity=wq, labels=True, permutations=999, seed=12345).fit(\n",
+    "    df[\"median_pri\"]\n",
     ")\n",
     "\n",
     "# Visualizing the empirical null distribution for a single neighborhood\n",
@@ -421,7 +418,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "default",
    "language": "python",
    "name": "python3"
   },
@@ -435,7 +432,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.14.4"
+   "version": "3.14.5"
   }
  },
  "nbformat": 4,

@@ -44,7 +44,9 @@
     "import geopandas as gpd\n",
     "import matplotlib.pyplot as plt\n",
     "import numpy as np\n",
+    "import seaborn as sns\n",
     "from libpysal import graph\n",
+    "from matplotlib import colors\n",
     "\n",
     "import esda"
    ]
@@ -62,7 +64,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "gdf = gpd.read_file(\"data/berlin-housing.gpkg\")"
+    "df = gpd.read_file(\"data/berlin-housing.gpkg\")"
    ]
   },
   {
@@ -71,7 +73,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "gdf.plot(column=\"median_pri\")"
+    "df.plot(column=\"median_pri\")"
    ]
   },
   {
@@ -80,10 +82,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
-    "gdf.plot(column=\"median_pri\", scheme=\"Quantiles\", k=5, cmap=\"GnBu\", legend=True, ax=ax)\n",
-    "# ax.set_xlim(150000, 160000)\n",
-    "# ax.set_ylim(208000, 215000)"
+    "df.plot(\n",
+    "    column=\"median_pri\",\n",
+    "    scheme=\"Quantiles\",\n",
+    "    k=5,\n",
+    "    cmap=\"GnBu\",\n",
+    "    legend=True,\n",
+    "    figsize=(12, 10),\n",
+    ")"
    ]
   },
   {
@@ -118,15 +124,6 @@
     "Spatial similarity expresses the extent to which pairs of observations can be considered geographical neighbors.\n",
     "In PySAL, this is encoded using the [libpysal.graph.Graph](https://pysal.org/libpysal/stable/generated/libpysal.graph.Graph.html#libpysal.graph.Graph) class.\n",
     "Here we will use the `Graph` to define neighbors as those polygons that share at least one vertex:\n"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "df = gdf"
    ]
   },
   {
@@ -211,27 +208,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "import mapclassify as mc\n",
-    "\n",
-    "ylagq5 = mc.Quantiles(ylag, k=5)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
-    "df.assign(cl=ylagq5.yb).plot(\n",
-    "    column=\"cl\",\n",
-    "    categorical=True,\n",
-    "    k=5,\n",
+    "ax = df.plot(\n",
+    "    ylag,\n",
     "    cmap=\"GnBu\",\n",
     "    linewidth=0.1,\n",
-    "    ax=ax,\n",
     "    edgecolor=\"white\",\n",
+    "    scheme=\"quantiles\",\n",
     "    legend=True,\n",
+    "    figsize=(9, 9),\n",
     ")\n",
     "ax.set_axis_off()\n",
     "plt.title(\"Spatial Lag Median Price (Quintiles)\")\n",
@@ -351,8 +335,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
-    "df.plot(column=\"yb\", cmap=\"binary\", edgecolor=\"grey\", legend=True, ax=ax)"
+    "df.plot(column=\"yb\", cmap=\"binary\", edgecolor=\"grey\", legend=True, figsize=(12, 10))"
    ]
   },
   {
@@ -515,9 +498,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "import seaborn as sbn\n",
-    "\n",
-    "sbn.kdeplot(jc.sim_bb, fill=True)\n",
+    "sns.kdeplot(jc.sim_bb, fill=True)\n",
     "plt.vlines(jc.bb, 0, 0.075, color=\"r\")\n",
     "plt.vlines(jc.mean_bb, 0, 0.075)\n",
     "plt.xlabel(\"BB Counts\")"
@@ -611,9 +592,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "import seaborn as sbn\n",
-    "\n",
-    "sbn.kdeplot(mi.sim, fill=True)\n",
+    "sns.kdeplot(mi.sim, fill=True)\n",
     "plt.vlines(mi.I, 0, 1, color=\"r\")\n",
     "plt.vlines(mi.EI, 0, 1)\n",
     "plt.xlabel(\"Moran's I\")"
@@ -762,18 +741,14 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "df = df\n",
-    "from matplotlib import colors\n",
-    "\n",
     "hmap = colors.ListedColormap([\"red\", \"lightgrey\"])\n",
-    "f, ax = plt.subplots(1, figsize=(9, 9))\n",
-    "df.assign(cl=labels).plot(\n",
+    "ax = df.assign(cl=labels).plot(\n",
     "    column=\"cl\",\n",
     "    categorical=True,\n",
     "    k=2,\n",
     "    cmap=hmap,\n",
     "    linewidth=0.1,\n",
-    "    ax=ax,\n",
+    "    figsize=(9, 9),\n",
     "    edgecolor=\"white\",\n",
     "    legend=True,\n",
     ")\n",
@@ -797,9 +772,6 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "df = df\n",
-    "from matplotlib import colors\n",
-    "\n",
     "hmap = colors.ListedColormap([\"blue\", \"lightgrey\"])\n",
     "f, ax = plt.subplots(1, figsize=(9, 9))\n",
     "df.assign(cl=labels).plot(\n",
@@ -832,9 +804,6 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "df = df\n",
-    "from matplotlib import colors\n",
-    "\n",
     "hmap = colors.ListedColormap([\"lightblue\", \"lightgrey\"])\n",
     "f, ax = plt.subplots(1, figsize=(9, 9))\n",
     "df.assign(cl=labels).plot(\n",
@@ -867,9 +836,6 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "df = df\n",
-    "from matplotlib import colors\n",
-    "\n",
     "hmap = colors.ListedColormap([\"pink\", \"lightgrey\"])\n",
     "f, ax = plt.subplots(1, figsize=(9, 9))\n",
     "df.assign(cl=labels).plot(\n",
@@ -917,8 +883,6 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from matplotlib import colors\n",
-    "\n",
     "hmap = colors.ListedColormap([\"lightgrey\", \"red\", \"lightblue\", \"blue\", \"pink\"])\n",
     "f, ax = plt.subplots(1, figsize=(9, 9))\n",
     "df.assign(cl=labels).plot(\n",
@@ -952,7 +916,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "default",
    "language": "python",
    "name": "python3"
   },
@@ -966,7 +930,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.14.4"
+   "version": "3.14.5"
   }
  },
  "nbformat": 4,

@@ -1001,7 +1001,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">examples</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">correlogram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">G</span><span class="p">,</span> <span class="n">Geary</span><span class="p">,</span> <span class="n">Moran</span><span class="p">,</span> <span class="n">correlogram</span>
 </code></pre></div>
 </div>
 </div>
@@ -1028,13 +1028,6 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code>correlogram<span class="o">?</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">G</span><span class="p">,</span> <span class="n">Geary</span><span class="p">,</span> <span class="n">Moran</span>
 </code></pre></div>
 </div>
 </div>
@@ -1135,13 +1128,13 @@
       <td>0.086188</td>
       <td>9.314058e-01</td>
       <td>9.313166e-01</td>
-      <td>[0.2858081291494407, -0.5833480819221724, 0.03...</td>
-      <td>0.398</td>
-      <td>-0.058756</td>
-      <td>0.707070</td>
-      <td>0.499948</td>
-      <td>0.165447</td>
-      <td>4.342960e-01</td>
+      <td>[-0.0950712073614948, -0.22083950952059658, -0...</td>
+      <td>0.415</td>
+      <td>-0.003366</td>
+      <td>0.738759</td>
+      <td>0.545765</td>
+      <td>0.083374</td>
+      <td>4.667771e-01</td>
     </tr>
     <tr>
       <th>1000</th>
@@ -1159,13 +1152,13 @@
       <td>4.147088</td>
       <td>3.447621e-05</td>
       <td>3.367309e-05</td>
-      <td>[0.12272779582456919, 0.1972512864719238, 0.04...</td>
+      <td>[-0.0019726808252135664, -0.14460942943760993,...</td>
       <td>0.001</td>
-      <td>0.006722</td>
-      <td>0.117901</td>
-      <td>0.013901</td>
-      <td>4.116580</td>
-      <td>1.922684e-05</td>
+      <td>-0.003627</td>
+      <td>0.125011</td>
+      <td>0.015628</td>
+      <td>3.965211</td>
+      <td>3.666555e-05</td>
     </tr>
     <tr>
       <th>1500</th>
@@ -1183,13 +1176,13 @@
       <td>6.763620</td>
       <td>1.430242e-11</td>
       <td>1.345857e-11</td>
-      <td>[0.0999519576218893, -0.006397417483893382, -0...</td>
+      <td>[0.11347130716641973, -0.05266410810045633, -0...</td>
       <td>0.001</td>
-      <td>-0.008154</td>
-      <td>0.067910</td>
-      <td>0.004612</td>
-      <td>6.819220</td>
-      <td>4.576805e-12</td>
+      <td>-0.001118</td>
+      <td>0.068511</td>
+      <td>0.004694</td>
+      <td>6.656770</td>
+      <td>1.399551e-11</td>
     </tr>
     <tr>
       <th>2000</th>
@@ -1207,13 +1200,13 @@
       <td>12.164298</td>
       <td>5.846476e-34</td>
       <td>4.815656e-34</td>
-      <td>[0.04069954010910209, -0.00978627964527193, -0...</td>
+      <td>[-0.027873894952864152, 0.06055154774587215, -...</td>
       <td>0.001</td>
-      <td>-0.002569</td>
-      <td>0.045671</td>
-      <td>0.002086</td>
-      <td>12.374629</td>
-      <td>1.792731e-35</td>
+      <td>-0.002853</td>
+      <td>0.048104</td>
+      <td>0.002314</td>
+      <td>11.754641</td>
+      <td>3.342198e-32</td>
     </tr>
     <tr>
       <th>2500</th>
@@ -1231,13 +1224,13 @@
       <td>13.102771</td>
       <td>3.974924e-39</td>
       <td>3.174519e-39</td>
-      <td>[0.05847503419127865, -0.1110552616921052, 0.0...</td>
+      <td>[0.03949056121530152, -0.0025356409995657353, ...</td>
       <td>0.001</td>
-      <td>-0.003266</td>
-      <td>0.037133</td>
-      <td>0.001379</td>
-      <td>13.582587</td>
-      <td>2.540000e-42</td>
+      <td>-0.002959</td>
+      <td>0.039077</td>
+      <td>0.001527</td>
+      <td>12.898807</td>
+      <td>2.285587e-38</td>
     </tr>
   </tbody>
 </table>

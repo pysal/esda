@@ -960,10 +960,10 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">topo</span>
 </code></pre></div>
@@ -980,7 +980,7 @@
 <p>Let’s start with a natural example: isolation of population of countries.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
     <span class="s2">&quot;https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip&quot;</span>
 <span class="p">)</span>
 </code></pre></div>
@@ -1322,7 +1322,7 @@
 <p>Next, to see <code class="docutils literal notranslate"><span class="pre">prominence</span></code>, we’ll use the same arguments. However, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> can also take a graph/<code class="docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code> object that specifies the connections between sampled locations. If no pre-existing graph or surface is provided, the Delaunay Triangulation is used between the coordinates provided, which is a common triangulation in digital elevation models. Here, I’ll use the Rook contiguity graph, just for ease of interpretation. This means that some islands will automatically be considered as “peaks” because they don’t share any borders with any higher observations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_rook</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">Rook</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">natearth</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">silence_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_rook</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">natearth</span><span class="p">)</span>
 <span class="n">prominence</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">prominence</span><span class="p">(</span><span class="n">natearth</span><span class="p">[</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">],</span> <span class="n">w_rook</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>

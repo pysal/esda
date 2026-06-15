@@ -1180,11 +1180,12 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geodatasets</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>  <span class="c1"># work with spatial data</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>  <span class="c1"># work with spatial data</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>  <span class="c1"># visualize</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>  <span class="c1"># math tools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span>  <span class="c1"># further visualization tools</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>  <span class="c1"># construct spatial relations</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>  <span class="c1"># visualize</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>  <span class="c1"># calculate correlation</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">esda.moran</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran_Local</span><span class="p">,</span> <span class="n">Moran_Local_BV</span>  <span class="c1"># standard Moran</span>
@@ -1199,7 +1200,7 @@
 <p>We’ll work with Airbnb data from Chicago, in order to understand how additional information <span class="math notranslate nohighlight">\(x\)</span> informs our judgement about outcomes <span class="math notranslate nohighlight">\(y\)</span>. In this case, we’ll consider the average price per head per night for airbnbs in neighborhoods of Chicago, and how it is informed by the overcrowding rate in those neighborhoods, which is a function itself of the population density and investment in housing stock in the neighborhood. Note, too, that price-per-head is <em>already correcting</em> the total booking price of an airbnb based on the number of people it can accommodate; we need a new technique to partition covariation correctly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">geodatasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;geoda.airbnb&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">geodatasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;geoda.airbnb&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -1260,7 +1261,7 @@
 <p>You can then see that the multivariate estimators for the partial and auxiliary regressive versions of the Local Moran statistic are just combinations of these simple pairwise statistics when there is only one <span class="math notranslate nohighlight">\(x\)</span> variable:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;equal&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">((</span><span class="n">Iy</span><span class="o">.</span><span class="n">Is</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">Ixy</span><span class="o">.</span><span class="n">Is</span><span class="p">)</span> <span class="o">*</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">p_lmo</span><span class="o">.</span><span class="n">association_</span><span class="p">)</span>
 
@@ -1285,7 +1286,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/34cc26a2701ec967b2258a6534a62555bb2db3cbf8c1c4bafae06476b36ce057.png" src="../_images/34cc26a2701ec967b2258a6534a62555bb2db3cbf8c1c4bafae06476b36ce057.png" />
+<img alt="../_images/1275821e1db785c07abc19fc17cf6557116b69eaf4941f2a4574925fe543c3f0.png" src="../_images/1275821e1db785c07abc19fc17cf6557116b69eaf4941f2a4574925fe543c3f0.png" />
 </div>
 </div>
 <p>You can see the direction of changes shown below. The changes in the partial statistic can only move from left to right, since the correction is only applied to <span class="math notranslate nohighlight">\(y\)</span>, not <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span>. The component that “corrects” the <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span> for <span class="math notranslate nohighlight">\(x\)</span> comes from that due to <span class="math notranslate nohighlight">\(\mathbf{W}x\)</span>, which arises in the auxiliary regression version, shown on the right.</p>
@@ -1513,9 +1514,8 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># | echo: false</span>
 <span class="c1"># | #| jupyter: {source_hidden: false}</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 
-<span class="n">partial_moves</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+<span class="n">partial_moves</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
     <span class="n">Iy</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
     <span class="n">p_lmo</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
 <span class="p">)</span>
@@ -1523,7 +1523,7 @@
 <span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Partial&quot;</span>
 <span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Univariate&quot;</span>
 
-<span class="n">aux_moves</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+<span class="n">aux_moves</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
     <span class="n">Iy</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
     <span class="n">a_lmo</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
 <span class="p">)</span>

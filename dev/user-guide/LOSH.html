@@ -1313,11 +1313,14 @@
 <p>We first load the <code class="docutils literal notranslate"><span class="pre">Bostonhsg</span></code> example dataset from <code class="docutils literal notranslate"><span class="pre">libpysal</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">examples</span><span class="p">,</span> <span class="n">graph</span>
 
-<span class="n">boston</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Bostonhsg&quot;</span><span class="p">)</span>
-<span class="n">boston_ds</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">boston</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;boston.shp&quot;</span><span class="p">))</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">esda.losh</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOSH</span>
+
+<span class="n">boston</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Bostonhsg&quot;</span><span class="p">)</span>
+<span class="n">boston_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">boston</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;boston.shp&quot;</span><span class="p">))</span>
 </code></pre></div>
 </div>
 </div>
@@ -1330,7 +1333,7 @@
 <p>Then we construct a Queen weight structure by defining Voronoi polygons around each town point, and polygons sharing a border encoding neighboring observations:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">geog</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_triangulation</span><span class="p">(</span><span class="n">boston_ds</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">geog</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_triangulation</span><span class="p">(</span><span class="n">boston_ds</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1338,9 +1341,7 @@
 <p>We can now import the <code class="docutils literal notranslate"><span class="pre">losh()</span></code> function. Note that it is in the form of a scikit-learn type estimator, so we pass both a series of arguments and then call <code class="docutils literal notranslate"><span class="pre">.fit()</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">esda.losh</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOSH</span>
-
-<span class="n">ls</span> <span class="o">=</span> <span class="n">LOSH</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">,</span> <span class="n">inference</span><span class="o">=</span><span class="s2">&quot;chi-square&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">boston_ds</span><span class="p">[</span><span class="s2">&quot;NOX&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ls</span> <span class="o">=</span> <span class="n">LOSH</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">,</span> <span class="n">inference</span><span class="o">=</span><span class="s2">&quot;chi-square&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">boston_ds</span><span class="p">[</span><span class="s2">&quot;NOX&quot;</span><span class="p">])</span>
 </code></pre></div>
 </div>
 </div>
@@ -1384,9 +1385,7 @@
 <p>We can now map the LOSH (<span class="math notranslate nohighlight">\(H_i\)</span>) values. Note that we choose a Quantile break scheme here for visualization purposes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
 <span class="n">boston_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;Hi&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>

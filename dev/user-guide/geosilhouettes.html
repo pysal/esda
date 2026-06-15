@@ -1042,14 +1042,12 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">contextily</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">examples</span><span class="p">,</span> <span class="n">graph</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
-
-<span class="o">%</span><span class="k">matplotlib</span> inline
 </code></pre></div>
 </div>
 </div>
@@ -1065,7 +1063,7 @@
 <p>Then, we’ll read in data for all of the south, using the example datasets in the <code class="docutils literal notranslate"><span class="pre">libpysal</span></code> package:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">south</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">example_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;South&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">south</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">example_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;South&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1077,7 +1075,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">south</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;south.shp&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">south</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;south.shp&quot;</span><span class="p">))</span>
 </code></pre></div>
 </div>
 </div>
@@ -1100,14 +1098,7 @@
 <p>Finally, for mapping purposes, let’s get a basemap. This is done using the <code class="docutils literal notranslate"><span class="pre">contextily</span></code> package, which expects our data in a specific coordinate projection system. For more, check out the <a class="reference external" href="https://github.com/darribas/contextily/blob/master/contextily_guide.ipynb"><code class="docutils literal notranslate"><span class="pre">contextily</span></code> user guide</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">deep</span><span class="o">.</span><span class="n">crs</span> <span class="o">=</span> <span class="mi">4326</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">deep</span> <span class="o">=</span> <span class="n">deep</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">3857</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">deep</span> <span class="o">=</span> <span class="n">deep</span><span class="o">.</span><span class="n">set_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">3857</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1200,7 +1191,7 @@ $<span class="math notranslate nohighlight">\( s_i = \frac{d_i(c) - d_i(\hat{k})
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a670c62d4dab13f670b881e691b318b68e9b0f59d10c9942145e653a3699213d.png" src="../_images/a670c62d4dab13f670b881e691b318b68e9b0f59d10c9942145e653a3699213d.png" />
+<img alt="../_images/5a29abea77088207e03b9c992c4e3223831cbfdd2003094d609ecab61257cc99.png" src="../_images/5a29abea77088207e03b9c992c4e3223831cbfdd2003094d609ecab61257cc99.png" />
 </div>
 </div>
 <p>And, in this geography of inequality, each county is very well fit to its group:</p>
@@ -1284,10 +1275,10 @@ $<span class="math notranslate nohighlight">\( s_i = \frac{d_i(c) - d_i(\hat{k})
 <h2 id="geographical-structure">Geographical Structure<a class="headerlink" href="#geographical-structure" title="Link to this heading">¶</a></h2>
 <p>For many geographical analysis algorithms, we require some sense of geographical structure in order to “understand” geography. At its most basic level, this requires us to define a representation of geography that can be used in analysis. Often, this takes the form of a <a class="reference external" href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)"><em>graph</em>, or <em>network</em></a>, that links observations. In this mode of analysis, each <em>node</em> is an observation and each <em>edge</em> represents a geographic connection between observations.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">pysal</span></code>/<code class="docutils literal notranslate"><span class="pre">libpysal</span></code> libraries contain many tools for building graphs from geographical data. In these domains, it is common to refer to one representation of the geographical graph as a <em>spatial weights matrix</em>, since it reflects the <em>spatial weight</em> each observation has on every other observation. As such, this is stored in the <code class="docutils literal notranslate"><span class="pre">libpysal.weights</span></code> module.</p>
-<p>Here, we’ll construct the <a class="reference external" href="https://gis.stackexchange.com/questions/172998/queen-vs-rook-neighborhood">Rook Contiguity graph</a> (sometimes called the <a class="reference external" href="https://en.wikipedia.org/wiki/Von_Neumann_neighborhood">von Neuman neighborhood</a>) for counties using the <code class="docutils literal notranslate"><span class="pre">libpysal.weights.Rook</span></code> constructor:</p>
+<p>Here, we’ll construct the <a class="reference external" href="https://gis.stackexchange.com/questions/172998/queen-vs-rook-neighborhood">Rook Contiguity graph</a> (sometimes called the <a class="reference external" href="https://en.wikipedia.org/wiki/Von_Neumann_neighborhood">von Neuman neighborhood</a>) for counties using the <code class="docutils literal notranslate"><span class="pre">libpysal.graph.Graph.build_contiguity</span></code> constructor:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Rook</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">deep</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">deep</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1295,7 +1286,7 @@ $<span class="math notranslate nohighlight">\( s_i = \frac{d_i(c) - d_i(\hat{k})
 <p>To see what this looks like, we can plot the graph below, where “connected” counties have a black line drawn between their centers:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">deep</span><span class="p">,</span> <span class="n">edge_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">node_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">deep</span><span class="p">,</span> <span class="n">edge_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">node_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <span class="n">deep</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;STATE_NAME&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">basemap</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;bilinear&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1303,7 +1294,7 @@ $<span class="math notranslate nohighlight">\( s_i = \frac{d_i(c) - d_i(\hat{k})
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4720f9e14f452ffdcbdee529f623a38127071d1bf0019311b4d5479e29cc7f38.png" src="../_images/4720f9e14f452ffdcbdee529f623a38127071d1bf0019311b4d5479e29cc7f38.png" />
+<img alt="../_images/d108bdd89fcd63517932e0f8f5e639874c31447db17a24905e073d95422387cc.png" src="../_images/d108bdd89fcd63517932e0f8f5e639874c31447db17a24905e073d95422387cc.png" />
 </div>
 </div>
 <h2 id="path-silhouettes">Path Silhouettes<a class="headerlink" href="#path-silhouettes" title="Link to this heading">¶</a></h2>

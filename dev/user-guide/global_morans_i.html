@@ -1812,9 +1812,10 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lps</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
 </code></pre></div>
@@ -1824,14 +1825,14 @@
 <p>Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the <a class="reference external" href="https://github.com/ljwolf/geopython">GeoPython 2018 workshop</a> by <a class="reference external" href="https://ljwolf.org">Levi Wolf</a> and <a class="reference external" href="https://sergerey.org">Serge Rey</a>. As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1844,10 +1845,8 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;aspect&quot;</span><span class="p">:</span> <span class="s2">&quot;equal&quot;</span><span class="p">})</span>
-<span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="c1"># ax.set_xlim(150000, 160000)</span>
-<span class="c1"># ax.set_ylim(208000, 215000)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1864,9 +1863,7 @@
 <h3 id="moran-s-i">Moran’s I<a class="headerlink" href="#moran-s-i" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gdf</span>
-<span class="n">wq</span> <span class="o">=</span> <span class="n">lps</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">silence_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">wq</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1886,7 +1883,7 @@ attribute similarity to pair up with this concept of spatial similarity. The
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
-<span class="n">ylag</span> <span class="o">=</span> <span class="n">lps</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">lag_spatial</span><span class="p">(</span><span class="n">wq</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">ylag</span> <span class="o">=</span> <span class="n">wq</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1932,25 +1929,14 @@ attribute similarity to pair up with this concept of spatial similarity. The
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">mapclassify</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mc</span>
-
-<span class="n">ylagq5</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">Quantiles</span><span class="p">(</span><span class="n">ylag</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
-<span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">ylagq5</span><span class="o">.</span><span class="n">yb</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
-    <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">ylag</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Median Price (Quintiles)&quot;</span><span class="p">)</span>
@@ -1960,7 +1946,7 @@ attribute similarity to pair up with this concept of spatial similarity. The
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/65dbb9a0668c0d4840aed3e2e7ceb3dc0786f7dd11fc0e8bf4475cc2cf83ff5c.png" src="../_images/65dbb9a0668c0d4840aed3e2e7ceb3dc0786f7dd11fc0e8bf4475cc2cf83ff5c.png" />
+<img alt="../_images/166f885f8983527e69ac1f3b5bc4f1ae0fcab1f3bcc260b4ae37ea92533c1551.png" src="../_images/166f885f8983527e69ac1f3b5bc4f1ae0fcab1f3bcc260b4ae37ea92533c1551.png" />
 </div>
 </div>
 <p>The quintile map for the spatial lag tends to enhance the impression of value
@@ -1992,13 +1978,6 @@ similarity in space. It is, in effect, a local smoother.</p>
 </div>
 <div class="cell_output docutils container">
 <img alt="../_images/f41fe8bd02d144cc6c53d266b487f173b200adc2ec96e55736c8f1d55e64b94d.png" src="../_images/f41fe8bd02d144cc6c53d266b487f173b200adc2ec96e55736c8f1d55e64b94d.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
-</code></pre></div>
-</div>
 </div>
 </div>
 <p>Moran’s I is a test for global autocorrelation for a continuous attribute:</p>
@@ -2172,9 +2151,7 @@ This can be visualized through the <code class="docutils literal notranslate"><s
 <p>While this looks like a standard normal <span class="math notranslate nohighlight">\(Z\)</span>-score, significance should still be evaluated using the pseudo <span class="math notranslate nohighlight">\(p\)</span>-value, as the empirical distribution may retain non-normal features (e.g., skewness) dictated by highly irregular spatial weights.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sbn</span>
-
-<span class="n">sbn</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">sim</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">sim</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">EI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Moran&#39;s I&quot;</span><span class="p">)</span>
@@ -2185,7 +2162,7 @@ This can be visualized through the <code class="docutils literal notranslate"><s
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, &quot;Moran&#39;s I&quot;)
 </code></pre></div>
 </div>
-<img alt="../_images/30ff30f3a080e5392f5dd0d7676e95817590039de30e190a5cac24afd468a654.png" src="../_images/30ff30f3a080e5392f5dd0d7676e95817590039de30e190a5cac24afd468a654.png" />
+<img alt="../_images/2c58d055209c56995f37d8a79a7f0f917b3e5757819dd0498fe169d497ef6d7e.png" src="../_images/2c58d055209c56995f37d8a79a7f0f917b3e5757819dd0498fe169d497ef6d7e.png" />
 </div>
 </div>
 <div class="cell docutils container">

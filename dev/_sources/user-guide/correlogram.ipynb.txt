@@ -35,7 +35,7 @@
     "import geopandas as gpd\n",
     "from libpysal import examples\n",
     "\n",
-    "from esda import correlogram"
+    "from esda import G, Geary, Moran, correlogram"
    ]
   },
   {
@@ -72,18 +72,6 @@
    "outputs": [],
    "source": [
     "correlogram?"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "90fc27f4-1f71-4a39-bcd1-339fa27fa3b4",
-   "metadata": {
-    "tags": []
-   },
-   "outputs": [],
-   "source": [
-    "from esda import G, Geary, Moran"
    ]
   },
   {
