@@ -1220,7 +1220,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/c9d9fc16ed3119675a5be6ccd805b9f98a604716bf3fcc1ea7a7585f51b152c5.png" src="../_images/c9d9fc16ed3119675a5be6ccd805b9f98a604716bf3fcc1ea7a7585f51b152c5.png" />
+<img alt="../_images/1b3a113b70bea16aa09f55baf0fd7645e8647aa8cedb30def73aef595f3d2045.png" src="../_images/1b3a113b70bea16aa09f55baf0fd7645e8647aa8cedb30def73aef595f3d2045.png" />
 </div>
 </div>
 <p>In order to estimate the statistics, we need to get our data. We’ll use the <code class="docutils literal notranslate"><span class="pre">price_pp</span></code> to get the price per person per night for Airbnbs in each neighborhood. And, we’ll use the <code class="docutils literal notranslate"><span class="pre">crowded</span></code> column for the percentages of properties that are over-crowded. We’ll build a simple contiguity weights matrix to explain the spatial adjacencies between neighborhoods.</p>
@@ -1286,7 +1286,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1275821e1db785c07abc19fc17cf6557116b69eaf4941f2a4574925fe543c3f0.png" src="../_images/1275821e1db785c07abc19fc17cf6557116b69eaf4941f2a4574925fe543c3f0.png" />
+<img alt="../_images/c86d5ba59c6e457c38a6372eaa0b52dd717aa9dea42df036eac2495749e261da.png" src="../_images/c86d5ba59c6e457c38a6372eaa0b52dd717aa9dea42df036eac2495749e261da.png" />
 </div>
 </div>
 <p>You can see the direction of changes shown below. The changes in the partial statistic can only move from left to right, since the correction is only applied to <span class="math notranslate nohighlight">\(y\)</span>, not <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span>. The component that “corrects” the <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span> for <span class="math notranslate nohighlight">\(x\)</span> comes from that due to <span class="math notranslate nohighlight">\(\mathbf{W}x\)</span>, which arises in the auxiliary regression version, shown on the right.</p>
@@ -1343,7 +1343,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/beac7436fc953bd6902cee141d62300d8fa237366ae4cf005b16d50f4e783e7a.png" src="../_images/beac7436fc953bd6902cee141d62300d8fa237366ae4cf005b16d50f4e783e7a.png" />
+<img alt="../_images/2f08d74f336b94c4b94d115e7edf857421e1de9c538cf1a8a11806729c1e1ec4.png" src="../_images/2f08d74f336b94c4b94d115e7edf857421e1de9c538cf1a8a11806729c1e1ec4.png" />
 </div>
 </div>
 <p>Here, we’ve colored the statistics according to their <em>new</em> quadrant. In the same fashion as a regular Local Moran statistic, we get quadrants that describe whether <span class="math notranslate nohighlight">\(y-\rho x\)</span> is above or below the mean, (which, in both cases, is zero), and whether <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span> (or <span class="math notranslate nohighlight">\(\mathbf{W}(y - \rho x)\)</span>) is above or below its mean (which, again, is zero by construction). Further, you can note the four-part quadrant breakdown is explained by the annotations:</p>
@@ -1504,7 +1504,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2382ae91b83c3ef1e3517649cd8b518a7c3be933d3a374ff4dd2c1f5834070be.png" src="../_images/2382ae91b83c3ef1e3517649cd8b518a7c3be933d3a374ff4dd2c1f5834070be.png" />
+<img alt="../_images/cae64b80ab7517c0da61186496b4327221517396ab5629c5619f29947673f38e.png" src="../_images/cae64b80ab7517c0da61186496b4327221517396ab5629c5619f29947673f38e.png" />
 </div>
 </div>
 <p>From the partial statistic, you can see that most of the moves occur in the hotspot and coldspot quadrants, but quite a few very large moves push things towards “peaked”ness. These are many of the moves on the bottom right quadrant, where even a few observations shift from being a coldspot to being a peak. This means that they’re in relatively low-priced areas, given their crowding levels. I refer to this as “x peaks y”, since it indicates that <span class="math notranslate nohighlight">\(x\)</span> pushes the local statistic towards the “peak” quadrant. Note that this does <em>not</em> indicate a change in classification, which we can see in a second.</p>

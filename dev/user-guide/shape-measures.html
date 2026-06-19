@@ -1056,7 +1056,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;Virginia Counties&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/28ee94b0ba9a4a8d85b5db79b952fe647f1dddd3689b09991db5e375364e4457.png" src="../_images/28ee94b0ba9a4a8d85b5db79b952fe647f1dddd3689b09991db5e375364e4457.png" />
+<img alt="../_images/e1b5495ef92393972077ffa571a0976a0697ce8d0ff6afdb1ac9e878a5cdc28d.png" src="../_images/e1b5495ef92393972077ffa571a0976a0697ce8d0ff6afdb1ac9e878a5cdc28d.png" />
 </div>
 </div>
 <p>We did not check the coordinate reference system (CRS) of the geodataframe, but we can see from the axes on the plot that the coordinates are in lat-long. <strong>We should not use lat-long coordinate systems to calculate shape measures.</strong> If you are familiar with Virginia, the above plot may “look right”. This is because Geopandas automatically adjust the aspect ratio of lat-long plots to approximate a conformal projection. We can turn this feature off to see what the unprojected coordinates look like.</p>
@@ -1072,7 +1072,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;Virginia Counties&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/1d92412aa6a69422a0363cbbd86c8ed33576913156d7ff011de49cd7e478aaa6.png" src="../_images/1d92412aa6a69422a0363cbbd86c8ed33576913156d7ff011de49cd7e478aaa6.png" />
+<img alt="../_images/71180bfc9ea66a32b15dca4865af9db229fe4804b663f5c50ddd1b7fd0c6aaca.png" src="../_images/71180bfc9ea66a32b15dca4865af9db229fe4804b663f5c50ddd1b7fd0c6aaca.png" />
 </div>
 </div>
 <p>Now we can see that calculating Euclidian distances and areas on unprojected lat-long coordinates will lead to incorrect results. The distorted distances and areas will impact many shape measures. We will see how by introducing a simple shape measure, the difference between the length and width of the shape. The length-width difference is a measure of <em>elongation</em>. As you might guess by comparing the previous two plots, the length-width difference will be heavily affected by the CRS. Let’s see what this looks like numerically.</p>
@@ -1090,7 +1090,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;Virginia Counties&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/ff5c873c7d17950235fd060a11189abf0aa53977c5ab24d9b02d4a4f74351038.png" src="../_images/ff5c873c7d17950235fd060a11189abf0aa53977c5ab24d9b02d4a4f74351038.png" />
+<img alt="../_images/48760bcfc06e1c7848e079d6bbb03a1537a1e38ecb77a478707e0637aa73e23d.png" src="../_images/48760bcfc06e1c7848e079d6bbb03a1537a1e38ecb77a478707e0637aa73e23d.png" />
 </div>
 </div>
 <p>Now let’s calculate the length-width difference on both the lat-long and Mercator coordinates, and see the difference. The measure is the difference of <span class="math notranslate nohighlight">\(L\)</span>, the length of the shape in the North-South direction, and <span class="math notranslate nohighlight">\(W\)</span>, the width of the shape in the East-West direction.</p>
@@ -1325,7 +1325,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;length-width difference&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/9ae886535e102dc3036a6474950675b56d16141f8c7ae854143fc630fed517c6.png" src="../_images/9ae886535e102dc3036a6474950675b56d16141f8c7ae854143fc630fed517c6.png" />
+<img alt="../_images/d00eece7b84ccf2b6a312c094724172fe473573e643e0fddbbb47469dd2d7bd7.png" src="../_images/d00eece7b84ccf2b6a312c094724172fe473573e643e0fddbbb47469dd2d7bd7.png" />
 </div>
 </div>
 <h2 id="ideal-shape-measures">Ideal Shape Measures<a class="headerlink" href="#ideal-shape-measures" title="Link to this heading">¶</a></h2>
@@ -1349,7 +1349,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;boundary amplitude&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/a5c5058ae45faca389257ffe604ba2fdca595736ebce84c04997370b09e600dc.png" src="../_images/a5c5058ae45faca389257ffe604ba2fdca595736ebce84c04997370b09e600dc.png" />
+<img alt="../_images/5a656559ad52ce35fdc3640781e2fb69ec083171edc1393f0980ccc4c78ec45f.png" src="../_images/5a656559ad52ce35fdc3640781e2fb69ec083171edc1393f0980ccc4c78ec45f.png" />
 </div>
 </div>
 <p>Related, the convex hull ratio is the <em>area</em> of the original shape divided by the area of the convex hull. This varies between zero and one again: since the convex hull always <em>contains</em> the original shape, its area is always larger. The measure, thus, is related to the <code class="docutils literal notranslate"><span class="pre">boundary_amplitude</span></code>, but will be different for different polygons, since it pertains to <em>area</em>, not <em>perimeter</em>. Generally speaking, perimeter-based measures will be more sensitive to non-convexities than areal-based measures.</p>
@@ -1364,7 +1364,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;convex hull areal ratio&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/b9b3192dfe7e5e8fe69e1c00fc8e4aa0d597b6018cd1492f9fdf63afd688241b.png" src="../_images/b9b3192dfe7e5e8fe69e1c00fc8e4aa0d597b6018cd1492f9fdf63afd688241b.png" />
+<img alt="../_images/c4e69218ceb506ab9a465182448abeeb76360364f808dbd6c76d52d2324e97a7.png" src="../_images/c4e69218ceb506ab9a465182448abeeb76360364f808dbd6c76d52d2324e97a7.png" />
 </div>
 </div>
 <p>Another measure is the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, sometimes called the Reock measure after the author of the first journal article in which it was used to analyze congressional districts. The ratio compares the area of the original shape to the area of the smallest circle that can fully enclose the shape. This measure <em>strongly penalizes elongation</em>, as the minimum bounding circle has to get larger and larger to contain the shape. While the method is similar to the <code class="docutils literal notranslate"><span class="pre">convex</span> <span class="pre">hull</span> <span class="pre">ratio</span></code> (both compare the area of the shape to the area of a containing shape), the <code class="docutils literal notranslate"><span class="pre">convex_hull_ratio</span></code> is sensitive to concavities of the perimeter but insensitve to elongation, while the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code> is sensitive to elongation but insensitive to concavities of the perimeter. It also varies between zero and one, where <span class="math notranslate nohighlight">\(1\)</span> reflects the case where a polygon is its own bounding circle.</p>
@@ -1379,7 +1379,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;minimum bounding circle ratio&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/6e4cba88b04e93d34e56340b21531012c26ca2ef1fc8ff1cfea5bd79f94d66a8.png" src="../_images/6e4cba88b04e93d34e56340b21531012c26ca2ef1fc8ff1cfea5bd79f94d66a8.png" />
+<img alt="../_images/30b115b30c34202b7f2020041a5e82fe23dcfbeeb2e56b735c4eb66e0dda2246.png" src="../_images/30b115b30c34202b7f2020041a5e82fe23dcfbeeb2e56b735c4eb66e0dda2246.png" />
 </div>
 </div>
 <p>A related measure is the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code>. Instead of comparing the areas of the two shapes, the <code class="docutils literal notranslate"><span class="pre">radii_ratio</span></code> actually mixes the reference and ideal shape concepts together. It relates the radius of the minimum bounding circle to the radius of the <em>isoareal</em> circle, or the circle that contains the same area as the original shape.</p>
@@ -1394,7 +1394,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;radii ratio&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/d9c13b3e1d9be3cbe6af7e2dd084ad92f3c107cbaf78727f016b423222a55900.png" src="../_images/d9c13b3e1d9be3cbe6af7e2dd084ad92f3c107cbaf78727f016b423222a55900.png" />
+<img alt="../_images/2e6d969366039d73b2d6d397c56e8998c4632c2e2f3f521572bd16bf86bf6857.png" src="../_images/2e6d969366039d73b2d6d397c56e8998c4632c2e2f3f521572bd16bf86bf6857.png" />
 </div>
 </div>
 <p>This measure generally performs about the same as the <code class="docutils literal notranslate"><span class="pre">minimum_bounding_circle_ratio</span></code>, with a bit more sensitivity to concavities in the shape.</p>
@@ -1416,7 +1416,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &#39;Minimum Bounding Circle Ratio&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/a0cfa05350e168e0b246d7b542a2cf852df0a486978189e0966d6ec382577fe6.png" src="../_images/a0cfa05350e168e0b246d7b542a2cf852df0a486978189e0966d6ec382577fe6.png" />
+<img alt="../_images/c135e8d2ff48bf17b09ec28cbe9912bad6c2ad671a205c5955c1e25ca064a86d.png" src="../_images/c135e8d2ff48bf17b09ec28cbe9912bad6c2ad671a205c5955c1e25ca064a86d.png" />
 </div>
 </div>
 <p>A similar measure to the minimum bounding circle ratio is the diameter ratio. This measures the ratio between a shape’s “longest” and “shortest” diameters. This can be measured as the longest and shortest axis of a shape’s minimum rotated rectangle. Alternatively, one can use the raw bounding box for shapes, but this is biased towards shapes that are east-west and north-south oriented. This again is quite a strong measure of elongation, and shapes with very large differences between their longest and shortest axes will have low scores.</p>
@@ -1430,7 +1430,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/5639687a35ab812d47ceeea2b38d9bb505994d442857135d6941867c70661ac2.png" src="../_images/5639687a35ab812d47ceeea2b38d9bb505994d442857135d6941867c70661ac2.png" />
+<img alt="../_images/e31f57f52b61a7aae906671ecbbbdd681680d10af0222448e9e6f37d65076e97.png" src="../_images/e31f57f52b61a7aae906671ecbbbdd681680d10af0222448e9e6f37d65076e97.png" />
 </div>
 </div>
 <h3 id="relative-ideal-shape-measures">Relative ideal shape measures<a class="headerlink" href="#relative-ideal-shape-measures" title="Link to this heading">¶</a></h3>
@@ -1446,7 +1446,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/6c67dcf0d2bbc37bf8f47e21186257a80e9a6c1fb1f105c10591bed9740322e7.png" src="../_images/6c67dcf0d2bbc37bf8f47e21186257a80e9a6c1fb1f105c10591bed9740322e7.png" />
+<img alt="../_images/09d793878cd079271cb6ad293d3a3e1de7ad280470aecd0ff61ca0c95e88f1e0.png" src="../_images/09d793878cd079271cb6ad293d3a3e1de7ad280470aecd0ff61ca0c95e88f1e0.png" />
 </div>
 </div>
 <p>The related measure, the <code class="docutils literal notranslate"><span class="pre">isoperimetric_quotient</span></code>, relates the shape’s area to the area of a circle with the same perimeter of the original shape.</p>
@@ -1460,7 +1460,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/1659f4c1cff21764ca3aa078d0d6d3971c61f2dc22b3f1c1421e3adfda3cfef2.png" src="../_images/1659f4c1cff21764ca3aa078d0d6d3971c61f2dc22b3f1c1421e3adfda3cfef2.png" />
+<img alt="../_images/88058e7a19251b21c9bf0939a9a4ef294b4da99892ecb0fd7cb5ec5e8773de28.png" src="../_images/88058e7a19251b21c9bf0939a9a4ef294b4da99892ecb0fd7cb5ec5e8773de28.png" />
 </div>
 </div>
 <p>If these two maps look similar to each other, it is because the <code class="docutils literal notranslate"><span class="pre">isoareal_quotient</span></code> is mathematically equal to the square root of the <code class="docutils literal notranslate"><span class="pre">isoperimetric</span> <span class="pre">quotient</span></code>. They will always rank shapes in the same order, as is demonstrated in the plot below. Of the two, the <code class="docutils literal notranslate"><span class="pre">isoperimetric</span> <span class="pre">quotient</span></code> is more commonly used.</p>
@@ -1482,7 +1482,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &#39;Isoperimetric Quotient&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/6eaceec3931809c2be532b4a81cecd15489d5bc4ad8699b4aef2e015ff5c9f71.png" src="../_images/6eaceec3931809c2be532b4a81cecd15489d5bc4ad8699b4aef2e015ff5c9f71.png" />
+<img alt="../_images/eb14631f9e07f5a6cef923ea53ee0dc87b091435d170b703ee789d215177744e.png" src="../_images/eb14631f9e07f5a6cef923ea53ee0dc87b091435d170b703ee789d215177744e.png" />
 </div>
 </div>
 <p>A final related measure is the fractal dimension of a shape. This measures the effective dimension of a shape’s boundary, and generally varies between zero and two, where <span class="math notranslate nohighlight">\(2\)</span> implies a very convoluted boundary, and <span class="math notranslate nohighlight">\(0\)</span> implies a very simple boundary. Hoever, our particular implementation approximates the true fractal dimension by assuming that shapes’ boundaries move along either in a grid or a hexagonal lattice. Thus, the measure is effectively the relationship between a square (or hexagon) and the existing shape.</p>
@@ -1496,7 +1496,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/693192144a0a67b18eec2dfff970c5998678d14d176ce0607e2702e1e27d54a7.png" src="../_images/693192144a0a67b18eec2dfff970c5998678d14d176ce0607e2702e1e27d54a7.png" />
+<img alt="../_images/cea39d633fff5c08d4659a0be3fd5913fac9f7b91c354c252ce28cadee9d63aa.png" src="../_images/cea39d633fff5c08d4659a0be3fd5913fac9f7b91c354c252ce28cadee9d63aa.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1509,7 +1509,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/e78a1ab030dd5b5981ba060bbc4156a91cf9b1e3687353e4d675840f9b87058f.png" src="../_images/e78a1ab030dd5b5981ba060bbc4156a91cf9b1e3687353e4d675840f9b87058f.png" />
+<img alt="../_images/92e67edbc8704822208509b9d6e62d45930c9d970a0bfd6e37266a3f36e990cc.png" src="../_images/92e67edbc8704822208509b9d6e62d45930c9d970a0bfd6e37266a3f36e990cc.png" />
 </div>
 </div>
 <p>The two are also extremely related:</p>
@@ -1531,7 +1531,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &#39;Fractal Dimension (square)&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/42178803aa43b42fd6400329f80c14fb131ed444b1f49e8bea17204a42216597.png" src="../_images/42178803aa43b42fd6400329f80c14fb131ed444b1f49e8bea17204a42216597.png" />
+<img alt="../_images/980ef45ede0a0776f4c491a2155ae6d638d1939628ba74453a0e4dde815fde2d.png" src="../_images/980ef45ede0a0776f4c491a2155ae6d638d1939628ba74453a0e4dde815fde2d.png" />
 </div>
 </div>
 <h2 id="inertial-measures">Inertial Measures<a class="headerlink" href="#inertial-measures" title="Link to this heading">¶</a></h2>
@@ -1551,7 +1551,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
 </code></pre></div>
 </div>
-<img alt="../_images/9f3049fa6b204bae6ace8fd91905e5df15d203de02541cbee5ffe652c8ceee39.png" src="../_images/9f3049fa6b204bae6ace8fd91905e5df15d203de02541cbee5ffe652c8ceee39.png" />
+<img alt="../_images/d39c7e14734b1107c8f82d56ced29b0b2f00f07a35aeb3cf439e726dd52936a3.png" src="../_images/d39c7e14734b1107c8f82d56ced29b0b2f00f07a35aeb3cf439e726dd52936a3.png" />
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">moment_of_inertia</span></code> function calculates the moment of inertia about the centroid of each polygon. However, the user can also pass in a reference point or an array-like of reference points of the same length as the geodataframe. In the first case, it calculates the moment of inertia of each shape with resepct to a single reference point. For example, we can calculate the moment of inertia of each county with respect to the centroid of Virginia.</p>
@@ -1570,7 +1570,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;Virginia Centroid&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/a9c5c960806651f8846fd1400b1fbd1fa705c535468886734a272d35b0ed608d.png" src="../_images/a9c5c960806651f8846fd1400b1fbd1fa705c535468886734a272d35b0ed608d.png" />
+<img alt="../_images/97c23962d9e1aa3065097d88a42020e95d8893d21c5e02f7f9299ede353bbf08.png" src="../_images/97c23962d9e1aa3065097d88a42020e95d8893d21c5e02f7f9299ede353bbf08.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1585,7 +1585,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;Virginia Counties MOI about Virginia Centroid&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/4af9378cfe470aa4eca11dafd73161fb414a504252f5c8c53ec187177b6d9d6a.png" src="../_images/4af9378cfe470aa4eca11dafd73161fb414a504252f5c8c53ec187177b6d9d6a.png" />
+<img alt="../_images/90901caa1ee25e83eeae99e1a37db698ce3d281ee35109092369854e82d17250.png" src="../_images/90901caa1ee25e83eeae99e1a37db698ce3d281ee35109092369854e82d17250.png" />
 </div>
 </div>
 <p>As you can see, the MOI is lower for counties close to the centroid, and higher for counties farther away. In physical terms, you can think about the as swinging on a string about the centroid. The farther away they are, the more rotational force they have, and the higher the moment of inertia. In human geography, this can be used as a measure of population access to a point of interest.</p>
@@ -1922,7 +1922,7 @@
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 1.0, &#39;Economic Regions of Virginia&#39;)
 </code></pre></div>
 </div>
-<img alt="../_images/a9dd9fd405144c428da852658803ab855ee7870094a9cc1288f6696ace0438d0.png" src="../_images/a9dd9fd405144c428da852658803ab855ee7870094a9cc1288f6696ace0438d0.png" />
+<img alt="../_images/0f04be2174c88d1519f5a8bff821b7dce41d07a5565031a4ad4fb3c02baea1e3.png" src="../_images/0f04be2174c88d1519f5a8bff821b7dce41d07a5565031a4ad4fb3c02baea1e3.png" />
 </div>
 </div>
 <p>In order to calculate the (unweighted) moment of inertia for each economic region, we pass either the list of region identifiers or the column name to the <code class="docutils literal notranslate"><span class="pre">moment_of_inertia_regions</span></code> function.</p>
