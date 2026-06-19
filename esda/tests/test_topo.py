@@ -5,13 +5,17 @@ import numpy
 import pandas
 import pytest
 from libpysal import examples, weights
+from packaging.version import Version
 
 from ..topo import isolation, prominence, to_elevation
 
 mpl_available = False
 if importlib.util.find_spec("matplotlib"):
     mpl_available = True
+    from matplotlib import __version__ as mpl_version
     from matplotlib.testing.decorators import image_comparison
+
+    MPL_GE_311 = Version(mpl_version) >= Version("3.11")
 
 
 class TestTopo:
@@ -130,6 +134,7 @@ class TestTopo:
         assert random.max() >= 0
 
 
+@pytest.mark.skipif(not MPL_GE_311, reason="text plotting change in 3.11")
 @pytest.mark.skipif(not mpl_available, reason="matplotlib needed for this test")
 @image_comparison(["topo4x1"], extensions=["png"], tol=1.0)
 def test_plots():
