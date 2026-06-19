@@ -1,0 +1,538 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Cluster points and explore boundary *blurriness* with A-DBSCAN \n",
+    "\n",
+    "In this example, we will illustrate how to use A-DBSCAN ([Arribas-Bel et al., 2019](https://www.sciencedirect.com/science/article/abs/pii/S0094119019300944)) with a sample of AirBnb properties in Berlin. A-DBSCAN will allow us do two things:\n",
+    "\n",
+    "- Identify clusters of high density of AirBnb properties and delineate their boundaries\n",
+    "- Explore the stability of such boundaries\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import contextily as cx\n",
+    "import geopandas as gpd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "import pandas\n",
+    "from shapely import Polygon\n",
+    "\n",
+    "from esda.adbscan import ADBSCAN, get_cluster_boundary, remap_lbls"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Data\n",
+    "\n",
+    "We will be using the Berlin extract from [Inside Airbnb](http://insideairbnb.com/). This is the same dataset used in the [Scipy 2018 tutorial on Geospatial data analysis with Python](https://github.com/gpd/scipy2018-geospatial-data)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tab = pandas.read_csv(\"data/berlin-listings.csv\")\n",
+    "tab.head(2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The original dataset includes more than 20,000 observations:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tab.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To make the illustration run a bit speedier on any hardware, let us pick a random sample of 10% of the set; that is we'll pick 2,000 properties at random:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tab = tab.sample(n=2000, random_state=1234)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "For convenience, we convert into a `GeoDataFrame` where the geometries are built from the lon/lat columns in the original table:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "db_ll = gpd.GeoDataFrame(\n",
+    "    tab,\n",
+    "    geometry=gpd.points_from_xy(tab.longitude, tab.latitude),\n",
+    "    crs=4326,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Because we are going to run an algorithm that relies on distances, we need to be able to calculate such distances in a projected plane. Instead of the original lon/lat coordinates, we use the [`ETRS89`](http://epsg.io/5243) projection, designed for Germany and expressed in metres:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "db = db_ll.to_crs(epsg=5243)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "*Voila!* We can now visualise our dataset:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ax = db.plot(markersize=0.1, color=\"orange\")\n",
+    "cx.add_basemap(ax, crs=db.crs);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And before we get going, we will also pull out the projected coordinates into separate columns:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "db[\"X\"] = db.geometry.x\n",
+    "db[\"Y\"] = db.geometry.y"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Identify clusters of AirBnb\n",
+    "\n",
+    "A-DBSCAN, similar to the original DBSCAN algorithm, requires two parameters before it can be run:\n",
+    "\n",
+    "1. `eps`: maximum distance to look for neighbors from each location\n",
+    "1. `min_samples`: minimum number of neighboring points required for a point to be considered part of a cluster\n",
+    "\n",
+    "For this example, we will pick a 1% of the overall sample size for the `min_samples` parameter:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "db.shape[0] * 0.01"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We will use a maximum radious of 500m for the `eps` parameter. This implicitly implies we are looking at a density of at least about 25 properties per Sq. $Km^2$ ($dens = \\frac{20}{\\pi \\, \\times \\, 0.5^2}$).\n",
+    "\n",
+    "Once we know the parameters we'll use, we can go ahead and run A-DBSCAN:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "# Get clusters\n",
+    "adbs = ADBSCAN(500, 20, pct_exact=0.5, reps=10, keep_solus=True)\n",
+    "np.random.seed(1234)\n",
+    "adbs.fit(db)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Once `fit()`, we can extract the labels in a similar way that we would from `scikit-learn`, and then we can plot on a map:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:55:53.748156Z",
+     "iopub.status.busy": "2025-06-29T18:55:53.748056Z",
+     "iopub.status.idle": "2025-06-29T18:55:54.105518Z",
+     "shell.execute_reply": "2025-06-29T18:55:54.105237Z",
+     "shell.execute_reply.started": "2025-06-29T18:55:53.748149Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "ax = db.assign(lbls=adbs.votes[\"lbls\"]).plot(\n",
+    "    column=\"lbls\", categorical=True, markersize=2.5, figsize=(12, 12)\n",
+    ")\n",
+    "cx.add_basemap(ax, crs=db.crs);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This only displays each property colored based on its label assigned. Beyond this, we can also create polygons that represent a tight boundary around all the points in a given cluster. To do this, we use the $\\alpha$-shapes algorithm through the helper function `get_cluster_boundary`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:55:54.107326Z",
+     "iopub.status.busy": "2025-06-29T18:55:54.107242Z",
+     "iopub.status.idle": "2025-06-29T18:55:55.941377Z",
+     "shell.execute_reply": "2025-06-29T18:55:55.941114Z",
+     "shell.execute_reply.started": "2025-06-29T18:55:54.107318Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "%%time\n",
+    "polys = get_cluster_boundary(adbs.votes[\"lbls\"], db, crs=db.crs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "These polygons can also be plotted as any other `GeoSeries` object:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:55:55.941855Z",
+     "iopub.status.busy": "2025-06-29T18:55:55.941764Z",
+     "iopub.status.idle": "2025-06-29T18:56:02.811825Z",
+     "shell.execute_reply": "2025-06-29T18:56:02.811598Z",
+     "shell.execute_reply.started": "2025-06-29T18:55:55.941846Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "ax = polys.plot(alpha=0.5, color=\"red\")\n",
+    "cx.add_basemap(ax, crs=polys.crs);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And, just for fun, we can create more zoomed-in views, dimming out areas outside each cluster:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:02.812252Z",
+     "iopub.status.busy": "2025-06-29T18:56:02.812177Z",
+     "iopub.status.idle": "2025-06-29T18:56:04.143338Z",
+     "shell.execute_reply": "2025-06-29T18:56:04.143105Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:02.812244Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "f, axs = plt.subplots(1, 3, figsize=(18, 6))\n",
+    "for i, ax in enumerate(axs):\n",
+    "    # Plot the boundary of the cluster found\n",
+    "    ax = polys.iloc[[i]].plot(ax=ax, edgecolor=\"red\", facecolor=\"none\")\n",
+    "    # Add basemap\n",
+    "    cx.add_basemap(ax, crs=polys.crs, source=\"CartoDB.Voyager\", zoom=13)\n",
+    "    # Extra to dim non-cluster areas\n",
+    "    (minx, maxx), (miny, maxy) = ax.get_xlim(), ax.get_ylim()\n",
+    "    bb = Polygon([(minx, miny), (maxx, miny), (maxx, maxy), (minx, maxy), (minx, miny)])\n",
+    "    gpd.GeoSeries([bb.difference(polys.iloc[i])], crs=polys.crs).plot(\n",
+    "        ax=ax, color=\"k\", alpha=0.5\n",
+    "    )\n",
+    "    ax.set_axis_off()\n",
+    "    ax.set_title(f\"Cluster {polys.iloc[[i]].index[0]}\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Explore boundary *blurriness*\n",
+    "\n",
+    "One of the key benefits of A-DBSCAN is that, because it relies on an ensemble approach that generates several candidate solutions, it allows us to explore to what extent boundaries are stable and clearcut or blurrier. To do this, we need to extract from the `ADBSCAN` object each candidate solution and turn them into boundary lines (this may take a little bit to run):"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:04.143785Z",
+     "iopub.status.busy": "2025-06-29T18:56:04.143707Z",
+     "iopub.status.idle": "2025-06-29T18:56:49.413149Z",
+     "shell.execute_reply": "2025-06-29T18:56:49.412864Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:04.143777Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# %%time\n",
+    "solus_rl = remap_lbls(adbs.solus, db, n_jobs=-1)\n",
+    "lines = []\n",
+    "for rep in solus_rl:\n",
+    "    line = get_cluster_boundary(solus_rl[rep], db, crs=db.crs, n_jobs=-1)\n",
+    "    line = line.boundary\n",
+    "    line = (\n",
+    "        line.reset_index()\n",
+    "        .rename(columns={0: \"geometry\", \"index\": \"cluster_id\"})\n",
+    "        .assign(rep=rep)\n",
+    "    )\n",
+    "    lines.append(line)\n",
+    "lines = pandas.concat(lines)\n",
+    "lines = gpd.GeoDataFrame(lines, geometry=lines[\"geometry\"], crs=db.crs)\n",
+    "lines"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here is a first look at all the solutions drawn up from the simulation:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:49.413719Z",
+     "iopub.status.busy": "2025-06-29T18:56:49.413633Z",
+     "iopub.status.idle": "2025-06-29T18:56:50.202623Z",
+     "shell.execute_reply": "2025-06-29T18:56:50.202395Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:49.413711Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "ax = lines.plot(color=\"#FFDB58\", linewidth=0.5)\n",
+    "cx.add_basemap(ax, alpha=0.5, source=\"CartoDB.Positron\", crs=lines.crs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Having every single candidate boundary stored and labelled into a table, it allows us to make several queries. For example, here are all the solutions generated in the first replication:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:50.203006Z",
+     "iopub.status.busy": "2025-06-29T18:56:50.202924Z",
+     "iopub.status.idle": "2025-06-29T18:56:50.240384Z",
+     "shell.execute_reply": "2025-06-29T18:56:50.240164Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:50.202999Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lines.query(\"rep == 'rep-00'\").plot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And here we have all the candidate solutions for cluster label No. 2:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:50.240884Z",
+     "iopub.status.busy": "2025-06-29T18:56:50.240811Z",
+     "iopub.status.idle": "2025-06-29T18:56:50.278399Z",
+     "shell.execute_reply": "2025-06-29T18:56:50.278170Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:50.240877Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "lines.query(\"cluster_id == '2'\").plot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Finally, we can take this idea into an interactive context by building widgets that allow us to brush through replications:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:50.278912Z",
+     "iopub.status.busy": "2025-06-29T18:56:50.278831Z",
+     "iopub.status.idle": "2025-06-29T18:56:50.309161Z",
+     "shell.execute_reply": "2025-06-29T18:56:50.308897Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:50.278905Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "from ipywidgets import IntSlider, interact"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:50.309598Z",
+     "iopub.status.busy": "2025-06-29T18:56:50.309528Z",
+     "iopub.status.idle": "2025-06-29T18:56:50.375004Z",
+     "shell.execute_reply": "2025-06-29T18:56:50.374776Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:50.309591Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def plot_rep(rep):\n",
+    "    f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "    ax.set_facecolor(\"k\")\n",
+    "    # Background points\n",
+    "    db[[\"X\", \"Y\"]].plot.scatter(\"X\", \"Y\", ax=ax, color=\"0.25\", s=0.5)\n",
+    "    # Boundaries\n",
+    "    cs = lines.query(f\"rep == 'rep-{str(rep).zfill(2)}'\")\n",
+    "    cs.plot(ax=ax, color=\"red\")\n",
+    "    # Cluster IDs\n",
+    "    for s, row in cs.iterrows():\n",
+    "        ax.text(row.geometry.centroid.x, row.geometry.centroid.y, s, size=20, c=\"w\")\n",
+    "    return None\n",
+    "\n",
+    "\n",
+    "reps = range(len(lines[\"rep\"].unique()))\n",
+    "slider = IntSlider(min=min(reps), max=max(reps), step=1)\n",
+    "interact(plot_rep, rep=slider);"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Or to pull out all solutions for a given cluster IDs:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-06-29T18:56:50.375359Z",
+     "iopub.status.busy": "2025-06-29T18:56:50.375288Z",
+     "iopub.status.idle": "2025-06-29T18:56:50.434284Z",
+     "shell.execute_reply": "2025-06-29T18:56:50.434080Z",
+     "shell.execute_reply.started": "2025-06-29T18:56:50.375352Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def plot_cluster(cluster_id):\n",
+    "    f, ax = plt.subplots(1, figsize=(9, 9))\n",
+    "    ax.set_facecolor(\"k\")\n",
+    "    # Background points\n",
+    "    db[[\"X\", \"Y\"]].plot.scatter(\"X\", \"Y\", ax=ax, color=\"0.25\", s=0.5, alpha=0.5)\n",
+    "    # Boundaries\n",
+    "    lines.query(f\"cluster_id == '{cluster_id}'\").plot(ax=ax, linewidth=1, alpha=0.5)\n",
+    "    return None\n",
+    "\n",
+    "\n",
+    "interact(plot_cluster, cluster_id=lines[\"cluster_id\"].unique());"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

@@ -1,0 +1,440 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "8f63c838",
+   "metadata": {},
+   "source": [
+    "# Local Spatial Autocorrelation with Geary's $C_i$\n",
+    "\n",
+    "This notebook focuses on local indicators of spatial association (LISA) using Geary's $C_i$."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e790637d",
+   "metadata": {},
+   "source": [
+    "## Learning goals\n",
+    "\n",
+    "By the end of this notebook, you will be able to:\n",
+    "\n",
+    "- compute local Geary statistics for each areal unit\n",
+    "- interpret local Geary cluster and outlier categories\n",
+    "- identify statistically significant local clusters and spatial outliers using Geary's $C_i$\n",
+    "- distinguish global evidence of autocorrelation from local patterns\n",
+    "\n",
+    "Local indicators of spatial association (LISA) answer the question that global Geary's $C$ cannot: **where** is the clustering occurring?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8c52e59f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import warnings\n",
+    "\n",
+    "import geopandas as gpd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "from libpysal import graph\n",
+    "\n",
+    "warnings.filterwarnings(\"ignore\")\n",
+    "\n",
+    "import esda"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c0f2188f",
+   "metadata": {},
+   "source": [
+    "Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the [GeoPython 2018 workshop](https://github.com/ljwolf/geopython) by [Levi Wolf](https://ljwolf.org) and [Serge Rey](https://sergerey.org). As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7f013db5",
+   "metadata": {},
+   "source": [
+    "## Data preparation\n",
+    "\n",
+    "We use the same Berlin neighborhood data and median Airbnb price variable as in the global analysis. Keeping the data and weights constant makes it easier to connect the local results back to the global Geary's $C$ statistic."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b9577003",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = gpd.read_file(\"data/berlin-housing.gpkg\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "318615d6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.plot(column=\"median_pri\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e5bd2ed8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.plot(\n",
+    "    column=\"median_pri\",\n",
+    "    scheme=\"Quantiles\",\n",
+    "    k=5,\n",
+    "    cmap=\"GnBu\",\n",
+    "    legend=True,\n",
+    "    figsize=(12, 10),\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "072b988f",
+   "metadata": {},
+   "source": [
+    "## From global to local autocorrelation\n",
+    "\n",
+    "A significant global statistic tells us that the map is spatially structured overall, but it does not reveal which neighborhoods are driving that result. Local Geary statistics decompose that global pattern into unit-level contributions."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "102493ce",
+   "metadata": {},
+   "source": [
+    "## Why Geary's C?\n",
+    "\n",
+    "Moran's $I$ measures spatial autocorrelation through the *cross-product* of mean-centered values: it is large when values above (or below) the mean cluster together. Geary's $C$ instead measures autocorrelation through the *squared difference* between neighbouring pairs:\n",
+    "\n",
+    "$$C = \\frac{(n-1)}{2S_0} \\frac{\\sum_i \\sum_j w_{ij}(x_i - x_j)^2}{\\sum_i (x_i - \\bar{x})^2}$$\n",
+    "\n",
+    "where $S_0$ is the sum of all weights.\n",
+    "\n",
+    "**Interpreting $C$:**\n",
+    "\n",
+    "| Value | Meaning |\n",
+    "|---|---|\n",
+    "| $C \\approx 1$ | No spatial autocorrelation (null hypothesis) |\n",
+    "| $C < 1$ | Positive spatial autocorrelation (similar values cluster together) |\n",
+    "| $C > 1$ | Negative spatial autocorrelation (dissimilar values tend to be neighbours) |\n",
+    "\n",
+    "Geary's $C$ is more sensitive to *local* variations between neighbours, whereas Moran's $I$ is a better overall summary of global spatial structure. The two statistics are inversely related: evidence of positive autocorrelation under Moran's $I$ ($I > E[I]$) corresponds to $C < 1$."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "14b7be88",
+   "metadata": {},
+   "source": [
+    "## Local Spatial Autocorrelation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "43ba0280",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wq = graph.Graph.build_contiguity(df, rook=False).transform(\"r\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0ce6be7e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = df[\"median_pri\"]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8ef8f053",
+   "metadata": {},
+   "source": [
+    "The local Geary statistic $c_i$ adapts the logic of global Geary to individual locations:\n",
+    "\n",
+    "$$c_i = \\sum_j w_{ij}(x_i - x_j)^2$$\n",
+    "\n",
+    "- A **small** $c_i$ (relative to expectation) signals that location $i$ has *similar* neighbours — a local *cluster*.\n",
+    "- A **large** $c_i$ signals that location $i$ has *dissimilar* neighbours — a spatial *outlier*.\n",
+    "\n",
+    "The `Geary_Local` class can be used to calculate the Local Geary statistic and provide various visualizations."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e177edcd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(12345)\n",
+    "lg = esda.Geary_Local(connectivity=wq, labels=True, seed=12345).fit(y)\n",
+    "print(f\"Significant locations (p<0.05): {(lg.p_sim < 0.05).sum()}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2d237867",
+   "metadata": {},
+   "source": [
+    "### Map of local $c_i$ values (continuous)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "10fbf833",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ax = df.plot(lg.localG, cmap=\"plasma_r\", legend=True, figsize=(12, 10))\n",
+    "ax.set_axis_off()\n",
+    "ax.set_title(\"Local Geary $c_i$ (lower = more similar to neighbours)\");"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "78241ba4",
+   "metadata": {},
+   "source": [
+    "### Map of significant clusters and outliers\n",
+    "\n",
+    "In addition to the continuous values, we can map the significant clusters and outliers:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "22ab9948",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df.copy()\n",
+    "df[\"p_sim\"] = lg.p_sim\n",
+    "df[\"labels\"] = lg.labs\n",
+    "\n",
+    "label_map = {1: \"Outlier\", 2: \"Cluster\", 3: \"Other\", 4: \"Not significant\"}\n",
+    "color_map = {\n",
+    "    \"Outlier\": \"red\",\n",
+    "    \"Cluster\": \"blue\",\n",
+    "    \"Other\": \"lightblue\",\n",
+    "    \"Not significant\": \"lightgrey\",\n",
+    "}\n",
+    "df[\"label_str\"] = df[\"labels\"].map(label_map)\n",
+    "df[\"color\"] = df[\"label_str\"].map(color_map)\n",
+    "\n",
+    "import matplotlib.patches as mpatches\n",
+    "\n",
+    "fig, ax = plt.subplots(figsize=(12, 10))\n",
+    "\n",
+    "legend_handles = []\n",
+    "\n",
+    "for label, color in color_map.items():\n",
+    "    subset = df[df[\"label_str\"] == label]\n",
+    "    if not subset.empty:\n",
+    "        subset.plot(ax=ax, color=color)\n",
+    "        patch = mpatches.Patch(color=color, label=label)\n",
+    "        legend_handles.append(patch)\n",
+    "\n",
+    "ax.legend(\n",
+    "    handles=legend_handles,\n",
+    "    title=\"Cluster Types\",\n",
+    "    loc=\"upper left\",\n",
+    "    bbox_to_anchor=(1.02, 1),\n",
+    "    frameon=False,\n",
+    ")\n",
+    "\n",
+    "ax.set_axis_off()\n",
+    "ax.set_title(\"Local Geary: clusters and outliers (p < 0.05)\", fontsize=14, pad=20)\n",
+    "\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5238336a",
+   "metadata": {},
+   "source": [
+    "### Interpreting cluster types\n",
+    "\n",
+    "The local Geary labels correspond to substantively different local relationships:\n",
+    "\n",
+    "- **Cluster**: a location with a small $c_i$, meaning it is very similar to its neighbors (positive spatial autocorrelation).\n",
+    "- **Outlier**: a location with a large $c_i$, meaning it is significantly dissimilar from its neighbors (negative spatial autocorrelation).\n",
+    "\n",
+    "In practice, we usually map only those observations that are statistically significant under the permutation test.\n",
+    "The permutation test is discussed in more detail below.\n",
+    "\n",
+    "The `labels` attribute uses the following coding when `labels=True`:\n",
+    "\n",
+    "| Label code | Category |\n",
+    "|---|---|\n",
+    "| 1 | Outlier |\n",
+    "| 2 | Cluster |\n",
+    "| 3 | Other |\n",
+    "| 4 | Not significant |"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "073ea409",
+   "metadata": {},
+   "source": [
+    "## Approaches for Inference & Conditional Permutations\n",
+    "\n",
+    "To determine whether a local spatial cluster or outlier is statistically significant, we must evaluate its localized value against a null hypothesis. In spatial autocorrelation, the standard null hypothesis is **Spatial Randomness**: the assumption that the observed values are distributed entirely at random across the map, independent of geographic location.\n",
+    "\n",
+    "Because the theoretical sampling distribution of local statistics like local Geary's $c_i$ can be highly complex and non-normal, two primary approaches are used for inference:\n",
+    "\n",
+    "1. **Analytical Inference:** Assumes the local statistic follows an asymptotic normal distribution. This is computationally fast but relies on structural assumptions that often fail in small samples or highly skewed spatial layouts.\n",
+    "2. **Computational Inference (Conditional Permutations):** Instead of assuming an idealized distribution, a simulated null distribution is constructed empirically.\n",
+    "\n",
+    "### The Logic of Conditional Spatial Permutations\n",
+    "\n",
+    "Global permutations reshuffle every value across the entire map. However, this is invalid for *local* statistics because the value of the target location $i$ is structurally bound to the calculation. If it is included in the shuffle, we alter the very baseline we are testing. \n",
+    "\n",
+    "To overcome this, **Conditional Spatial Permutation** operates via the following explicit steps for each areal unit $i$:\n",
+    "\n",
+    "1. **Freeze the Core:** The observed value $y_i$ at the target location $i$ is held constant (\"conditioned\" upon).\n",
+    "2. **Permit the Environment:** The remaining $N-1$ values in the dataset are randomly reshuffled across all other spatial positions except $i$.\n",
+    "3. **Compute Pseudo-Statistics:** The local Geary's $c_i$ is recalculated using the fixed $y_i$ and the newly randomized neighboring values.\n",
+    "4. **Iterate:** This process is repeated $M$ times (e.g., $M=999$ or $M=9999$) to build a customized empirical null distribution for *that specific location*.\n",
+    "5. **Calculate the Pseudo $p$-value:** The observed $c_i$ is compared to this simulated distribution:\n",
+    "\n",
+    "$$\\text{Pseudo } p = \\frac{k + 1}{M + 1}$$\n",
+    "\n",
+    "Where $k$ is the number of simulated iterations where the absolute pseudo-statistic was as extreme or more extreme than the observed local statistic.\n",
+    "\n",
+    "Let's look at how we can implement and examine these empirical distributions using `esda` and `libpysal`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "086d791f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lg = esda.Geary_Local(connectivity=wq, labels=True, permutations=999, seed=12345).fit(\n",
+    "    df[\"median_pri\"]\n",
+    ")\n",
+    "\n",
+    "# Visualizing the empirical null distribution for a single neighborhood\n",
+    "# vs its observed statistic\n",
+    "neigh_idx = 1  # Pick the second spatial unit\n",
+    "observed_stat = lg.localG[neigh_idx]\n",
+    "simulated_stats = lg.rlocalG[neigh_idx]\n",
+    "\n",
+    "plt.figure(figsize=(8, 4))\n",
+    "plt.hist(\n",
+    "    simulated_stats,\n",
+    "    bins=30,\n",
+    "    edgecolor=\"white\",\n",
+    "    alpha=0.7,\n",
+    "    label=\"Empirical Null Distributions\",\n",
+    ")\n",
+    "plt.axvline(\n",
+    "    observed_stat,\n",
+    "    color=\"red\",\n",
+    "    linestyle=\"dashed\",\n",
+    "    linewidth=2,\n",
+    "    label=f\"Observed $c_i$ ({observed_stat:.3f})\",\n",
+    ")\n",
+    "title = \"Conditional Permutation Test for Unit Index\"\n",
+    "plt.title(f\"{title} {neigh_idx} (Pseudo p-value: {lg.p_sim[neigh_idx]:.3f})\")\n",
+    "plt.xlabel(\"Local Geary's $c_i$ Value\")\n",
+    "plt.ylabel(\"Frequency\")\n",
+    "plt.legend()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3e01428f",
+   "metadata": {},
+   "source": [
+    "## Methodological Issues and Caveats\n",
+    "\n",
+    "When conducting local spatial autocorrelation tests, there are three pervasive challenges that must be taken into account during interpretation:\n",
+    "\n",
+    "### The Multiple Comparisons Problem\n",
+    "A separate statistical test is conducted for *every single location* on the map (e.g., if you have 140 neighborhoods, you run 140 tests). If you use a standard significance level of $\\alpha = 0.05$, you expect roughly 5% of your locations to appear \"statistically significant\" purely by chance (False Positives / Type I errors).\n",
+    "\n",
+    "To prevent over-interpreting random variations as meaningful clusters, alpha adjustments are required:\n",
+    "* **Bonferroni Correction:** A conservative approach where the target alpha is divided by the number of observations ($\\alpha_{adj} = \\alpha / N$).\n",
+    "* **False Discovery Rate (FDR):** A more flexible approach that controls the expected proportion of false positives among the rejected hypotheses.\n",
+    "\n",
+    "### Local Statistics in the Presence of Global Autocorrelation\n",
+    "If a process exhibits strong *global* spatial autocorrelation, the baseline assumption of complete spatial randomness is technically violated from the outset. In a highly clustered map, a local unit's neighbors are likely to be similar simply because the entire map is clustered, not necessarily because that specific location is a unique regional hot spot. This background global trend can artificially inflate the significance of local statistics.\n",
+    "\n",
+    "### Spatial Dependence of the Local Tests\n",
+    "Local statistics are inherently dependent on one another due to shared boundaries. If neighborhood A is a neighbor of neighborhood B, the calculation of $c_A$ uses the values of B, and the calculation of $c_B$ uses the values of A. Because their neighbor components overlap heavily across space, the resulting local tests are not independent. This violation of independence invalidates standard parametric interpretation and further solidifies why conditional random permutations are preferred over analytical calculations."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "71cdd9e8",
+   "metadata": {},
+   "source": [
+    "## Comparing Geary's C and Moran's I\n",
+    "\n",
+    "Both statistics detect the same broad spatial structure, but they are not identical:\n",
+    "\n",
+    "- **Moran's I** compares each observation to the *global mean*; it is more sensitive to broad trends.\n",
+    "- **Geary's C** compares each observation directly to its *neighbours*; it is more sensitive to local differences.\n",
+    "\n",
+    "When the two disagree, it usually indicates that a local cluster or outlier is driven by a very local contrast rather than a deviation from the global level.\n",
+    "\n",
+    "For most applied work Moran's I is the first choice; Geary's C and its local form add value when you specifically want to emphasize *pair-wise dissimilarity* between neighbours rather than global clustering."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1ef502e4",
+   "metadata": {},
+   "source": [
+    "## Takeaways\n",
+    "\n",
+    "Local Geary analysis moves from a single global summary to place-specific diagnostics. This reveals where clustering and outliers are located on the map by focusing on local differences. At the same time, these local results should always be interpreted in the context of the global pattern, the choice of spatial weights, and the multiple-testing issues that arise when many local statistics are examined at once."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

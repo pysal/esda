@@ -1,0 +1,297 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Assessing local patterns of spatial heteroskedasticity (LOSH)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Learning goals\n",
+    "\n",
+    "By the end of this notebook, you will be able to:\n",
+    "\n",
+    "- explain what LOSH measures and how it complements local Moran's $I$ and Getis-Ord $G_i^*$\n",
+    "- interpret the combined $H_i$ / $G_i^*$ table to characterise local spatial regimes\n",
+    "- apply LOSH to a real dataset and map the results with significance filtering\n",
+    "\n",
+    "LOSH ($H_i$) focuses on *local variance* rather than *local mean*. Used together with a local mean statistic (like $G_i^*$), it identifies four types of local behaviour: stable hotspots, heterogeneous hotspots, stable coldspots, and transition zones.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In the following notebook we review the local spatial heteroskedasticity (LOSH) statistic ($H_i$) put forward by [Ord and Getis (2012)](https://link.springer.com/article/10.1007/s00168-011-0492-y). LOSH is meant as an accompainment to the local statistics that analyze the mean level of a spatial process. LOSH focuses on analyzing the variance of the spatial process.\n",
+    "\n",
+    "As outlined by Ord and Getis, consider a 10 x 10 grid of property values. Within this grid, there is a central high-rent district (identified by cells that are 1) and a surrounding lower-value area (identified by cells that are 0. We can visualize this spatial arrangement as:\n",
+    "\n",
+    "|   |   |   |   |   |   |   |   |   |   |\n",
+    "|---|---|---|---|---|---|---|---|---|---|\n",
+    "| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n",
+    "| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n",
+    "\n",
+    "While we can see that the inner core of the high-rent district have similar values to their neigbhors (i.e. a cells of 1 surrounded by other cells of 1), this is less true when we consider the outer rim of the high-rent district. This rim represents a possible transition region between the stable inner high-rent area and the stable outer lower value areas. Ord and Getis seek to use the LOSH statistic ($H_i$) to identify this transitional region between the two areas."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Understanding the LOSH statistic"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Ord and Getis begin by defining a local mean,  $\\bar{x}_i (d)$, as a re-scaled form of their $G^*_i$ statistic. This local mean is: \n",
+    "\n",
+    "$$ \\bar{x}_i (d) = \\frac{\\sum_j w_{ij} (d) x_j}{\\sum_j w_{ij}(d)} $$\n",
+    "\n",
+    "With a local mean defined, we can understand local residuals as the value of a local unit minus the local mean, or: \n",
+    "\n",
+    "$$ e_j(d) = x_j - \\bar{x}_i(d), j \\in N(i,d) $$\n",
+    "\n",
+    "These local residuals may be incorporated into Eq. 1 to form a final local dispersion statistic called $H_i$:\n",
+    "\n",
+    "$$H_i(d) = \\frac{\\sum w_{ij}(d) |e_j(d)|^a}{\\sum w_{ij}(d)}$$\n",
+    "\n",
+    "Note the addition of a new variable, $a$. This handles the interpretation of the residuals. As explaiend by Ord and Getis: \n",
+    "\n",
+    ">When a = 1, we have an absolute deviations measure, Hi 1, and when a = 2 a variance measure, Hi2. Clearly, other choices are possible, along with various robust forms to avoid outliers. In order to produce a standard measure, we should divide by the mean absolute deviation or variance for the whole data set.\n",
+    "\n",
+    "The default settings of the `losh()` function set $a=2$."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Interpreting the LOSH statistic"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Ord and Getis suggest that the $H_i$ statistic may benefit from interpretation with the $G^*_i$ statistic. The logic of this combined interpretation is that the $G^*_i$ value speaks to the local mean of the phenomenon of interest, whereas the $H_i$ speaks to the local heterogeneity. Ord and Getis provide the following table as a simplified guide for interpretation:\n",
+    "\n",
+    "| Mean \\ variance | High $H_i$ | Low $H_i$ |\n",
+    "| :--- | :--- | :--- |\n",
+    "| Large $\\|G^*_i\\|$ | A hot spot with heterogeneous local conditions | A hot spot with similar surrounding areas; the map would indicate whether the affected region is larger than the single 'cell' |\n",
+    "| Small $\\|G^*_i\\|$ | Heterogeneous local conditions but at a low average level (an unlikely event) | Homogeneous local conditions and a low average level |"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Inference on the LOSH statistic\n",
+    "\n",
+    "The current inference in the PySAL implementation of the LOSH statistic uses a $\\chi^2$ distribution. For each unit, we calculate a Z-score as:\n",
+    "\n",
+    "$$Z_i = 2H_i / V_i$$\n",
+    "\n",
+    "with $2/V_i$ degrees of freedom. $V_i$ is the local variance of the unit, calculated as:\n",
+    "\n",
+    "$$Var_{p}(H_i) = \\frac{1}{n-1} \\left( \\frac{1}{h_1 W_{i1}}\\right)^2 (h_2 - h_1^2) \\left[nW_{i2} - W_{i1}^2\\right]$$\n",
+    "\n",
+    "It is worthwhile to note that alternative methods for inference have been proposed in [Xu et al (2014).](https://ideas.repec.org/a/spr/anresc/v52y2014i3p697-710.html)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Applying the LOSH statistic on a dataset"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As a point of comparison, we now demonstrate the PySAL `losh` function on the [Boston Housing Dataset](https://geodacenter.github.io/data-and-lab//boston-housing/), which is also used as the docexample in `R` `spdep` `LOSH.cs`. We are interested in the variable `NOX`, which is the '...vector of nitric oxides concentration (parts per 10 million) per town'. \n",
+    "\n",
+    "We first load the `Bostonhsg` example dataset from `libpysal`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import matplotlib.pyplot as plt\n",
+    "from libpysal import examples, graph\n",
+    "\n",
+    "from esda.losh import LOSH\n",
+    "\n",
+    "boston = examples.load_example(\"Bostonhsg\")\n",
+    "boston_ds = gpd.read_file(boston.get_path(\"boston.shp\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then we construct a Queen weight structure by defining Voronoi polygons around each town point, and polygons sharing a border encoding neighboring observations:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "geog = graph.Graph.build_triangulation(boston_ds)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can now import the `losh()` function. Note that it is in the form of a scikit-learn type estimator, so we pass both a series of arguments and then call `.fit()`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ls = LOSH(connectivity=geog, inference=\"chi-square\").fit(boston_ds[\"NOX\"])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can now examine the LOSH ($H_i$) values and their significance."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ls.Hi[0:10]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ls.pval[0:10]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "If we want to map the LOSH ($H_i$) values, we need to add them back to the `boston_ds` dataframe."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "boston_ds[\"Hi\"] = ls.Hi\n",
+    "boston_ds[\"Hi_pval\"] = ls.pval"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can now map the LOSH ($H_i$) values. Note that we choose a Quantile break scheme here for visualization purposes."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
+    "boston_ds.plot(column=\"Hi\", scheme=\"Quantiles\", k=5, cmap=\"GnBu\", legend=True, ax=ax)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can also examine significance of the values. We use cutoffs of 0.01, 0.05, 0.10, and above 0.10."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={\"aspect\": \"equal\"})\n",
+    "boston_ds.plot(\n",
+    "    column=\"Hi_pval\",\n",
+    "    cmap=\"RdBu\",\n",
+    "    legend=True,\n",
+    "    ax=ax,\n",
+    "    scheme=\"user_defined\",\n",
+    "    classification_kwds={\"bins\": [0.01, 0.05, 0.10, 1]},\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Takeaways\n",
+    "\n",
+    "- LOSH ($H_i$) measures the *local variance* of a spatial process — how heterogeneous the values are within a neighbourhood.\n",
+    "- LOSH complements local mean statistics ($G_i^*$): together they distinguish stable clusters from transitional or edge-effect zones.\n",
+    "- A high $H_i$ with a high $|G_i^*|$ indicates a hotspot with heterogeneous local conditions (e.g., a boundary between two regimes).\n",
+    "- A low $H_i$ with a high $|G_i^*|$ indicates a compact, internally homogeneous hotspot.\n",
+    "- The default inference in PySAL uses a $\\chi^2$ approximation; alternative permutation-based inference is available in the `spdep` R package as `LOSH.mc`.\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

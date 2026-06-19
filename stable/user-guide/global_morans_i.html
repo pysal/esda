@@ -1,0 +1,2294 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="global.html">
+      
+      
+        <link rel="next" href="geary.html">
+      
+      
+      <link rel="icon" href="../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>Global Spatial Autocorrelation with Moran’s I - esda</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#learning-goals" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="esda" class="md-header__button md-logo" aria-label="esda" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            esda
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Global Spatial Autocorrelation with Moran’s I
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/esda/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/esda
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="esda" class="md-nav__button md-logo" aria-label="esda" data-md-component="logo">
+      <img src="../_static/pysal_logo.svg" alt="logo">
+    </a>
+    esda
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/esda/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/esda
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>User Guide</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>User Guide</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Overview</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="global.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Global Spatial Autocorrelation</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Moran’s I</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Moran’s I</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Why Moran’s I?</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Global Spatial Autocorrelation</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Spatial Autocorrelation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attribute-similarity" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Attribute Similarity</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#computing-global-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Computing global Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Inference</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#analytical-inference-for-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Analytical Inference for Moran’s I</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analytical Inference for Moran’s I">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#free-sampling" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Free Sampling</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Free Sampling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-framework" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Conceptual Framework</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-value" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variance" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-free-sampling-the-randomization-assumption" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Non-<wbr>Free Sampling <wbr>(The Randomization Assumption)</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Non-Free Sampling (The Randomization Assumption)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Conceptual Framework</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id3" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-distinction-in-variance" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Key Distinction in Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-sampling-distribution-and-asymptotic-inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Sampling Distribution and Asymptotic Inference</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Sampling Distribution and Asymptotic Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-standardized-z-score" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Standardized Z-<wbr>Score</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methodological-limitations" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Methodological Limitations</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permutation-based-inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Permutation-<wbr>based inference</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Permutation-based inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id4" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Conceptual Framework</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-algorithmic-process" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Algorithmic Process</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-value-variance-and-sampling-distribution" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value, Variance, and Sampling Distribution</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Value, Variance, and Sampling Distribution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#expected-value-and-variance" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value and Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-sampling-distribution" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Sampling Distribution</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical-inference-and-pseudo-p-values" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Statistical Inference and Pseudo p-<wbr>values</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-operational-characteristics" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Key Operational Characteristics</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sidedness-of-tests-and-pseudo-p-values" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Sidedness of Tests and Pseudo p-<wbr>values</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sidedness of Tests and Pseudo p-values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#right-tailed-test-positive-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Right-<wbr>Tailed Test <wbr>(Positive Spatial Autocorrelation)</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#left-tailed-test-negative-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Left-<wbr>Tailed Test <wbr>(Negative Spatial Autocorrelation)</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-tailed-test-direction-agnostic-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Two-<wbr>Tailed Test <wbr>(Direction-<wbr>Agnostic Autocorrelation)</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-esda-handles-this-natively" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>How esda Handles This Natively</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps-alternative-methods" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Next Steps &amp; Alternative Methods</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Next Steps &amp; Alternative Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#complementary-global-statistics" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> Complementary Global Statistics</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transitioning-from-global-to-local-scale" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Transitioning from Global to Local Scale</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="geary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Geary’s C</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getisord.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation Getis-<wbr>Ord G</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="join_counts.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation with Join Counts</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="local.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Local Spatial Autocorrelation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="diagnostics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="geometry.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Geometry</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="topology.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Topology</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/esda" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/esda/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-goals" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Learning goals</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Why Moran’s I?</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Global Spatial Autocorrelation</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Spatial Autocorrelation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attribute-similarity" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Attribute Similarity</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#computing-global-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Computing global Moran’s I</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Inference</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#analytical-inference-for-moran-s-i" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Analytical Inference for Moran’s I</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analytical Inference for Moran’s I">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#free-sampling" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Free Sampling</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Free Sampling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conceptual-framework" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Conceptual Framework</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-value" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variance" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-free-sampling-the-randomization-assumption" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Non-<wbr>Free Sampling <wbr>(The Randomization Assumption)</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Non-Free Sampling (The Randomization Assumption)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id1" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Conceptual Framework</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id2" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id3" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-distinction-in-variance" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Key Distinction in Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-sampling-distribution-and-asymptotic-inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Sampling Distribution and Asymptotic Inference</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Sampling Distribution and Asymptotic Inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-standardized-z-score" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Standardized Z-<wbr>Score</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methodological-limitations" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Methodological Limitations</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permutation-based-inference" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Permutation-<wbr>based inference</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Permutation-based inference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id4" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Conceptual Framework</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-algorithmic-process" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Algorithmic Process</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expected-value-variance-and-sampling-distribution" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value, Variance, and Sampling Distribution</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Value, Variance, and Sampling Distribution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#expected-value-and-variance" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Expected Value and Variance</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-sampling-distribution" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The Sampling Distribution</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical-inference-and-pseudo-p-values" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Statistical Inference and Pseudo p-<wbr>values</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-operational-characteristics" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Key Operational Characteristics</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sidedness-of-tests-and-pseudo-p-values" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Sidedness of Tests and Pseudo p-<wbr>values</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sidedness of Tests and Pseudo p-values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#right-tailed-test-positive-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Right-<wbr>Tailed Test <wbr>(Positive Spatial Autocorrelation)</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#left-tailed-test-negative-spatial-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Left-<wbr>Tailed Test <wbr>(Negative Spatial Autocorrelation)</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#two-tailed-test-direction-agnostic-autocorrelation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Two-<wbr>Tailed Test <wbr>(Direction-<wbr>Agnostic Autocorrelation)</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-esda-handles-this-natively" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>How esda Handles This Natively</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps-alternative-methods" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Next Steps &amp; Alternative Methods</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Next Steps &amp; Alternative Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#complementary-global-statistics" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>1.<wbr> Complementary Global Statistics</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transitioning-from-global-to-local-scale" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>2.<wbr> Transitioning from Global to Local Scale</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/esda/blob/main/docs/user-guide/global_morans_i.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="global-spatial-autocorrelation-with-moran-s-i">Global Spatial Autocorrelation with Moran’s I<a class="headerlink" href="#global-spatial-autocorrelation-with-moran-s-i" title="Link to this heading">¶</a></h1>
+<p>This notebook  focuses on global spatial autocorrelation for a continuous attribute using Moran’s I.</p>
+<h2 id="learning-goals">Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">¶</a></h2>
+<p>By the end of this notebook, you will be able to:</p>
+<ul class="simple">
+<li><p>construct a spatial weights matrix for areal data</p></li>
+<li><p>compute a spatial lag for a continuous attribute</p></li>
+<li><p>interpret global Moran’s <span class="math notranslate nohighlight">\(I\)</span> as a summary measure of spatial autocorrelation</p></li>
+<li><p>compare the observed statistic to a permutation reference distribution</p></li>
+</ul>
+<p>The substantive question is whether neighborhoods with similar median Airbnb prices tend to be located near one another.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the <a class="reference external" href="https://github.com/ljwolf/geopython">GeoPython 2018 workshop</a> by <a class="reference external" href="https://ljwolf.org">Levi Wolf</a> and <a class="reference external" href="https://sergerey.org">Serge Rey</a>. As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+</code></pre></div>
+</div>
+<img alt="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" src="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+</code></pre></div>
+</div>
+<img alt="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" src="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" />
+</div>
+</div>
+<h2 id="why-moran-s-i">Why Moran’s I?<a class="headerlink" href="#why-moran-s-i" title="Link to this heading">¶</a></h2>
+<p>A map can suggest clustering, but visual impressions are not enough. Moran’s <span class="math notranslate nohighlight">\(I\)</span> provides a formal global test of whether nearby areas tend to have similar values more often than would be expected under spatial randomness.</p>
+<h2 id="global-spatial-autocorrelation">Global Spatial Autocorrelation<a class="headerlink" href="#global-spatial-autocorrelation" title="Link to this heading">¶</a></h2>
+<h3 id="moran-s-i">Moran’s I<a class="headerlink" href="#moran-s-i" title="Link to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="attribute-similarity">Attribute Similarity<a class="headerlink" href="#attribute-similarity" title="Link to this heading">¶</a></h3>
+<p>So the spatial weight between neighborhoods <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> indicates if the two
+are neighbors (i.e., geographically similar). What we also need is a measure of
+attribute similarity to pair up with this concept of spatial similarity. The
+<strong>spatial lag</strong> is a derived variable that accomplishes this for us. For neighborhood
+<span class="math notranslate nohighlight">\(i\)</span> the spatial lag is defined as: $<span class="math notranslate nohighlight">\(ylag_i = \sum_j w_{i,j} y_j\)</span>$</p>
+<p>The key ingredients are:</p>
+<ul class="simple">
+<li><p><strong>spatial proximity</strong>, encoded in the weights matrix; and</p></li>
+<li><p><strong>attribute similarity</strong>, summarized through the spatial lag.</p></li>
+</ul>
+<p>The next cells build that intuition before computing the test statistic itself.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<span class="n">ylag</span> <span class="o">=</span> <span class="n">wq</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ylag</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([56.9625061 , 60.28251648, 56.37749926, 51.22200394, 51.22200394,
+       50.52180099, 43.6824646 , 45.63422012, 52.65491422, 60.28251648,
+       53.64180374, 52.73586273, 52.73586273, 56.47182541, 47.83247757,
+       58.58870177, 60.33520317, 59.60296903, 60.38788986, 60.02159348,
+       51.80624199, 57.94034958, 52.84482813, 53.40314266, 57.90522512,
+       60.28251648, 60.28251648, 55.79730334, 56.79401737, 50.81182589,
+       59.01427841, 60.29756982, 60.28251648, 50.86356888, 60.3220315 ,
+       60.28251648, 55.48057556, 54.42881557, 60.32466583, 59.50179418,
+       54.42846909, 58.55640793, 58.55640793, 57.73426285, 57.47818544,
+       57.74774106, 56.13040733, 48.23656082, 48.23656082, 53.74621709,
+       55.11957245, 45.95951271, 51.67650986, 54.1985906 , 51.45368042,
+       52.36880302, 54.44568253, 54.44568253, 50.84825389, 56.50104523,
+       53.92108345, 55.9956289 , 50.49590378, 49.14499828, 48.61369433,
+       49.70049   , 49.32550866, 51.22200394, 51.22200394, 47.80509822,
+       49.70049   , 51.22200394, 45.13594818, 47.57037048, 51.22200394,
+       51.22200394, 51.22200394, 51.22200394, 49.60257785, 51.57007762,
+       51.42743301, 51.22200394, 51.22200394, 52.43339348, 49.41551208,
+       51.58891296, 44.58427048, 51.58891296, 51.42743301, 49.82624902,
+       48.947686  , 48.40726217, 45.95951271, 47.57037048, 43.6824646 ,
+       47.02354965, 45.95951271, 58.55640793, 56.30865606, 58.09966066,
+       47.34497997, 46.40236028, 58.05298805, 59.24321365, 58.55640793,
+       47.83247757, 49.49497332, 50.74955784, 48.6149381 , 55.97644615,
+       57.95624052, 57.87081385, 58.75619634, 60.37283652, 48.23656082,
+       49.389711  , 54.00091705, 54.26036358, 57.54238828, 55.61980756,
+       51.97116137, 48.92101212, 50.97179985, 54.07504463, 47.45824547,
+       49.42017746, 45.13594818, 45.13594818, 48.61369433, 49.41551208,
+       51.22200394, 50.20766131, 48.72533471, 54.24675369, 54.24675369,
+       54.24675369, 53.23850377, 56.1851902 , 49.23337746, 43.6824646 ])
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">ylag</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Median Price (Quintiles)&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c0a805b62b6784ce0235b05e24e3b2cebf757bf53628d5217fa78ebc934f3037.png" src="../_images/c0a805b62b6784ce0235b05e24e3b2cebf757bf53628d5217fa78ebc934f3037.png" />
+</div>
+</div>
+<p>The quintile map for the spatial lag tends to enhance the impression of value
+similarity in space. It is, in effect, a local smoother.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="p">[</span><span class="s2">&quot;lag_median_pri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ylag</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">2.16</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;lag_median_pri&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Price&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/8e7c1cd82289ac4b911d01a0b3891e46f137095f7ea8413ff8da71e9330d7284.png" src="../_images/8e7c1cd82289ac4b911d01a0b3891e46f137095f7ea8413ff8da71e9330d7284.png" />
+</div>
+</div>
+<p>Moran’s I is a test for global autocorrelation for a continuous attribute:</p>
+<h3 id="computing-global-moran-s-i">Computing global Moran’s I<a class="headerlink" href="#computing-global-moran-s-i" title="Link to this heading">¶</a></h3>
+<p>With the outcome and weights in place, we can calculate Moran’s <span class="math notranslate nohighlight">\(I\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[I = \frac{n}{S_0} \frac{\sum_{i=1}^n \sum_{j=1}^n w_{ij} z_i z_j}{\sum_{i=1}^n z_i^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(w_{i,j}\)</span> is an element of  the spatial weight matrix, and  the total sum of weights is <span class="math notranslate nohighlight">\(S_0 = \sum_{i} \sum_{j} w_{ij}\)</span>. The attribute vector <span class="math notranslate nohighlight">\(z\)</span> represents deviations from the mean: <span class="math notranslate nohighlight">\(z_i = x_i - \bar{x}\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">moran</span><span class="o">.</span><span class="n">Moran</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">wq</span><span class="p">)</span>
+<span class="n">mi</span><span class="o">.</span><span class="n">I</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.6563069331329718)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Positive values of <span class="math notranslate nohighlight">\(I\)</span> indicate that similar values are more likely to be neighbors; negative values indicate a checkerboard pattern of dissimilar neighbors.
+This can be visualized through the <code class="docutils literal notranslate"><span class="pre">Moran</span> <span class="pre">Scatterplot</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mi</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">();</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ed85425329345160f7126ae99e6a3f7ef92232677a8383774571bfd4fc654380.png" src="../_images/ed85425329345160f7126ae99e6a3f7ef92232677a8383774571bfd4fc654380.png" />
+</div>
+</div>
+<p>The scatterplot displays the positive association between the standardized attribute values and those of the spatial lag of the standardized attribute values. Indeed, the value of the global Moran’s <span class="math notranslate nohighlight">\(I\)</span> is the slope of the best fit line for this scatter.</p>
+<h2 id="inference">Inference<a class="headerlink" href="#inference" title="Link to this heading">¶</a></h2>
+<p>In order to assess whether the value of <span class="math notranslate nohighlight">\(I\)</span> is reflective of spatial autocorrelation, we require a reference distribution for <span class="math notranslate nohighlight">\(I\)</span> under the null hypothesis of complete spatial randomness. The reference distribution tells how <span class="math notranslate nohighlight">\(I\)</span> will behave if the underlying data generating process is truly random.</p>
+<p>There are two classes of approaches for generating the reference distribution:</p>
+<ul class="simple">
+<li><p>Analytical Inference</p></li>
+<li><p>Permutation Inference</p></li>
+</ul>
+<h3 id="analytical-inference-for-moran-s-i">Analytical Inference for Moran’s I<a class="headerlink" href="#analytical-inference-for-moran-s-i" title="Link to this heading">¶</a></h3>
+<p>In spatial autocorrelation analysis, establishing whether an observed Moran’s <span class="math notranslate nohighlight">\(I\)</span> value is statistically significant requires comparing it against a theoretical reference distribution under a null hypothesis of spatial randomness.</p>
+<p>The theoretical moments (expected value and variance) of this statistic are derived under two fundamentally different operational assumptions regarding how the data are generated or sampled: <strong>Normality (Free Sampling)</strong> and <strong>Randomization (Non-Free Sampling)</strong>.</p>
+<h4 id="free-sampling">Free Sampling<a class="headerlink" href="#free-sampling" title="Link to this heading">¶</a></h4>
+<h5 id="conceptual-framework">Conceptual Framework<a class="headerlink" href="#conceptual-framework" title="Link to this heading">¶</a></h5>
+<p>Under the free sampling assumption, the observed values <span class="math notranslate nohighlight">\(x_i\)</span> are treated as an independent random sample drawn from a larger, continuous population that follows a normal distribution. The term “free sampling” implies that when a value is assigned to a spatial location, the population pool is unaffected (sampling with replacement), and the values themselves are generated by a known, underlying stochastic process independent of space.</p>
+<h5 id="expected-value">Expected Value<a class="headerlink" href="#expected-value" title="Link to this heading">¶</a></h5>
+<p>The expected value of Moran’s <span class="math notranslate nohighlight">\(I\)</span> under the normality assumption is independent of the spatial weights matrix configuration and depends solely on the sample size <span class="math notranslate nohighlight">\(n\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[E_N(I) = \frac{-1}{n - 1}\]</div>
+<blockquote>
+<div><p><strong>Note:</strong> As <span class="math notranslate nohighlight">\(n \to \infty\)</span>, <span class="math notranslate nohighlight">\(E(I) \to 0\)</span>. For finite samples, the expected value is slightly negative, reflecting the algebraic fact that the sum of the deviations from the mean, (<span class="math notranslate nohighlight">\(z_i=x_i - \bar{x}\)</span>), must equal zero (<span class="math notranslate nohighlight">\(\sum z_i = 0\)</span>), which forces a minor negative bias under spatial randomness.</p>
+</div></blockquote>
+<h5 id="variance">Variance<a class="headerlink" href="#variance" title="Link to this heading">¶</a></h5>
+<p>The derivation of the variance under normality assumes that the <span class="math notranslate nohighlight">\(z_i\)</span> terms are independent, identically distributed normal variables. The variance is heavily dependent on the topology of the spatial weights matrix:</p>
+<div class="math notranslate nohighlight">
+\[Var_N(I) = \frac{n^2 S_1 - n S_2 + 3 S_0^2}{S_0^2 (n^2 - 1)} - [E_N(I)]^2\]</div>
+<p>Where the structural constants of the weights matrix are defined as:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(S_1 = \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n (w_{ij} + w_{ji})^2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(S_2 = \sum_{i=1}^n \left( \sum_{j=1}^n w_{ij} + \sum_{j=1}^n w_{ji} \right)^2\)</span></p></li>
+</ul>
+<h4 id="non-free-sampling-the-randomization-assumption">Non-Free Sampling (The Randomization Assumption)<a class="headerlink" href="#non-free-sampling-the-randomization-assumption" title="Link to this heading">¶</a></h4>
+<h5 id="id1">Conceptual Framework<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h5>
+<p>Under the non-free sampling (or randomization) assumption, we abandon the premise that the data come from an underlying continuous distribution. Instead, the set of observed data values <span class="math notranslate nohighlight">\(\{x_1, x_2, \dots, x_n\}\)</span> is taken as fixed and given.</p>
+<p>The null hypothesis asserts that the observed spatial pattern is merely one of <span class="math notranslate nohighlight">\(n!\)</span> possible permutations of these exact values across the <span class="math notranslate nohighlight">\(n\)</span> spatial zones. Because a value assigned to a location cannot be reused elsewhere (sampling without replacement), the joint distribution of the spatial locations is strictly constrained by the sample’s empirical distribution.</p>
+<h5 id="id2">Expected Value<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h5>
+<p>Because the expectation across all <span class="math notranslate nohighlight">\(n!\)</span> permutations averages out the spatial structure, the expected value remains identical to the normality assumption:</p>
+<div class="math notranslate nohighlight">
+\[E_R(I) = \frac{-1}{n - 1}\]</div>
+<h5 id="id3">Variance<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h5>
+<p>The variance under randomization is mathematically more complex because it must account for the empirical shape (specifically, the kurtosis) of the observed data vector. It is calculated as:</p>
+<div class="math notranslate nohighlight">
+\[Var_R(I) = \frac{n \left[ (n^2 - 3n + 3) S_1 - n S_2 + 3 S_0^2 \right] - K \left[ (n^2 - n) S_1 - 2n S_2 + 6 S_0^2 \right]}{(n-1)(n-2)(n-3)S_0^2} - [E_R(I)]^2\]</div>
+<p>Where <span class="math notranslate nohighlight">\(K\)</span> is the sample kurtosis coefficient, capturing the distribution’s peakedness/tails:</p>
+<div class="math notranslate nohighlight">
+\[K = \frac{n \sum_{i=1}^n z_i^4}{\left( \sum_{i=1}^n z_i^2 \right)^2}\]</div>
+<h4 id="key-distinction-in-variance">Key Distinction in Variance<a class="headerlink" href="#key-distinction-in-variance" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>If the observed data happen to be perfectly normally distributed, the kurtosis factor simplifies such that <span class="math notranslate nohighlight">\(Var_R(I) \approx Var_N(I)\)</span>.</p></li>
+<li><p>If the data contain extreme outliers or heavy tails, <span class="math notranslate nohighlight">\(K\)</span> increases dramatically, altering <span class="math notranslate nohighlight">\(Var_R(I)\)</span>. Thus, the randomization assumption is far more robust for empirical workflows where normality cannot be guaranteed.</p></li>
+</ul>
+<h4 id="the-sampling-distribution-and-asymptotic-inference">The Sampling Distribution and Asymptotic Inference<a class="headerlink" href="#the-sampling-distribution-and-asymptotic-inference" title="Link to this heading">¶</a></h4>
+<p>For both assumptions, analytical inference typically relies on <strong>asymptotic normality</strong>.</p>
+<p>As the number of spatial units <span class="math notranslate nohighlight">\(n\)</span> grows large, and provided that the spatial weights matrix remains “well-behaved” (i.e., it is uniformly bounded, meaning no single region is connected to an infinitely growing proportion of the network), the sampling distribution of Moran’s <span class="math notranslate nohighlight">\(I\)</span> converges to a standard normal distribution.</p>
+<h5 id="the-standardized-z-score">The Standardized Z-Score<a class="headerlink" href="#the-standardized-z-score" title="Link to this heading">¶</a></h5>
+<p>Using this asymptotic property, you calculate a standard normal <span class="math notranslate nohighlight">\(Z\)</span>-statistic:</p>
+<div class="math notranslate nohighlight">
+\[Z(I) = \frac{I - E(I)}{\sqrt{Var(I)}}\]</div>
+<ul class="simple">
+<li><p>Under Free Sampling, use <span class="math notranslate nohighlight">\(Var_N(I)\)</span>.</p></li>
+<li><p>Under Non-Free Sampling, use <span class="math notranslate nohighlight">\(Var_R(I)\)</span>.</p></li>
+</ul>
+<p>This <span class="math notranslate nohighlight">\(Z\)</span>-score is compared against critical values from a standard normal distribution table (<span class="math notranslate nohighlight">\(N(0,1)\)</span>) to calculate a two-tailed <span class="math notranslate nohighlight">\(p\)</span>-value (by default).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mi</span><span class="o">.</span><span class="n">p_norm</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(3.246608775029129e-36)
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mi</span><span class="o">.</span><span class="n">p_rand</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(6.739745590155826e-36)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h4 id="methodological-limitations">Methodological Limitations<a class="headerlink" href="#methodological-limitations" title="Link to this heading">¶</a></h4>
+<p>While analytical inference using these two assumptions is computationally instantaneous, it has a notable caveat: if the sample size <span class="math notranslate nohighlight">\(n\)</span> is small, or if the spatial weights matrix is highly irregular (e.g., star topologies or severe directional components), the true sampling distribution can be skewed, leading to unreliable analytical <span class="math notranslate nohighlight">\(p\)</span>-values.</p>
+<h3 id="permutation-based-inference">Permutation-based inference<a class="headerlink" href="#permutation-based-inference" title="Link to this heading">¶</a></h3>
+<p>When the structural assumptions required for asymptotic analytical inference are violated—such as with small sample sizes, highly irregular spatial configurations, or severe non-normality in the underlying data—spatial researchers rely on <strong>Permutation Inference</strong>. This approach does not assume an analytical continuous distribution (like the normal distribution) for the test statistic. Instead, it empirically constructs the reference distribution under the null hypothesis of spatial randomness using intensive computation.</p>
+<h4 id="id4">Conceptual Framework<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<p>Permutation inference operates strictly under the <strong>Non-Free Sampling</strong> framework. The set of observed attribute values <span class="math notranslate nohighlight">\(\{x_1, x_2, \dots, x_n\}\)</span> is considered fixed and given.</p>
+<p>Under the null hypothesis of complete spatial randomness (CSR), the spatial arrangement of these values is entirely accidental. Any observed value was equally likely to have appeared at any other spatial location.</p>
+<p>Therefore, if there are <span class="math notranslate nohighlight">\(n\)</span> spatial units, there are <span class="math notranslate nohighlight">\(n!\)</span> possible ways to assign the observed values to locations. Permutation inference works by repeatedly shuffling the attribute vector <span class="math notranslate nohighlight">\(z\)</span> relative to the fixed spatial weights matrix <span class="math notranslate nohighlight">\(W\)</span>, calculating Moran’s <span class="math notranslate nohighlight">\(I\)</span> for each shuffle, and using the resulting collection of values as the empirical reference distribution.</p>
+<h4 id="the-algorithmic-process">The Algorithmic Process<a class="headerlink" href="#the-algorithmic-process" title="Link to this heading">¶</a></h4>
+<p>Because computing all <span class="math notranslate nohighlight">\(n!\)</span> exact permutations becomes computationally impossible even for modest sample sizes (e.g., <span class="math notranslate nohighlight">\(50! \approx 3 \times 10^{64}\)</span>), a conditional Monte Carlo approach is used:</p>
+<ol class="arabic simple">
+<li><p><strong>Calculate Observed Statistic:</strong> Compute the empirical Moran’s <span class="math notranslate nohighlight">\(I\)</span> using the actual, observed spatial layout of the data (<span class="math notranslate nohighlight">\(I_{obs}\)</span>).</p></li>
+<li><p><strong>Permute:</strong> Randomly shuffle the attribute vector <span class="math notranslate nohighlight">\(z\)</span> across the geographic zones while keeping the spatial weights matrix <span class="math notranslate nohighlight">\(W\)</span> completely fixed. This breaks any existing systematic spatial relationship.</p></li>
+<li><p><strong>Re-calculate:</strong> Compute Moran’s <span class="math notranslate nohighlight">\(I\)</span> for this randomized permutation (<span class="math notranslate nohighlight">\(I^m\)</span>).</p></li>
+<li><p><strong>Iterate:</strong> Repeat steps 2 and 3 a large number of times (<span class="math notranslate nohighlight">\(M\)</span>), typically <span class="math notranslate nohighlight">\(M = 999\)</span> or <span class="math notranslate nohighlight">\(M = 9999\)</span>, generating a vector of simulated statistics <span class="math notranslate nohighlight">\(\{I^1, I^2, \dots, I^M\}\)</span>.</p></li>
+</ol>
+<h4 id="expected-value-variance-and-sampling-distribution">Expected Value, Variance, and Sampling Distribution<a class="headerlink" href="#expected-value-variance-and-sampling-distribution" title="Link to this heading">¶</a></h4>
+<h5 id="expected-value-and-variance">Expected Value and Variance<a class="headerlink" href="#expected-value-and-variance" title="Link to this heading">¶</a></h5>
+<p>Unlike analytical inference, permutation inference does not rely on algebraic formulas to derive the theoretical moments of the distribution. Instead, the moments are computed directly from the empirically simulated distribution:</p>
+<div class="math notranslate nohighlight">
+\[\bar{I}_{sim} = \frac{1}{M} \sum_{m=1}^M I^m\]</div>
+<div class="math notranslate nohighlight">
+\[Var_{sim}(I) = \frac{1}{M-1} \sum_{m=1}^M (I^m - \bar{I}_{sim})^2\]</div>
+<p>As <span class="math notranslate nohighlight">\(M \to \infty\)</span>, the empirical mean <span class="math notranslate nohighlight">\(\bar{I}_{sim}\)</span> converges cleanly to the theoretical expectation under randomization, <span class="math notranslate nohighlight">\(E_R(I) = \frac{-1}{n-1}\)</span>.</p>
+<h4 id="the-sampling-distribution">The Sampling Distribution<a class="headerlink" href="#the-sampling-distribution" title="Link to this heading">¶</a></h4>
+<p>The resulting empirical sampling distribution is an exact, non-parametric representation of the null hypothesis for your specific dataset and topology. It inherently captures:</p>
+<ul class="simple">
+<li><p>The exact sample size (<span class="math notranslate nohighlight">\(n\)</span>).</p></li>
+<li><p>The exact empirical distribution shape (skewness, kurtosis, and outliers) of your data.</p></li>
+<li><p>The exact geometric layout and connectivity profile of your spatial weights matrix (<span class="math notranslate nohighlight">\(W\)</span>).</p></li>
+</ul>
+<hr class="docutils" />
+<h4 id="statistical-inference-and-pseudo-p-values">Statistical Inference and Pseudo p-values<a class="headerlink" href="#statistical-inference-and-pseudo-p-values" title="Link to this heading">¶</a></h4>
+<p>Because the reference distribution is constructed computationally, we do not use standard <span class="math notranslate nohighlight">\(Z\)</span>-tables to find significance. Instead, we calculate a <strong>pseudo <span class="math notranslate nohighlight">\(p\)</span>-value</strong> based on the rank of <span class="math notranslate nohighlight">\(I_{obs}\)</span> within the simulated distribution.</p>
+<p>For a one-tailed test looking for positive spatial autocorrelation (clustering), the pseudo <span class="math notranslate nohighlight">\(p\)</span>-value is calculated as:</p>
+<div class="math notranslate nohighlight">
+\[p = \frac{C + 1}{M + 1}\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(C\)</span> is the number of times a simulated Moran’s <span class="math notranslate nohighlight">\(I\)</span> was greater than or equal to the observed value (<span class="math notranslate nohighlight">\(I^m \ge I_{obs}\)</span>).</p></li>
+<li><p><span class="math notranslate nohighlight">\(M\)</span> is the total number of permutations.</p></li>
+<li><p>The <span class="math notranslate nohighlight">\(+1\)</span> added to both the numerator and denominator acts as a conservative correction, accounting for the observed dataset as a valid permutation under the null hypothesis.</p></li>
+</ul>
+<h4 id="key-operational-characteristics">Key Operational Characteristics<a class="headerlink" href="#key-operational-characteristics" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><strong>The Floor Effect:</strong> The lowest possible <span class="math notranslate nohighlight">\(p\)</span>-value is strictly bounded by the number of permutations (<span class="math notranslate nohighlight">\(p_{min} = \frac{1}{M+1}\)</span>). If <span class="math notranslate nohighlight">\(M=999\)</span>, the smallest attainable <span class="math notranslate nohighlight">\(p\)</span>-value is <span class="math notranslate nohighlight">\(0.001\)</span>. If you require higher precision (e.g., <span class="math notranslate nohighlight">\(\alpha = 0.0001\)</span>), you must increase <span class="math notranslate nohighlight">\(M\)</span> accordingly.</p></li>
+<li><p><strong>Pseudo-Z Scores:</strong> For comparative purposes, researchers often compute an empirical <span class="math notranslate nohighlight">\(Z\)</span>-score using the simulated moments:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[Z_{sim} = \frac{I_{obs} - \bar{I}_{sim}}{\sqrt{Var_{sim}(I)}}\]</div>
+<p>While this looks like a standard normal <span class="math notranslate nohighlight">\(Z\)</span>-score, significance should still be evaluated using the pseudo <span class="math notranslate nohighlight">\(p\)</span>-value, as the empirical distribution may retain non-normal features (e.g., skewness) dictated by highly irregular spatial weights.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">sim</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">EI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Moran&#39;s I&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, &quot;Moran&#39;s I&quot;)
+</code></pre></div>
+</div>
+<img alt="../_images/ff31715799c20fb082a6c6a9d2203b51c031d29034dfeeaef3addba936b2df07.png" src="../_images/ff31715799c20fb082a6c6a9d2203b51c031d29034dfeeaef3addba936b2df07.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">mi</span><span class="o">.</span><span class="n">p_sim</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.001)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Here the observed value of <span class="math notranslate nohighlight">\(I\)</span> is far out in the upper tail of the distribution. The pseudo p-value reveals that none of the 999 permuted patterns generated a value as extreme as this.</p>
+<h4 id="sidedness-of-tests-and-pseudo-p-values">Sidedness of Tests and Pseudo <span class="math notranslate nohighlight">\(p\)</span>-values<a class="headerlink" href="#sidedness-of-tests-and-pseudo-p-values" title="Link to this heading">¶</a></h4>
+<p>When performing permutation inference with <code class="docutils literal notranslate"><span class="pre">esda.moran.Moran</span></code>, the calculated pseudo <span class="math notranslate nohighlight">\(p\)</span>-value (<code class="docutils literal notranslate"><span class="pre">mi.p_sim</span></code>) requires careful interpretation depending on your substantive hypothesis. Because the empirical reference distribution is constructed dynamically from permutations, “sidedness” determines how we evaluate the rank of our observed <span class="math notranslate nohighlight">\(I\)</span> statistic (<span class="math notranslate nohighlight">\(I_{obs}\)</span>) against the simulated distribution.</p>
+<h5 id="right-tailed-test-positive-spatial-autocorrelation">Right-Tailed Test (Positive Spatial Autocorrelation)<a class="headerlink" href="#right-tailed-test-positive-spatial-autocorrelation" title="Link to this heading">¶</a></h5>
+<p>In the vast majority of economic and social geographic applications (such as analyzing Airbnb prices), our primary hypothesis is one of <strong>clustering</strong>—where similar values are located near each other. This is a right-tailed test.</p>
+<p>The pseudo <span class="math notranslate nohighlight">\(p\)</span>-value answers the question: <em>What proportion of randomized permutations yielded a Moran’s <span class="math notranslate nohighlight">\(I\)</span> as high or higher than what we observed?</em></p>
+<div class="math notranslate nohighlight">
+\[p_{\text{right}} = \frac{\sum_{m=1}^M \mathbb{I}(I^m \ge I_{obs}) + 1}{M + 1}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\mathbb{I}()\)</span> is an indicator function equal to 1 if the condition is true, and 0 otherwise. If your observed <span class="math notranslate nohighlight">\(I\)</span> sits far out in the right tail of the simulation curve, <span class="math notranslate nohighlight">\(p_{\text{right}}\)</span> will be very small, indicating significant positive spatial autocorrelation.</p>
+<h5 id="left-tailed-test-negative-spatial-autocorrelation">Left-Tailed Test (Negative Spatial Autocorrelation)<a class="headerlink" href="#left-tailed-test-negative-spatial-autocorrelation" title="Link to this heading">¶</a></h5>
+<p>A left-tailed test evaluates a hypothesis of <strong>spatial dispersion</strong> or alternating patterns (e.g., a checkerboard pattern where high values are surrounded exclusively by low values, and vice versa).</p>
+<p>The pseudo <span class="math notranslate nohighlight">\(p\)</span>-value answers: <em>What proportion of randomized permutations yielded a Moran’s <span class="math notranslate nohighlight">\(I\)</span> as low or lower than what we observed?</em></p>
+<div class="math notranslate nohighlight">
+\[p_{\text{left}} = \frac{\sum_{m=1}^M \mathbb{I}(I^m \le I_{obs}) + 1}{M + 1}\]</div>
+<p>If <span class="math notranslate nohighlight">\(I_{obs}\)</span> is strongly negative and sits far out in the left tail of the simulation distribution, it indicates significant spatial segregation.</p>
+<h5 id="two-tailed-test-direction-agnostic-autocorrelation">Two-Tailed Test (Direction-Agnostic Autocorrelation)<a class="headerlink" href="#two-tailed-test-direction-agnostic-autocorrelation" title="Link to this heading">¶</a></h5>
+<p>If you do not have an a priori theory about whether the data should be clustered or dispersed, you must perform a two-tailed test. In a non-parametric permutation framework, this is handled by looking at the absolute deviation of the statistics from the empirical mean (<span class="math notranslate nohighlight">\(\bar{I}_{sim}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[p_{\text{two-tailed}} = \frac{\sum_{m=1}^M \mathbb{I}(|I^m - \bar{I}_{sim}| \ge |I_{obs} - \bar{I}_{sim}|) + 1}{M + 1}\]</div>
+<h4 id="how-esda-handles-this-natively">How <code class="docutils literal notranslate"><span class="pre">esda</span></code> Handles This Natively<a class="headerlink" href="#how-esda-handles-this-natively" title="Link to this heading">¶</a></h4>
+<p>By default, the analytical p-values (<code class="docutils literal notranslate"><span class="pre">p_norm</span></code> and <code class="docutils literal notranslate"><span class="pre">p_rand</span></code>) are two-tailed.  For permutation based inference the pseudo p-values  (<code class="docutils literal notranslate"><span class="pre">p_sim</span></code>) are one-tailed.</p>
+<p>If you are strictly testing for clustering (positive spatial autocorrelation) and your observed <span class="math notranslate nohighlight">\(I\)</span> is positive (<span class="math notranslate nohighlight">\(I_{obs} &gt; E[I]\)</span>), you can convert the default two-tailed <span class="math notranslate nohighlight">\(p\)</span>-value to a one-tailed (right-tailed) <span class="math notranslate nohighlight">\(p\)</span>-value by dividing it by 2:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># If testing strictly for positive clustering:</span>
+<span class="k">if</span> <span class="n">mi</span><span class="o">.</span><span class="n">I</span> <span class="o">&gt;</span> <span class="n">mi</span><span class="o">.</span><span class="n">EI</span><span class="p">:</span>
+    <span class="n">one_tailed_p</span> <span class="o">=</span> <span class="n">mi</span><span class="o">.</span><span class="n">p_norm</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;One-tailed pseudo p-value (clustering): </span><span class="si">{</span><span class="n">one_tailed_p</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+</code></pre></div>
+</div>
+<p><em>Note: Always decide on the sidedness of your test <strong>before</strong> running the analysis to prevent data-dredging or artificially inflating your significance levels.</em></p>
+<h2 id="next-steps-alternative-methods">Next Steps &amp; Alternative Methods<a class="headerlink" href="#next-steps-alternative-methods" title="Link to this heading">¶</a></h2>
+<p>Having evaluated global spatial autocorrelation using Moran’s <span class="math notranslate nohighlight">\(I\)</span>, you can extend your exploratory spatial data analysis (ESDA) in two distinct directions depending on your research design:</p>
+<h3 id="complementary-global-statistics">1. Complementary Global Statistics<a class="headerlink" href="#complementary-global-statistics" title="Link to this heading">¶</a></h3>
+<p>If you want to validate your findings using different mathematical formulations of spatial relationship, consider these alternative global metrics available in <code class="docutils literal notranslate"><span class="pre">esda</span></code>:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="geary.html"><span class="std std-doc">Geary’s C</span></a> – Measures localized squared differences between neighbors rather than covariation, making it highly sensitive to micro-scale spatial gradients and patches of dissimilarity.</p></li>
+<li><p><a class="reference internal" href="getisord.html"><span class="std std-doc">Getis-Ord G</span></a> – Designed explicitly to capture overall spatial concentrations of high or low values, helping you determine if the study area is dominated by hotspots or coldspots.</p></li>
+<li><p><a class="reference internal" href="join_counts.html"><span class="std std-doc">Join Counts</span></a> – Use this approach if your target attribute is categorical or nominal (such as presence/absence data) rather than continuous values.</p></li>
+</ul>
+<h3 id="transitioning-from-global-to-local-scale">2. Transitioning from Global to Local Scale<a class="headerlink" href="#transitioning-from-global-to-local-scale" title="Link to this heading">¶</a></h3>
+<p>Global statistics summarize spatial pattern into a single metric for an entire map, which can mask local spatial heterogeneity. To discover <em>where</em> specific clusters, spatial outliers, or hotspots are located geographically, continue to our companion guide on <a class="reference internal" href="local.html"><span class="std std-doc">Local Spatial Structure</span></a>.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    8.2.3.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>

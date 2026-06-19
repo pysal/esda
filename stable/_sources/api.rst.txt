@@ -13,7 +13,7 @@ A-DBSCAN
 .. autosummary::
    :toctree: generated/
 
-    esda.adbscan.ADBSCAN
+    adbscan.ADBSCAN
 
 .. _correlogram_api:
 
@@ -23,7 +23,7 @@ Correlogram
 .. autosummary::
    :toctree: generated/
 
-    esda.correlogram
+    correlogram
 
 .. _gamma_api:
 
@@ -33,7 +33,7 @@ Gamma Statistic
 .. autosummary::
    :toctree: generated/
 
-    esda.Gamma
+    Gamma
 
 
 .. _geary_api:
@@ -44,9 +44,9 @@ Geary Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.Geary
-    esda.Geary_Local
-    esda.Geary_Local_MV
+    Geary
+    Geary_Local
+    Geary_Local_MV
 
 
 .. _getis_api:
@@ -57,9 +57,18 @@ Getis-Ord Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.G
-    esda.G_Local
+    G
+    G_Local
 
+.. _inspection_api:
+
+Inspection plots
+-----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    LocalCrossPlot
 
 .. _join_api:
 
@@ -69,7 +78,7 @@ Join Count Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.Join_Counts
+    Join_Counts
 
 Join Count Local Statistics
 ---------------------------
@@ -77,9 +86,9 @@ Join Count Local Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.Join_Counts_Local
-    esda.Join_Counts_Local_BV
-    esda.Join_Counts_Local_MV
+    Join_Counts_Local
+    Join_Counts_Local_BV
+    Join_Counts_Local_MV
 
 
 LOSH Statistics
@@ -88,7 +97,30 @@ LOSH Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.LOSH
+    LOSH
+
+
+Map Comparison
+--------------
+
+.. autosummary::
+   :toctree: generated/
+
+    areal_entropy
+    completeness
+    external_entropy
+    homogeneity
+    overlay_entropy
+
+
+Mixture Smoothing
+-----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    NP_Mixture_Smoother
+
 
 Modifiable Areal Unit Tests
 ---------------------------
@@ -96,7 +128,7 @@ Modifiable Areal Unit Tests
 .. autosummary::
    :toctree: generated/
 
-    esda.Smaup
+    Smaup
 
 
 Moran Statistics
@@ -105,16 +137,16 @@ Moran Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.Moran
-    esda.Moran_BV
-    esda.Moran_BV_matrix
-    esda.Moran_Local
-    esda.Moran_Local_BV
-    esda.Moran_Rate
-    esda.Moran_Local_Rate
-    esda.plot_moran_facet
-    esda.MoranLocalPartial
-    esda.MoranLocalConditional
+    Moran
+    Moran_BV
+    Moran_BV_matrix
+    Moran_Local
+    Moran_Local_BV
+    Moran_Rate
+    Moran_Local_Rate
+    plot_moran_facet
+    MoranLocalPartial
+    MoranLocalConditional
 
 
 Shape Statistics
@@ -123,26 +155,27 @@ Shape Statistics
 .. autosummary::
     :toctree: generated/
 
-    esda.shape.boundary_amplitude
-    esda.shape.convex_hull_ratio
-    esda.shape.diameter_ratio
-    esda.shape.equivalent_rectangular_index
-    esda.shape.form_factor
-    esda.shape.isoareal_quotient
-    esda.shape.isoperimetric_quotient
-    esda.shape.length_width_diff
-    esda.shape.mass_moment_of_inertia
-    esda.shape.minimum_bounding_circle_ratio
-    esda.shape.moa_ratio
-    esda.shape.moment_of_inertia
-    esda.shape.nmi
-    esda.shape.radii_ratio
-    esda.shape.rectangularity
-    esda.shape.reflexive_angle_ratio
-    esda.shape.second_areal_moment
-    esda.shape.second_moment_of_area
-    esda.shape.shape_index
-    esda.shape.squareness
+    shape.boundary_amplitude
+    shape.convex_hull_ratio
+    shape.diameter_ratio
+    shape.equivalent_rectangular_index
+    shape.form_factor
+    shape.isoareal_quotient
+    shape.isoperimetric_quotient
+    shape.length_width_diff
+    shape.minimum_bounding_circle_ratio
+    shape.moa_ratio
+    shape.moment_of_inertia
+    shape.moment_of_inertia_global
+    shape.moment_of_inertia_regions
+    shape.nmi
+    shape.radii_ratio
+    shape.rectangularity
+    shape.reflexive_angle_ratio
+    shape.second_areal_moment
+    shape.second_moment_of_area
+    shape.shape_index
+    shape.squareness
 
 
 Silhouette Statistics
@@ -151,10 +184,10 @@ Silhouette Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.boundary_silhouette
-    esda.path_silhouette
-    esda.silhouettes.nearest_label
-    esda.silhouettes.silhouette_alist
+    boundary_silhouette
+    path_silhouette
+    silhouettes.nearest_label
+    silhouettes.silhouette_alist
 
 
 Spatial Pearson Statistics
@@ -163,8 +196,18 @@ Spatial Pearson Statistics
 .. autosummary::
    :toctree: generated/
 
-    esda.Spatial_Pearson
-    esda.Spatial_Pearson_Local
+    Spatial_Pearson
+    Spatial_Pearson_Local
+
+
+Topology
+--------
+
+.. autosummary::
+   :toctree: generated/
+
+    isolation
+    prominence
 
 
 Utility Functions
@@ -173,4 +216,4 @@ Utility Functions
 .. autosummary::
    :toctree: generated/
 
-    esda.fdr
+    fdr

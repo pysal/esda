@@ -1,0 +1,19 @@
+﻿esda.LocalCrossPlot
+===================
+
+.. currentmodule:: esda
+
+.. autoclass:: LocalCrossPlot
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LocalCrossPlot.fit
+      ~LocalCrossPlot.from_estimators
+      ~LocalCrossPlot.plot
+   
+
+   

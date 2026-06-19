@@ -1,162 +1,773 @@
-<!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+
+
+<!doctype html>
+<html lang="en" class="no-js">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; esda v2.9 Manual</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
-    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=f8dcc4ae" />
-    <script src="_static/documentation_options.js?v=3cf3cae0"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-    <link rel="icon" href="_static/pysal_favicon.ico"/>
-    <link rel="index" title="Index" href="#" />
-    <link rel="search" title="Search" href="search.html" />
-<meta charset='utf-8'>
-<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="_static/pysal_favicon.ico">
+    
+    
+      
+        <title>Index - esda</title>
+      
+    
+    
+      
+        
+      
+      
 
-  </head><body>
 
-  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="index.html">
-          esda</a>
-        <span class="navbar-text navbar-version pull-left"><b>2.9</b></span>
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
       </div>
+    
+    
+      
 
-        <div class="collapse navbar-collapse nav-collapse">
-          <ul class="nav navbar-nav">
-            
-                <li><a href="installation.html">Installation</a></li>
-                <li><a href="tutorial.html">Tutorial</a></li>
-                <li><a href="api.html">API</a></li>
-                <li><a href="references.html">References</a></li>
-            
-            
-              <li class="dropdown globaltoc-container">
-  <a role="button"
-     id="dLabelGlobalToc"
-     data-toggle="dropdown"
-     data-target="#"
-     href="index.html">Site <b class="caret"></b></a>
-  <ul class="dropdown-menu globaltoc"
-      role="menu"
-      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/localjoincounts.html">Local join counts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html">Assessing local patterns of spatial heteroskedasticity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Understanding-the-LOSH-statistic">Understanding the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Interpreting-the-LOSH-statistic">Interpreting the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Inference-on-the-LOSH-statistic">Inference on the LOSH statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/LOSH.html#Applying-the-LOSH-statistic-on-a-dataset">Applying the LOSH statistic on a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html">Geosilhouettes: geographical measures of cluster fit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#The-Silhouette-Score">The Silhouette Score</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Nearest-Label">Nearest Label</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Geographical-Structure">Geographical Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Path-Silhouettes">Path Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Boundary-Silhouettes">Boundary Silhouettes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/geosilhouettes.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/adbscan_berlin_example.html">Cluster points and explore boundary <em>blurriness</em> with A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html">Measures of shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Ideal-Shape-Measures">Ideal Shape Measures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Inertial-Measures">Inertial Measures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/shape-measures.html#Conclusion">Conclusion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/spatial_autocorrelation_for_areal_unit_data.html">Exploratory Analysis of Spatial Data: Spatial Autocorrelation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html">How do we introduce another variables?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/multivariable_moran.html#How-can-we-introduce-another-exogenous-variable?">How can we introduce another <em>exogenous</em> variable?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/correlogram.html">Distance Bands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/correlogram.html#KNN-Distance">KNN Distance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/topo.html">Topological Measures of Geographical Surfaces</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#a-dbscan">A-DBSCAN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#correlogram">Correlogram</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#gamma-statistic">Gamma Statistic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#geary-statistics">Geary Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#getis-ord-statistics">Getis-Ord Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#join-count-statistics">Join Count Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#join-count-local-statistics">Join Count Local Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#losh-statistics">LOSH Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#modifiable-areal-unit-tests">Modifiable Areal Unit Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#moran-statistics">Moran Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#shape-statistics">Shape Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#silhouette-statistics">Silhouette Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#spatial-pearson-statistics">Spatial Pearson Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#utility-functions">Utility Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
-</ul>
-</ul>
-</li>
-              
-                <li class="dropdown">
-  <a role="button"
-     id="dLabelLocalToc"
-     data-toggle="dropdown"
-     data-target="#"
-     href="#">Page <b class="caret"></b></a>
-  <ul class="dropdown-menu localtoc"
-      role="menu"
-      aria-labelledby="dLabelLocalToc"></ul>
-</li>
-              
-            
-            
-            
-            
-            
-          </ul>
+  
 
-          
-            
-<form class="navbar-form navbar-right" action="search.html" method="get">
- <div class="form-group">
-  <input type="text" name="q" class="form-control" placeholder="Search" />
- </div>
-  <input type="hidden" name="check_keywords" value="yes" />
-  <input type="hidden" name="area" value="default" />
-</form>
-          
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="esda" class="md-header__button md-logo" aria-label="esda" data-md-component="logo">
+      <img src="_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            esda
+          </span>
         </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Index
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
     </div>
   </div>
-
-<div class="container">
-  <div class="row">
-    <div class="body col-md-12 content" role="main">
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/esda/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/esda
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
       
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="esda" class="md-nav__button md-logo" aria-label="esda" data-md-component="logo">
+      <img src="_static/pysal_logo.svg" alt="logo">
+    </a>
+    esda
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/esda/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/esda
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>User Guide</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>User Guide</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Overview</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/getting_started.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Getting Started</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/global.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Global Spatial Autocorrelation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/local.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Local Spatial Autocorrelation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/diagnostics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Diagnostics</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/clustering.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Clustering</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/geometry.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Geometry</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/topology.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Topology</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/esda" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/esda/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
 
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#_"><strong>_</strong></a>
- | <a href="#A"><strong>A</strong></a>
+ <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
@@ -166,79 +777,47 @@
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
-<h2 id="_">_</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.__init__">__init__() (esda.adbscan.ADBSCAN method)</a>
-
-      <ul>
-        <li><a href="generated/esda.G.html#esda.G.__init__">(esda.G method)</a>
-</li>
-        <li><a href="generated/esda.G_Local.html#esda.G_Local.__init__">(esda.G_Local method)</a>
-</li>
-        <li><a href="generated/esda.Gamma.html#esda.Gamma.__init__">(esda.Gamma method)</a>
-</li>
-        <li><a href="generated/esda.Geary.html#esda.Geary.__init__">(esda.Geary method)</a>
-</li>
-        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.__init__">(esda.Geary_Local method)</a>
-</li>
-        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.__init__">(esda.Geary_Local_MV method)</a>
-</li>
-        <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.__init__">(esda.Join_Counts method)</a>
-</li>
-        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.__init__">(esda.Join_Counts_Local method)</a>
-</li>
-        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.__init__">(esda.Join_Counts_Local_BV method)</a>
-</li>
-        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.__init__">(esda.Join_Counts_Local_MV method)</a>
-</li>
-        <li><a href="generated/esda.LOSH.html#esda.LOSH.__init__">(esda.LOSH method)</a>
-</li>
-        <li><a href="generated/esda.Moran.html#esda.Moran.__init__">(esda.Moran method)</a>
-</li>
-        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.__init__">(esda.Moran_BV method)</a>
-</li>
-        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.__init__">(esda.Moran_Local method)</a>
-</li>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.__init__">(esda.Moran_Local_BV method)</a>
-</li>
-        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.__init__">(esda.Moran_Local_Rate method)</a>
-</li>
-        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.__init__">(esda.Moran_Rate method)</a>
-</li>
-        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.__init__">(esda.MoranLocalConditional method)</a>
-</li>
-        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.__init__">(esda.MoranLocalPartial method)</a>
-</li>
-        <li><a href="generated/esda.Smaup.html#esda.Smaup.__init__">(esda.Smaup method)</a>
-</li>
-        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.__init__">(esda.Spatial_Pearson method)</a>
-</li>
-        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.__init__">(esda.Spatial_Pearson_Local method)</a>
-</li>
-      </ul></li>
-  </ul></td>
-</tr></table>
-
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN">ADBSCAN (class in esda.adbscan)</a>, <a href="source/generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN">[1]</a>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.acc">acc (esda.NP_Mixture_Smoother attribute)</a>
+</li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN">ADBSCAN (class in esda.adbscan)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.alternative">alternative (esda.Moran_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.areal_entropy.html#esda.areal_entropy">areal_entropy() (in module esda)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/generated/esda.areal_entropy.html#esda.areal_entropy">areal_entropy() (in module esda)</a>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.association_">association_ (esda.MoranLocalConditional attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.association_">(esda.MoranLocalPartial attribute)</a>
 </li>
-      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.association_">association_ (esda.MoranLocalPartial property)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.association_">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#id0">(esda.MoranLocalPartial property)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.association_">(esda.Spatial_Pearson attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.associations_">associations_ (esda.Spatial_Pearson_Local attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -246,32 +825,30 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.boundary_amplitude.html#esda.shape.boundary_amplitude">boundary_amplitude() (in module esda.shape)</a>, <a href="source/generated/esda.shape.boundary_amplitude.html#esda.shape.boundary_amplitude">[1]</a>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.b">b (esda.NP_Mixture_Smoother attribute)</a>
 </li>
-      <li><a href="generated/esda.boundary_silhouette.html#esda.boundary_silhouette">boundary_silhouette() (in module esda)</a>, <a href="source/generated/esda.boundary_silhouette.html#esda.boundary_silhouette">[1]</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.bb">bb (esda.Join_Counts attribute)</a>
 </li>
-      <li><a href="generated/esda.G.html#esda.G.by_col">by_col() (esda.G class method)</a>, <a href="source/generated/esda.G.html#esda.G.by_col">[1]</a>
+      <li><a href="generated/esda.shape.boundary_amplitude.html#esda.shape.boundary_amplitude">boundary_amplitude() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.boundary_silhouette.html#esda.boundary_silhouette">boundary_silhouette() (in module esda)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.bw">bw (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.by_col">by_col() (esda.Moran class method)</a>
 
       <ul>
-        <li><a href="generated/esda.G_Local.html#esda.G_Local.by_col">(esda.G_Local class method)</a>, <a href="source/generated/esda.G_Local.html#esda.G_Local.by_col">[1]</a>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.by_col">(esda.Moran_BV class method)</a>
 </li>
-        <li><a href="generated/esda.Gamma.html#esda.Gamma.by_col">(esda.Gamma class method)</a>, <a href="source/generated/esda.Gamma.html#esda.Gamma.by_col">[1]</a>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.by_col">(esda.Moran_Local class method)</a>
 </li>
-        <li><a href="generated/esda.Geary.html#esda.Geary.by_col">(esda.Geary class method)</a>, <a href="source/generated/esda.Geary.html#esda.Geary.by_col">[1]</a>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.by_col">(esda.Moran_Local_BV class method)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.by_col">(esda.Join_Counts class method)</a>, <a href="source/generated/esda.Join_Counts.html#esda.Join_Counts.by_col">[1]</a>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.by_col">(esda.Moran_Local_Rate class method)</a>
 </li>
-        <li><a href="generated/esda.Moran.html#esda.Moran.by_col">(esda.Moran class method)</a>, <a href="source/generated/esda.Moran.html#esda.Moran.by_col">[1]</a>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.by_col">(esda.Moran_Rate class method)</a>
 </li>
-        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.by_col">(esda.Moran_BV class method)</a>, <a href="source/generated/esda.Moran_BV.html#esda.Moran_BV.by_col">[1]</a>
-</li>
-        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.by_col">(esda.Moran_Local class method)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local.by_col">[1]</a>
-</li>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.by_col">(esda.Moran_Local_BV class method)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.by_col">[1]</a>
-</li>
-        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.by_col">(esda.Moran_Local_Rate class method)</a>, <a href="source/generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.by_col">[1]</a>
-</li>
-        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.by_col">(esda.Moran_Rate class method)</a>, <a href="source/generated/esda.Moran_Rate.html#esda.Moran_Rate.by_col">[1]</a>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.by_col">(esda.MoranLocalConditional class method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -280,15 +857,43 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.G_Local.html#esda.G_Local.calc">calc() (esda.G_Local method)</a>, <a href="source/generated/esda.G_Local.html#esda.G_Local.calc">[1]</a>
+      <li><a href="generated/esda.Geary.html#esda.Geary.C">C (esda.Geary attribute)</a>
 </li>
-      <li><a href="source/generated/esda.completeness.html#esda.completeness">completeness() (in module esda)</a>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local.calc">calc() (esda.G_Local method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.category">category (esda.NP_Mixture_Smoother attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.chi2">chi2 (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.chi2_dof">chi2_dof (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.chi2_p">chi2_p (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.combine">combine() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.completeness.html#esda.completeness">completeness() (in module esda)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.convex_hull_ratio.html#esda.shape.convex_hull_ratio">convex_hull_ratio() (in module esda.shape)</a>, <a href="source/generated/esda.shape.convex_hull_ratio.html#esda.shape.convex_hull_ratio">[1]</a>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.connectivity">connectivity (esda.LocalCrossPlot attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.connectivity">(esda.MoranLocalConditional attribute)</a>
 </li>
-      <li><a href="generated/esda.correlogram.html#esda.correlogram">correlogram() (in module esda)</a>, <a href="source/generated/esda.correlogram.html#esda.correlogram">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.connectivity">(esda.MoranLocalPartial attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.shape.convex_hull_ratio.html#esda.shape.convex_hull_ratio">convex_hull_ratio() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.correlogram.html#esda.correlogram">correlogram() (in module esda)</a>
+</li>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup.critical_01">critical_01 (esda.Smaup attribute)</a>
+</li>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup.critical_05">critical_05 (esda.Smaup attribute)</a>
+</li>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup.critical_1">critical_1 (esda.Smaup attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.crosstab">crosstab (esda.Join_Counts attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -296,25 +901,89 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.diameter_ratio.html#esda.shape.diameter_ratio">diameter_ratio() (in module esda.shape)</a>, <a href="source/generated/esda.shape.diameter_ratio.html#esda.shape.diameter_ratio">[1]</a>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.D">D (esda.MoranLocalConditional attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.D">(esda.MoranLocalPartial attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="generated/esda.shape.diameter_ratio.html#esda.shape.diameter_ratio">diameter_ratio() (in module esda.shape)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.drop_islands">drop_islands (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.DtDi">DtDi (esda.MoranLocalConditional attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.DtDi">(esda.MoranLocalPartial attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.equivalent_rectangular_index.html#esda.shape.equivalent_rectangular_index">equivalent_rectangular_index() (in module esda.shape)</a>, <a href="source/generated/esda.shape.equivalent_rectangular_index.html#esda.shape.equivalent_rectangular_index">[1]</a>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.e">e (esda.NP_Mixture_Smoother attribute)</a>
 </li>
-      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.explore">explore() (esda.Moran_Local method)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local.explore">[1]</a>
+      <li><a href="generated/esda.Geary.html#esda.Geary.EC">EC (esda.Geary attribute)</a>
+</li>
+      <li><a href="generated/esda.Geary.html#esda.Geary.EC_sim">EC_sim (esda.Geary attribute)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.EG">EG (esda.G attribute)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.EG_sim">EG_sim (esda.G attribute)</a>
 
       <ul>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.explore">(esda.Moran_Local_BV method)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.explore">[1]</a>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.EG_sim">(esda.G_Local attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local.EGs">EGs (esda.G_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.EI">EI (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.EI">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.EI">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.EI_sim">EI_sim (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.EI_sim">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.EI_sim">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.EI_sim">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.EI_sim">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.EI_sim">(esda.Moran_Rate attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/generated/esda.external_entropy.html#esda.external_entropy">external_entropy() (in module esda)</a>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.EIc">EIc (esda.Moran_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.em">em() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.shape.equivalent_rectangular_index.html#esda.shape.equivalent_rectangular_index">equivalent_rectangular_index() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.expected">expected (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.explore">explore() (esda.Moran_Local method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.explore">(esda.Moran_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.explore">(esda.Moran_Local_Rate method)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.explore">(esda.MoranLocalConditional method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.external_entropy.html#esda.external_entropy">external_entropy() (in module esda)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -322,35 +991,41 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.fdr.html#esda.fdr">fdr() (in module esda)</a>, <a href="source/generated/esda.fdr.html#esda.fdr">[1]</a>
+      <li><a href="generated/esda.fdr.html#esda.fdr">fdr() (in module esda)</a>
 </li>
-      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.fit">fit() (esda.adbscan.ADBSCAN method)</a>, <a href="source/generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.fit">[1]</a>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.fit">fit() (esda.adbscan.ADBSCAN method)</a>
 
       <ul>
-        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.fit">(esda.Geary_Local method)</a>, <a href="source/generated/esda.Geary_Local.html#esda.Geary_Local.fit">[1]</a>
+        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.fit">(esda.Geary_Local method)</a>
 </li>
-        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.fit">(esda.Geary_Local_MV method)</a>, <a href="source/generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.fit">[1]</a>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.fit">(esda.Geary_Local_MV method)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.fit">(esda.Join_Counts_Local method)</a>, <a href="source/generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.fit">[1]</a>
+        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.fit">(esda.Join_Counts_Local method)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.fit">(esda.Join_Counts_Local_BV method)</a>, <a href="source/generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.fit">[1]</a>
+        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.fit">(esda.Join_Counts_Local_BV method)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.fit">(esda.Join_Counts_Local_MV method)</a>, <a href="source/generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.fit">[1]</a>
+        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.fit">(esda.Join_Counts_Local_MV method)</a>
 </li>
-        <li><a href="generated/esda.LOSH.html#esda.LOSH.fit">(esda.LOSH method)</a>, <a href="source/generated/esda.LOSH.html#esda.LOSH.fit">[1]</a>
+        <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.fit">(esda.LocalCrossPlot method)</a>
 </li>
-        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.fit">(esda.MoranLocalConditional method)</a>, <a href="source/generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.fit">[1]</a>
+        <li><a href="generated/esda.LOSH.html#esda.LOSH.fit">(esda.LOSH method)</a>
 </li>
-        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.fit">(esda.MoranLocalPartial method)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.fit">[1]</a>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.fit">(esda.MoranLocalConditional method)</a>
 </li>
-        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.fit">(esda.Spatial_Pearson method)</a>, <a href="source/generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.fit">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.fit">(esda.MoranLocalPartial method)</a>
 </li>
-        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.fit">(esda.Spatial_Pearson_Local method)</a>, <a href="source/generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.fit">[1]</a>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.fit">(esda.Spatial_Pearson method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.fit">(esda.Spatial_Pearson_Local method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.form_factor.html#esda.shape.form_factor">form_factor() (in module esda.shape)</a>, <a href="source/generated/esda.shape.form_factor.html#esda.shape.form_factor">[1]</a>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.fit_predict">fit_predict() (esda.adbscan.ADBSCAN method)</a>
+</li>
+      <li><a href="generated/esda.shape.form_factor.html#esda.shape.form_factor">form_factor() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.from_estimators">from_estimators() (esda.LocalCrossPlot class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -358,33 +1033,107 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.G.html#esda.G">G (class in esda)</a>, <a href="source/generated/esda.G.html#esda.G">[1]</a>
-</li>
-      <li><a href="generated/esda.G_Local.html#esda.G_Local">G_Local (class in esda)</a>, <a href="source/generated/esda.G_Local.html#esda.G_Local">[1]</a>
-</li>
-      <li><a href="generated/esda.Gamma.html#esda.Gamma">Gamma (class in esda)</a>, <a href="source/generated/esda.Gamma.html#esda.Gamma">[1]</a>
-</li>
-      <li><a href="generated/esda.Geary.html#esda.Geary">Geary (class in esda)</a>, <a href="source/generated/esda.Geary.html#esda.Geary">[1]</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local">Geary_Local (class in esda)</a>, <a href="source/generated/esda.Geary_Local.html#esda.Geary_Local">[1]</a>
-</li>
-      <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV">Geary_Local_MV (class in esda)</a>, <a href="source/generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV">[1]</a>
-</li>
-      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.get_cluster_labels">get_cluster_labels() (esda.Moran_Local method)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local.get_cluster_labels">[1]</a>
+      <li><a href="generated/esda.G.html#esda.G">G (class in esda)</a>
 
       <ul>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.get_cluster_labels">(esda.Moran_Local_BV method)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.get_cluster_labels">[1]</a>
+        <li><a href="generated/esda.G.html#esda.G.G">(esda.G attribute)</a>
 </li>
       </ul></li>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local">G_Local (class in esda)</a>
+</li>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.g_local_">g_local_ (esda.LocalCrossPlot attribute)</a>
+</li>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma">Gamma (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.gamma">gamma (esda.Gamma attribute)</a>
+</li>
+      <li><a href="generated/esda.Geary.html#esda.Geary">Geary (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local">Geary_Local (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV">Geary_Local_MV (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.get_cluster_labels">get_cluster_labels() (esda.Moran_Local method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.get_cluster_labels">(esda.Moran_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.get_cluster_labels">(esda.Moran_Local_Rate method)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.get_cluster_labels">(esda.MoranLocalConditional method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.get_metadata_routing">get_metadata_routing() (esda.adbscan.ADBSCAN method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.get_metadata_routing">(esda.Geary_Local method)</a>
+</li>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.get_metadata_routing">(esda.Geary_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.get_metadata_routing">(esda.Join_Counts_Local method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.get_metadata_routing">(esda.Join_Counts_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.get_metadata_routing">(esda.Join_Counts_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.LOSH.html#esda.LOSH.get_metadata_routing">(esda.LOSH method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.get_metadata_routing">(esda.Spatial_Pearson method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.get_metadata_routing">(esda.Spatial_Pearson_Local method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.get_params">get_params() (esda.adbscan.ADBSCAN method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.get_params">(esda.Geary_Local method)</a>
+</li>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.get_params">(esda.Geary_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.get_params">(esda.Join_Counts_Local method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.get_params">(esda.Join_Counts_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.get_params">(esda.Join_Counts_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.LOSH.html#esda.LOSH.get_params">(esda.LOSH method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.get_params">(esda.Spatial_Pearson method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.get_params">(esda.Spatial_Pearson_Local method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getGradient">getGradient() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getLikelihood">getLikelihood() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getMaxGradient">getMaxGradient() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getMinGradient">getMinGradient() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getMixedProb">getMixedProb() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getRateEstimates">getRateEstimates() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getSeed">getSeed() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.getStepsize">getStepsize() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local.Gs">Gs (esda.G_Local attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/generated/esda.homogeneity.html#esda.homogeneity">homogeneity() (in module esda)</a>
+      <li><a href="generated/esda.LOSH.html#esda.LOSH.Hi">Hi (esda.LOSH attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.homogeneity.html#esda.homogeneity">homogeneity() (in module esda)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -392,13 +1141,29 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.isoareal_quotient.html#esda.shape.isoareal_quotient">isoareal_quotient() (in module esda.shape)</a>, <a href="source/generated/esda.shape.isoareal_quotient.html#esda.shape.isoareal_quotient">[1]</a>
+      <li><a href="generated/esda.Moran.html#esda.Moran.I">I (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.I">(esda.Moran_BV attribute)</a>
 </li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.I">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.Is">Is (esda.Moran_Local attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.Is">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.Is">(esda.Moran_Local_Rate attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/generated/esda.isolation.html#esda.isolation">isolation() (in module esda)</a>
+      <li><a href="generated/esda.shape.isoareal_quotient.html#esda.shape.isoareal_quotient">isoareal_quotient() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.shape.isoperimetric_quotient.html#esda.shape.isoperimetric_quotient">isoperimetric_quotient() (in module esda.shape)</a>, <a href="source/generated/esda.shape.isoperimetric_quotient.html#esda.shape.isoperimetric_quotient">[1]</a>
+      <li><a href="generated/esda.isolation.html#esda.isolation">isolation() (in module esda)</a>
+</li>
+      <li><a href="generated/esda.shape.isoperimetric_quotient.html#esda.shape.isoperimetric_quotient">isoperimetric_quotient() (in module esda.shape)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -406,15 +1171,33 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts">Join_Counts (class in esda)</a>, <a href="source/generated/esda.Join_Counts.html#esda.Join_Counts">[1]</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.J">J (esda.Join_Counts attribute)</a>
 </li>
-      <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local">Join_Counts_Local (class in esda)</a>, <a href="source/generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local">[1]</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts">Join_Counts (class in esda)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV">Join_Counts_Local_BV (class in esda)</a>, <a href="source/generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV">[1]</a>
+      <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local">Join_Counts_Local (class in esda)</a>
 </li>
-      <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV">Join_Counts_Local_MV (class in esda)</a>, <a href="source/generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV">[1]</a>
+      <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV">Join_Counts_Local_BV (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV">Join_Counts_Local_MV (class in esda)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.k">k (esda.NP_Mixture_Smoother attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Smaup.html#esda.Smaup.k">(esda.Smaup attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.keep_simulations">keep_simulations (esda.Moran_Local attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -422,13 +1205,37 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.labels_">labels_ (esda.MoranLocalPartial property)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.labels_">[1]</a>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.labels_">labels_ (esda.adbscan.ADBSCAN attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.labels_">(esda.MoranLocalConditional attribute)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.labels_">(esda.MoranLocalPartial attribute)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalPartial.html#id2">(esda.MoranLocalPartial property)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.labs">labs (esda.Geary_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.shape.length_width_diff.html#esda.shape.length_width_diff">length_width_diff() (in module esda.shape)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.length_width_diff.html#esda.shape.length_width_diff">length_width_diff() (in module esda.shape)</a>, <a href="source/generated/esda.shape.length_width_diff.html#esda.shape.length_width_diff">[1]</a>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.limit">limit (esda.NP_Mixture_Smoother attribute)</a>
 </li>
-      <li><a href="generated/esda.LOSH.html#esda.LOSH">LOSH (class in esda)</a>, <a href="source/generated/esda.LOSH.html#esda.LOSH">[1]</a>
+      <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.LJC">LJC (esda.Join_Counts_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot">LocalCrossPlot (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.localG">localG (esda.Geary_Local attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.localG">(esda.Geary_Local_MV attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.LOSH.html#esda.LOSH">LOSH (class in esda)</a>
+</li>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.losh_">losh_ (esda.LocalCrossPlot attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -436,35 +1243,57 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.minimum_bounding_circle_ratio.html#esda.shape.minimum_bounding_circle_ratio">minimum_bounding_circle_ratio() (in module esda.shape)</a>, <a href="source/generated/esda.shape.minimum_bounding_circle_ratio.html#esda.shape.minimum_bounding_circle_ratio">[1]</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.max_bb">max_bb (esda.Join_Counts attribute)</a>
 </li>
-      <li><a href="generated/esda.shape.moa_ratio.html#esda.shape.moa_ratio">moa_ratio() (in module esda.shape)</a>, <a href="source/generated/esda.shape.moa_ratio.html#esda.shape.moa_ratio">[1]</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.max_bw">max_bw (esda.Join_Counts attribute)</a>
 </li>
-      <li><a href="generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia">moment_of_inertia() (in module esda.shape)</a>, <a href="source/generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia">[1]</a>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.max_g">max_g (esda.Gamma attribute)</a>
 </li>
-      <li><a href="source/generated/esda.shape.moment_of_inertia_global.html#esda.shape.moment_of_inertia_global">moment_of_inertia_global() (in module esda.shape)</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.mean_bb">mean_bb (esda.Join_Counts attribute)</a>
 </li>
-      <li><a href="source/generated/esda.shape.moment_of_inertia_regions.html#esda.shape.moment_of_inertia_regions">moment_of_inertia_regions() (in module esda.shape)</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.mean_bw">mean_bw (esda.Join_Counts attribute)</a>
 </li>
-      <li><a href="generated/esda.Moran.html#esda.Moran">Moran (class in esda)</a>, <a href="source/generated/esda.Moran.html#esda.Moran">[1]</a>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.mean_g">mean_g (esda.Gamma attribute)</a>
 </li>
-      <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV">Moran_BV (class in esda)</a>, <a href="source/generated/esda.Moran_BV.html#esda.Moran_BV">[1]</a>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.min_bb">min_bb (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.min_bw">min_bw (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.min_g">min_g (esda.Gamma attribute)</a>
+</li>
+      <li><a href="generated/esda.shape.minimum_bounding_circle_ratio.html#esda.shape.minimum_bounding_circle_ratio">minimum_bounding_circle_ratio() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.mixalg">mixalg() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.shape.moa_ratio.html#esda.shape.moa_ratio">moa_ratio() (in module esda.shape)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.Moran_BV_matrix.html#esda.Moran_BV_matrix">Moran_BV_matrix() (in module esda)</a>, <a href="source/generated/esda.Moran_BV_matrix.html#esda.Moran_BV_matrix">[1]</a>
+      <li><a href="generated/esda.shape.moment_of_inertia.html#esda.shape.moment_of_inertia">moment_of_inertia() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local">Moran_Local (class in esda)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local">[1]</a>
+      <li><a href="generated/esda.shape.moment_of_inertia_global.html#esda.shape.moment_of_inertia_global">moment_of_inertia_global() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV">Moran_Local_BV (class in esda)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV">[1]</a>
+      <li><a href="generated/esda.shape.moment_of_inertia_regions.html#esda.shape.moment_of_inertia_regions">moment_of_inertia_regions() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate">Moran_Local_Rate (class in esda)</a>, <a href="source/generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate">[1]</a>
+      <li><a href="generated/esda.Moran.html#esda.Moran">Moran (class in esda)</a>
 </li>
-      <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate">Moran_Rate (class in esda)</a>, <a href="source/generated/esda.Moran_Rate.html#esda.Moran_Rate">[1]</a>
+      <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV">Moran_BV (class in esda)</a>
 </li>
-      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional">MoranLocalConditional (class in esda)</a>, <a href="source/generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional">[1]</a>
+      <li><a href="generated/esda.Moran_BV_matrix.html#esda.Moran_BV_matrix">Moran_BV_matrix() (in module esda)</a>
 </li>
-      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial">MoranLocalPartial (class in esda)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial">[1]</a>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local">Moran_Local (class in esda)</a>
+</li>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.moran_local_">moran_local_ (esda.LocalCrossPlot attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV">Moran_Local_BV (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate">Moran_Local_Rate (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate">Moran_Rate (class in esda)</a>
+</li>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional">MoranLocalConditional (class in esda)</a>
+</li>
+      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial">MoranLocalPartial (class in esda)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -472,11 +1301,23 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.silhouettes.nearest_label.html#esda.silhouettes.nearest_label">nearest_label() (in module esda.silhouettes)</a>, <a href="source/generated/esda.silhouettes.nearest_label.html#esda.silhouettes.nearest_label">[1]</a>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.n">n (esda.NP_Mixture_Smoother attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Smaup.html#esda.Smaup.n">(esda.Smaup attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.n_jobs">n_jobs (esda.Moran_Local attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.nmi.html#esda.shape.nmi">nmi() (in module esda.shape)</a>, <a href="source/generated/esda.shape.nmi.html#esda.shape.nmi">[1]</a>
+      <li><a href="generated/esda.silhouettes.nearest_label.html#esda.silhouettes.nearest_label">nearest_label() (in module esda.silhouettes)</a>
+</li>
+      <li><a href="generated/esda.shape.nmi.html#esda.shape.nmi">nmi() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother">NP_Mixture_Smoother (class in esda)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.numiter">numiter (esda.NP_Mixture_Smoother attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -484,7 +1325,11 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="source/generated/esda.overlay_entropy.html#esda.overlay_entropy">overlay_entropy() (in module esda)</a>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.op">op (esda.Gamma attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.overlay_entropy.html#esda.overlay_entropy">overlay_entropy() (in module esda)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -492,61 +1337,231 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.Gamma.html#esda.Gamma.p_sim">p_sim (esda.Gamma property)</a>, <a href="source/generated/esda.Gamma.html#esda.Gamma.p_sim">[1]</a>
-</li>
-      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.partials_">partials_ (esda.MoranLocalPartial property)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.partials_">[1]</a>
-</li>
-      <li><a href="generated/esda.path_silhouette.html#esda.path_silhouette">path_silhouette() (in module esda)</a>, <a href="source/generated/esda.path_silhouette.html#esda.path_silhouette">[1]</a>
-</li>
-      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.plot">plot() (esda.Moran_Local method)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local.plot">[1]</a>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.P">P (esda.MoranLocalConditional attribute)</a>
 
       <ul>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot">(esda.Moran_Local_BV method)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.P">(esda.MoranLocalPartial attribute)</a>
 </li>
       </ul></li>
-      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.plot_combination">plot_combination() (esda.Moran_Local method)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local.plot_combination">[1]</a>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.p">p (esda.NP_Mixture_Smoother attribute)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.p_norm">p_norm (esda.G attribute)</a>
 
       <ul>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot_combination">(esda.Moran_Local_BV method)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot_combination">[1]</a>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.p_norm">(esda.G_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.p_norm">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.p_norm">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.p_norm">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Geary.html#esda.Geary.p_rand">p_rand (esda.Geary attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran.html#esda.Moran.p_rand">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.p_rand">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.G.html#esda.G.p_sim">p_sim (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.p_sim">(esda.G_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Gamma.html#esda.Gamma.p_sim">(esda.Gamma property)</a>
+</li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.p_sim">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.p_sim">(esda.Geary_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.p_sim">(esda.Geary_Local_MV attribute)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.p_sim">(esda.Join_Counts_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.p_sim">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.p_sim">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.p_sim">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.p_sim">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.p_sim">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.p_sim">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.p_sim_bb">p_sim_bb (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.p_sim_bw">p_sim_bw (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.p_sim_chi2">p_sim_chi2 (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.p_sim_g">p_sim_g (esda.Gamma attribute)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.p_z_sim">p_z_sim (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.p_z_sim">(esda.G_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.p_z_sim">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.p_z_sim">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.p_z_sim">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.p_z_sim">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.p_z_sim">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.p_z_sim">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.p_z_sim">(esda.Moran_Rate attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.plot_moran_facet.html#esda.plot_moran_facet">plot_moran_facet() (in module esda)</a>, <a href="source/generated/esda.plot_moran_facet.html#esda.plot_moran_facet">[1]</a>
-</li>
-      <li><a href="generated/esda.Moran.html#esda.Moran.plot_scatter">plot_scatter() (esda.Moran method)</a>, <a href="source/generated/esda.Moran.html#esda.Moran.plot_scatter">[1]</a>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.partials_">partials_ (esda.MoranLocalConditional attribute)</a>
 
       <ul>
-        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.plot_scatter">(esda.Moran_BV method)</a>, <a href="source/generated/esda.Moran_BV.html#esda.Moran_BV.plot_scatter">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.partials_">(esda.MoranLocalPartial attribute)</a>
 </li>
-        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.plot_scatter">(esda.Moran_Local method)</a>, <a href="source/generated/esda.Moran_Local.html#esda.Moran_Local.plot_scatter">[1]</a>
-</li>
-        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot_scatter">(esda.Moran_Local_BV method)</a>, <a href="source/generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot_scatter">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#id3">(esda.MoranLocalPartial property)</a>
 </li>
       </ul></li>
-      <li><a href="generated/esda.Moran.html#esda.Moran.plot_simulation">plot_simulation() (esda.Moran method)</a>, <a href="source/generated/esda.Moran.html#esda.Moran.plot_simulation">[1]</a>
+      <li><a href="generated/esda.path_silhouette.html#esda.path_silhouette">path_silhouette() (in module esda)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.permutation">permutation (esda.G attribute)</a>
 
       <ul>
-        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.plot_simulation">(esda.Moran_BV method)</a>, <a href="source/generated/esda.Moran_BV.html#esda.Moran_BV.plot_simulation">[1]</a>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.permutation">(esda.Moran_BV attribute)</a>
 </li>
       </ul></li>
-      <li><a href="source/generated/esda.prominence.html#esda.prominence">prominence() (in module esda)</a>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local.permutations">permutations (esda.G_Local attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Gamma.html#esda.Gamma.permutations">(esda.Gamma attribute)</a>
 </li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.permutations">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.permutations">(esda.Join_Counts attribute)</a>
+</li>
+        <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.permutations">(esda.LocalCrossPlot attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.permutations">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.permutations">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.permutations">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.permutations">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.permutations">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.LocalCrossPlot.html#esda.LocalCrossPlot.plot">plot() (esda.LocalCrossPlot method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.plot">(esda.Moran_Local method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot">(esda.Moran_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.plot">(esda.Moran_Local_Rate method)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.plot">(esda.MoranLocalConditional method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.plot_combination">plot_combination() (esda.Moran_Local method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot_combination">(esda.Moran_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.plot_combination">(esda.Moran_Local_Rate method)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.plot_combination">(esda.MoranLocalConditional method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.plot_moran_facet.html#esda.plot_moran_facet">plot_moran_facet() (in module esda)</a>
+</li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.plot_scatter">plot_scatter() (esda.Moran method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.plot_scatter">(esda.Moran_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.plot_scatter">(esda.Moran_Local method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.plot_scatter">(esda.Moran_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.plot_scatter">(esda.Moran_Local_Rate method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.plot_scatter">(esda.Moran_Rate method)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.plot_scatter">(esda.MoranLocalConditional method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.plot_simulation">plot_simulation() (esda.Moran method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.plot_simulation">(esda.Moran_BV method)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.plot_simulation">(esda.Moran_Rate method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.prominence.html#esda.prominence">prominence() (in module esda)</a>
+</li>
+      <li><a href="generated/esda.LOSH.html#esda.LOSH.pval">pval (esda.LOSH attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.q">q (esda.Moran_Local attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.q">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.q">(esda.Moran_Local_Rate attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.radii_ratio.html#esda.shape.radii_ratio">radii_ratio() (in module esda.shape)</a>, <a href="source/generated/esda.shape.radii_ratio.html#esda.shape.radii_ratio">[1]</a>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.R">R (esda.MoranLocalConditional attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.R">(esda.MoranLocalPartial attribute)</a>
 </li>
-      <li><a href="generated/esda.shape.rectangularity.html#esda.shape.rectangularity">rectangularity() (in module esda.shape)</a>, <a href="source/generated/esda.shape.rectangularity.html#esda.shape.rectangularity">[1]</a>
+      </ul></li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.r">r (esda.NP_Mixture_Smoother attribute)</a>
 </li>
+      <li><a href="generated/esda.shape.radii_ratio.html#esda.shape.radii_ratio">radii_ratio() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.shape.rectangularity.html#esda.shape.rectangularity">rectangularity() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.reference_distribution_">reference_distribution_ (esda.MoranLocalConditional attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.reference_distribution_">(esda.MoranLocalPartial attribute)</a>
+</li>
+        <li><a href="generated/esda.MoranLocalPartial.html#id4">(esda.MoranLocalPartial property)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.reference_distribution_">(esda.Spatial_Pearson attribute)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.reference_distribution_">(esda.Spatial_Pearson_Local attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.reference_distribution_">reference_distribution_ (esda.MoranLocalPartial property)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.reference_distribution_">[1]</a>
+      <li><a href="generated/esda.shape.reflexive_angle_ratio.html#esda.shape.reflexive_angle_ratio">reflexive_angle_ratio() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.shape.reflexive_angle_ratio.html#esda.shape.reflexive_angle_ratio">reflexive_angle_ratio() (in module esda.shape)</a>, <a href="source/generated/esda.shape.reflexive_angle_ratio.html#esda.shape.reflexive_angle_ratio">[1]</a>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup.rho">rho (esda.Smaup attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -554,69 +1569,439 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment">second_areal_moment() (in module esda.shape)</a>, <a href="source/generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment">[1]</a>
+      <li><a href="generated/esda.Geary.html#esda.Geary.seC_sim">seC_sim (esda.Geary attribute)</a>
 </li>
-      <li><a href="generated/esda.shape.second_moment_of_area.html#esda.shape.second_moment_of_area">second_moment_of_area() (in module esda.shape)</a>, <a href="source/generated/esda.shape.second_moment_of_area.html#esda.shape.second_moment_of_area">[1]</a>
+      <li><a href="generated/esda.shape.second_areal_moment.html#esda.shape.second_areal_moment">second_areal_moment() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.set_fit_request">set_fit_request() (esda.adbscan.ADBSCAN method)</a>, <a href="source/generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.set_fit_request">[1]</a>
+      <li><a href="generated/esda.shape.second_moment_of_area.html#esda.shape.second_moment_of_area">second_moment_of_area() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.seed">seed (esda.Moran_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.seG_sim">seG_sim (esda.G attribute)</a>
 
       <ul>
-        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.set_fit_request">(esda.Geary_Local method)</a>, <a href="source/generated/esda.Geary_Local.html#esda.Geary_Local.set_fit_request">[1]</a>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.seG_sim">(esda.G_Local attribute)</a>
 </li>
-        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.set_fit_request">(esda.Geary_Local_MV method)</a>, <a href="source/generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.set_fit_request">[1]</a>
+      </ul></li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.seI_norm">seI_norm (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.seI_norm">(esda.Moran_Rate attribute)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.set_fit_request">(esda.Join_Counts_Local method)</a>, <a href="source/generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.set_fit_request">[1]</a>
+      </ul></li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.seI_rand">seI_rand (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.seI_rand">(esda.Moran_Rate attribute)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.set_fit_request">(esda.Join_Counts_Local_BV method)</a>, <a href="source/generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.set_fit_request">[1]</a>
+      </ul></li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.seI_sim">seI_sim (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.seI_sim">(esda.Moran_BV attribute)</a>
 </li>
-        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.set_fit_request">(esda.Join_Counts_Local_MV method)</a>, <a href="source/generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.set_fit_request">[1]</a>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.seI_sim">(esda.Moran_Local attribute)</a>
 </li>
-        <li><a href="generated/esda.LOSH.html#esda.LOSH.set_fit_request">(esda.LOSH method)</a>, <a href="source/generated/esda.LOSH.html#esda.LOSH.set_fit_request">[1]</a>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.seI_sim">(esda.Moran_Local_BV attribute)</a>
 </li>
-        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.set_fit_request">(esda.Spatial_Pearson method)</a>, <a href="source/generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.set_fit_request">[1]</a>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.seI_sim">(esda.Moran_Local_Rate attribute)</a>
 </li>
-        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.set_fit_request">(esda.Spatial_Pearson_Local method)</a>, <a href="source/generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.set_fit_request">[1]</a>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.seI_sim">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.set_fit_request">set_fit_request() (esda.adbscan.ADBSCAN method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.set_fit_request">(esda.Geary_Local method)</a>
+</li>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.set_fit_request">(esda.Geary_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.set_fit_request">(esda.Join_Counts_Local method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.set_fit_request">(esda.Join_Counts_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.set_fit_request">(esda.Join_Counts_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.LOSH.html#esda.LOSH.set_fit_request">(esda.LOSH method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.set_fit_request">(esda.Spatial_Pearson method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.set_fit_request">(esda.Spatial_Pearson_Local method)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.set_params">set_params() (esda.adbscan.ADBSCAN method)</a>
+
+      <ul>
+        <li><a href="generated/esda.Geary_Local.html#esda.Geary_Local.set_params">(esda.Geary_Local method)</a>
+</li>
+        <li><a href="generated/esda.Geary_Local_MV.html#esda.Geary_Local_MV.set_params">(esda.Geary_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local.html#esda.Join_Counts_Local.set_params">(esda.Join_Counts_Local method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_BV.html#esda.Join_Counts_Local_BV.set_params">(esda.Join_Counts_Local_BV method)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts_Local_MV.html#esda.Join_Counts_Local_MV.set_params">(esda.Join_Counts_Local_MV method)</a>
+</li>
+        <li><a href="generated/esda.LOSH.html#esda.LOSH.set_params">(esda.LOSH method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.set_params">(esda.Spatial_Pearson method)</a>
+</li>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.set_params">(esda.Spatial_Pearson_Local method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="generated/esda.shape.shape_index.html#esda.shape.shape_index">shape_index() (in module esda.shape)</a>, <a href="source/generated/esda.shape.shape_index.html#esda.shape.shape_index">[1]</a>
+      <li><a href="generated/esda.shape.shape_index.html#esda.shape.shape_index">shape_index() (in module esda.shape)</a>
 </li>
-      <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.significance_">significance_ (esda.MoranLocalPartial property)</a>, <a href="source/generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.significance_">[1]</a>
+      <li><a href="generated/esda.MoranLocalConditional.html#esda.MoranLocalConditional.significance_">significance_ (esda.MoranLocalConditional attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.MoranLocalPartial.html#esda.MoranLocalPartial.significance_">(esda.MoranLocalPartial attribute)</a>
 </li>
-      <li><a href="generated/esda.silhouettes.silhouette_alist.html#esda.silhouettes.silhouette_alist">silhouette_alist() (in module esda.silhouettes)</a>, <a href="source/generated/esda.silhouettes.silhouette_alist.html#esda.silhouettes.silhouette_alist">[1]</a>
+        <li><a href="generated/esda.MoranLocalPartial.html#id5">(esda.MoranLocalPartial property)</a>
 </li>
-      <li><a href="generated/esda.Smaup.html#esda.Smaup">Smaup (class in esda)</a>, <a href="source/generated/esda.Smaup.html#esda.Smaup">[1]</a>
+        <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson.significance_">(esda.Spatial_Pearson attribute)</a>
 </li>
-      <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson">Spatial_Pearson (class in esda)</a>, <a href="source/generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson">[1]</a>
+        <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local.significance_">(esda.Spatial_Pearson_Local attribute)</a>
 </li>
-      <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local">Spatial_Pearson_Local (class in esda)</a>, <a href="source/generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local">[1]</a>
+      </ul></li>
+      <li><a href="generated/esda.silhouettes.silhouette_alist.html#esda.silhouettes.silhouette_alist">silhouette_alist() (in module esda.silhouettes)</a>
 </li>
-      <li><a href="generated/esda.shape.squareness.html#esda.shape.squareness">squareness() (in module esda.shape)</a>, <a href="source/generated/esda.shape.squareness.html#esda.shape.squareness">[1]</a>
+      <li><a href="generated/esda.G.html#esda.G.sim">sim (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.sim">(esda.G_Local attribute)</a>
 </li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.sim">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.sim">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.sim">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.sim">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.sim">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.sim">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.sim">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.sim_bb">sim_bb (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.sim_bw">sim_bw (esda.Join_Counts attribute)</a>
+</li>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.sim_g">sim_g (esda.Gamma attribute)</a>
+</li>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup">Smaup (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup.smaup">smaup (esda.Smaup attribute)</a>
+</li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.solus">solus (esda.adbscan.ADBSCAN attribute)</a>
+</li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.solus_relabelled">solus_relabelled (esda.adbscan.ADBSCAN attribute)</a>
+</li>
+      <li><a href="generated/esda.Spatial_Pearson.html#esda.Spatial_Pearson">Spatial_Pearson (class in esda)</a>
+</li>
+      <li><a href="generated/esda.Spatial_Pearson_Local.html#esda.Spatial_Pearson_Local">Spatial_Pearson_Local (class in esda)</a>
+</li>
+      <li><a href="generated/esda.shape.squareness.html#esda.shape.squareness">squareness() (in module esda.shape)</a>
+</li>
+      <li><a href="generated/esda.Gamma.html#esda.Gamma.stand">stand (esda.Gamma attribute)</a>
+</li>
+      <li><a href="generated/esda.Smaup.html#esda.Smaup.summary">summary (esda.Smaup attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.t">t (esda.NP_Mixture_Smoother attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Moran.html#esda.Moran.two_tailed">two_tailed (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.two_tailed">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.update">update() (esda.NP_Mixture_Smoother method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.LOSH.html#esda.LOSH.VarHi">VarHi (esda.LOSH attribute)</a>
+</li>
+      <li><a href="generated/esda.Geary.html#esda.Geary.VC">VC (esda.Geary attribute)</a>
+</li>
+      <li><a href="generated/esda.Geary.html#esda.Geary.VC_sim">VC_sim (esda.Geary attribute)</a>
+</li>
+      <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.vem">vem() (esda.NP_Mixture_Smoother method)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.VG">VG (esda.G attribute)</a>
+</li>
+      <li><a href="generated/esda.G.html#esda.G.VG_sim">VG_sim (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.VG_sim">(esda.G_Local attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local.VGs">VGs (esda.G_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.VI">VI (esda.Moran_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.VI_norm">VI_norm (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.VI_norm">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Moran.html#esda.Moran.VI_rand">VI_rand (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.VI_rand">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran.html#esda.Moran.VI_sim">VI_sim (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.VI_sim">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.VI_sim">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.VI_sim">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.VI_sim">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.VI_sim">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.VIc">VIc (esda.Moran_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.adbscan.ADBSCAN.html#esda.adbscan.ADBSCAN.votes">votes (esda.adbscan.ADBSCAN attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.G.html#esda.G.w">w (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.w">(esda.G_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Gamma.html#esda.Gamma.w">(esda.Gamma attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.w">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.w">(esda.Join_Counts attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.w">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.w">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.w">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.w">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.w">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.w">(esda.Moran_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.NP_Mixture_Smoother.html#esda.NP_Mixture_Smoother.w">(esda.NP_Mixture_Smoother attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.ww">ww (esda.Join_Counts attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.G.html#esda.G.y">y (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.y">(esda.G_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Gamma.html#esda.Gamma.y">(esda.Gamma attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.y">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Join_Counts.html#esda.Join_Counts.y">(esda.Join_Counts attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.y">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.y">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.y">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.y">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.LOSH.html#esda.LOSH.ylag">ylag (esda.LOSH attribute)</a>
+</li>
+      <li><a href="generated/esda.LOSH.html#esda.LOSH.yresid">yresid (esda.LOSH attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.Moran.html#esda.Moran.z">z (esda.Moran attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.z">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.z">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.z">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.G.html#esda.G.z_norm">z_norm (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Geary.html#esda.Geary.z_norm">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.z_norm">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.z_norm">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Geary.html#esda.Geary.z_rand">z_rand (esda.Geary attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran.html#esda.Moran.z_rand">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.z_rand">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.G.html#esda.G.z_sim">z_sim (esda.G attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.G_Local.html#esda.G_Local.z_sim">(esda.G_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Geary.html#esda.Geary.z_sim">(esda.Geary attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran.html#esda.Moran.z_sim">(esda.Moran attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.z_sim">(esda.Moran_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local.html#esda.Moran_Local.z_sim">(esda.Moran_Local attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.z_sim">(esda.Moran_Local_BV attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Local_Rate.html#esda.Moran_Local_Rate.z_sim">(esda.Moran_Local_Rate attribute)</a>
+</li>
+        <li><a href="generated/esda.Moran_Rate.html#esda.Moran_Rate.z_sim">(esda.Moran_Rate attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="generated/esda.G_Local.html#esda.G_Local.Zs">Zs (esda.G_Local attribute)</a>
+</li>
+      <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.zx">zx (esda.Moran_BV attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.zx">(esda.Moran_Local_BV attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="generated/esda.Moran_BV.html#esda.Moran_BV.zy">zy (esda.Moran_BV attribute)</a>
+
+      <ul>
+        <li><a href="generated/esda.Moran_Local_BV.html#esda.Moran_Local_BV.zy">(esda.Moran_Local_BV attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 
 
-    </div>
-      
-  </div>
-</div>
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-      
-        <br/>
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
       
-    </p>
-    <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br/>
-    </p>
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    8.2.3.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
   </div>
 </footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
+    
+      
+        <script src="_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+    
   </body>
 </html>

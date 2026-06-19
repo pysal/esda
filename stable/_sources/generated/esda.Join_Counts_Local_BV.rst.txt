@@ -6,22 +6,16 @@
 .. autoclass:: Join_Counts_Local_BV
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Join_Counts_Local_BV.__init__
       ~Join_Counts_Local_BV.fit
       ~Join_Counts_Local_BV.get_metadata_routing
       ~Join_Counts_Local_BV.get_params
       ~Join_Counts_Local_BV.set_fit_request
       ~Join_Counts_Local_BV.set_params
    
-   
 
-   
-   
    

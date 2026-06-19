@@ -6,22 +6,16 @@
 .. autoclass:: Spatial_Pearson
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Spatial_Pearson.__init__
       ~Spatial_Pearson.fit
       ~Spatial_Pearson.get_metadata_routing
       ~Spatial_Pearson.get_params
       ~Spatial_Pearson.set_fit_request
       ~Spatial_Pearson.set_params
    
-   
 
-   
-   
    

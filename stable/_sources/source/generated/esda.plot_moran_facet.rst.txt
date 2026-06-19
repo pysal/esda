@@ -1,6 +1,0 @@
-﻿esda.plot\_moran\_facet
-=======================
-
-.. currentmodule:: esda
-
-.. autofunction:: plot_moran_facet
