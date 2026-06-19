@@ -1,0 +1,21 @@
+﻿esda.Join\_Counts\_Local\_MV
+============================
+
+.. currentmodule:: esda
+
+.. autoclass:: Join_Counts_Local_MV
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Join_Counts_Local_MV.fit
+      ~Join_Counts_Local_MV.get_metadata_routing
+      ~Join_Counts_Local_MV.get_params
+      ~Join_Counts_Local_MV.set_fit_request
+      ~Join_Counts_Local_MV.set_params
+   
+
+   

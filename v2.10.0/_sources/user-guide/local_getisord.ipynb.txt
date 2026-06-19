@@ -1,0 +1,299 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "b20b867a",
+   "metadata": {},
+   "source": [
+    "# Hotspot Analysis with Getis-Ord G and G*\n",
+    "\n",
+    "This notebook covers Getis-Ord statistics for identifying spatial concentrations of high or low values."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "82755f94",
+   "metadata": {},
+   "source": [
+    "## Learning goals\n",
+    "\n",
+    "By the end of this notebook, you will be able to:\n",
+    "\n",
+    "- compute local $G_i^*$ statistics to identify individual hotspots and coldspots\n",
+    "- map statistically significant hotspots and coldspots\n",
+    "\n",
+    "The substantive question is whether high Airbnb prices cluster spatially — and, if so, *where* those high-price hotspots are located."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2fd56628",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import pandas as pd\n",
+    "from libpysal import graph\n",
+    "\n",
+    "import esda\n",
+    "from esda.inspection import LocalCrossPlot"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8e76c07f",
+   "metadata": {},
+   "source": [
+    "## Data preparation\n",
+    "\n",
+    "We use the same Berlin neighborhood dataset as in the global Moran's I and local Moran's I notebooks so that results can be compared directly."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "92d5faab",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = gpd.read_file(\"data/berlin-housing.gpkg\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "172cd319",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplots(figsize=(12, 10))\n",
+    "df.plot(column=\"median_pri\", scheme=\"Quantiles\", k=5, cmap=\"OrRd\", legend=True, ax=ax)\n",
+    "ax.set_axis_off()\n",
+    "ax.set_title(\"Median Airbnb price by neighbourhood (quintiles)\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "abafe664",
+   "metadata": {},
+   "source": [
+    "## Why Getis-Ord G?\n",
+    "\n",
+    "Moran's $I$ measures spatial autocorrelation by comparing each observation to its *deviation from the global mean*. A High-High cluster in Moran's framework means both a neighborhood and its neighbors are above the mean.\n",
+    "\n",
+    "Getis-Ord $G$ takes a different approach: it measures spatial concentration of *raw values*. A high $G$ means large values are co-located with other large values — a true **hotspot**. Because $G$ works with raw values rather than mean-centered deviations, it is particularly well-suited to detecting concentration of phenomena that are always non-negative (counts, prices, rates).\n",
+    "\n",
+    "The global statistic $G$ answers: *is there a statistically significant overall concentration of high or low values?* The local statistic $G_i^*$ answers: *which specific locations are part of a hotspot or coldspot?*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a6e5b433",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# G requires binary (not row-standardised) weights\n",
+    "geog = graph.Graph.build_contiguity(df, rook=False)\n",
+    "y = df[\"median_pri\"]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "61c8fe8d",
+   "metadata": {},
+   "source": [
+    "## From global to local: $G_i^*$\n",
+    "\n",
+    "The global $G$ tells us *whether* concentration exists; $G_i^*$ (G-star) tells us *where*. For each location $i$, $G_i^*$ computes the ratio of the sum of values in $i$'s neighbourhood (including $i$ itself) to the sum of all values. A large positive $z$-score flags a **hotspot** — a neighbourhood surrounded by other high-value neighbourhoods. A large negative $z$-score flags a **coldspot**.\n",
+    "\n",
+    "The key difference from Moran's I quadrant labels is that $G_i^*$ only distinguishes hotspots from coldspots; it does not identify spatial outliers (High-Low or Low-High)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e5499c7e",
+   "metadata": {},
+   "source": [
+    "## Computing $G_i^*$\n",
+    "\n",
+    "We pass `star=True` to include the focal observation in the local sum, producing $G_i^*$ (the more commonly reported variant). Weights must be binary."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4a92184b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "g_local = esda.G_Local(y, geog, star=True, seed=12345)\n",
+    "print(f\"Significant hotspots (p<0.05): {(g_local.p_sim < 0.05).sum()}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "eaa2fedf",
+   "metadata": {},
+   "source": [
+    "### Mapping $G_i^*$ z-scores\n",
+    "\n",
+    "The z-score map gives a continuous view of local concentration. Red (large positive) indicates hotspot cores; blue (large negative) indicates coldspot cores."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8970fd55",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = df.copy()\n",
+    "df[\"Zs\"] = g_local.Zs\n",
+    "\n",
+    "fig, ax = plt.subplots(figsize=(12, 10))\n",
+    "df.plot(\n",
+    "    column=\"Zs\",\n",
+    "    cmap=\"RdBu_r\",\n",
+    "    legend=True,\n",
+    "    ax=ax,\n",
+    "    vmin=-3,\n",
+    "    vmax=3,\n",
+    ")\n",
+    "ax.set_axis_off()\n",
+    "ax.set_title(\"Local $G_i^*$ z-scores\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bb9012a2",
+   "metadata": {},
+   "source": [
+    "### Mapping significant hotspots and coldspots\n",
+    "\n",
+    "By applying a significance threshold (p < 0.05) we retain only the statistically credible clusters."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "182981d1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sig = g_local.p_sim < 0.05\n",
+    "hotspot = sig & (g_local.Zs > 0)\n",
+    "coldspot = sig & (g_local.Zs < 0)\n",
+    "\n",
+    "spot_labels = pd.Series(\"not significant\", index=df.index)\n",
+    "spot_labels[hotspot] = \"hotspot\"\n",
+    "spot_labels[coldspot] = \"coldspot\"\n",
+    "df[\"spot\"] = spot_labels\n",
+    "\n",
+    "colors = {\"hotspot\": \"red\", \"coldspot\": \"blue\", \"not significant\": \"lightgrey\"}\n",
+    "df[\"color\"] = df[\"spot\"].map(colors)\n",
+    "\n",
+    "fig, ax = plt.subplots(figsize=(12, 10))\n",
+    "for label, color in colors.items():\n",
+    "    df[df[\"spot\"] == label].plot(ax=ax, color=color, label=label)\n",
+    "ax.legend()\n",
+    "ax.set_axis_off()\n",
+    "ax.set_title(\"Significant $G_i^*$ hotspots and coldspots (p < 0.05)\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "919a0d3b",
+   "metadata": {},
+   "source": [
+    "### Comparing Getis-Ord and Moran's I results\n",
+    "\n",
+    "Hotspots identified by $G_i^*$ correspond approximately to the High-High cluster quadrant from local Moran's $I$, but the two methods can diverge when local variance is high — a neighborhood with very high prices surrounded by moderate prices may register as a spatial outlier in Moran but not a hotspot in $G_i^*$. \n",
+    "\n",
+    "One graphical device that can be used to explore the complementarities of the different local statistics is the local cross plot ([Westerholt 2026](https://doi.org/10.5281/zenodo.19421814))."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "623e52a4-21b0-42bf-959d-c7711e260eb0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lcp = LocalCrossPlot(geog).fit(y)\n",
+    "\n",
+    "lcp.plot();"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "51b069dd-82c3-42e0-9011-b2308207b5cb",
+   "metadata": {},
+   "source": [
+    "### Interpreting the Local Cross Plot\n",
+    "\n",
+    "The local cross plot combines three local statistics into a single diagnostic view. Following the cluster-plot framework proposed by Westerholt (2026), the horizontal axis represents the local hotspot tendency (Getis–Ord $G_i^*$), while the vertical axis represents local spatial autocorrelation (Local Moran's $I_i$). The size of each point reflects LOSH ($H_i$), which measures the degree of local spatial heterogeneity or \"roughness\".\n",
+    "\n",
+    "The four quadrants can be interpreted as follows:\n",
+    "\n",
+    "- **Quadrant I (upper right):** observations that are part of a hotspot and exhibit positive local spatial autocorrelation. These are the most consistent hotspots, where the focal observation and its neighbors are jointly above the mean. A fire brick red  point reflects a consistent hotspot where both $G_i^*$ and $I_i$ are significant. Coral reflects consistent high, but only $I_i$ significant, while maroon is inconsitent high with only $G_i^*$ significant. Grey indicates neither local statistic is significant.\n",
+    "- **Quadrant II (upper left):** observations positive spatial autocorrelation reflecting concentrations of low values in space, or cold spots. These are consistent coldspots where neighboring values are jointly below the mean. A royal blue point reflects a consistent coldspot where both local statistics\n",
+    " are significant. Dodger blue reflects consistent low, but only  $I_i$ is significant, while dark blue is inconsitent high with only $G_i$\n",
+    "significant. Grey indicates neither local statistic is significant.\n",
+    "\n",
+    "- **Quadrant III (lower left):**  Moran's I reflecting negative spatial association with $G_i$ pointing to low values dominating the clustering in space. Same color scheme interpretation as in Quadrant II.\n",
+    "- **Quadrant IV (lower right):** Moran's I reflecting negative spatial association with $G_i$ pointing to high values dominating the clustering in space. Same color scheme interpretation as in Quadrant I."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3fa12a55-08bb-4621-a927-e8a4c7f6dda5",
+   "metadata": {},
+   "source": [
+    "The size of the points adds an additional layer of interpretation. Small points indicate low LOSH values and therefore relatively homogeneous local neighborhoods. Large points indicate high LOSH values, suggesting substantial variation among neighboring observations. As argued by Westerholt, these large-point observations are often the most interesting because they may represent transition zones, boundaries between regimes, or locations where hotspot and autocorrelation signals are ambiguous.\n",
+    "\n",
+    "For the Berlin  data, observations located near the diagonals of the plot represent the clearest examples of consistent hotspots and coldspots. Observations with large LOSH values and positions away from the diagonals deserve closer inspection because they may reveal neighborhoods where environmental conditions vary sharply over short distances. Rather than examining separate maps of Local Moran's $I$, $G_i^*$, and LOSH, the cross plot provides a compact summary of local clustering, local outliers, and local heterogeneity in a single visualization."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2dcaa685",
+   "metadata": {},
+   "source": [
+    "## Takeaways\n",
+    "\n",
+    "- **Global G** tests whether the entire study area has more concentration of high (or low) values than expected under spatial randomness.\n",
+    "- **Local $G_i^*$** assigns each location a z-score that reflects whether it sits in a hotspot or coldspot.\n",
+    "- Getis-Ord works on *raw values*, making it appropriate for non-negative quantities (prices, counts, rates).\n",
+    "- Unlike local Moran's $I$, $G_i^*$ does not identify spatial outliers — only high-value and low-value clusters.\n",
+    "- Permutation inference avoids distributional assumptions and is the recommended approach for both the global and local statistics."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

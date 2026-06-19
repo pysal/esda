@@ -1,0 +1,423 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "9fafabb5",
+   "metadata": {},
+   "source": [
+    "# Global Spatial Autocorrelation with Join Counts\n",
+    "\n",
+    "This notebook focuses on global spatial autocorrelation for a binary attribute using Join Counts."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "aca94b8f",
+   "metadata": {},
+   "source": [
+    "## Learning goals\n",
+    "\n",
+    "By the end of this notebook, you will be able to:\n",
+    "\n",
+    "- convert a continuous variable into a binary outcome for categorical spatial analysis\n",
+    "- understand what a join count measures on a binary spatial lattice\n",
+    "- distinguish **BB**, **WW**, and **BW** joins\n",
+    "- use permutation inference to assess whether similar categories cluster in space\n",
+    "\n",
+    "Join counts are appropriate when the variable of interest is binary rather than continuous.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "87f43f65",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "import scipy.stats as stats\n",
+    "import seaborn as sns\n",
+    "from libpysal import graph\n",
+    "\n",
+    "import esda"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "923fde0a",
+   "metadata": {},
+   "source": [
+    "Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the [GeoPython 2018 workshop](https://github.com/ljwolf/geopython) by [Levi Wolf](https://ljwolf.org) and [Serge Rey](https://sergerey.org). As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fc304de8",
+   "metadata": {},
+   "source": [
+    "## Data preparation\n",
+    "\n",
+    "As in the Moran's $I$ notebook, we build neighborhood-level median Airbnb prices. We then convert that continuous measure into a binary indicator based on whether a neighborhood is above or below the median price.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3993c125",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = gpd.read_file(\"data/berlin-housing.gpkg\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a1d86f93",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.plot(column=\"median_pri\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "991a861f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.plot(\n",
+    "    column=\"median_pri\",\n",
+    "    scheme=\"Quantiles\",\n",
+    "    k=5,\n",
+    "    cmap=\"GnBu\",\n",
+    "    legend=True,\n",
+    "    figsize=(12, 10),\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e54d641e-7c02-4fa8-9824-ef2439c40be1",
+   "metadata": {},
+   "source": [
+    "## Join Counts\n",
+    "\n",
+    "Moran's $I$ and Geary's $C$ are designed for continuous variables. Once we dichotomize spatial data into binary high and low categories, a different global statistic is more natural: the **join count**, which evaluates whether like-valued neighbors occur more often than expected by chance.\n",
+    "\n",
+    "For a binary map where locations are classified as either **Black** ($B$, representing high values or presence) or **White** ($W$, representing low values or absence), each neighboring pair of zones forms a \"join\" mapped via our spatial weights object. Every join falls into one of three mutually exclusive categories:\n",
+    "- **BB**: both neighbors are in the high-value category (Black-Black)\n",
+    "- **WW**: both neighbors are in the low-value category (White-White)\n",
+    "- **BW**: one neighbor is high-value and the other is low-value (Black-White)\n",
+    "\n",
+    "Let $x_i \\in \\{0, 1\\}$ be the binary indicator for location $i$, where $x_i = 1$ if the location is Black ($B$) and $x_i = 0$ if the location is White ($W$). The count of Black-Black (BB) joins is defined as:\n",
+    "\n",
+    "$$BB = \\frac{1}{2} \\sum_{i=1}^{n} \\sum_{j=1}^{n} w_{ij} x_i x_j$$\n",
+    "\n",
+    "where $w_{ij}$ is the binary spatial weight expressing the neighbor relationship between locations $i$ and $j$. Similarly, White-White (WW) and Black-White (BW) joins are formulated as:\n",
+    "\n",
+    "$$WW = \\frac{1}{2} \\sum_{i=1}^{n} \\sum_{j=1}^{n} w_{ij} (1 - x_i)(1 - x_j)$$\n",
+    "\n",
+    "$$BW = \\frac{1}{2} \\sum_{i=1}^{n} \\sum_{j=1}^{n} w_{ij} [x_i(1 - x_j) + x_j(1 - x_i)]$$\n",
+    "\n",
+    "The total number of joins in the network is given by half the sum of the spatial weights matrix elements ($S_0$), which completely exhausts all structural possibilities:\n",
+    "\n",
+    "$$K = \\frac{S_0}{2} = BB + WW + BW$$"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "769f91b9-0326-49e4-9d7c-e4fd5a27202c",
+   "metadata": {},
+   "source": [
+    "## Global Join Counts\n",
+    "\n",
+    "We convert our continuous measure of median Airbnb prices into a binary indicator based on whether a neighborhood sits above or below the median study-wide price. We then construct a binary Queen contiguity matrix to compute the global join count statistics."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f1d28127-7d74-4166-8cc2-044b88035f96",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cbe623b0-35eb-4510-a3ff-1b4948b23373",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df.plot(\n",
+    "    column=\"yb_binary\",\n",
+    "    cmap=\"binary\",\n",
+    "    categorical=True,\n",
+    "    edgecolor=\"grey\",\n",
+    "    legend=True,\n",
+    "    figsize=(12, 10),\n",
+    ");"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bf0b5f30-0882-46c4-83a8-f82ac73e911d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y = df[\"median_pri\"]\n",
+    "\n",
+    "yb = 1 * (y > y.median())  # convert to binary\n",
+    "wq = graph.Graph.build_contiguity(df, rook=False)\n",
+    "\n",
+    "np.random.seed(12345)\n",
+    "jc = esda.join_counts.Join_Counts(yb, wq)\n",
+    "\n",
+    "print(f\"Observed BB Joins: {jc.bb}\")\n",
+    "print(f\"Observed WW Joins: {jc.ww}\")\n",
+    "print(f\"Observed BW Joins: {jc.bw}\")\n",
+    "print(f\"Total Joins (K):   {jc.bb + jc.ww + jc.bw}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1c88d91b-4513-4844-8e56-82b9e196a516",
+   "metadata": {},
+   "source": [
+    "## Inference\n",
+    "\n",
+    "Inference about join counts evaluates whether the observed number of joins deviates significantly from what we would expect under the null hypothesis of Complete Spatial Randomness (CSR). \n",
+    "\n",
+    "To derive the analytical expected values and variances for statistical inference, we define structural constants based on the topology of the weights matrix $W$:\n",
+    "\n",
+    "* $S_0 = \\sum_{i=1}^n \\sum_{j=1}^n w_{ij}$ (The sum of all spatial weights)\n",
+    "* $S_1 = \\frac{1}{2} \\sum_{i=1}^n \\sum_{j=1}^n (w_{ij} + w_{ji})^2$\n",
+    "* $S_2 = \\sum_{i=1}^n \\left( \\sum_{j=1}^n w_{ij} + \\sum_{j=1}^n w_{ji} \\right)^2$\n",
+    "\n",
+    "Let $B = \\sum_{i=1}^n x_i$ be the total count of Black zones, and $W = n - B$ be the total count of White zones.\n",
+    "\n",
+    "---\n",
+    "\n",
+    "### Free Sampling (The Normality Assumption)\n",
+    "\n",
+    "Under free sampling, it is assumed that each zone has an independent probability $p = B/n$ of being assigned a Black label, corresponding to sampling with replacement from a population.\n",
+    "\n",
+    "#### Expected Value\n",
+    "The expected number of Black-Black joins depends entirely on the total network joins and the global probability $p$:\n",
+    "\n",
+    "$$E_N(BB) = \\frac{S_0}{2} p^2$$\n",
+    "\n",
+    "#### Variance\n",
+    "The analytical variance under free sampling isolates interaction loops using structural constants $S_1$ and $S_2$:\n",
+    "\n",
+    "$$Var_N(BB) = \\frac{1}{4} p^2 (1 - p) \\left[ S_1(1 - p) + S_2 p \\right]$$\n",
+    "\n",
+    "---\n",
+    "\n",
+    "### Non-Free Sampling (The Randomization Assumption)\n",
+    "\n",
+    "Under non-free sampling (randomization), the total counts of Black ($B$) and White ($W$) zones are treated as fixed constants. The observed labels are randomly shuffled across the spatial units, corresponding to sampling without replacement. \n",
+    "\n",
+    "To formalize this, let $n^{(k)} = n(n-1)\\dots(n-k+1)$ and $B^{(k)} = B(B-1)\\dots(B-k+1)$.\n",
+    "\n",
+    "#### Expected Value\n",
+    "Because the expectation across all permutations averages out the spatial structure while respecting the exact counts, the expected value is:\n",
+    "\n",
+    "$$E_R(BB) = \\frac{S_0}{2} \\frac{B^{(2)}}{n^{(2)}} = \\frac{S_0 B(B-1)}{2n(n-1)}$$\n",
+    "\n",
+    "#### Variance\n",
+    "The analytical variance under randomization is more complex as it accounts for joint multi-zone edge interaction parameters:\n",
+    "\n",
+    "$$Var_R(BB) = \\frac{S_1}{4} \\left[ \\frac{B^{(2)}}{n^{(2)}} - 2\\frac{B^{(3)}}{n^{(3)}} + \\frac{B^{(4)}}{n^{(4)}} \\right] + \\frac{S_2}{4} \\left[ \\frac{B^{(3)}}{n^{(3)}} - \\frac{B^{(4)}}{n^{(4)}} \\right] + \\frac{S_0^2}{4} \\frac{B^{(4)}}{n^{(4)}} - \\left[E_R(BB)\\right]^2$$\n",
+    "\n",
+    "---\n",
+    "\n",
+    "### Asymptotic Inference (Z-score)\n",
+    "\n",
+    "For practical execution with large datasets, these analytical moments can be used to construct an asymptotic standard normal $Z$-score:\n",
+    "\n",
+    "$$Z(BB) = \\frac{BB - E(BB)}{\\sqrt{Var(BB)}}$$\n",
+    "\n",
+    "* **Positive $Z(BB)$:** Indicates a significant spatial cluster of **similar high values** (positive spatial autocorrelation).\n",
+    "* **Negative $Z(BB)$:** Indicates a significant spatial dispersion or alternating regular spacing of categories."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "926797a3-7fad-42bb-a45c-78e6b80fd453",
+   "metadata": {},
+   "source": [
+    "Substituting the relevant values to evaluate the test statistic under the normality assumption gives:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4dceeaa0-18bb-44e2-9d6d-1083701bb689",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "n = wq.n\n",
+    "p = df.yb_binary.sum() / n\n",
+    "p2 = p * p\n",
+    "ebb = p2 * wq.summary().s0 / 2\n",
+    "print(f\"Exected BB count under normality: {ebb}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e8d4b408-b0f7-4ca9-99eb-67824ed4d9d9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wq.summary().s1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "86103d12-54c4-48b9-89f2-31ad3bf54bf2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wq.summary().s2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "db64fc44-0ab5-496c-b56e-92d23d537f96",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "vbb = (1 / 4) * p2 * (1 - p) * (wq.summary().s1 * (1 - p) + wq.summary().s2 * p)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7f614042-466a-473c-8bff-6814eedd6a9b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(f\"Variance of BB count under normality: {vbb}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "dee66633-59fb-495f-b47e-aaeef01993a3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "zbb_n = (jc.bb - ebb) / np.sqrt(vbb)\n",
+    "p_value_n = stats.norm.sf(zbb_n)\n",
+    "print(f\"One-tailed p-value for BB under normality: {p_value_n}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f21314c6-4902-42a8-8f54-495e7964189d",
+   "metadata": {},
+   "source": [
+    "Because analytical approximations for nominal data can be unstable when spatial layouts contain severe edge constraints or highly uneven cell frequencies, computational permutation inference is treated as the operational standard."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "173ff98d-16aa-48d1-9fde-e3598a276024",
+   "metadata": {},
+   "source": [
+    "### Permutation-based inference\n",
+    "\n",
+    "We assess the observed $BB$ count against an empirical reference distribution generated by randomly permuting the category labels while keeping the spatial layout fixed."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d752ff21-2963-4fb0-9ea8-2b17c58390fe",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sns.kdeplot(jc.sim_bb, fill=True)\n",
+    "plt.vlines(jc.bb, 0, 0.075, color=\"r\", label=\"Observed BB\")\n",
+    "plt.vlines(\n",
+    "    jc.mean_bb,\n",
+    "    0,\n",
+    "    0.075,\n",
+    "    color=\"k\",\n",
+    "    linestyle=\"--\",\n",
+    "    label=\"Expected BB (Simulated)\",\n",
+    ")\n",
+    "plt.xlabel(\"BB Counts\")\n",
+    "plt.legend()\n",
+    "plt.title(\"Permutation reference distribution for global BB joins\")\n",
+    "plt.show()\n",
+    "\n",
+    "print(f\"p-value (sim): {jc.p_sim_bb:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "51371554-a91a-4164-821d-c69d238c28fa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jc.mean_bb, jc.bb"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bf57ad2b",
+   "metadata": {},
+   "source": [
+    "The simulations generate an average BB count of 90.7, while our observed BB join count was 164.\n",
+    "Since the p-value from the simulation is below conventional significance levels, we would reject the null\n",
+    "of complete spatial randomness in favor of spatial autocorrelation in market prices.\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "320725b0",
+   "metadata": {},
+   "source": [
+    "## Takeaways\n",
+    "\n",
+    "Join counts provide a global autocorrelation measure for binary variables. They are especially useful when the research question is about the clustering of categories rather than the similarity of continuous magnitudes. After establishing global clustering, the natural next step is to ask **where** those clusters occur, which is the focus of local spatial autocorrelation methods.\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,889 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Measures of shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The `esda.shape` module provides statistics that are used in the literature to measure the structure and regularity of polygons. These measures vary from very simple (such as the length-width difference) to very complex (such as the normalized moment of inertia). Regardless, we'll walk through computing a few of these measures for counties in Virginia. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas as gpd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import pandas as pd\n",
+    "import shapely\n",
+    "from libpysal import examples\n",
+    "\n",
+    "from esda import shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties = gpd.read_file(examples.get_path(\"virginia.shp\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Why Virginia? The Virginia counties include a mix of regular and irregular shapes due to the mountainous counties in the West. Two counties are multipolygons, which impacts some shape measures. Finally, many of the counties have holes, because they surround \"independent cities\", which are county equivalents in Virginia. You can see this in the map below."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot()\n",
+    "plt.title(\"Virginia Counties\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We did not check the coordinate reference system (CRS) of the geodataframe, but we can see from the axes on the plot that the coordinates are in lat-long. **We should not use lat-long coordinate systems to calculate shape measures.** If you are familiar with Virginia, the above plot may \"look right\". This is because Geopandas automatically adjust the aspect ratio of lat-long plots to approximate a conformal projection. We can turn this feature off to see what the unprojected coordinates look like."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ax = counties.plot()\n",
+    "ax.set_aspect(\"auto\")\n",
+    "plt.title(\"Virginia Counties\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we can see that calculating Euclidian distances and areas on unprojected lat-long coordinates will lead to incorrect results. The distorted distances and areas will impact many shape measures. We will see how by introducing a simple shape measure, the difference between the length and width of the shape. The length-width difference is a measure of *elongation*. As you might guess by comparing the previous two plots, the length-width difference will be heavily affected by the CRS. Let's see what this looks like numerically.\n",
+    "\n",
+    "First, what *is* an appropriate projection to use? You should use a conformal projection. Conformal projections are often described as \"shape-preserving\" projections. Since shape is exactly what we are interested in, conformal projections will meet our needs. Keep in mind that projections are parameterized to cover specific areas on the surface of the globe. The larger the area mapped, the more distortion there will be away from the area the projection is intended to cover. Nonetheless, World Mercator will give acceptable results over much of the globe as long as you are not at high latitudes (think of Greenland on a World Mercator map), and calculating measures for a shape that crosses many degrees of latitude.\n",
+    "\n",
+    "Let's reproject the virginia counties to World Mercator."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.to_crs(epsg=3395, inplace=True)\n",
+    "counties.plot()\n",
+    "plt.title(\"Virginia Counties\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now let's calculate the length-width difference on both the lat-long and Mercator coordinates, and see the difference. The measure is the difference of $L$, the length of the shape in the North-South direction, and $W$, the width of the shape in the East-West direction."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lwd_lat_long = shape.length_width_diff(counties.to_crs(epsg=4326))\n",
+    "lwd_mercator = shape.length_width_diff(counties)\n",
+    "df = pd.DataFrame({\"lwd_lat_long\": lwd_lat_long, \"lwd_mercator\": lwd_mercator})\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As the length and width are in the units of the CRS, the scale of the values is completely different. Many of the measures we will explore later have the desirable property of being *scale invariant*. Let's normalize the results by dividing by $L$."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bounds_lat_long = shapely.bounds(counties.to_crs(epsg=4326).geometry)\n",
+    "ymin_lat_long, ymax_lat_long = bounds_lat_long[:, [1, 3]].T\n",
+    "length_lat_long = abs(ymax_lat_long - ymin_lat_long)\n",
+    "\n",
+    "bounds_mercator = shapely.bounds(counties.geometry)\n",
+    "ymin_mercator, ymax_mercator = bounds_mercator[:, [1, 3]].T\n",
+    "length_mercator = abs(ymax_mercator - ymin_mercator)\n",
+    "\n",
+    "df[\"scaled_lwd_lat_long\"] = df[\"lwd_lat_long\"] / length_lat_long\n",
+    "df[\"scaled_lwd_mercator\"] = df[\"lwd_mercator\"] / length_mercator\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can see that the normalized length-width differences are quite different for most counties, and that for some counties the two measures have opposite signs. Treating the polar coordinates of lat-long as planar coordinates makes these shapes taller. For some counties, $L<W$ in lat-long, yielding a negative measure, while $L>W$ in Mercator, yielding a positive measure.\n",
+    "\n",
+    "Let's plot counties with these values. The counties that are tall North-South have a positive (high) length-width difference, while those that are wide East-West have a negative (low) length-width difference. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.length_width_diff(counties.geometry))\n",
+    "plt.title(\"length-width difference\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Ideal Shape Measures"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The next class of shape measures are usually taken to be *ideal shape* measures of compactness. This means that they construct the relationship between one (or more) aspects of the polygon (such as its perimeter or area) and compares this to an analogous value for an \"ideal\" shape. \n",
+    "\n",
+    "Ideal shapes come in a few flavors. \n",
+    "- \"relative ideal shapes\" are shapes whose properties are fixed relative to the original shape. For example, the `isoperimetric_quotient`, compares the area of a polygon to the area of the circle wit the same perimeter as the original polygon. Mathematically, these measures generally are constructed so that they vary between zero and one, and equal $1$ when the shape is the same as its relative ideal shape. Measures in this family include the `isoperimetric_quotient` and `isoareal_quotient`, as well as our implementation of the `fractal_dimension`, as will be discussed later.  \n",
+    "- \"absolute ideal shapes\" are shapes that have some fixed, known relationship to the original shape and serve as a \"bound\" on that shape in some manner. For example, the `convex_hull_ratio` compares the area of a polygon to the area of its convex hull. Since a convex hull is guaranteeed to be at least as large as the original shape, this measure also is between zero and one, with $1$ meaning that a polygon is its own convex hull. Measures in this family include the `boundary_amplitude`, the `convex_hull_ratio`, the `radii_ratio`, the `diameter_ratio`, and the `minimum_bounding_circle_ratio`. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Absolute Ideal Shape Measures"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The `boundary_amplitude` and `convex_hull_ratio` are two simple and very-related measures of shape regularity. The boundary amplitude is the perimeter of the convex hull divided by the perimeter of the original shape. This varies between zero and one, where $1$ indicates the case where the polygon is its own convex hull. This is because the convex hull will always have *at most* the perimeter of the original shape; it will be shorter than the original shape when the shape has many concave parts that cut back into the shape. \n",
+    "\n",
+    "In the map below, you can see that the counties with holes in them have very poor `boundary_amplitude` scores, since the holes add to the perimeter of the shape, but not the perimeter of the convex hull:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.boundary_amplitude(counties.geometry))\n",
+    "plt.title(\"boundary amplitude\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Related, the convex hull ratio is the *area* of the original shape divided by the area of the convex hull. This varies between zero and one again: since the convex hull always *contains* the original shape, its area is always larger. The measure, thus, is related to the `boundary_amplitude`, but will be different for different polygons, since it pertains to *area*, not *perimeter*. Generally speaking, perimeter-based measures will be more sensitive to non-convexities than areal-based measures. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.convex_hull_ratio(counties.geometry))\n",
+    "plt.title(\"convex hull areal ratio\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Another measure is the `minimum_bounding_circle_ratio`, sometimes called the Reock measure after the author of the first journal article in which it was used to analyze congressional districts. The ratio compares the area of the original shape to the area of the smallest circle that can fully enclose the shape. This measure *strongly penalizes elongation*, as the minimum bounding circle has to get larger and larger to contain the shape. While the method is similar to the `convex hull ratio` (both compare the area of the shape to the area of a containing shape), the `convex_hull_ratio` is sensitive to concavities of the perimeter but insensitve to elongation, while the `minimum_bounding_circle_ratio` is sensitive to elongation but insensitive to concavities of the perimeter. It also varies between zero and one, where $1$ reflects the case where a polygon is its own bounding circle. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.minimum_bounding_circle_ratio(counties))\n",
+    "plt.title(\"minimum bounding circle ratio\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "A related measure is the `radii_ratio`. Instead of comparing the areas of the two shapes, the `radii_ratio` actually mixes the reference and ideal shape concepts together. It relates the radius of the minimum bounding circle to the radius of the *isoareal* circle, or the circle that contains the same area as the original shape. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.radii_ratio(counties.geometry))\n",
+    "plt.title(\"radii ratio\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This measure generally performs about the same as the `minimum_bounding_circle_ratio`, with a bit more sensitivity to concavities in the shape. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.scatter(\n",
+    "    shape.radii_ratio(counties.geometry),\n",
+    "    shape.minimum_bounding_circle_ratio(counties.geometry),\n",
+    ")\n",
+    "plt.plot((0, 1), (0, 1), color=\"k\", linestyle=\":\")\n",
+    "plt.xlim(0.2, 0.9)\n",
+    "plt.ylim(0.2, 0.9)\n",
+    "plt.xlabel(\"Radii Ratio\")\n",
+    "plt.ylabel(\"Minimum Bounding Circle Ratio\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "A similar measure to the minimum bounding circle ratio is the diameter ratio. This measures the ratio between a shape's \"longest\" and \"shortest\" diameters. This can be measured as the longest and shortest axis of a shape's minimum rotated rectangle. Alternatively, one can use the raw bounding box for shapes, but this is biased towards shapes that are east-west and north-south oriented. This again is quite a strong measure of elongation, and shapes with very large differences between their longest and shortest axes will have low scores. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.diameter_ratio(counties))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Relative ideal shape measures\n",
+    "\n",
+    "These classes of shape measures construct a relationship between the observed shape and a different shape with some known relation. As we discussed before with the `radii_ratio` measure, this often looks like a circle with the same perimeter or area as the source shape. \n",
+    "\n",
+    "In the case of the `isoareal_quotient`, this relates the shape's perimeter to the perimeter of a circle with the same area as the source shape:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.isoareal_quotient(counties))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The related measure, the `isoperimetric_quotient`, relates the shape's area to the area of a circle with the same perimeter of the original shape.  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.isoperimetric_quotient(counties))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "If these two maps look similar to each other, it is because the `isoareal_quotient` is mathematically equal to the square root of the `isoperimetric quotient`. They will always rank shapes in the same order, as is demonstrated in the plot below. Of the two, the `isoperimetric quotient` is more commonly used."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.scatter(\n",
+    "    shape.isoareal_quotient(counties),\n",
+    "    shape.isoperimetric_quotient(counties),\n",
+    ")\n",
+    "plt.plot((0, 1), (0, 1), color=\"k\", linestyle=\":\")\n",
+    "plt.xlim(0.2, 0.9)\n",
+    "plt.ylim(0.2, 0.9)\n",
+    "plt.xlabel(\"Isoareal Quotient\")\n",
+    "plt.ylabel(\"Isoperimetric Quotient\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "A final related measure is the fractal dimension of a shape. This measures the effective dimension of a shape's boundary, and generally varies between zero and two, where $2$ implies a very convoluted boundary, and $0$ implies a very simple boundary. Hoever, our particular implementation approximates the true fractal dimension by assuming that shapes' boundaries move along either in a grid or a hexagonal lattice. Thus, the measure is effectively the relationship between a square (or hexagon) and the existing shape. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.fractal_dimension(counties, support=\"hex\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.fractal_dimension(counties, support=\"square\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The two are also extremely related:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.scatter(\n",
+    "    shape.fractal_dimension(counties, support=\"hex\"),\n",
+    "    shape.fractal_dimension(counties, support=\"square\"),\n",
+    ")\n",
+    "plt.plot((0, 2), (0, 2), color=\"k\", linestyle=\":\")\n",
+    "plt.xlim(0.98, 1.08)\n",
+    "plt.ylim(0.98, 1.08)\n",
+    "plt.xlabel(\"Fractal Dimension (hex)\")\n",
+    "plt.ylabel(\"Fractal Dimension (square)\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Inertial Measures"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The moment of inertia is a concept from physics and engineering that measures dispersion of mass around an axis of rotation. This has been adapted to measures of shape in geography. If the shape is treated as of homogeneous density, this is equivalent to the *second moment of area*. If we have information about the distribution of a quantity of interest, such as population, we can obtain a shape measure that quantifies how dispersed the population is from a reference point, usually the centroid or center of population. The interested reader is referred to:\n",
+    "\n",
+    "* Li, Wenwen, Michael F. Goodchild, and Richard Church. 2013. “An Efficient Measure of Compactness for Two-Dimensional Shapes and Its Application in Regionalization Problems.” International Journal of Geographical Information Science 27 (6): 1227–50. https://doi.org/10.1080/13658816.2012.752093.\n",
+    "* Fan, Chao, Wenwen Li, Levi J. Wolf, and Soe W. Myint. 2015. “A Spatiotemporal Compactness Pattern Analysis of Congressional Districts to Assess Partisan Gerrymandering: A Case Study with California and North Carolina.” Annals of the Association of American Geographers 105 (4): 736–53. https://doi.org/10.1080/00045608.2015.1039109.\n",
+    "\n",
+    "We begin with the *normalized moment of inertia* or *normalized second moment of area*. The moment of inertia is calculated for the shape, and normalized by the moment of inertia of a circle of the same area. As with some of the other shape measures we have seen, it can vary between zero and one, and equals $1$ for a perfect circle. The moment of inertia is insensitive to wiggliness of the shape's perimeter (Li, et al. 2013).\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties.plot(shape.moment_of_inertia(counties, normalize=True))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The `moment_of_inertia` function calculates the moment of inertia about the centroid of each polygon. However, the user can also pass in a reference point or an array-like of reference points of the same length as the geodataframe. In the first case, it calculates the moment of inertia of each shape with resepct to a single reference point. For example, we can calculate the moment of inertia of each county with respect to the centroid of Virginia."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "va = counties.dissolve()\n",
+    "va_centroid = va.centroid\n",
+    "\n",
+    "ax = va.plot()\n",
+    "va_centroid.plot(ax=ax, color=\"red\")\n",
+    "plt.title(\"Virginia Centroid\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ax = counties.plot(shape.moment_of_inertia(counties, ref_pt=va_centroid))\n",
+    "va_centroid.plot(ax=ax, color=\"red\")\n",
+    "plt.title(\"Virginia Counties MOI about Virginia Centroid\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can see, the MOI is lower for counties close to the centroid, and higher for counties farther away. In physical terms, you can think about the as swinging on a string about the centroid. The farther away they are, the more rotational force they have, and the higher the moment of inertia. In human geography, this can be used as a measure of population access to a point of interest.\n",
+    "\n",
+    "The `esda.shape` module also has a function to quickly calculate the global moment of inertia for all shapes in a collection. It is more efficient that manually running a dissolve and calculating the MOI on the dissolved shape."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "shape.moment_of_inertia_global(counties, normalize=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Of particular interest is the ability to calculate the moment of inertia for unevenly distributed populations (or other quantities of interest). In this case, the polygons must be assigned to *regions*, and the moment of inertia is calculated for each region, not each polygon in the collection. Region IDs can be passed in as an array of the same length as the collection (each polygon must be assigned to a region) or as the name of a column of region IDs in the geodataframe.\n",
+    "\n",
+    "In order to demonstrate this, we will assign each county to an [economic region](https://www.vedp.org/regions). We will also add 2020 populations for each county. Since the built-in Virginia dataset is from 2000, we will remove 3 independent cities that merged with their surrounding counties between 2000 and 2020."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Remove these independent cities\n",
+    "cities_to_remove = [\"Bedford City\", \"Clifton Forge\", \"South Boston\"]\n",
+    "counties_2020 = counties.copy()[~counties[\"NAME\"].isin(cities_to_remove)]\n",
+    "\n",
+    "\n",
+    "# Function to remove holes\n",
+    "def remove_holes(geom):\n",
+    "    if isinstance(geom, shapely.geometry.Polygon):\n",
+    "        return shapely.geometry.Polygon(geom.exterior)\n",
+    "    elif isinstance(geom, shapely.geometry.MultiPolygon):\n",
+    "        return shapely.geometry.MultiPolygon(\n",
+    "            [shapely.geometry.Polygon(p.exterior) for p in geom.geoms]\n",
+    "        )\n",
+    "    else:\n",
+    "        return geom\n",
+    "\n",
+    "\n",
+    "# Boolean mask for rows to modify\n",
+    "mask = counties_2020[\"NAME\"].isin([\"Bedford\", \"Alleghany\", \"Halifax\"])\n",
+    "\n",
+    "# Apply transformation only to rows that match the mask\n",
+    "counties_2020.loc[mask, \"geometry\"] = counties_2020.loc[mask, \"geometry\"].apply(\n",
+    "    remove_holes\n",
+    ")\n",
+    "\n",
+    "# Reindex the GeoDataFrame\n",
+    "counties_2020.reset_index(drop=True, inplace=True)\n",
+    "\n",
+    "regions = [\n",
+    "    \"Region 8\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 7\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 9\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 8\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 6\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 2\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 4\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 1\",\n",
+    "    \"Region 5\",\n",
+    "    \"Region 3\",\n",
+    "    \"Region 1\",\n",
+    "]\n",
+    "populations = [\n",
+    "    93355,\n",
+    "    427082,\n",
+    "    15060,\n",
+    "    27981,\n",
+    "    44630,\n",
+    "    1144474,\n",
+    "    41104,\n",
+    "    73935,\n",
+    "    484625,\n",
+    "    235463,\n",
+    "    14593,\n",
+    "    24478,\n",
+    "    7409,\n",
+    "    156788,\n",
+    "    84739,\n",
+    "    23750,\n",
+    "    16923,\n",
+    "    42674,\n",
+    "    53563,\n",
+    "    13931,\n",
+    "    160520,\n",
+    "    2265,\n",
+    "    77713,\n",
+    "    20850,\n",
+    "    51492,\n",
+    "    37208,\n",
+    "    143876,\n",
+    "    27468,\n",
+    "    28383,\n",
+    "    18683,\n",
+    "    113683,\n",
+    "    4123,\n",
+    "    31541,\n",
+    "    25765,\n",
+    "    10604,\n",
+    "    39012,\n",
+    "    9047,\n",
+    "    22574,\n",
+    "    22578,\n",
+    "    45863,\n",
+    "    14777,\n",
+    "    33326,\n",
+    "    12085,\n",
+    "    111652,\n",
+    "    27764,\n",
+    "    6676,\n",
+    "    14962,\n",
+    "    18232,\n",
+    "    25613,\n",
+    "    10876,\n",
+    "    31385,\n",
+    "    5671,\n",
+    "    7420,\n",
+    "    33875,\n",
+    "    16914,\n",
+    "    10774,\n",
+    "    9745,\n",
+    "    6612,\n",
+    "    334434,\n",
+    "    31074,\n",
+    "    4881,\n",
+    "    24139,\n",
+    "    80254,\n",
+    "    227595,\n",
+    "    39228,\n",
+    "    371610,\n",
+    "    16424,\n",
+    "    12115,\n",
+    "    19857,\n",
+    "    8517,\n",
+    "    13342,\n",
+    "    6686,\n",
+    "    16610,\n",
+    "    79255,\n",
+    "    80046,\n",
+    "    55398,\n",
+    "    96793,\n",
+    "    21932,\n",
+    "    70590,\n",
+    "    99159,\n",
+    "    39933,\n",
+    "    42873,\n",
+    "    98677,\n",
+    "    22944,\n",
+    "    25477,\n",
+    "    6211,\n",
+    "    13920,\n",
+    "    15597,\n",
+    "    18210,\n",
+    "    15564,\n",
+    "    28083,\n",
+    "    11475,\n",
+    "    6552,\n",
+    "    33365,\n",
+    "    33771,\n",
+    "    184774,\n",
+    "    54958,\n",
+    "    35727,\n",
+    "    12556,\n",
+    "    16505,\n",
+    "    39444,\n",
+    "    25635,\n",
+    "    60148,\n",
+    "    15560,\n",
+    "    11990,\n",
+    "    10793,\n",
+    "    137334,\n",
+    "    28219,\n",
+    "    33811,\n",
+    "    15868,\n",
+    "    29585,\n",
+    "    17988,\n",
+    "    235037,\n",
+    "    3620,\n",
+    "    457066,\n",
+    "    29158,\n",
+    "    53913,\n",
+    "    96638,\n",
+    "    11304,\n",
+    "    30431,\n",
+    "    22042,\n",
+    "    21504,\n",
+    "    17606,\n",
+    "    251153,\n",
+    "    50365,\n",
+    "    97299,\n",
+    "    15323,\n",
+    "    5633,\n",
+    "    13584,\n",
+    "    6698,\n",
+    "    8212,\n",
+    "    42239,\n",
+    "    17024,\n",
+    "]\n",
+    "\n",
+    "counties_2020[\"region\"] = regions\n",
+    "counties_2020[\"population\"] = populations"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "counties_2020.plot(\"region\")\n",
+    "plt.title(\"Economic Regions of Virginia\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In order to calculate the (unweighted) moment of inertia for each economic region, we pass either the list of region identifiers or the column name to the `moment_of_inertia_regions` function."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "shape.moment_of_inertia_regions(counties_2020, normalize=True, regions=\"region\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In order to calculate the mass moment of inertia, we pass in an array-like or column name of weights, which in this case represents the population of each county. We demonstrate the version here which normalizes by comparing with a reference circle having the same mass (population) and area as the shape."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "shape.moment_of_inertia_regions(\n",
+    "    counties_2020, normalize=True, regions=\"region\", weights=\"population\"\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can see above, it *is* possible for the normalized mass moment of inertia to attain a value greater than one. The population (mass) of the reference circle is evenly distributed throughout its area, i.e., it is of uniform density. The shapes we are calculating NMMI for have varying density, and if a shape's population is concentrated near its centroid, it will be *more* compact than the reference circle."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Conclusion"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "There are many more shape measures in the `esda.shape` module that are useful in a large variety of applications. The ones detailed here are the most common ones encountered in literatures on redistricting, which is only one special area where shape measurements are useful. For more information on shape measures, a good introductory conceptual paper on how shape is measured in geography is by [Shlomo Angel et al. (2010)](https://doi.org/10.1111/j.1541-0064.2009.00304.x) . "
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

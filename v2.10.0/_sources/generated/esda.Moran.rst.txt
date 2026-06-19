@@ -1,0 +1,19 @@
+﻿esda.Moran
+==========
+
+.. currentmodule:: esda
+
+.. autoclass:: Moran
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Moran.by_col
+      ~Moran.plot_scatter
+      ~Moran.plot_simulation
+   
+
+   
