@@ -273,6 +273,27 @@ class TestMoran:
 
         plt.close()
 
+    @parametrize_sac
+    def test_plot_scatter_losh(self, w):
+        plt = pytest.importorskip("matplotlib.pyplot")
+        import matplotlib
+
+        matplotlib.use("Agg")
+
+        m = moran.Moran(
+            sac1.WHITE,
+            w,
+        )
+
+        ax = m.plot_scatter(losh_scaling_factor=10)
+
+        np.testing.assert_allclose(
+            ax.collections[0].get_sizes(),
+            moran._get_losh_scaling(m, 10),
+        )
+
+        plt.close()
+
 
 class TestMoranRate:
     def setup_method(self):
@@ -357,6 +378,41 @@ class TestMoranLocal:
             )
         np.testing.assert_allclose(lm.z_sim[0], -0.6990291160835514)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.24226691753791396)
+
+    @parametrize_desmith
+    def test_alternative_respected_with_kept_simulations(self, w):
+        kwargs = dict(
+            y=self.y,
+            w=w,
+            transformation="r",
+            permutations=99,
+            seed=SEED,
+        )
+
+        directed_keep = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=True,
+            alternative="directed",
+        )
+        directed_drop = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=False,
+            alternative="directed",
+        )
+        two_sided_keep = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=True,
+            alternative="two-sided",
+        )
+        two_sided_drop = moran.Moran_Local(
+            **kwargs,
+            keep_simulations=False,
+            alternative="two-sided",
+        )
+
+        np.testing.assert_allclose(directed_keep.p_sim, directed_drop.p_sim)
+        np.testing.assert_allclose(two_sided_keep.p_sim, two_sided_drop.p_sim)
+        assert not np.allclose(directed_keep.p_sim, two_sided_keep.p_sim)
 
     @parametrize_sac
     def test_labels(self, w):
@@ -492,9 +548,13 @@ class TestMoranLocal:
         ax = lm.plot_scatter()
 
         # test scatter
-        unique, counts = np.unique(
-            ax.collections[0].get_facecolors(), axis=0, return_counts=True
-        )
+        facecolors = []
+        for col in ax.collections:
+            colors = col.get_facecolors()
+            if len(colors) == 1:
+                colors = np.repeat(colors, len(col.get_offsets()), axis=0)
+            facecolors.append(colors)
+        unique, counts = np.unique(np.vstack(facecolors), axis=0, return_counts=True)
         np.testing.assert_array_almost_equal(
             unique,
             np.array(
@@ -554,6 +614,14 @@ class TestMoranLocal:
         assert l_.get_color() == "#d6604d"
         assert l_.get_linewidth() == 4.0
 
+        ax = lm.plot_scatter(
+            crit_value=None,
+            losh_scaling_factor=10,
+        )
+        np.testing.assert_allclose(
+            ax.collections[0].get_sizes(),
+            moran._get_losh_scaling(lm, 10),
+        )
         plt.close()
 
     @parametrize_desmith
@@ -695,10 +763,16 @@ class TestMoranLocal:
             sac1,
             "WHITE",
             legend_kwds=dict(loc="lower right"),
+            losh_scaling_factor=10,
         )
 
         assert len(axs2) == 3
         assert len(axs2[0].patches) == 0
+        labels = moran._get_cluster_labels(lm, 0.05)
+        sig_mask = labels == "Insignificant"
+        losh = moran._get_losh_scaling(lm, 10)
+        np.testing.assert_allclose(axs2[0].collections[0].get_sizes(), losh[sig_mask])
+        np.testing.assert_allclose(axs2[0].collections[1].get_sizes(), losh[~sig_mask])
 
         if GPD_GE_120:
             assert len(axs2[1].collections) == 5
@@ -732,6 +806,42 @@ class TestMoranLocalBV:
         np.testing.assert_allclose(lm.Is[0], 1.4649221250620736)
         np.testing.assert_allclose(lm.z_sim[0], 1.330673752886702)
         np.testing.assert_allclose(lm.p_z_sim[0], 0.09164819151535242)
+
+    @parametrize_sids
+    def test_alternative_respected_with_kept_simulations(self, w):
+        kwargs = dict(
+            x=self.x,
+            y=self.y,
+            w=w,
+            transformation="r",
+            permutations=99,
+            seed=SEED,
+        )
+
+        directed_keep = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=True,
+            alternative="directed",
+        )
+        directed_drop = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=False,
+            alternative="directed",
+        )
+        two_sided_keep = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=True,
+            alternative="two-sided",
+        )
+        two_sided_drop = moran.Moran_Local_BV(
+            **kwargs,
+            keep_simulations=False,
+            alternative="two-sided",
+        )
+
+        np.testing.assert_allclose(directed_keep.p_sim, directed_drop.p_sim)
+        np.testing.assert_allclose(two_sided_keep.p_sim, two_sided_drop.p_sim)
+        assert not np.allclose(directed_keep.p_sim, two_sided_keep.p_sim)
 
     @pytest.mark.skip("This function is being deprecated in the next release.")
     def test_by_col(self):

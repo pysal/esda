@@ -60,6 +60,15 @@ Getis-Ord Statistics
     G
     G_Local
 
+.. _inspection_api:
+
+Inspection plots
+-----------------
+
+.. autosummary::
+   :toctree: generated/
+
+    LocalCrossPlot
 
 .. _join_api:
 
@@ -103,7 +112,7 @@ Map Comparison
     homogeneity
     overlay_entropy
 
-    
+
 Mixture Smoothing
 -----------------
 
@@ -111,7 +120,7 @@ Mixture Smoothing
    :toctree: generated/
 
     NP_Mixture_Smoother
-    
+
 
 Modifiable Areal Unit Tests
 ---------------------------
