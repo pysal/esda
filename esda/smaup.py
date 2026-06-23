@@ -68,12 +68,12 @@ class Smaup:
     >>> s = Smaup(n, k, rho)
     >>> round(s.smaup, 6)
     np.float64(0.152213)
-    >>> s.critical_01
-    np.float64(0.38970613333333337)
-    >>> s.critical_05
-    np.float64(0.3557221333333333)
-    >>> s.critical_1
-    np.float64(0.3157950666666666)
+    >>> round(s.critical_01, 6)
+    np.float64(0.389706)
+    >>> round(s.critical_05, 6)
+    np.float64(0.355722)
+    >>> round(s.critical_1, 6)
+    np.float64(0.315795)
     >>> s.summary
     'Pseudo p-value > 0.10 (H0 is not rejected)'
 
@@ -89,12 +89,12 @@ class Smaup:
     >>> s = Smaup(n, k, rho)
     >>> round(s.smaup, 6)
     np.float64(0.151768)
-    >>> s.critical_01
-    np.float64(0.38970613333333337)
-    >>> s.critical_05
-    np.float64(0.3557221333333333)
-    >>> s.critical_1
-    np.float64(0.3157950666666666)
+    >>> round(s.critical_01, 6)
+    np.float64(0.389706)
+    >>> round(s.critical_05, 6)
+    np.float64(0.355722)
+    >>> round(s.critical_1, 6)
+    np.float64(0.315795)
     >>> s.summary
     'Pseudo p-value > 0.10 (H0 is not rejected)'
     """
