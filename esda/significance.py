@@ -85,20 +85,15 @@ def _permutation_significance(
             p_permutations + 1
         )
     elif alternative == "two-sided":
-        # find percentile p at which the test statistic sits
-        # find "synthetic" test statistic at 1-p
-        # count how many observations are outisde of (p, 1-p)
-        # including the test statistic and its synthetic pair
-        lows = np.empty(n_samples).astype(reference_distribution.dtype)
-        highs = np.empty(n_samples).astype(reference_distribution.dtype)
-        for i in range(n_samples):
-            percentile_i = (reference_distribution[i] <= test_stat[i]).mean() * 100
-            p_low = np.minimum(percentile_i, 100 - percentile_i)
-            lows[i] = np.percentile(reference_distribution[i], p_low)
-            highs[i] = np.percentile(reference_distribution[i], 100 - p_low)
-        n_outside = (reference_distribution <= lows[:, None]).sum(axis=1)
-        n_outside += (reference_distribution >= highs[:, None]).sum(axis=1)
-        p_value = (n_outside + 1) / (p_permutations + 1)
+        # use the robust pseudo p-value rather than percentiles. Percentiles
+        # are degenerate when the reference distribution is constant, which
+        # makes the percentile-based count exceed p_permutations and yields a
+        # p-value greater than one.
+        greater = (reference_distribution >= test_stat).sum(axis=1)
+        lesser = (reference_distribution <= test_stat).sum(axis=1)
+        p_value = np.minimum(
+            2 * (np.minimum(greater, lesser) + 1) / (p_permutations + 1), 1.0
+        )
     elif alternative == "folded":
         means = np.empty((n_samples, 1)).astype(reference_distribution.dtype)
         for i in range(n_samples):
