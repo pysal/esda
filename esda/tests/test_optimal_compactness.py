@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+import pytest
 from shapely import Point, Polygon, box
 
+from .. import _optimal_compactness as _oc
 from .._optimal_compactness import CIRCLE_QUAD_SEGS, _regular_polygon
 from ..shape import optimal_compactness as oc
+
+
+@pytest.fixture(autouse=True)
+def _single_worker(monkeypatch):
+    monkeypatch.setattr(_oc, "cpus", 1)
 
 
 def test_optimal_compactness():
