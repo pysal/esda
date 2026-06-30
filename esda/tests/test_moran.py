@@ -1,3 +1,5 @@
+import warnings
+
 import geopandas as gpd
 import libpysal
 import numpy as np
@@ -1051,6 +1053,141 @@ class TestMoranLocalRate:
         )
         np.testing.assert_allclose(lm["SID79-BIR79_z_sim"][0], 0.02702781851384379, 7)
         np.testing.assert_allclose(lm["SID79-BIR79_p_z_sim"][0], 0.4892187730835096)
+
+
+def _w_with_islands():
+    # nodes 0 and 1 are connected; nodes 2 and 3 are isolates, so the graph
+    # has multiple disconnected components and is ill-defined for Moran's I.
+    neighbors = {0: [1], 1: [0], 2: [], 3: []}
+    weights = {0: [1.0], 1: [1.0], 2: [], 3: []}
+    return libpysal.weights.W(neighbors, weights, silence_warnings=True)
+
+
+def _w_single_island():
+    # nodes 0, 1, 2 are connected; node 3 is the only isolate, exercising the
+    # singular "1 island" branch of the warning message.
+    neighbors = {0: [1], 1: [0, 2], 2: [1], 3: []}
+    weights = {0: [1.0], 1: [1.0, 1.0], 2: [1.0], 3: []}
+    return libpysal.weights.W(neighbors, weights, silence_warnings=True)
+
+
+def _w_two_clusters():
+    # two disconnected connected pairs and no isolates: n_components > 1 while
+    # n_islands == 0, so neither island branch of the message fires.
+    neighbors = {0: [1], 1: [0], 2: [3], 3: [2]}
+    weights = {0: [1.0], 1: [1.0], 2: [1.0], 3: [1.0]}
+    return libpysal.weights.W(neighbors, weights, silence_warnings=True)
+
+
+parametrize_ill_defined = pytest.mark.parametrize(
+    "w",
+    [
+        _w_with_islands(),
+        libpysal.graph.Graph.from_W(_w_with_islands()),
+    ],
+    ids=["W", "Graph"],
+)
+
+parametrize_single_island = pytest.mark.parametrize(
+    "w",
+    [
+        _w_single_island(),
+        libpysal.graph.Graph.from_W(_w_single_island()),
+    ],
+    ids=["W", "Graph"],
+)
+
+parametrize_two_clusters = pytest.mark.parametrize(
+    "w",
+    [
+        _w_two_clusters(),
+        libpysal.graph.Graph.from_W(_w_two_clusters()),
+    ],
+    ids=["W", "Graph"],
+)
+
+parametrize_connected = pytest.mark.parametrize(
+    "w",
+    [
+        libpysal.weights.util.lat2W(3, 3),
+        libpysal.graph.Graph.from_W(libpysal.weights.util.lat2W(3, 3)),
+    ],
+    ids=["W", "Graph"],
+)
+
+
+class TestIllDefinedGraphWarning:
+    """Moran statistics should warn when the graph is not fully connected."""
+
+    @parametrize_ill_defined
+    def test_moran_warns(self, w):
+        y = np.array([1.0, 2.0, 3.0, 4.0])
+        with pytest.warns(UserWarning, match="not fully connected"):
+            moran.Moran(y, w, permutations=0)
+
+    @parametrize_ill_defined
+    def test_moran_bv_warns(self, w):
+        x = np.array([4.0, 3.0, 2.0, 1.0])
+        y = np.array([1.0, 2.0, 3.0, 4.0])
+        with pytest.warns(UserWarning, match="not fully connected"):
+            moran.Moran_BV(x, y, w, permutations=0)
+
+    @parametrize_ill_defined
+    def test_moran_local_warns(self, w):
+        y = np.array([1.0, 2.0, 3.0, 4.0])
+        with pytest.warns(UserWarning, match="not fully connected"):
+            moran.Moran_Local(y, w, permutations=0)
+
+    @parametrize_ill_defined
+    def test_moran_rate_warns(self, w):
+        e = np.array([10.0, 20.0, 30.0, 40.0])
+        b = np.array([100.0, 100.0, 100.0, 100.0])
+        with pytest.warns(UserWarning, match="not fully connected"):
+            moran.Moran_Rate(e, b, w, permutations=0)
+
+    @parametrize_ill_defined
+    def test_moran_local_rate_warns(self, w):
+        e = np.array([10.0, 20.0, 30.0, 40.0])
+        b = np.array([100.0, 100.0, 100.0, 100.0])
+        with pytest.warns(UserWarning, match="not fully connected"):
+            moran.Moran_Local_Rate(e, b, w, permutations=0)
+
+    @parametrize_single_island
+    def test_moran_warns_single_island(self, w):
+        # n_islands == 1: the singular "1 island" message branch.
+        y = np.array([1.0, 2.0, 3.0, 4.0])
+        with pytest.warns(UserWarning, match="1 island with id"):
+            moran.Moran(y, w, permutations=0)
+
+    @parametrize_two_clusters
+    def test_moran_warns_two_clusters_no_islands(self, w):
+        # n_components > 1 with n_islands == 0: neither island branch fires.
+        y = np.array([1.0, 2.0, 3.0, 4.0])
+        with pytest.warns(UserWarning, match="2 disconnected components") as record:
+            moran.Moran(y, w, permutations=0)
+        assert all("island" not in str(r.message) for r in record)
+
+    @parametrize_connected
+    def test_moran_no_warning_when_connected(self, w):
+        y = np.arange(1, 10, dtype=float)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            moran.Moran(y, w, permutations=0)
+
+    @parametrize_connected
+    def test_moran_bv_no_warning_when_connected(self, w):
+        x = np.arange(1, 10, dtype=float)
+        y = np.arange(9, 0, -1, dtype=float)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            moran.Moran_BV(x, y, w, permutations=0)
+
+    @parametrize_connected
+    def test_moran_local_no_warning_when_connected(self, w):
+        y = np.arange(1, 10, dtype=float)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            moran.Moran_Local(y, w, permutations=0)
 
 
 def _fetch_map_string(m):
