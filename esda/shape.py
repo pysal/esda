@@ -4,7 +4,10 @@ import geopandas
 import numpy
 import pandas
 import shapely
+from scipy.optimize import OptimizeResult
+from shapely import Polygon
 
+from ._optimal_compactness import _optimal_compactness
 from .crand import njit
 
 __author__ = (
@@ -1180,3 +1183,42 @@ def reflexive_angle_ratio(collection):
         .is_reflex.mean()
         .values
     )
+
+
+def optimal_compactness(
+    poly: Polygon,
+    circle: bool = True,
+    n: int | None = None,
+    return_result: bool = False,
+) -> float | tuple[float, OptimizeResult]:  # noqa: FBT001,FBT002
+    """
+    Calculate optimal compactness of an observed polygon.
+
+    This function finds either an optimal comparison circle or an optimal
+    regular comparison polygon. The minimized objective is the nonfit: the
+    area of the symmetric difference divided by the area of the union.
+    Compactness is 1 - nonfit.
+
+    Parameters
+    ----------
+    poly
+        Observed polygon to measure the compactness of.
+    circle
+        If True, optimize a comparison circle. If False, optimize a comparison
+        regular polygon.
+    n
+        If circle is False, fixed number of sides for the comparison regular
+        polygon. If None, n is optimized as an integer decision variable
+        between 3 and min(vertex_count, 32).
+    return_result
+        If True, also return the optimal compactness and the scipy
+        OptimizeResult object itself. Otherwise only return the optimal
+        compactness.
+
+    Returns
+    -------
+    compactness
+        The optimal compactness of poly. If return_result is True, also return
+        the scipy OptimizeResult object itself as well.
+    """
+    return _optimal_compactness(poly, circle, n, return_result)
