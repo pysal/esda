@@ -1,14 +1,34 @@
 # from ...common import requires as _requires
 
 import itertools as _it
+import warnings
+from functools import wraps
 
 from libpysal.weights import W
+
+
+def tabular_removal_warning(obj):
+    @wraps(obj)
+    def wrapper(*args, **kwargs):
+        warnings.warn(
+            (
+                f"The '{__name__}' module is deprecated and '{obj.__name__}()' "
+                "will be removed in future release of esda "
+                "coinciding with the complete removal of the '.by_cols()' methods."
+            ),
+            FutureWarning,
+            stacklevel=1,
+        )
+        return obj(*args, **kwargs)
+
+    return wrapper
 
 
 # I would like to define it like this, so that you could make a call like:
 # Geary(df, 'HOVAL', 'INC', w=W), but this only works in Python3. So, I have to
 # use a workaround
 # def _statistic(df, *cols, stat=None, w=None, inplace=True,
+@tabular_removal_warning
 def _univariate_handler(
     df,
     cols,
@@ -122,6 +142,7 @@ def _univariate_handler(
         ]
 
 
+@tabular_removal_warning
 def _bivariate_handler(
     df, x, y=None, w=None, inplace=True, pvalue="sim", outvals=None, **kwargs
 ):
