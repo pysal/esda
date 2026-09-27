@@ -291,8 +291,6 @@ def direct_age_standardization(e, b, s, n, alpha=0.05):
     age_weight = (1.0 / b) * (s * 1.0 / sum_by_n(s, 1.0, n).repeat(len(s) // n))
     adjusted_r = sum_by_n(e, age_weight, n)
     var_estimate = sum_by_n(e, np.square(age_weight), n)
-    g_a = np.square(adjusted_r) / var_estimate
-    g_b = var_estimate / adjusted_r
     _b = len(b)
     _rb = range(0, _b, _b // n)
     k = [age_weight[i : i + _b // n].max() for i in _rb]
@@ -301,10 +299,12 @@ def direct_age_standardization(e, b, s, n, alpha=0.05):
     res = []
     for i in range(len(adjusted_r)):
         if adjusted_r[i] == 0:
-            upper = 0.5 * chi2.ppf(1 - 0.5 * alpha)
+            upper = 0.5 * chi2.ppf(1 - 0.5 * alpha, df=2) * k[i]
             lower = 0.0
         else:
-            lower = gamma.ppf(0.5 * alpha, g_a[i], scale=g_b[i])
+            g_a = np.square(adjusted_r[i]) / var_estimate[i]
+            g_b = var_estimate[i] / adjusted_r[i]
+            lower = gamma.ppf(0.5 * alpha, g_a, scale=g_b)
             upper = gamma.ppf(1 - 0.5 * alpha, g_a_k[i], scale=g_b_k[i])
         res.append((adjusted_r[i], lower, upper))
     return res
