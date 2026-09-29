@@ -13,6 +13,8 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
     Pseudo-p values are calculated using the formula (M + 1) / (R + 1).
     Where R is the number of simulations and M is the number of times that the
     simulated value was equal to, or more extreme than the observed test statistic.
+    The 'two-sided' alternative doubles this, 2 * (M + 1) / (R + 1), where M counts
+    the smaller of the two tails, and caps the result at one.
 
     Parameters
     ----------
@@ -44,6 +46,15 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
     the directed p-value is half of the two-sided p-value, and corresponds to running
     the lesser and greater tests, then picking the smaller significance value.
     This is not advised, since the p-value will be uniformly too small.
+
+    Both tails of the 'two-sided' p-value count the observed test statistic, so a
+    statistic that ties with part of the reference distribution contributes to each
+    tail. This matters for discrete statistics such as the local join counts, where
+    the reference distribution puts mass on a handful of integers.
+
+    Doubling puts a floor of 2 / (R + 1) on the 'two-sided' p-value. With the default
+    999 permutations the smallest reportable two-sided p-value is 0.002, so a
+    threshold below that never rejects. Raise ``permutations`` to go lower.
     """
     reference_distribution = np.atleast_2d(reference_distribution)
     n_samples, p_permutations = reference_distribution.shape
