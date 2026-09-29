@@ -151,9 +151,7 @@ def test_objective_f_polygon_exact_match():
     # _objective_f_polygon uses rotation_frac where a = rotation_frac * 360 / n
     rotation_frac = a * n / 360  # = 15 * 6 / 360 = 0.25
     poly = _regular_polygon(n, x, y, r, a)
-    score = _oc._objective_f_polygon(
-        np.array([x, y, r, rotation_frac, float(n)]), poly
-    )
+    score = _oc._objective_f_polygon(np.array([x, y, r, rotation_frac, float(n)]), poly)
     assert score == pytest.approx(0.0, abs=1e-12)
 
 
@@ -188,7 +186,7 @@ def test_circle_compactness_near_one():
 
 
 def test_regular_polygon_self_compactness():
-    """A regular n-gon has polygon compactness ≈ 1 when the comparison n is fixed to n."""
+    """A regular n-gon has polygon compactness ≈ 1 when the comparison n is fixed to n."""  # noqa: E501
     square = _regular_polygon(4, 0, 0, 2, 15)
     assert oc(square, circle=False, n=4) == pytest.approx(1.0, abs=0.01)
 
@@ -202,14 +200,14 @@ def test_compactness_ordering_vs_circle():
 
 
 def test_elongated_rectangle_less_compact_than_square():
-    """A very elongated rectangle is less compact vs a circle than a square of equal area."""
-    square = box(0, 0, 4, 4)      # area 16, aspect ratio 1:1
-    slab = box(0, 0, 32, 0.5)     # area 16, aspect ratio 64:1
+    """A very elongated rectangle is less compact vs a circle than a square of equal area."""  # noqa: E501
+    square = box(0, 0, 4, 4)  # area 16, aspect ratio 1:1
+    slab = box(0, 0, 32, 0.5)  # area 16, aspect ratio 64:1
     assert oc(slab, circle=True) < oc(square, circle=True)
 
 
 def test_polygon_with_hole_lower_than_filled():
-    """A rectangle with a hole has lower circle compactness than the filled rectangle."""
+    """A rectangle with a hole has lower circle compactness than the filled rectangle."""  # noqa: E501
     filled = box(0, 0, 8, 4)
     holed = Polygon(filled.exterior.coords, holes=[box(1, 1, 7, 3).exterior.coords])
     assert oc(holed, circle=True) < oc(filled, circle=True)
