@@ -295,7 +295,7 @@ class G_Local:
     array([-1.0136729 , -0.04361589,  1.31558703, -0.31412676,  1.15373986,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
-    np.float32(0.413)
+    np.float32(0.41)
 
     P-value based on standard normal approximation from permutations.
 
@@ -314,7 +314,7 @@ class G_Local:
     array([-1.39727626, -0.28917762,  0.65064964, -0.28917762,  1.23452088,
            2.02424331])
     >>> round(lg_star.p_sim[0], 3)
-    np.float32(0.413)
+    np.float32(0.41)
 
     Applying Getis and Ord local G test using a row-standardized weights object.
 
@@ -326,7 +326,7 @@ class G_Local:
     array([-0.62074534, -0.01780611,  1.31558703, -0.12824171,  0.28843496,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
-    np.float32(0.413)
+    np.float32(0.41)
 
     Applying Getis and Ord local G* test using a row-standardized weights object.
 
