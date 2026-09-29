@@ -100,3 +100,41 @@ def test_two_sided_is_twice_directed_one_sided():
     two_sided = calculate_significance(2.5, reference, alternative="two-sided")
     directed = calculate_significance(2.5, reference, alternative="directed")
     numpy.testing.assert_allclose(two_sided, 2 * directed)
+
+
+def test_two_sided_counts_ties_in_both_tails():
+    # A discrete reference distribution ties with the observed statistic, and
+    # both tails count those ties. The percentile formula this replaced swept
+    # the whole tied block into both tails at once, which is what moved the
+    # local join count p-values.
+    reference = numpy.array([[0] * 2 + [1] * 4 + [2] * 3 + [3]], dtype=float)
+    # greater = 4 (the three 2s and the 3), lesser = 9 (everything but the 3),
+    # so the answer comes from the upper tail: 2 * (4 + 1) / 11.
+    p_value = calculate_significance(2.0, reference, alternative="two-sided")
+    numpy.testing.assert_allclose(p_value, 10 / 11)
+
+    # Dropping the ties from the upper tail would leave a count of 1 and a
+    # p-value of 4 / 11, which understates how ordinary a 2 is here.
+    assert p_value > 4 / 11
+
+
+def test_local_join_counts_two_sided_uses_simulations():
+    # Local join counts have a discrete reference distribution, so ties with
+    # the observed count are common. Check p_sim against the two-sided formula
+    # applied to the stored simulations, and that it stays a valid p-value.
+    weights = pytest.importorskip("libpysal.weights")
+
+    w = weights.lat2W(4, 4)
+    y = numpy.ones(16)
+    y[0:8] = 0
+    local = esda.Join_Counts_Local(
+        connectivity=w, seed=12345, alternative="two-sided"
+    ).fit(y)
+
+    focal = local.LJC > 0
+    expected = calculate_significance(
+        local.LJC[focal], local.rjoins[focal], alternative="two-sided"
+    )
+    numpy.testing.assert_allclose(local.p_sim[focal], expected, rtol=1e-6)
+    assert (local.p_sim[focal] > 0).all()
+    assert (local.p_sim[focal] <= 1).all()
