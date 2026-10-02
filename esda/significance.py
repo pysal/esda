@@ -1,9 +1,44 @@
+import warnings
+
 import numpy as np
 
 try:
     from numba import njit
 except (ImportError, ModuleNotFoundError):
     from libpysal.common import jit as njit
+
+
+def _resolve_alternative(alternative, stacklevel=3):
+    """
+    Returns the alternative hypothesis for a permutation p-value.
+
+    ``None`` resolves to ``'directed'`` and emits a ``DeprecationWarning``.
+
+    Parameters
+    ----------
+    alternative : None or str
+        The alternative hypothesis requested by the caller.
+    stacklevel : int
+        The stack level for the warning. The default points at the caller of
+        the function that calls this one.
+
+    Returns
+    -------
+    str
+        The alternative hypothesis to pass to ``calculate_significance``.
+    """
+    if alternative is None:
+        warnings.warn(
+            "The alternative hypothesis for permutation inference"
+            " is changing in the next major release of esda. We recommend"
+            " setting alternative='two-sided', which will generally"
+            " double the p-value returned."
+            " To retain the current behavior, set alternative='directed'.",
+            DeprecationWarning,
+            stacklevel=stacklevel,
+        )
+        return "directed"
+    return alternative
 
 
 def calculate_significance(test_stat, reference_distribution, alternative="two-sided"):
@@ -69,7 +104,7 @@ def calculate_significance(test_stat, reference_distribution, alternative="two-s
         test_stat, reference_distribution, alternative=alternative
     )
     if test_stat.size == 1:
-        return result.item()
+        return result[0]
     else:
         return result
 

@@ -138,3 +138,100 @@ def test_local_join_counts_two_sided_uses_simulations():
     numpy.testing.assert_allclose(local.p_sim[focal], expected, rtol=1e-6)
     assert (local.p_sim[focal] > 0).all()
     assert (local.p_sim[focal] <= 1).all()
+
+
+GLOBAL_ESTIMATORS = {
+    "Moran": (lambda a: esda.Moran(x, w, permutations=19, alternative=a), "I", "p_sim"),
+    "Moran_BV": (
+        lambda a: esda.Moran_BV(x, x[::-1], w, permutations=19, alternative=a),
+        "I",
+        "p_sim",
+    ),
+    "Moran_Rate": (
+        lambda a: esda.Moran_Rate(
+            numpy.abs(x) + 1, numpy.full(800, 100.0), w, permutations=19, alternative=a
+        ),
+        "I",
+        "p_sim",
+    ),
+    "Geary": (lambda a: esda.Geary(x, w, permutations=19, alternative=a), "C", "p_sim"),
+    "G": (
+        lambda a: esda.G(numpy.abs(x), w, permutations=19, alternative=a),
+        "G",
+        "p_sim",
+    ),
+    "Gamma": (
+        lambda a: esda.Gamma(x, w, permutations=19, alternative=a),
+        "g",
+        "p_sim_g",
+    ),
+}
+
+
+@pytest.mark.parametrize("name", list(GLOBAL_ESTIMATORS))
+def test_global_estimators_use_calculate_significance(name):
+    build, statistic, p_attr = GLOBAL_ESTIMATORS[name]
+    estimator = build("two-sided")
+    reference = estimator.sim_g if name == "Gamma" else estimator.sim
+    expected = calculate_significance(
+        getattr(estimator, statistic), reference, alternative="two-sided"
+    )
+    p_value = getattr(estimator, p_attr)
+    assert isinstance(p_value, numpy.float64)
+    numpy.testing.assert_allclose(p_value, expected)
+
+
+@pytest.mark.parametrize("name", list(GLOBAL_ESTIMATORS))
+def test_global_estimators_warn_without_alternative(name):
+    build, _, p_attr = GLOBAL_ESTIMATORS[name]
+    with pytest.warns(DeprecationWarning, match="permutation inference"):
+        estimator = build(None)
+    reference = estimator.sim_g if name == "Gamma" else estimator.sim
+    statistic = getattr(estimator, GLOBAL_ESTIMATORS[name][1])
+    expected = calculate_significance(statistic, reference, alternative="directed")
+    numpy.testing.assert_allclose(getattr(estimator, p_attr), expected)
+
+
+def test_join_counts_use_greater():
+    y = (x > 0).astype(float)
+    jc = esda.Join_Counts(y, w, permutations=19)
+    expected = calculate_significance(
+        float(jc.bb), jc.sim_bb.astype(float), alternative="greater"
+    )
+    numpy.testing.assert_allclose(jc.p_sim_bb, expected)
+
+
+def test_spatial_pearson_alternative():
+    from esda.lee import Spatial_Pearson, Spatial_Pearson_Local
+
+    z = x.reshape(-1, 1)
+    sp = Spatial_Pearson(w.sparse, permutations=19, alternative="two-sided").fit(
+        z, z[::-1]
+    )
+    expected = calculate_significance(
+        sp.association_.ravel(),
+        sp.reference_distribution_.reshape(19, -1).T,
+        alternative="two-sided",
+    ).reshape(2, 2)
+    numpy.testing.assert_allclose(sp.significance_, expected)
+
+    spl = Spatial_Pearson_Local(w.sparse, permutations=19, alternative="two-sided")
+    spl.fit(z, z[::-1])
+    expected = calculate_significance(
+        spl.associations_, spl.reference_distribution_.T, alternative="two-sided"
+    )
+    numpy.testing.assert_allclose(spl.significance_, expected)
+
+    with pytest.warns(DeprecationWarning, match="permutation inference"):
+        Spatial_Pearson(w.sparse, permutations=19).fit(z, z[::-1])
+
+
+def test_geary_local_mv_alternative():
+    from esda.geary_local_mv import Geary_Local_MV
+
+    glmv = Geary_Local_MV(w, permutations=19, alternative="two-sided").fit([x, x[::-1]])
+    expected = calculate_significance(glmv.localG, glmv.Gs, alternative="two-sided")
+    numpy.testing.assert_allclose(glmv.p_sim, expected)
+
+    with pytest.warns(DeprecationWarning, match="permutation inference"):
+        Geary_Local_MV(w, permutations=19).fit([x, x[::-1]])
