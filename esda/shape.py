@@ -345,7 +345,9 @@ def boundary_amplitude(collection):
 
 def convex_hull_ratio(collection):
     """
-    ratio of the area of the convex hull to the area of the shape itself
+    The area of the shape divided by the area of its convex hull. This
+    varies between zero and one, where one means the shape is its own
+    convex hull.
 
     Altman's A_3 measure, from Neimi et al 1991.
     """
