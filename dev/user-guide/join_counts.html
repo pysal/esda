@@ -1304,31 +1304,31 @@
 <p>As in the Moran’s <span class="math notranslate nohighlight">\(I\)</span> notebook, we build neighborhood-level median Airbnb prices. We then convert that continuous measure into a binary indicator based on whether a neighborhood is above or below the median price.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">"data/berlin-housing.gpkg"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" src="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" />
+<img alt="../_images/971af0c877cbe1d800e7b00360864cd993c2800be50e518c899a3e63a18b4dd7.png" src="../_images/971af0c877cbe1d800e7b00360864cd993c2800be50e518c899a3e63a18b4dd7.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span>
-    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"Quantiles"</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
 <span class="p">)</span>
@@ -1336,10 +1336,10 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" src="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" />
+<img alt="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" src="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" />
 </div>
 </div>
 <h2 id="join-counts">Join Counts<a class="headerlink" href="#join-counts" title="Link to this heading">¶</a></h2>
@@ -1443,10 +1443,10 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;yb_binary&quot;</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"yb_binary"</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"binary"</span><span class="p">,</span>
     <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
 <span class="p">);</span>
@@ -1454,12 +1454,12 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a48ed9436963db142255e2d1afc276294c2b57163866fe8ebdb346fcfdb49361.png" src="../_images/a48ed9436963db142255e2d1afc276294c2b57163866fe8ebdb346fcfdb49361.png" />
+<img alt="../_images/01acbe8dbaf8d7514b16f8dee6ca32b46e8799e5bb8ece31b9a854569f6e2097.png" src="../_images/01acbe8dbaf8d7514b16f8dee6ca32b46e8799e5bb8ece31b9a854569f6e2097.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 
 <span class="n">yb</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;</span> <span class="n">y</span><span class="o">.</span><span class="n">median</span><span class="p">())</span>  <span class="c1"># convert to binary</span>
 <span class="n">wq</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1467,10 +1467,10 @@
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
 <span class="n">jc</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">join_counts</span><span class="o">.</span><span class="n">Join_Counts</span><span class="p">(</span><span class="n">yb</span><span class="p">,</span> <span class="n">wq</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Observed BB Joins: </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Observed WW Joins: </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Observed BW Joins: </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Joins (K):   </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Observed BB Joins: </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Observed WW Joins: </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Observed BW Joins: </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total Joins (K):   </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jc</span><span class="o">.</span><span class="n">ww</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jc</span><span class="o">.</span><span class="n">bw</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1531,7 +1531,7 @@ Total Joins (K):   386.0
 <span class="n">p</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">yb_binary</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span>
 <span class="n">p2</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">p</span>
 <span class="n">ebb</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">*</span> <span class="n">wq</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span><span class="o">.</span><span class="n">s0</span> <span class="o">/</span> <span class="mi">2</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exected BB count under normality: </span><span class="si">{</span><span class="n">ebb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exected BB count under normality: </span><span class="si">{</span><span class="n">ebb</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1574,7 +1574,7 @@ Total Joins (K):   386.0
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variance of BB count under normality: </span><span class="si">{</span><span class="n">vbb</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Variance of BB count under normality: </span><span class="si">{</span><span class="n">vbb</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1588,7 +1588,7 @@ Total Joins (K):   386.0
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">zbb_n</span> <span class="o">=</span> <span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span> <span class="o">-</span> <span class="n">ebb</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vbb</span><span class="p">)</span>
 <span class="n">p_value_n</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">zbb_n</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;One-tailed p-value for BB under normality: </span><span class="si">{</span><span class="n">p_value_n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"One-tailed p-value for BB under normality: </span><span class="si">{</span><span class="n">p_value_n</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1604,26 +1604,26 @@ Total Joins (K):   386.0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Observed BB&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"r"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Observed BB"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span>
     <span class="n">jc</span><span class="o">.</span><span class="n">mean_bb</span><span class="p">,</span>
     <span class="mi">0</span><span class="p">,</span>
     <span class="mf">0.075</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
-    <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span>
-    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Expected BB (Simulated)&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span>
+    <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">"Expected BB (Simulated)"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;BB Counts&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"BB Counts"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Permutation reference distribution for global BB joins&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Permutation reference distribution for global BB joins"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;p-value (sim): </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bb</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"p-value (sim): </span><span class="si">{</span><span class="n">jc</span><span class="o">.</span><span class="n">p_sim_bb</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/17132ac21b88fb06b913d5e9843868fda4895a889aa4cd2051e133734c80469d.png" src="../_images/17132ac21b88fb06b913d5e9843868fda4895a889aa4cd2051e133734c80469d.png" />
+<img alt="../_images/719684a340848e1c515f9fab5e867967b84e697f2b38c709a14b65a6c583037e.png" src="../_images/719684a340848e1c515f9fab5e867967b84e697f2b38c709a14b65a6c583037e.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>p-value (sim): 0.0010
 </code></pre></div>
 </div>
@@ -1643,7 +1643,8 @@ Total Joins (K):   386.0
 </div>
 <p>The simulations generate an average BB count of 90.7, while our observed BB join count was 164.
 Since the p-value from the simulation is below conventional significance levels, we would reject the null
-of complete spatial randomness in favor of spatial autocorrelation in market prices.</p>
+of complete spatial randomness in favor of spatial autocorrelation in market prices. Permutation-based inference
+on join counts is one-tailed by default.</p>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>
 <p>Join counts provide a global autocorrelation measure for binary variables. They are especially useful when the research question is about the clustering of categories rather than the similarity of continuous magnitudes. After establishing global clustering, the natural next step is to ask <strong>where</strong> those clusters occur, which is the focus of local spatial autocorrelation methods.</p>
 

@@ -1644,13 +1644,13 @@ sets of polygons: a onto b and b onto a.</p>
 </dd>
 <dt id="esda.external_entropy.b"><span class="sig-name descname">b</span><span class="p"> : </span><span class="desctype"><span class="desctype">geometry array of polygons</span></span><a class="headerlink" href="#esda.external_entropy.b" title="Permalink to this definition">¶</a></dt><dd><p>array of polygons</p>
 </dd>
-<dt id="esda.external_entropy.balance"><span class="sig-name descname">balance</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.external_entropy.balance" title="Permalink to this definition">¶</a></dt><dd><p>weight that describing the relative importance of pattern a or pattern b.
+<dt id="esda.external_entropy.balance"><span class="sig-name descname">balance</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.external_entropy.balance" title="Permalink to this definition">¶</a></dt><dd><p>weight that describing the relative importance of pattern a or pattern b.
 When large and positive, we weight the measure more to ensure polygons in b
 are fully contained by polygons in a. When large and negative,
 we weight the pattern to ensure polygons in A are fully contained
 by polygons in b. Corresponds to the log of beta in {cite}`Nowosad2018`.</p>
 </dd>
-<dt id="esda.external_entropy.base"><span class="sig-name descname">base</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.external_entropy.base" title="Permalink to this definition">¶</a></dt><dd><p>base of logarithm to use throughout computation</p>
+<dt id="esda.external_entropy.base"><span class="sig-name descname">base</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.external_entropy.base" title="Permalink to this definition">¶</a></dt><dd><p>base of logarithm to use throughout computation</p>
 </dd>
 </dl>
 </dd>
@@ -1666,8 +1666,8 @@ by polygons in b. Corresponds to the log of beta in {cite}`Nowosad2018`.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">external_entropy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">geodatasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston1&#39;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston2&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'geoda.charleston1'</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'geoda.charleston2'</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">external_entropy</span><span class="p">(</span><span class="n">ch1</span><span class="p">,</span> <span class="n">ch2</span><span class="p">)</span>
 <span class="go">np.float64(0.7941995421208056)</span>
 </code></pre></div>

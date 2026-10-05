@@ -1244,7 +1244,7 @@
 <p>We use the same Berlin neighborhood dataset as in the global Moran’s I and local Moran’s I notebooks so that results can be compared directly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">"data/berlin-housing.gpkg"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1252,15 +1252,15 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;OrRd&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">"Quantiles"</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"OrRd"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Median Airbnb price by neighbourhood (quintiles)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Median Airbnb price by neighbourhood (quintiles)"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/73ae41e8d2c4a0c14310ab7563eb73a588fcef13b1e0c06d8d98ec0890bf63a1.png" src="../_images/73ae41e8d2c4a0c14310ab7563eb73a588fcef13b1e0c06d8d98ec0890bf63a1.png" />
+<img alt="../_images/e7bed1b0b3cf5d1c6b8a7b1f5746522e3227f88daf3b1b42c36feef0c52847b4.png" src="../_images/e7bed1b0b3cf5d1c6b8a7b1f5746522e3227f88daf3b1b42c36feef0c52847b4.png" />
 </div>
 </div>
 <h2 id="why-getis-ord-g">Why Getis-Ord G?<a class="headerlink" href="#why-getis-ord-g" title="Link to this heading">¶</a></h2>
@@ -1271,7 +1271,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># G requires binary (not row-standardised) weights</span>
 <span class="n">geog</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 </div>
@@ -1284,7 +1284,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">g_local</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">G_Local</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">geog</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Significant hotspots (p&lt;0.05): </span><span class="si">{</span><span class="p">(</span><span class="n">g_local</span><span class="o">.</span><span class="n">p_sim</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Significant hotspots (p&lt;0.05): </span><span class="si">{</span><span class="p">(</span><span class="n">g_local</span><span class="o">.</span><span class="n">p_sim</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1292,7 +1292,7 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Significant hotspots (p&lt;0.05): 63
 </code></pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/getisord.py:362: UserWarning: Gi* requested, but (a) weights are already row-standardized, (b) no weights are on the diagonal, and (c) no default value supplied to star. Assuming that the self-weight is equivalent to the maximum weight in the row. To use a different default (like, .5), set `star=.5`, or use libpysal.weights.fill_diagonal() to set the diagonal values of your weights matrix and use `star=None` in Gi_Local.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/getisord.py:367: UserWarning: Gi* requested, but (a) weights are already row-standardized, (b) no weights are on the diagonal, and (c) no default value supplied to star. Assuming that the self-weight is equivalent to the maximum weight in the row. To use a different default (like, .5), set `star=.5`, or use libpysal.weights.fill_diagonal() to set the diagonal values of your weights matrix and use `star=None` in Gi_Local.
   w, star = _infer_star_and_structure_w(w, star, transform)
 </code></pre></div>
 </div>
@@ -1303,25 +1303,25 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Zs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_local</span><span class="o">.</span><span class="n">Zs</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"Zs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_local</span><span class="o">.</span><span class="n">Zs</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;Zs&quot;</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;RdBu_r&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"Zs"</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">vmin</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">vmax</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Local $G_i^*$ z-scores&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Local $G_i^*$ z-scores"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4599a01bc283a1d2532631e49a3021be31d4be713dd05ae8e0319cb0e2365d92.png" src="../_images/4599a01bc283a1d2532631e49a3021be31d4be713dd05ae8e0319cb0e2365d92.png" />
+<img alt="../_images/02156ef95b9aaa597e36c1c19bb2e20714bfaed533733ab4351dac6a75583073.png" src="../_images/02156ef95b9aaa597e36c1c19bb2e20714bfaed533733ab4351dac6a75583073.png" />
 </div>
 </div>
 <h3 id="mapping-significant-hotspots-and-coldspots">Mapping significant hotspots and coldspots<a class="headerlink" href="#mapping-significant-hotspots-and-coldspots" title="Link to this heading">¶</a></h3>
@@ -1332,26 +1332,26 @@
 <span class="n">hotspot</span> <span class="o">=</span> <span class="n">sig</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">g_local</span><span class="o">.</span><span class="n">Zs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">coldspot</span> <span class="o">=</span> <span class="n">sig</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">g_local</span><span class="o">.</span><span class="n">Zs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="n">spot_labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="s2">&quot;not significant&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">spot_labels</span><span class="p">[</span><span class="n">hotspot</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;hotspot&quot;</span>
-<span class="n">spot_labels</span><span class="p">[</span><span class="n">coldspot</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;coldspot&quot;</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;spot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spot_labels</span>
+<span class="n">spot_labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="s2">"not significant"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">spot_labels</span><span class="p">[</span><span class="n">hotspot</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"hotspot"</span>
+<span class="n">spot_labels</span><span class="p">[</span><span class="n">coldspot</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"coldspot"</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"spot"</span><span class="p">]</span> <span class="o">=</span> <span class="n">spot_labels</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hotspot&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;coldspot&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;not significant&quot;</span><span class="p">:</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">}</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;spot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"hotspot"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"coldspot"</span><span class="p">:</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"not significant"</span><span class="p">:</span> <span class="s2">"lightgrey"</span><span class="p">}</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"color"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"spot"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;spot&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"spot"</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Significant $G_i^*$ hotspots and coldspots (p &lt; 0.05)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Significant $G_i^*$ hotspots and coldspots (p &lt; 0.05)"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/bb2047f6b7a5dcf420db6e55c4cc9c333072fecb32ae3fc9e7256af99492fa75.png" src="../_images/bb2047f6b7a5dcf420db6e55c4cc9c333072fecb32ae3fc9e7256af99492fa75.png" />
+<img alt="../_images/d820de37e01959824def1d6c109fa175a28f97436ae942a1d3d8624c0d66da5a.png" src="../_images/d820de37e01959824def1d6c109fa175a28f97436ae942a1d3d8624c0d66da5a.png" />
 </div>
 </div>
 <h3 id="comparing-getis-ord-and-moran-s-i-results">Comparing Getis-Ord and Moran’s I results<a class="headerlink" href="#comparing-getis-ord-and-moran-s-i-results" title="Link to this heading">¶</a></h3>
@@ -1366,11 +1366,11 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/moran.py:1398: RuntimeWarning: invalid value encountered in divide
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/moran.py:1428: RuntimeWarning: invalid value encountered in divide
   self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
 </code></pre></div>
 </div>
-<img alt="../_images/171e6058c9bc0171e49da047104f465c82da4004377c85e4ae8f9cede208ca32.png" src="../_images/171e6058c9bc0171e49da047104f465c82da4004377c85e4ae8f9cede208ca32.png" />
+<img alt="../_images/3eb2307996047dddec4a5cc98cefda874348e9a5a77162295cc70bcd694cd12a.png" src="../_images/3eb2307996047dddec4a5cc98cefda874348e9a5a77162295cc70bcd694cd12a.png" />
 </div>
 </div>
 <h3 id="interpreting-the-local-cross-plot">Interpreting the Local Cross Plot<a class="headerlink" href="#interpreting-the-local-cross-plot" title="Link to this heading">¶</a></h3>

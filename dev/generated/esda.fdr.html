@@ -1518,7 +1518,7 @@ is returned instead.</p>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="esda.fdr.pvalues"><span class="sig-name descname">pvalues</span><span class="p"> : </span><span class="desctype"><span class="desctype">array</span></span><a class="headerlink" href="#esda.fdr.pvalues" title="Permalink to this definition">¶</a></dt><dd><p>(n, ), p values for n multiple tests.</p>
 </dd>
-<dt id="esda.fdr.alpha"><span class="sig-name descname">alpha</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, optional</span></span><a class="headerlink" href="#esda.fdr.alpha" title="Permalink to this definition">¶</a></dt><dd><p>Significance level. Default is 0.05.</p>
+<dt id="esda.fdr.alpha"><span class="sig-name descname">alpha</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a>, optional</span></span><a class="headerlink" href="#esda.fdr.alpha" title="Permalink to this definition">¶</a></dt><dd><p>Significance level. Default is 0.05.</p>
 </dd>
 </dl>
 </dd>
@@ -1529,7 +1529,7 @@ are rejected, the conservative Bonferroni bound (alpha/n)
 is returned.</p>
 </dd>
 <dt class="field-odd" id="esda.fdr-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#esda.fdr-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1538,18 +1538,18 @@ is returned.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;stl.gal&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;stl_hom.txt&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">by_col</span><span class="p">[</span><span class="s1">&#39;HR8893&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"stl.gal"</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"stl_hom.txt"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">by_col</span><span class="p">[</span><span class="s1">'HR8893'</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran_Local</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">fdr</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lm</span> <span class="o">=</span> <span class="n">Moran_Local</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">y</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">w</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">transformation</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">transformation</span><span class="o">=</span><span class="s2">"r"</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alternative</span><span class="o">=</span><span class="s1">'two-sided'</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fdr</span><span class="p">(</span><span class="n">lm</span><span class="o">.</span><span class="n">p_sim</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 <span class="go">0.001282051282051282</span>

@@ -1008,7 +1008,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sac</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Sacramento1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;sacramentot2.shp&quot;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sac</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">"Sacramento1"</span><span class="p">)</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"sacramentot2.shp"</span><span class="p">))</span>
 </code></pre></div>
 </div>
 </div>
@@ -1128,13 +1128,13 @@
       <td>0.086188</td>
       <td>9.314058e-01</td>
       <td>9.313166e-01</td>
-      <td>[-0.037708014617838924, 0.0444800245452655, 0....</td>
-      <td>0.438</td>
-      <td>0.012152</td>
-      <td>0.699760</td>
-      <td>0.489665</td>
-      <td>0.065844</td>
-      <td>4.737508e-01</td>
+      <td>[0.5554655619234226, -0.7266844501132469, 0.75...</td>
+      <td>0.467</td>
+      <td>0.017210</td>
+      <td>0.673081</td>
+      <td>0.453038</td>
+      <td>0.060940</td>
+      <td>4.757034e-01</td>
     </tr>
     <tr>
       <th>1000</th>
@@ -1152,13 +1152,13 @@
       <td>4.147088</td>
       <td>3.447621e-05</td>
       <td>3.367309e-05</td>
-      <td>[0.06367802173109444, 0.09966269802301203, -0....</td>
+      <td>[-0.12586630109188415, -0.13378651113742593, 0...</td>
       <td>0.001</td>
-      <td>0.004519</td>
-      <td>0.119771</td>
-      <td>0.014345</td>
-      <td>4.070700</td>
-      <td>2.343601e-05</td>
+      <td>0.004217</td>
+      <td>0.120747</td>
+      <td>0.014580</td>
+      <td>4.040273</td>
+      <td>2.669449e-05</td>
     </tr>
     <tr>
       <th>1500</th>
@@ -1176,13 +1176,13 @@
       <td>6.763620</td>
       <td>1.430242e-11</td>
       <td>1.345857e-11</td>
-      <td>[-0.1479232992620019, 0.03743315037142137, 0.0...</td>
+      <td>[0.030554192473952045, -0.04059103560085972, -...</td>
       <td>0.001</td>
-      <td>-0.000090</td>
-      <td>0.069143</td>
-      <td>0.004781</td>
-      <td>6.581065</td>
-      <td>2.335447e-11</td>
+      <td>0.000888</td>
+      <td>0.069436</td>
+      <td>0.004821</td>
+      <td>6.539218</td>
+      <td>3.092071e-11</td>
     </tr>
     <tr>
       <th>2000</th>
@@ -1200,13 +1200,13 @@
       <td>12.164298</td>
       <td>5.846476e-34</td>
       <td>4.815656e-34</td>
-      <td>[-0.05359548229293053, -0.035263659803577554, ...</td>
+      <td>[0.031075860741912216, 0.08961364437259338, 0....</td>
       <td>0.001</td>
-      <td>-0.000183</td>
-      <td>0.048134</td>
-      <td>0.002317</td>
-      <td>11.691922</td>
-      <td>7.008918e-32</td>
+      <td>-0.004202</td>
+      <td>0.047833</td>
+      <td>0.002288</td>
+      <td>11.849416</td>
+      <td>1.083476e-32</td>
     </tr>
     <tr>
       <th>2500</th>
@@ -1224,13 +1224,13 @@
       <td>13.102771</td>
       <td>3.974924e-39</td>
       <td>3.174519e-39</td>
-      <td>[0.011512874375615843, -0.01017300253686384, -...</td>
+      <td>[-0.02311084072086462, 0.014272383481163579, 0...</td>
       <td>0.001</td>
-      <td>-0.003754</td>
-      <td>0.038104</td>
-      <td>0.001452</td>
-      <td>13.248992</td>
-      <td>2.286528e-40</td>
+      <td>-0.002753</td>
+      <td>0.038066</td>
+      <td>0.001449</td>
+      <td>13.236130</td>
+      <td>2.713721e-40</td>
     </tr>
   </tbody>
 </table>
@@ -1241,16 +1241,16 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance (m)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Moran&#39;s I&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"distance (m)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Moran's I"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &quot;Moran&#39;s I&quot;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, "Moran's I")
 </code></pre></div>
 </div>
-<img alt="../_images/af05d3aa553d4465d4785467634df6c46e785f6341fa1938964f6b614d84e477.png" src="../_images/af05d3aa553d4465d4785467634df6c46e785f6341fa1938964f6b614d84e477.png" />
+<img alt="../_images/84562e94db7d253cba2ef687769b6206be6f3911e5229315ccc76d2ae78f6ac0.png" src="../_images/84562e94db7d253cba2ef687769b6206be6f3911e5229315ccc76d2ae78f6ac0.png" />
 </div>
 </div>
 <p>Autocorrelation statistics differ in concept, so the shape of the spatial correlogram statistic will vary considerably, based on which statistic is created. For example, we can also plot Geary’s <span class="math notranslate nohighlight">\(C\)</span></p>
@@ -1264,16 +1264,16 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">C</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance (m)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Geary&#39;s C&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"distance (m)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Geary's C"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &quot;Geary&#39;s C&quot;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, "Geary's C")
 </code></pre></div>
 </div>
-<img alt="../_images/0e0e039f77b1303148d813da26a8ff7ddf333b64dbc69983e544fe7bda2b4250.png" src="../_images/0e0e039f77b1303148d813da26a8ff7ddf333b64dbc69983e544fe7bda2b4250.png" />
+<img alt="../_images/944c21a89d1d705392eaa1ca922a8a12a916886315c6d9c28aa91ec21ad3f64d.png" src="../_images/944c21a89d1d705392eaa1ca922a8a12a916886315c6d9c28aa91ec21ad3f64d.png" />
 </div>
 </div>
 <p>…Or Getis-Ord <span class="math notranslate nohighlight">\(G\)</span></p>
@@ -1287,16 +1287,16 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">G</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance (m)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Getis-Ord G&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"distance (m)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Getis-Ord G"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &#39;Getis-Ord G&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, 'Getis-Ord G')
 </code></pre></div>
 </div>
-<img alt="../_images/864cd409fc6db17b698ae343a7df83a0954568f1cdf1cd32e53eed367d7cee01.png" src="../_images/864cd409fc6db17b698ae343a7df83a0954568f1cdf1cd32e53eed367d7cee01.png" />
+<img alt="../_images/df3c2a507dc12452c5ad8e4a8c798e59129bb332747b063fbfbfb9e0e8d0ad85.png" src="../_images/df3c2a507dc12452c5ad8e4a8c798e59129bb332747b063fbfbfb9e0e8d0ad85.png" />
 </div>
 </div>
 <p>You can also leave the distance thresholds unspecified, and the correlogram will estimate over a reasonable range of distances:</p>
@@ -1304,16 +1304,16 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">prof</span> <span class="o">=</span> <span class="n">correlogram</span><span class="p">(</span><span class="n">sac</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">sac</span><span class="o">.</span><span class="n">HH_INC</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="n">G</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">G</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance (m)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Getis-Ord G&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"distance (m)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Getis-Ord G"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &#39;Getis-Ord G&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, 'Getis-Ord G')
 </code></pre></div>
 </div>
-<img alt="../_images/5434242fff858e6bbba2b58e612bb0e3a60a2317a4c2432ebe190ddd76ed622e.png" src="../_images/5434242fff858e6bbba2b58e612bb0e3a60a2317a4c2432ebe190ddd76ed622e.png" />
+<img alt="../_images/ee82cfb7f7e19e8c99072d2cf44c263184c906eac068c0309d47026c83b735ae.png" src="../_images/ee82cfb7f7e19e8c99072d2cf44c263184c906eac068c0309d47026c83b735ae.png" />
 </div>
 </div>
 <h2 id="knn-distance">KNN Distance<a class="headerlink" href="#knn-distance" title="Link to this heading">¶</a></h2>
@@ -1328,7 +1328,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">kcorr</span> <span class="o">=</span> <span class="n">correlogram</span><span class="p">(</span><span class="n">sac</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">sac</span><span class="o">.</span><span class="n">HH_INC</span><span class="p">,</span> <span class="n">kdists</span><span class="p">,</span> <span class="n">distance_type</span><span class="o">=</span><span class="s2">&quot;knn&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">kcorr</span> <span class="o">=</span> <span class="n">correlogram</span><span class="p">(</span><span class="n">sac</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">sac</span><span class="o">.</span><span class="n">HH_INC</span><span class="p">,</span> <span class="n">kdists</span><span class="p">,</span> <span class="n">distance_type</span><span class="o">=</span><span class="s2">"knn"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1336,16 +1336,16 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">kcorr</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;number of nearest neighbors&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Moran&#39;s I&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"number of nearest neighbors"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Moran's I"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &quot;Moran&#39;s I&quot;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, "Moran's I")
 </code></pre></div>
 </div>
-<img alt="../_images/7b42a14c8579449b2afe14ededba69b2bf6ac51ee569a3c8775c7a822172193b.png" src="../_images/7b42a14c8579449b2afe14ededba69b2bf6ac51ee569a3c8775c7a822172193b.png" />
+<img alt="../_images/ed5630fe93db8210550623d538191c0cd6ea5112cf1eb005b72a8303be590e99.png" src="../_images/ed5630fe93db8210550623d538191c0cd6ea5112cf1eb005b72a8303be590e99.png" />
 </div>
 </div>
 <h2 id="nonparametric">Nonparametric<a class="headerlink" href="#nonparametric" title="Link to this heading">¶</a></h2>
@@ -1356,18 +1356,18 @@
 <p>This can be interpreted as the correlation between observations separated by <em>approximately</em> the distance on the horizontal axis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">nonparametric</span> <span class="o">=</span> <span class="n">correlogram</span><span class="p">(</span><span class="n">sac</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">sac</span><span class="o">.</span><span class="n">HH_INC</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s2">&quot;lowess&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">nonparametric</span> <span class="o">=</span> <span class="n">correlogram</span><span class="p">(</span><span class="n">sac</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">sac</span><span class="o">.</span><span class="n">HH_INC</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s2">"lowess"</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">nonparametric</span><span class="o">.</span><span class="n">lowess</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Distance (m)&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Correlation between pairs</span><span class="se">\n</span><span class="s2">approximately this separation&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Distance (m)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Correlation between pairs</span><span class="se">\n</span><span class="s2">approximately this separation"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, &#39;Correlation between pairs\napproximately this separation&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0, 0.5, 'Correlation between pairs\napproximately this separation')
 </code></pre></div>
 </div>
-<img alt="../_images/29aa7e2a92d168a3540857619c60c63f2fa1e56e20a40909ec596f791349811a.png" src="../_images/29aa7e2a92d168a3540857619c60c63f2fa1e56e20a40909ec596f791349811a.png" />
+<img alt="../_images/5a93cdf90c2b8579f29b7d69472cdf037edaa894d4a279ceaabee9a07f2f9bd0.png" src="../_images/5a93cdf90c2b8579f29b7d69472cdf037edaa894d4a279ceaabee9a07f2f9bd0.png" />
 </div>
 </div>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>

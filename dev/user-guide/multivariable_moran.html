@@ -1200,27 +1200,27 @@
 <p>We’ll work with Airbnb data from Chicago, in order to understand how additional information <span class="math notranslate nohighlight">\(x\)</span> informs our judgement about outcomes <span class="math notranslate nohighlight">\(y\)</span>. In this case, we’ll consider the average price per head per night for airbnbs in neighborhoods of Chicago, and how it is informed by the overcrowding rate in those neighborhoods, which is a function itself of the population density and investment in housing stock in the neighborhood. Note, too, that price-per-head is <em>already correcting</em> the total booking price of an airbnb based on the number of people it can accommodate; we need a new technique to partition covariation correctly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">geodatasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;geoda.airbnb&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">geodatasets</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"geoda.airbnb"</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading file &#39;airbnb.zip&#39; from &#39;https://geodacenter.github.io/data-and-lab//data/airbnb.zip&#39; to &#39;/home/runner/.cache/geodatasets&#39;.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading file 'airbnb.zip' from 'https://geodacenter.github.io/data-and-lab//data/airbnb.zip' to '/home/runner/.cache/geodatasets'.
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;price_pp&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"price_pp"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/1b3a113b70bea16aa09f55baf0fd7645e8647aa8cedb30def73aef595f3d2045.png" src="../_images/1b3a113b70bea16aa09f55baf0fd7645e8647aa8cedb30def73aef595f3d2045.png" />
+<img alt="../_images/704a953516c3946e82d00bc4847e2fd34ca37fa85317ea8c469f999aa8033685.png" src="../_images/704a953516c3946e82d00bc4847e2fd34ca37fa85317ea8c469f999aa8033685.png" />
 </div>
 </div>
 <p>In order to estimate the statistics, we need to get our data. We’ll use the <code class="docutils literal notranslate"><span class="pre">price_pp</span></code> to get the price per person per night for Airbnbs in each neighborhood. And, we’ll use the <code class="docutils literal notranslate"><span class="pre">crowded</span></code> column for the percentages of properties that are over-crowded. We’ll build a simple contiguity weights matrix to explain the spatial adjacencies between neighborhoods.</p>
@@ -1228,7 +1228,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">price_pp</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">crowded</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">w</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">"R"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1274,19 +1274,19 @@
     <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
     <span class="n">left</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">xmin</span><span class="p">,</span> <span class="n">ymin</span><span class="p">])</span>
     <span class="n">right</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">xmax</span><span class="p">,</span> <span class="n">ymax</span><span class="p">])</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
     <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Splitting an OLS&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Combining basic stats&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">([</span><span class="s2">&quot;Partial Local Moran&quot;</span><span class="p">,</span> <span class="s2">&quot;Axiliary Local Moran&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Splitting an OLS"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Combining basic stats"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">([</span><span class="s2">"Partial Local Moran"</span><span class="p">,</span> <span class="s2">"Axiliary Local Moran"</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
     <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c86d5ba59c6e457c38a6372eaa0b52dd717aa9dea42df036eac2495749e261da.png" src="../_images/c86d5ba59c6e457c38a6372eaa0b52dd717aa9dea42df036eac2495749e261da.png" />
+<img alt="../_images/49a9e07d047157866a613a674cb351fdbb4e344bf4d0ba4dc493a1f3af532c5a.png" src="../_images/49a9e07d047157866a613a674cb351fdbb4e344bf4d0ba4dc493a1f3af532c5a.png" />
 </div>
 </div>
 <p>You can see the direction of changes shown below. The changes in the partial statistic can only move from left to right, since the correction is only applied to <span class="math notranslate nohighlight">\(y\)</span>, not <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span>. The component that “corrects” the <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span> for <span class="math notranslate nohighlight">\(x\)</span> comes from that due to <span class="math notranslate nohighlight">\(\mathbf{W}x\)</span>, which arises in the auxiliary regression version, shown on the right.</p>
@@ -1298,7 +1298,7 @@
     <span class="n">neg_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span>
     <span class="n">quad</span> <span class="o">=</span> <span class="n">off_sign</span> <span class="o">+</span> <span class="n">neg_y</span> <span class="o">*</span> <span class="mi">2</span>
     <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">colors</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;powderblue&quot;</span><span class="p">,</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightsalmon&quot;</span><span class="p">])</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"powderblue"</span><span class="p">,</span> <span class="s2">"steelblue"</span><span class="p">,</span> <span class="s2">"lightsalmon"</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">colors</span><span class="p">[</span><span class="n">quad</span><span class="p">]</span>
 </code></pre></div>
 </div>
@@ -1320,30 +1320,30 @@
             <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
             <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
             <span class="n">width</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-            <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+            <span class="n">shape</span><span class="o">=</span><span class="s2">"full"</span><span class="p">,</span>
             <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">head_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
             <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
         <span class="p">)</span>
-    <span class="n">ax_</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-    <span class="n">ax_</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
             <span class="n">ax_</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
-                <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Hotspot&quot;</span><span class="p">,</span> <span class="s2">&quot;Pit&quot;</span><span class="p">,</span> <span class="s2">&quot;Peak&quot;</span><span class="p">,</span> <span class="s2">&quot;Coldspot&quot;</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">],</span>
+                <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">"Hotspot"</span><span class="p">,</span> <span class="s2">"Pit"</span><span class="p">,</span> <span class="s2">"Peak"</span><span class="p">,</span> <span class="s2">"Coldspot"</span><span class="p">][</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">],</span>
                 <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span> <span class="k">if</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.025</span> <span class="k">if</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.6</span><span class="p">),</span>
-                <span class="n">xycoords</span><span class="o">=</span><span class="s2">&quot;axes fraction&quot;</span><span class="p">,</span>
+                <span class="n">xycoords</span><span class="o">=</span><span class="s2">"axes fraction"</span><span class="p">,</span>
             <span class="p">)</span>
-    <span class="n">ax_</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$y-\rho x$&quot;</span><span class="p">)</span>
-    <span class="n">ax_</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">((</span><span class="sa">r</span><span class="s2">&quot;$\mathbf</span><span class="si">{W}</span><span class="s2">y$&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\mathbf</span><span class="si">{W}</span><span class="s2">(y-\rho x)$&quot;</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"$y-\rho x$"</span><span class="p">)</span>
+    <span class="n">ax_</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">((</span><span class="sa">r</span><span class="s2">"$\mathbf</span><span class="si">{W}</span><span class="s2">y$"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"$\mathbf</span><span class="si">{W}</span><span class="s2">(y-\rho x)$"</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
 <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2f08d74f336b94c4b94d115e7edf857421e1de9c538cf1a8a11806729c1e1ec4.png" src="../_images/2f08d74f336b94c4b94d115e7edf857421e1de9c538cf1a8a11806729c1e1ec4.png" />
+<img alt="../_images/6ee45b28d1516234ab429e6bfa8d74f09d21f8d1f71b324f899a4c7f39d0bda3.png" src="../_images/6ee45b28d1516234ab429e6bfa8d74f09d21f8d1f71b324f899a4c7f39d0bda3.png" />
 </div>
 </div>
 <p>Here, we’ve colored the statistics according to their <em>new</em> quadrant. In the same fashion as a regular Local Moran statistic, we get quadrants that describe whether <span class="math notranslate nohighlight">\(y-\rho x\)</span> is above or below the mean, (which, in both cases, is zero), and whether <span class="math notranslate nohighlight">\(\mathbf{W}y\)</span> (or <span class="math notranslate nohighlight">\(\mathbf{W}(y - \rho x)\)</span>) is above or below its mean (which, again, is zero by construction). Further, you can note the four-part quadrant breakdown is explained by the annotations:</p>
@@ -1359,13 +1359,13 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># | echo: false</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">circular_hist</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">gaps</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Produce a circular histogram of angles on ax.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ax : matplotlib.axes._subplots.PolarAxesSubplot</span>
-<span class="sd">        axis instance created with subplot_kw=dict(projection=&#39;polar&#39;).</span>
+<span class="sd">        axis instance created with subplot_kw=dict(projection='polar').</span>
 
 <span class="sd">    x : array</span>
 <span class="sd">        Angles to plot, expected in units of radians.</span>
@@ -1396,7 +1396,7 @@
 <span class="sd">    patches : `.BarContainer` or list of a single `.Polygon`</span>
 <span class="sd">        Container of individual artists used to create the histogram</span>
 <span class="sd">        or list of such containers if there are multiple input datasets.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">np</span> <span class="o">=</span> <span class="n">numpy</span>
     <span class="c1"># Wrap angles to [-pi, pi)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
@@ -1423,7 +1423,7 @@
 
     <span class="c1"># Plot data on ax</span>
     <span class="n">patches</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
-        <span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"edge"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span>
     <span class="p">)</span>
 
     <span class="c1"># Set the direction of the zero angle</span>
@@ -1444,7 +1444,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># | echo: false</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;polar&quot;</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">"polar"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">((</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)):</span>
     <span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span> <span class="o">=</span> <span class="n">Iy</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">Iy</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">sparse</span> <span class="o">@</span> <span class="n">Iy</span><span class="o">.</span><span class="n">z</span>
     <span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_lmo</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a_lmo</span><span class="o">.</span><span class="n">partials_</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
@@ -1452,7 +1452,7 @@
     <span class="n">colors</span> <span class="o">=</span> <span class="n">quadcolor</span><span class="p">(</span>
         <span class="n">dx</span><span class="p">,</span>
         <span class="n">dy</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">new_y</span><span class="p">,</span>
-        <span class="n">colors</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;violet&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgreen&quot;</span><span class="p">]),</span>
+        <span class="n">colors</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"forestgreen"</span><span class="p">,</span> <span class="s2">"violet"</span><span class="p">,</span> <span class="s2">"purple"</span><span class="p">,</span> <span class="s2">"lightgreen"</span><span class="p">]),</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Iy</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
@@ -1462,15 +1462,15 @@
                 <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
                 <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
                 <span class="n">width</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="s2">"full"</span><span class="p">,</span>
                 <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
                 <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
             <span class="p">)</span>
-        <span class="n">ax_</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-        <span class="n">ax_</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-        <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Change, Univariate to Part-Conditional&quot;</span><span class="p">)</span>
+        <span class="n">ax_</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
+        <span class="n">ax_</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Change, Univariate to Part-Conditional"</span><span class="p">)</span>
         <span class="n">seaborn</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
         <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
             <span class="n">handles</span><span class="o">=</span><span class="p">[</span>
@@ -1479,32 +1479,32 @@
                     <span class="mi">0</span><span class="p">,</span>
                     <span class="mi">1</span><span class="p">,</span>
                     <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;violet&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgreen&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s2">"forestgreen"</span><span class="p">,</span> <span class="s2">"violet"</span><span class="p">,</span> <span class="s2">"purple"</span><span class="p">,</span> <span class="s2">"lightgreen"</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
             <span class="p">],</span>
-            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X Heats y&quot;</span><span class="p">,</span> <span class="s2">&quot;X Pits y&quot;</span><span class="p">,</span> <span class="s2">&quot;X Cools y&quot;</span><span class="p">,</span> <span class="s2">&quot;X Peaks y&quot;</span><span class="p">],</span>
+            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"X Heats y"</span><span class="p">,</span> <span class="s2">"X Pits y"</span><span class="p">,</span> <span class="s2">"X Cools y"</span><span class="p">,</span> <span class="s2">"X Peaks y"</span><span class="p">],</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">circular_hist</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">bin_</span><span class="p">,</span> <span class="n">patch_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">patches</span><span class="o">.</span><span class="n">patches</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
             <span class="k">if</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;lightgreen&quot;</span><span class="p">)</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">"lightgreen"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;forestgreen&quot;</span><span class="p">)</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">"forestgreen"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
-                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;violet&quot;</span><span class="p">)</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">"violet"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">&lt;=</span> <span class="n">bin_</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;purple&quot;</span><span class="p">)</span>
-        <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Change, Univariate to Full Conditional&quot;</span><span class="p">)</span>
+                <span class="n">patch_</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">"purple"</span><span class="p">)</span>
+        <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Change, Univariate to Full Conditional"</span><span class="p">)</span>
 <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cae64b80ab7517c0da61186496b4327221517396ab5629c5619f29947673f38e.png" src="../_images/cae64b80ab7517c0da61186496b4327221517396ab5629c5619f29947673f38e.png" />
+<img alt="../_images/fcc876eb0374a84418dcdfc3b1bb6d1650c142713e80d9dbcd9b00787f9d8d3c.png" src="../_images/fcc876eb0374a84418dcdfc3b1bb6d1650c142713e80d9dbcd9b00787f9d8d3c.png" />
 </div>
 </div>
 <p>From the partial statistic, you can see that most of the moves occur in the hotspot and coldspot quadrants, but quite a few very large moves push things towards “peaked”ness. These are many of the moves on the bottom right quadrant, where even a few observations shift from being a coldspot to being a peak. This means that they’re in relatively low-priced areas, given their crowding levels. I refer to this as “x peaks y”, since it indicates that <span class="math notranslate nohighlight">\(x\)</span> pushes the local statistic towards the “peak” quadrant. Note that this does <em>not</em> indicate a change in classification, which we can see in a second.</p>
@@ -1519,17 +1519,17 @@
     <span class="n">Iy</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
     <span class="n">p_lmo</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hotspot&quot;</span><span class="p">,</span> <span class="s2">&quot;pit&quot;</span><span class="p">,</span> <span class="s2">&quot;coldspot&quot;</span><span class="p">,</span> <span class="s2">&quot;peak&quot;</span><span class="p">]</span>
-<span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Partial&quot;</span>
-<span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Univariate&quot;</span>
+<span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"hotspot"</span><span class="p">,</span> <span class="s2">"pit"</span><span class="p">,</span> <span class="s2">"coldspot"</span><span class="p">,</span> <span class="s2">"peak"</span><span class="p">]</span>
+<span class="n">partial_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Partial"</span>
+<span class="n">partial_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Univariate"</span>
 
 <span class="n">aux_moves</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
     <span class="n">Iy</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
     <span class="n">a_lmo</span><span class="o">.</span><span class="n">labels_</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">aux_moves</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">aux_moves</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hotspot&quot;</span><span class="p">,</span> <span class="s2">&quot;pit&quot;</span><span class="p">,</span> <span class="s2">&quot;coldspot&quot;</span><span class="p">,</span> <span class="s2">&quot;peak&quot;</span><span class="p">]</span>
-<span class="n">aux_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Auxiliary&quot;</span>
-<span class="n">aux_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Univariate&quot;</span>
+<span class="n">aux_moves</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">aux_moves</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"hotspot"</span><span class="p">,</span> <span class="s2">"pit"</span><span class="p">,</span> <span class="s2">"coldspot"</span><span class="p">,</span> <span class="s2">"peak"</span><span class="p">]</span>
+<span class="n">aux_moves</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Auxiliary"</span>
+<span class="n">aux_moves</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Univariate"</span>
 </code></pre></div>
 </div>
 </div>

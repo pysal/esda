@@ -2389,13 +2389,13 @@
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="esda.Join_Counts_Local.__init__.connectivity"><span class="sig-name descname">connectivity</span><span class="p"> : </span><span class="desctype"><span class="desctype">W | Graph</span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.connectivity" title="Permalink to this definition">¶</a></dt><dd><p>spatial weights instance as W or Graph aligned with y</p>
 </dd>
-<dt id="esda.Join_Counts_Local.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>number of random permutations for calculation of pseudo
+<dt id="esda.Join_Counts_Local.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>number of random permutations for calculation of pseudo
 p_values</p>
 </dd>
-<dt id="esda.Join_Counts_Local.__init__.n_jobs"><span class="sig-name descname">n_jobs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.n_jobs" title="Permalink to this definition">¶</a></dt><dd><p>Number of cores to be used in the conditional randomisation. If -1,
+<dt id="esda.Join_Counts_Local.__init__.n_jobs"><span class="sig-name descname">n_jobs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.n_jobs" title="Permalink to this definition">¶</a></dt><dd><p>Number of cores to be used in the conditional randomisation. If -1,
 all available cores are used.</p>
 </dd>
-<dt id="esda.Join_Counts_Local.__init__.keep_simulations"><span class="sig-name descname">keep_simulations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> (default True)</span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.keep_simulations" title="Permalink to this definition">¶</a></dt><dd><p>If True, the entire matrix of replications under the null
+<dt id="esda.Join_Counts_Local.__init__.keep_simulations"><span class="sig-name descname">keep_simulations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a> (default True)</span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.keep_simulations" title="Permalink to this definition">¶</a></dt><dd><p>If True, the entire matrix of replications under the null
 is stored in memory and accessible; otherwise, replications
 are not saved</p>
 </dd>
@@ -2408,7 +2408,7 @@ nor numpy.random.RandomState instances.</p>
 If numpy.nan, will propagate to the final local statistic depending
 on the <cite>stat_func</cite>. If 0, then the lag is always zero for islands.</p>
 </dd>
-<dt id="esda.Join_Counts_Local.__init__.drop_islands"><span class="sig-name descname">drop_islands</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> (default True)</span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.drop_islands" title="Permalink to this definition">¶</a></dt><dd><p>Whether or not to preserve islands as entries in the adjacency
+<dt id="esda.Join_Counts_Local.__init__.drop_islands"><span class="sig-name descname">drop_islands</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a> (default True)</span></span><a class="headerlink" href="#esda.Join_Counts_Local.__init__.drop_islands" title="Permalink to this definition">¶</a></dt><dd><p>Whether or not to preserve islands as entries in the adjacency
 list. By default, observations with no neighbors do not appear
 in the adjacency list. If islands are kept, they are coded as
 self-neighbors with zero weight. See <code class="docutils literal notranslate"><span class="pre">libpysal.weights.to_adjlist()</span></code>.</p>
@@ -2487,25 +2487,25 @@ p-values for each unit.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">Join_Counts_Local</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">LJC_uni</span> <span class="o">=</span> <span class="n">Join_Counts_Local</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">'two-sided'</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">LJC_uni</span><span class="o">.</span><span class="n">LJC</span>
 <span class="go">array([0., 0., 0., 0., 0., 0., 0., 0., 2., 3., 3., 2., 2., 3., 3., 2.])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">LJC_uni</span><span class="o">.</span><span class="n">p_sim</span>
-<span class="go">array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.21 ,</span>
-<span class="go">       0.086, 0.086, 0.21 , 0.465, 0.21 , 0.21 , 0.465], dtype=float32)</span>
+<span class="go">array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.912,</span>
+<span class="go">       0.488, 0.488, 0.912, 0.436, 0.192, 0.192, 0.436], dtype=float32)</span>
 </code></pre></div>
 </div>
 <p>Guerry data replicating GeoDa tutorial</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s1">&#39;Guerry&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;guerry.shp&#39;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry_ds</span><span class="p">[</span><span class="s1">&#39;SELECTED&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s1">&#39;Donatns&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10997</span><span class="p">),</span> <span class="s1">&#39;SELECTED&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s1">'Guerry'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'guerry.shp'</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry_ds</span><span class="p">[</span><span class="s1">'SELECTED'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s1">'Donatns'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10997</span><span class="p">),</span> <span class="s1">'SELECTED'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">Queen</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">LJC_uni</span> <span class="o">=</span> <span class="n">Join_Counts_Local</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s1">&#39;SELECTED&#39;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="n">connectivity</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">'two-sided'</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s1">'SELECTED'</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">LJC_uni</span><span class="o">.</span><span class="n">LJC</span>
 <span class="go">array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 3., 3., 0.,</span>
 <span class="go">       1., 0., 0., 0., 0., 0., 0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 1.,</span>
@@ -2514,22 +2514,22 @@ p-values for each unit.</p>
 <span class="go">       0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 2., 0., 3., 0., 0.])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">LJC_uni</span><span class="o">.</span><span class="n">p_sim</span>
 <span class="go">array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,</span>
-<span class="go">         nan,   nan,   nan, 0.651,   nan, 0.379, 0.379,   nan, 0.548,</span>
-<span class="go">         nan,   nan,   nan,   nan,   nan,   nan, 0.563,   nan, 0.707,</span>
-<span class="go">         nan,   nan,   nan,   nan,   nan,   nan, 0.566,   nan,   nan,</span>
+<span class="go">         nan,   nan,   nan, 0.84 ,   nan, 0.044, 0.044,   nan, 1.   ,</span>
+<span class="go">         nan,   nan,   nan,   nan,   nan,   nan, 1.   ,   nan, 0.626,</span>
+<span class="go">         nan,   nan,   nan,   nan,   nan,   nan, 1.   ,   nan,   nan,</span>
 <span class="go">         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,</span>
-<span class="go">         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.596,</span>
+<span class="go">         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 1.   ,</span>
 <span class="go">         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,</span>
 <span class="go">         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,</span>
-<span class="go">         nan,   nan, 0.425,   nan,   nan,   nan,   nan,   nan, 0.507,</span>
-<span class="go">         nan, 0.36 ,   nan,   nan], dtype=float32)</span>
+<span class="go">         nan,   nan, 0.07 ,   nan,   nan,   nan,   nan,   nan, 0.262,</span>
+<span class="go">         nan, 0.112,   nan,   nan], dtype=float32)</span>
 </code></pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="esda.Join_Counts_Local.get_metadata_routing">
-<span class="sig-name descname"><span class="pre">get_metadata_routing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/../../../../micromamba/envs/test/lib/python3.14/site-packages/sklearn/utils/_metadata_requests.py#L1737-L1749"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts_Local.get_metadata_routing" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_metadata_routing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/../../../../micromamba/envs/test/lib/python3.14/site-packages/sklearn/utils/_metadata_requests.py#L1743-L1755"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts_Local.get_metadata_routing" title="Link to this definition">¶</a></dt>
 <dd><p>Get metadata routing of this object.</p>
 <p>Please check <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
 mechanism works.</p>
@@ -2551,7 +2551,7 @@ routing information.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Join_Counts_Local.get_params-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts_Local.get_params-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.Join_Counts_Local.get_params.deep"><span class="sig-name descname">deep</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a>, default=True</span></span><a class="headerlink" href="#esda.Join_Counts_Local.get_params.deep" title="Permalink to this definition">¶</a></dt><dd><p>If True, will return the parameters for this estimator and
+<dt id="esda.Join_Counts_Local.get_params.deep"><span class="sig-name descname">deep</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a>, default=True</span></span><a class="headerlink" href="#esda.Join_Counts_Local.get_params.deep" title="Permalink to this definition">¶</a></dt><dd><p>If True, will return the parameters for this estimator and
 contained subobjects that are estimators.</p>
 </dd>
 </dl>
@@ -2560,14 +2560,14 @@ contained subobjects that are estimators.</p>
 <dd class="field-even"><p><strong>params</strong> – Parameter names mapped to their values.</p>
 </dd>
 <dt class="field-odd" id="esda.Join_Counts_Local.get_params-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts_Local.get_params-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="esda.Join_Counts_Local.set_fit_request">
-<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts_Local.set_fit_request.n_jobs" title="esda.Join_Counts_Local.set_fit_request.n_jobs (Python parameter) — Metadata routing for n_jobs parameter in fit."><span class="n"><span class="pre">n_jobs</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;$UNCHANGED$&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts_Local.set_fit_request.permutations" title="esda.Join_Counts_Local.set_fit_request.permutations (Python parameter) — Metadata routing for permutations parameter in fit."><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;$UNCHANGED$&#39;</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/../../../../micromamba/envs/test/lib/python3.14/site-packages/sklearn/utils/_metadata_requests.py#L1434-L1479"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts_Local.set_fit_request.n_jobs" title="esda.Join_Counts_Local.set_fit_request.n_jobs (Python parameter) — Metadata routing for n_jobs parameter in fit."><span class="n"><span class="pre">n_jobs</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'$UNCHANGED$'</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts_Local.set_fit_request.permutations" title="esda.Join_Counts_Local.set_fit_request.permutations (Python parameter) — Metadata routing for permutations parameter in fit."><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'$UNCHANGED$'</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/../../../../micromamba/envs/test/lib/python3.14/site-packages/sklearn/utils/_metadata_requests.py#L1440-L1485"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request" title="Link to this definition">¶</a></dt>
 <dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
 <p>Note that this method is only relevant when this estimator is used as a
 sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
@@ -2590,9 +2590,9 @@ parameters and not others.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Join_Counts_Local.set_fit_request-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.Join_Counts_Local.set_fit_request.n_jobs"><span class="sig-name descname">n_jobs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></span><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request.n_jobs" title="Permalink to this definition">¶</a></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+<dt id="esda.Join_Counts_Local.set_fit_request.n_jobs"><span class="sig-name descname">n_jobs</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a>, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></span><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request.n_jobs" title="Permalink to this definition">¶</a></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </dd>
-<dt id="esda.Join_Counts_Local.set_fit_request.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></span><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request.permutations" title="Permalink to this definition">¶</a></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">permutations</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+<dt id="esda.Join_Counts_Local.set_fit_request.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a>, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></span><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request.permutations" title="Permalink to this definition">¶</a></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">permutations</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -2600,7 +2600,7 @@ parameters and not others.</p>
 <dd class="field-even"><p><strong>self</strong> – The updated object.</p>
 </dd>
 <dt class="field-odd" id="esda.Join_Counts_Local.set_fit_request-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts_Local.set_fit_request-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)">object</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)">object</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2616,7 +2616,7 @@ possible to update each component of a nested object.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Join_Counts_Local.set_params-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts_Local.set_params-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.Join_Counts_Local.set_params.params"><span class="sig-name descname">**params</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></span></span><a class="headerlink" href="#esda.Join_Counts_Local.set_params.params" title="Permalink to this definition">¶</a></dt><dd><p>Estimator parameters.</p>
+<dt id="esda.Join_Counts_Local.set_params.params"><span class="sig-name descname">**params</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></span></span><a class="headerlink" href="#esda.Join_Counts_Local.set_params.params" title="Permalink to this definition">¶</a></dt><dd><p>Estimator parameters.</p>
 </dd>
 </dl>
 </dd>

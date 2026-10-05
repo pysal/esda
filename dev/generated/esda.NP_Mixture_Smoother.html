@@ -2565,12 +2565,12 @@ models.</p>
 </dd>
 <dt id="esda.NP_Mixture_Smoother.__init__.k"><span class="sig-name descname">k</span><span class="p"> : </span><span class="desctype"><span class="desctype">integer</span></span><a class="headerlink" href="#esda.NP_Mixture_Smoother.__init__.k" title="Permalink to this definition">¶</a></dt><dd><p>a seed number to specify the number of subpopulations</p>
 </dd>
-<dt id="esda.NP_Mixture_Smoother.__init__.acc"><span class="sig-name descname">acc</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.NP_Mixture_Smoother.__init__.acc" title="Permalink to this definition">¶</a></dt><dd><p>convergence criterion; VEM and EM loops stop
+<dt id="esda.NP_Mixture_Smoother.__init__.acc"><span class="sig-name descname">acc</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.NP_Mixture_Smoother.__init__.acc" title="Permalink to this definition">¶</a></dt><dd><p>convergence criterion; VEM and EM loops stop
 when the increase of log likelihood is less than acc</p>
 </dd>
 <dt id="esda.NP_Mixture_Smoother.__init__.numiter"><span class="sig-name descname">numiter</span><span class="p"> : </span><span class="desctype"><span class="desctype">integer</span></span><a class="headerlink" href="#esda.NP_Mixture_Smoother.__init__.numiter" title="Permalink to this definition">¶</a></dt><dd><p>the maximum number of iterations for VEM and EM loops</p>
 </dd>
-<dt id="esda.NP_Mixture_Smoother.__init__.limit"><span class="sig-name descname">limit</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.NP_Mixture_Smoother.__init__.limit" title="Permalink to this definition">¶</a></dt><dd><p>a parameter to cotrol the limit for combing subpopulation
+<dt id="esda.NP_Mixture_Smoother.__init__.limit"><span class="sig-name descname">limit</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#esda.NP_Mixture_Smoother.__init__.limit" title="Permalink to this definition">¶</a></dt><dd><p>a parameter to cotrol the limit for combing subpopulation
 models</p>
 </dd>
 </dl>
@@ -2615,7 +2615,7 @@ models</p>
 <dd><p>a global weight value, 1 devided by n</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.NP_Mixture_Smoother.w-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.NP_Mixture_Smoother.w-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2637,7 +2637,7 @@ models</p>
 <dd><p>same as acc in parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.NP_Mixture_Smoother.acc-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.NP_Mixture_Smoother.acc-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2659,7 +2659,7 @@ models</p>
 <dd><p>same as limit in parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.NP_Mixture_Smoother.limit-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.NP_Mixture_Smoother.limit-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2744,7 +2744,7 @@ r of the NP_Mixture_Smoother instance</p>
 </div>
 <p>applying the mixture algorithm</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">mixture</span><span class="o">.</span><span class="n">mixalg</span><span class="p">()</span>
-<span class="go">{&#39;accuracy&#39;: 1.0, &#39;k&#39;: 1, &#39;p&#39;: array([1.]), &#39;grid&#39;: array([11.27659574]), &#39;gradient&#39;: array([0.]), &#39;mix_den&#39;: array([0., 0., 0., 0.])}</span>
+<span class="go">{'accuracy': 1.0, 'k': 1, 'p': array([1.]), 'grid': array([11.27659574]), 'gradient': array([0.]), 'mix_den': array([0., 0., 0., 0.])}</span>
 </code></pre></div>
 </div>
 <p>estimating empirical Bayesian smoothed rates</p>

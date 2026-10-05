@@ -981,7 +981,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
-    <span class="s2">&quot;https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip&quot;</span>
+    <span class="s2">"https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip"</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
@@ -990,7 +990,7 @@
 <p>To start, we know that China, India, and the US are the three most populous countries in the world:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"POP_EST"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -1166,15 +1166,15 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"POP_EST"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/884cac0dc8bb7574dd956c86f4b36d11b587aecbdf4dfc463977f342d4e394ae.png" src="../_images/884cac0dc8bb7574dd956c86f4b36d11b587aecbdf4dfc463977f342d4e394ae.png" />
+<img alt="../_images/cb2779deb569f17f3f89032c0290725afb423f1c213a77a1c3b2b12a3ac4dd13.png" src="../_images/cb2779deb569f17f3f89032c0290725afb423f1c213a77a1c3b2b12a3ac4dd13.png" />
 </div>
 </div>
 <p>To simplify things, we’ll just consider the Euclidean distances between country centroids, but we could (in theory) use any kind of distance we want in this function by specifying the <code class="docutils literal notranslate"><span class="pre">metric</span></code> argument.</p>
@@ -1182,9 +1182,9 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span>
-        <span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+        <span class="s2">"ignore"</span><span class="p">,</span>
         <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span>
-        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Geometry is in a geographic CRS&quot;</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">"Geometry is in a geographic CRS"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">natearth</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">natearth</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
@@ -1195,7 +1195,7 @@
 <p>To get a bit more information on the result, we can use <code class="docutils literal notranslate"><span class="pre">return_all</span></code> to get the rank and distance for the isolated peak. This also returns the gap between the peak and its nearest higher peak.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">iso</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">isolation</span><span class="p">(</span><span class="n">natearth</span><span class="p">[</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">iso</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">isolation</span><span class="p">(</span><span class="n">natearth</span><span class="p">[</span><span class="s2">"POP_EST"</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1213,8 +1213,8 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span><span class="p">[</span>
-    <span class="p">[</span><span class="s2">&quot;CONTINENT&quot;</span><span class="p">,</span> <span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="s2">&quot;rank&quot;</span><span class="p">,</span> <span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span> <span class="s2">&quot;parent_rank&quot;</span><span class="p">,</span> <span class="s2">&quot;isolation&quot;</span><span class="p">,</span> <span class="s2">&quot;gap&quot;</span><span class="p">]</span>
-<span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+    <span class="p">[</span><span class="s2">"CONTINENT"</span><span class="p">,</span> <span class="s2">"NAME"</span><span class="p">,</span> <span class="s2">"rank"</span><span class="p">,</span> <span class="s2">"POP_EST"</span><span class="p">,</span> <span class="s2">"parent_rank"</span><span class="p">,</span> <span class="s2">"isolation"</span><span class="p">,</span> <span class="s2">"gap"</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"POP_EST"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -1306,24 +1306,24 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-    <span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;isolation&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;gap&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;how far do you have to go to find a country with more people?&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;how any extra people does this place need to swap with its parent?&quot;</span><span class="p">)</span>
+    <span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"isolation"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"gap"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"how far do you have to go to find a country with more people?"</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"how any extra people does this place need to swap with its parent?"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e7e3c03819ac22465a3d2c14db89241469aae709b092fecc4aa0688bb72853c9.png" src="../_images/e7e3c03819ac22465a3d2c14db89241469aae709b092fecc4aa0688bb72853c9.png" />
+<img alt="../_images/0ae78645e99c9eaee816505f8ff94deba428ab57afa28cd691c62cf08ff1b58a.png" src="../_images/0ae78645e99c9eaee816505f8ff94deba428ab57afa28cd691c62cf08ff1b58a.png" />
 </div>
 </div>
 <p>Next, to see <code class="docutils literal notranslate"><span class="pre">prominence</span></code>, we’ll use the same arguments. However, <code class="docutils literal notranslate"><span class="pre">prominence</span></code> can also take a graph/<code class="docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code> object that specifies the connections between sampled locations. If no pre-existing graph or surface is provided, the Delaunay Triangulation is used between the coordinates provided, which is a common triangulation in digital elevation models. Here, I’ll use the Rook contiguity graph, just for ease of interpretation. This means that some islands will automatically be considered as “peaks” because they don’t share any borders with any higher observations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_rook</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">natearth</span><span class="p">)</span>
-<span class="n">prominence</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">prominence</span><span class="p">(</span><span class="n">natearth</span><span class="p">[</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">],</span> <span class="n">w_rook</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">prominence</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">prominence</span><span class="p">(</span><span class="n">natearth</span><span class="p">[</span><span class="s2">"POP_EST"</span><span class="p">],</span> <span class="n">w_rook</span><span class="p">,</span> <span class="n">return_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1334,7 +1334,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span> <span class="o">=</span> <span class="n">natearth</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">prominence</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_prom&quot;</span><span class="p">)</span>
+    <span class="n">prominence</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"_prom"</span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
@@ -1345,17 +1345,17 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">natearth</span><span class="p">[</span>
     <span class="p">[</span>
-        <span class="s2">&quot;CONTINENT&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;NAME&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;rank&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;parent_rank&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;isolation&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;dominating_peak&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;keycol&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;prominence&quot;</span><span class="p">,</span>
+        <span class="s2">"CONTINENT"</span><span class="p">,</span>
+        <span class="s2">"NAME"</span><span class="p">,</span>
+        <span class="s2">"POP_EST"</span><span class="p">,</span>
+        <span class="s2">"rank"</span><span class="p">,</span>
+        <span class="s2">"parent_rank"</span><span class="p">,</span>
+        <span class="s2">"isolation"</span><span class="p">,</span>
+        <span class="s2">"dominating_peak"</span><span class="p">,</span>
+        <span class="s2">"keycol"</span><span class="p">,</span>
+        <span class="s2">"prominence"</span><span class="p">,</span>
     <span class="p">]</span>
-<span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"POP_EST"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1641,35 +1641,35 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">5</span><span class="p">)):</span>
-    <span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Accent&quot;</span><span class="p">)</span>
-    <span class="n">natearth</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;POP_EST&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;salmon&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+    <span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"classification"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Accent"</span><span class="p">)</span>
+    <span class="n">natearth</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"POP_EST"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">"salmon"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# of countries included: </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"# of countries included: </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fef832d72fbe245e54b12886ae2b5931c50d14f76075edf0aee6908591aa2b97.png" src="../_images/fef832d72fbe245e54b12886ae2b5931c50d14f76075edf0aee6908591aa2b97.png" />
+<img alt="../_images/ecd1d31caf0414092b43ff4130b0235e826d21f395ca11976c8fd7a25a4796a8.png" src="../_images/ecd1d31caf0414092b43ff4130b0235e826d21f395ca11976c8fd7a25a4796a8.png" />
 </div>
 </div>
 <p>You can see that the first “key col” country, France, is included around the 25-country mark, wheras before that most included countries are “peaks,” disconnected from one another. Below, you can see the full map of classifications, alongside the prominence of each country.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
-<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Accent&quot;</span><span class="p">)</span>
-<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">&quot;prominence&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Population&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Prominence&quot;</span><span class="p">)</span>
+<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"classification"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Accent"</span><span class="p">)</span>
+<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">natearth</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s2">"prominence"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Population"</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Prominence"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/a038541d4413ebe7809729f27ffd05d37f2fbfacd1aaa410af48c4d320cc0767.png" src="../_images/a038541d4413ebe7809729f27ffd05d37f2fbfacd1aaa410af48c4d320cc0767.png" />
+<img alt="../_images/04a9c982a3bfadfa932a7a9487f7703a11a687a67da6131055cac59d84e0de8d.png" src="../_images/04a9c982a3bfadfa932a7a9487f7703a11a687a67da6131055cac59d84e0de8d.png" />
 </div>
 </div>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>

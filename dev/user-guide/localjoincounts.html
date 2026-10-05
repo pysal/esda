@@ -1120,10 +1120,10 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Guerry&quot;</span><span class="p">)</span>
-<span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;guerry.shp&quot;</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;SELECTED&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;Donatns&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10997</span><span class="p">),</span> <span class="s2">&quot;SELECTED&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">"Guerry"</span><span class="p">)</span>
+<span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"guerry.shp"</span><span class="p">))</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"SELECTED"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"Donatns"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10997</span><span class="p">),</span> <span class="s2">"SELECTED"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre></div>
 </div>
 </div>
@@ -1144,7 +1144,7 @@
 <p>We can now apply the univariate LJC function on the dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_uni</span> <span class="o">=</span> <span class="n">Join_Counts_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;SELECTED&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_uni</span> <span class="o">=</span> <span class="n">Join_Counts_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"SELECTED"</span><span class="p">])</span>
 </code></pre></div>
 </div>
 </div>
@@ -1175,15 +1175,15 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-         nan,   nan,   nan, 0.439,   nan, 0.033, 0.033,   nan, 0.294,
-         nan,   nan,   nan,   nan,   nan,   nan, 0.303,   nan, 0.335,
-         nan,   nan,   nan,   nan,   nan,   nan, 0.293,   nan,   nan,
+         nan,   nan,   nan, 0.413,   nan, 0.026, 0.026,   nan, 0.327,
+         nan,   nan,   nan,   nan,   nan,   nan, 0.327,   nan, 0.296,
+         nan,   nan,   nan,   nan,   nan,   nan, 0.323,   nan,   nan,
          nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.45 ,
+         nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.484,
          nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
          nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-         nan,   nan, 0.043,   nan,   nan,   nan,   nan,   nan, 0.148,
-         nan, 0.067,   nan,   nan], dtype=float32)
+         nan,   nan, 0.027,   nan,   nan,   nan,   nan,   nan, 0.108,
+         nan, 0.051,   nan,   nan], dtype=float32)
 </code></pre></div>
 </div>
 </div>
@@ -1191,8 +1191,8 @@
 <p>We can map these values after placing them back into the dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;LJC_UNI&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_uni</span><span class="o">.</span><span class="n">LJC</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;LJC_UNI_p_sim&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_uni</span><span class="o">.</span><span class="n">p_sim</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"LJC_UNI"</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_uni</span><span class="o">.</span><span class="n">LJC</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"LJC_UNI_p_sim"</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_uni</span><span class="o">.</span><span class="n">p_sim</span>
 </code></pre></div>
 </div>
 </div>
@@ -1201,36 +1201,36 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;LJC_UNI&quot;</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"LJC_UNI"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Easting [metre]', ylabel='Northing [metre]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/ba839c9ecc43cf7b17bf2d7d252d1fc50790f311d189aa70c21c2062b64c5f5d.png" src="../_images/ba839c9ecc43cf7b17bf2d7d252d1fc50790f311d189aa70c21c2062b64c5f5d.png" />
+<img alt="../_images/288d9b34d5303fe02f18f747bc14344d7dfdda367ec93396b10df54615a35078.png" src="../_images/288d9b34d5303fe02f18f747bc14344d7dfdda367ec93396b10df54615a35078.png" />
 </div>
 </div>
 <p>Or mapping the accompanying significance values below a certain threshold…</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;LJC_UNI_p_sim_sig&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;LJC_UNI_p_sim&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">),</span> <span class="s2">&quot;LJC_UNI_p_sim_sig&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">guerry_ds</span><span class="p">[</span>
-    <span class="s2">&quot;LJC_UNI_p_sim&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"LJC_UNI_p_sim_sig"</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"LJC_UNI_p_sim"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">),</span> <span class="s2">"LJC_UNI_p_sim_sig"</span><span class="p">]</span> <span class="o">=</span> <span class="n">guerry_ds</span><span class="p">[</span>
+    <span class="s2">"LJC_UNI_p_sim"</span>
 <span class="p">]</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;LJC_UNI_p_sim_sig&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"LJC_UNI_p_sim_sig"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Easting [metre]', ylabel='Northing [metre]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/73c5f049e87412d78694b140eae320365a0679e07d1e53000b66ab1b21e19d94.png" src="../_images/73c5f049e87412d78694b140eae320365a0679e07d1e53000b66ab1b21e19d94.png" />
+<img alt="../_images/3f717ed468466dbab3bf7276b860721ef2430aa325162bbcf24bfdc1f0eb514a.png" src="../_images/3f717ed468466dbab3bf7276b860721ef2430aa325162bbcf24bfdc1f0eb514a.png" />
 </div>
 </div>
 <h2 id="bivariate-ljc-case-1">Bivariate LJC (case 1)<a class="headerlink" href="#bivariate-ljc-case-1" title="Link to this heading">¶</a></h2>
@@ -1241,7 +1241,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">commpop</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
-    <span class="s2">&quot;https://github.com/jeffcsauer/GSOC2020/raw/master/validation/data/commpop.gpkg&quot;</span>
+    <span class="s2">"https://github.com/jeffcsauer/GSOC2020/raw/master/validation/data/commpop.gpkg"</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
@@ -1259,7 +1259,7 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_BV_Case1</span> <span class="o">=</span> <span class="n">Join_Counts_Local_BV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;popneg&quot;</span><span class="p">],</span> <span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;popplus&quot;</span><span class="p">],</span> <span class="n">case</span><span class="o">=</span><span class="s2">&quot;BJC&quot;</span>
+    <span class="n">commpop</span><span class="p">[</span><span class="s2">"popneg"</span><span class="p">],</span> <span class="n">commpop</span><span class="p">[</span><span class="s2">"popplus"</span><span class="p">],</span> <span class="n">case</span><span class="o">=</span><span class="s2">"BJC"</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
@@ -1272,8 +1272,8 @@ commpop[“popneg”], commpop[“popplus”], case=”BJC”
 <p>As before, we can map both the <code class="docutils literal notranslate"><span class="pre">LJC</span></code> and <code class="docutils literal notranslate"><span class="pre">p_sim</span></code> values after placing the results back into the <code class="docutils literal notranslate"><span class="pre">commpop</span></code> dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case1</span><span class="o">.</span><span class="n">LJC</span>
-<span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case1_p_sim&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case1</span><span class="o">.</span><span class="n">p_sim</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">commpop</span><span class="p">[</span><span class="s2">"LJC_BV_Case1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case1</span><span class="o">.</span><span class="n">LJC</span>
+<span class="n">commpop</span><span class="p">[</span><span class="s2">"LJC_BV_Case1_p_sim"</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case1</span><span class="o">.</span><span class="n">p_sim</span>
 </code></pre></div>
 </div>
 </div>
@@ -1281,36 +1281,36 @@ commpop[“popneg”], commpop[“popplus”], case=”BJC”
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;LJC_BV_Case1&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"LJC_BV_Case1"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/52843b8dec3de59067cf5fc38549fbcf555b6079c74c88aa75fd980f2be71395.png" src="../_images/52843b8dec3de59067cf5fc38549fbcf555b6079c74c88aa75fd980f2be71395.png" />
+<img alt="../_images/ef4be035328db9f65f2b957daabce385170604d8c98fa27b440f7a2bdab04726.png" src="../_images/ef4be035328db9f65f2b957daabce385170604d8c98fa27b440f7a2bdab04726.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case1_p_sim_sig&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
-<span class="n">commpop</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case1_p_sim&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">),</span> <span class="s2">&quot;LJC_BV_Case1_p_sim_sig&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">commpop</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case1_p_sim&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">commpop</span><span class="p">[</span><span class="s2">"LJC_BV_Case1_p_sim_sig"</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">commpop</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">commpop</span><span class="p">[</span><span class="s2">"LJC_BV_Case1_p_sim"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">),</span> <span class="s2">"LJC_BV_Case1_p_sim_sig"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">commpop</span><span class="p">[</span><span class="s2">"LJC_BV_Case1_p_sim"</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;LJC_BV_Case1_p_sim_sig&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">commpop</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"LJC_BV_Case1_p_sim_sig"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/7c2d0f01784be4f5c58bd9628dfaa7a38655537968ba64ab514c9894f24d210c.png" src="../_images/7c2d0f01784be4f5c58bd9628dfaa7a38655537968ba64ab514c9894f24d210c.png" />
+<img alt="../_images/35d677dbefab15bb1763f985ec1a99d3c41b5d0b2d520d785d454b83df0284b3.png" src="../_images/35d677dbefab15bb1763f985ec1a99d3c41b5d0b2d520d785d454b83df0284b3.png" />
 </div>
 </div>
 <h2 id="bivariate-ljc-case-2">Bivariate LJC (case 2)<a class="headerlink" href="#bivariate-ljc-case-2" title="Link to this heading">¶</a></h2>
@@ -1320,12 +1320,12 @@ commpop[“popneg”], commpop[“popplus”], case=”BJC”
 <p>We return to the Guerry dataset to demonstrate its implementation in PySAL. We are interested in identifying areas that are in the top Quantile for the variables <code class="docutils literal notranslate"><span class="pre">Infants</span></code> (children born out of wedlock) and <code class="docutils literal notranslate"><span class="pre">Donatns</span></code> (donations). We reload the dataset and create the variables below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Guerry&quot;</span><span class="p">)</span>
-<span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;guerry.shp&quot;</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;infq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;donq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;Infants&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23574</span><span class="p">),</span> <span class="s2">&quot;infq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;Donatns&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10973</span><span class="p">),</span> <span class="s2">&quot;donq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">"Guerry"</span><span class="p">)</span>
+<span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"guerry.shp"</span><span class="p">))</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"infq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"donq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"Infants"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23574</span><span class="p">),</span> <span class="s2">"infq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"Donatns"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10973</span><span class="p">),</span> <span class="s2">"donq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre></div>
 </div>
 </div>
@@ -1343,7 +1343,7 @@ commpop[“popneg”], commpop[“popplus”], case=”BJC”
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_BV_Case2</span> <span class="o">=</span> <span class="n">Join_Counts_Local_BV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;infq5&quot;</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;donq5&quot;</span><span class="p">],</span> <span class="n">case</span><span class="o">=</span><span class="s2">&quot;CLC&quot;</span>
+    <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"infq5"</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"donq5"</span><span class="p">],</span> <span class="n">case</span><span class="o">=</span><span class="s2">"CLC"</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
@@ -1352,8 +1352,8 @@ commpop[“popneg”], commpop[“popplus”], case=”BJC”
 <p>As before, we can map the <code class="docutils literal notranslate"><span class="pre">LJC</span></code> and accompanying <code class="docutils literal notranslate"><span class="pre">p_sim</span></code> values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case2</span><span class="o">.</span><span class="n">LJC</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;LJC_BV_Case2_p_sim&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case2</span><span class="o">.</span><span class="n">p_sim</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"LJC_BV_Case2"</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case2</span><span class="o">.</span><span class="n">LJC</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"LJC_BV_Case2_p_sim"</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJC_BV_Case2</span><span class="o">.</span><span class="n">p_sim</span>
 </code></pre></div>
 </div>
 </div>
@@ -1361,31 +1361,31 @@ commpop[“popneg”], commpop[“popplus”], case=”BJC”
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;LJC_BV_Case2&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"LJC_BV_Case2"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Easting [metre]', ylabel='Northing [metre]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/1d53ab683f9b51e37e569a2df52d6a22f06887f41ae2650a28d30f6667070a22.png" src="../_images/1d53ab683f9b51e37e569a2df52d6a22f06887f41ae2650a28d30f6667070a22.png" />
+<img alt="../_images/b5f3be7ef7ee5af268e5162b0cb61418b0605e707b4c3a09dddc4338e1bc4bed.png" src="../_images/b5f3be7ef7ee5af268e5162b0cb61418b0605e707b4c3a09dddc4338e1bc4bed.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;LJC_BV_Case2_p_sim&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"LJC_BV_Case2_p_sim"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Easting [metre]', ylabel='Northing [metre]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/0adb17aa6a08b368b6b0a9da32f8f09ff55482b306f83dc15a2c5f34f12db36a.png" src="../_images/0adb17aa6a08b368b6b0a9da32f8f09ff55482b306f83dc15a2c5f34f12db36a.png" />
+<img alt="../_images/c022c0a0f0b70edcb92dac54e0f14cda3b0e876d763e3bb4492bc8102f199189.png" src="../_images/c022c0a0f0b70edcb92dac54e0f14cda3b0e876d763e3bb4492bc8102f199189.png" />
 </div>
 </div>
 <h2 id="multivariate-ljc">Multivariate LJC<a class="headerlink" href="#multivariate-ljc" title="Link to this heading">¶</a></h2>
@@ -1400,14 +1400,14 @@ constructed from continuous-valued measures for those locations where the observ
 <p>We demonstrate this problem by extending the example from the bivariate LJC case 2. We add a third variable that counts the number of suicides in an area (<code class="docutils literal notranslate"><span class="pre">Suicids</span></code>). The substnative quesiton of interest is now seeking areas that are in the highest Quantile for the number of births out of wedlock, the number of donations to the poor, and the number of suicides. We reload the Guerry dataset and create the variables:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Guerry&quot;</span><span class="p">)</span>
-<span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;guerry.shp&quot;</span><span class="p">))</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;infq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;donq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;suic5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;Infants&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23574</span><span class="p">),</span> <span class="s2">&quot;infq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;Donatns&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10973</span><span class="p">),</span> <span class="s2">&quot;donq5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;Suicids&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">55564</span><span class="p">),</span> <span class="s2">&quot;suic5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">guerry</span> <span class="o">=</span> <span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">"Guerry"</span><span class="p">)</span>
+<span class="n">guerry_ds</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">guerry</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"guerry.shp"</span><span class="p">))</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"infq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"donq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"suic5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"Infants"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23574</span><span class="p">),</span> <span class="s2">"infq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"Donatns"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10973</span><span class="p">),</span> <span class="s2">"donq5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">guerry_ds</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"Suicids"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">55564</span><span class="p">),</span> <span class="s2">"suic5"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre></div>
 </div>
 </div>
@@ -1416,7 +1416,7 @@ constructed from continuous-valued measures for those locations where the observ
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">LJC_MV</span> <span class="o">=</span> <span class="n">Join_Counts_Local_MV</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">geog</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;infq5&quot;</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;donq5&quot;</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">&quot;suic5&quot;</span><span class="p">]]</span>
+    <span class="p">[</span><span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"infq5"</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"donq5"</span><span class="p">],</span> <span class="n">guerry_ds</span><span class="p">[</span><span class="s2">"suic5"</span><span class="p">]]</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>

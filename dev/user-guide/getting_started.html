@@ -1747,31 +1747,31 @@ statistical tests for spatial clustering.</p>
 <p>Our data set comes from the Berlin airbnb scrape taken in April 2018. This dataframe was constructed as part of the <a class="reference external" href="https://github.com/ljwolf/geopython">GeoPython 2018 workshop</a> by <a class="reference external" href="https://ljwolf.org">Levi Wolf</a> and <a class="reference external" href="https://sergerey.org">Serge Rey</a>. As part of the workshop a geopandas data frame was constructed with one of the columns reporting the median listing price of units in each neighborhood in Berlin:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">"data/berlin-housing.gpkg"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" src="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" />
+<img alt="../_images/971af0c877cbe1d800e7b00360864cd993c2800be50e518c899a3e63a18b4dd7.png" src="../_images/971af0c877cbe1d800e7b00360864cd993c2800be50e518c899a3e63a18b4dd7.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span>
-    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"Quantiles"</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
 <span class="p">)</span>
@@ -1779,10 +1779,10 @@ statistical tests for spatial clustering.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" src="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" />
+<img alt="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" src="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" />
 </div>
 </div>
 <h2 id="spatial-autocorrelation">Spatial Autocorrelation<a class="headerlink" href="#spatial-autocorrelation" title="Link to this heading">¶</a></h2>
@@ -1827,7 +1827,7 @@ attribute similarity to pair up with this concept of spatial similarity. The
 by normalizing the binary edge weights according to the incidence of each node:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gr</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">gr</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">"r"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1835,7 +1835,7 @@ by normalizing the binary edge weights according to the incidence of each node:<
 <p>Then we use this graph to call the <code class="docutils literal notranslate"><span class="pre">lag</span></code> method to obtain the spatial lag:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 <span class="n">ylag</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </code></pre></div>
 </div>
@@ -1885,53 +1885,53 @@ by normalizing the binary edge weights according to the incidence of each node:<
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">ylag</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
-    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"quantiles"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Median Price (Quintiles)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Spatial Lag Median Price (Quintiles)"</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c0a805b62b6784ce0235b05e24e3b2cebf757bf53628d5217fa78ebc934f3037.png" src="../_images/c0a805b62b6784ce0235b05e24e3b2cebf757bf53628d5217fa78ebc934f3037.png" />
+<img alt="../_images/bd37783f857008225e86d0cb11391d85bacd949e5d5c3588963a0667d9c7649f.png" src="../_images/bd37783f857008225e86d0cb11391d85bacd949e5d5c3588963a0667d9c7649f.png" />
 </div>
 </div>
 <p>The quintile map for the spatial lag tends to enhance the impression of value
 similarity in space. It is, in effect, a local smoother.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="p">[</span><span class="s2">&quot;lag_median_pri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ylag</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="p">[</span><span class="s2">"lag_median_pri"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ylag</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">2.16</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">"quantiles"</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Price"</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;lag_median_pri&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"lag_median_pri"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
-    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;quantiles&quot;</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"quantiles"</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Spatial Lag Price&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Spatial Lag Price"</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/8e7c1cd82289ac4b911d01a0b3891e46f137095f7ea8413ff8da71e9330d7284.png" src="../_images/8e7c1cd82289ac4b911d01a0b3891e46f137095f7ea8413ff8da71e9330d7284.png" />
+<img alt="../_images/74f2ef1619bd42df2b3840793cfacfc27e0c0093ee00bacb1020ef0241c5a3e6.png" src="../_images/74f2ef1619bd42df2b3840793cfacfc27e0c0093ee00bacb1020ef0241c5a3e6.png" />
 </div>
 </div>
 <p>However, we still have
@@ -1976,9 +1976,9 @@ median (recall the issue with ties).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">yb</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">y</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0 Low&quot;</span><span class="p">,</span> <span class="s2">&quot;1 High&quot;</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"0 Low"</span><span class="p">,</span> <span class="s2">"1 High"</span><span class="p">]</span>
 <span class="n">yb</span> <span class="o">=</span> <span class="p">[</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">yb</span><span class="p">]</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;yb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yb</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"yb"</span><span class="p">]</span> <span class="o">=</span> <span class="n">yb</span>
 </code></pre></div>
 </div>
 </div>
@@ -1987,15 +1987,15 @@ median (recall the issue with ties).</p>
 about the juxtaposition of the “black” and “white” areas.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;yb&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"yb"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"binary"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/82fd28d142f3418de7bdd4c2daaceeb32b3b4145051aad323c68687f185b3e98.png" src="../_images/82fd28d142f3418de7bdd4c2daaceeb32b3b4145051aad323c68687f185b3e98.png" />
+<img alt="../_images/933947071f33296cdcaab0f31319aeb4d7ac3226b76cfa468d9429f689158df1.png" src="../_images/933947071f33296cdcaab0f31319aeb4d7ac3226b76cfa468d9429f689158df1.png" />
 </div>
 </div>
 <h3 id="join-counts">Join counts<a class="headerlink" href="#join-counts" title="Link to this heading">¶</a></h3>
@@ -2127,17 +2127,17 @@ value is so different from the expectation that we would reject the null of CSR?
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">sim_bb</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">bb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"r"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">jc</span><span class="o">.</span><span class="n">mean_bb</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;BB Counts&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"BB Counts"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, &#39;BB Counts&#39;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, 'BB Counts')
 </code></pre></div>
 </div>
-<img alt="../_images/cddc18487f5dc0d24b9a48194da1c5bdf3628331abefcde844522fb73da7e235.png" src="../_images/cddc18487f5dc0d24b9a48194da1c5bdf3628331abefcde844522fb73da7e235.png" />
+<img alt="../_images/9d3253c800d93c40bf42a198bc78c24b058df0b27995500de18bfe0650d9b55f.png" src="../_images/9d3253c800d93c40bf42a198bc78c24b058df0b27995500de18bfe0650d9b55f.png" />
 </div>
 </div>
 <p>The density portrays the distribution of the BB counts, with the black vertical
@@ -2168,7 +2168,7 @@ other tests for spatial autocorrelation for the continuous case.</p>
 <p>First, we transform our weights to be row-standardized, from the current binary state:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 </div>
@@ -2183,6 +2183,10 @@ other tests for spatial autocorrelation for the continuous case.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4419/3632201284.py:2: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
+  mi = esda.moran.Moran(y, gr)
+</code></pre></div>
+</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>np.float64(0.6563069331329718)
 </code></pre></div>
 </div>
@@ -2194,17 +2198,17 @@ the join count analysis: random spatial permutations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">sim</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"r"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">EI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Moran&#39;s I&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Moran's I"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, &quot;Moran&#39;s I&quot;)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, "Moran's I")
 </code></pre></div>
 </div>
-<img alt="../_images/26ea50230f797f9cbf305dd7995f0ad9d0cc95116754adac81de61d4b051e4c0.png" src="../_images/26ea50230f797f9cbf305dd7995f0ad9d0cc95116754adac81de61d4b051e4c0.png" />
+<img alt="../_images/6b683061fc42e35bc2c638b49602d1811ee84ac2fc4297aac40baee926a995ec.png" src="../_images/6b683061fc42e35bc2c638b49602d1811ee84ac2fc4297aac40baee926a995ec.png" />
 </div>
 </div>
 <p>Here our observed value is again in the upper tail, although visually it does
@@ -2234,35 +2238,35 @@ d</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">lag_price</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">lag_price</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">lag</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">])</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">price</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">price</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">lag_price</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">lag_price</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;firebrick&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">lag_price</span><span class="p">,</span> <span class="s2">"."</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"firebrick"</span><span class="p">)</span>
 
 <span class="c1"># dashed vert at mean of the price</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">price</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">lag_price</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lag_price</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">price</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">lag_price</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lag_price</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">)</span>
 <span class="c1"># dashed horizontal at mean of lagged price</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">lag_price</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">price</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">price</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">lag_price</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">price</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">price</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">)</span>
 
 <span class="c1"># red line of best fit using global I as slope</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">price</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Moran Scatterplot&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Spatial Lag of Price&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">price</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">price</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Moran Scatterplot"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Spatial Lag of Price"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Price"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0541aebb41018cfa155a69e5cb8fab7f9b457d1ce7018df022035ffc57eb7f8f.png" src="../_images/0541aebb41018cfa155a69e5cb8fab7f9b457d1ce7018df022035ffc57eb7f8f.png" />
+<img alt="../_images/190e323a84d46e2482a9343e801897953f33c08da79210dcf93edd3f41fcf547.png" src="../_images/190e323a84d46e2482a9343e801897953f33c08da79210dcf93edd3f41fcf547.png" />
 </div>
 </div>
 <p>Now, instead of a single <span class="math notranslate nohighlight">\(I\)</span> statistic, we have an <em>array</em> of local <span class="math notranslate nohighlight">\(I_i\)</span>
@@ -2275,7 +2279,7 @@ in <code class="docutils literal notranslate"><span class="pre">p_sim</span></co
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/moran.py:1398: RuntimeWarning: invalid value encountered in divide
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/moran.py:1428: RuntimeWarning: invalid value encountered in divide
   self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
 </code></pre></div>
 </div>
@@ -2310,7 +2314,7 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n.sig.&quot;</span><span class="p">,</span> <span class="s2">&quot;hot spot&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"n.sig."</span><span class="p">,</span> <span class="s2">"hot spot"</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">spots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hotspot</span> <span class="o">*</span> <span class="mi">1</span><span class="p">]</span>
 </code></pre></div>
 </div>
@@ -2318,15 +2322,15 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"lightgrey"</span><span class="p">])</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"cl"</span><span class="p">,</span>
     <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="n">hmap</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
@@ -2335,12 +2339,12 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3988ddf72df4ad64ac985fc3acde437aa1ca3e931b4eb32742c78e1e6f61fa76.png" src="../_images/3988ddf72df4ad64ac985fc3acde437aa1ca3e931b4eb32742c78e1e6f61fa76.png" />
+<img alt="../_images/3cbb4bc730926dfb061e93629cbed4448558cf14f83b3defb082db86d977af48.png" src="../_images/3cbb4bc730926dfb061e93629cbed4448558cf14f83b3defb082db86d977af48.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n.sig.&quot;</span><span class="p">,</span> <span class="s2">&quot;cold spot&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"n.sig."</span><span class="p">,</span> <span class="s2">"cold spot"</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">spots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">coldspot</span> <span class="o">*</span> <span class="mi">1</span><span class="p">]</span>
 </code></pre></div>
 </div>
@@ -2348,16 +2352,16 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"lightgrey"</span><span class="p">])</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"cl"</span><span class="p">,</span>
     <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="n">hmap</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
@@ -2366,12 +2370,12 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b26666b9a55dd475238c986481309abec21f9a3bbd44ff9a06cc4733e07e223b.png" src="../_images/b26666b9a55dd475238c986481309abec21f9a3bbd44ff9a06cc4733e07e223b.png" />
+<img alt="../_images/f1b27a439cde271bd406d29fc22f57e8b68c80cb14c0a44e20b30b2e032f923e.png" src="../_images/f1b27a439cde271bd406d29fc22f57e8b68c80cb14c0a44e20b30b2e032f923e.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n.sig.&quot;</span><span class="p">,</span> <span class="s2">&quot;doughnut&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"n.sig."</span><span class="p">,</span> <span class="s2">"doughnut"</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">spots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">doughnut</span> <span class="o">*</span> <span class="mi">1</span><span class="p">]</span>
 </code></pre></div>
 </div>
@@ -2379,16 +2383,16 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">&quot;lightblue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">"lightblue"</span><span class="p">,</span> <span class="s2">"lightgrey"</span><span class="p">])</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"cl"</span><span class="p">,</span>
     <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="n">hmap</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
@@ -2397,12 +2401,12 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fffb2e88346e327622fc3e3e334e9c9cb3a6906468bcbdaa520e6e6f60542aca.png" src="../_images/fffb2e88346e327622fc3e3e334e9c9cb3a6906468bcbdaa520e6e6f60542aca.png" />
+<img alt="../_images/101c593bcbcc7aa1ce4726e371534ee95f2b8579a1be0b10c5d583f5f1238b21.png" src="../_images/101c593bcbcc7aa1ce4726e371534ee95f2b8579a1be0b10c5d583f5f1238b21.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n.sig.&quot;</span><span class="p">,</span> <span class="s2">&quot;diamond&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spots</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"n.sig."</span><span class="p">,</span> <span class="s2">"diamond"</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">spots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">diamond</span> <span class="o">*</span> <span class="mi">1</span><span class="p">]</span>
 </code></pre></div>
 </div>
@@ -2410,16 +2414,16 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">&quot;pink&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">"pink"</span><span class="p">,</span> <span class="s2">"lightgrey"</span><span class="p">])</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"cl"</span><span class="p">,</span>
     <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="n">hmap</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
@@ -2428,7 +2432,7 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/856dea88a75d0ab36f69c05f83ead5eb3221462981445054e9f7a4612e13ba2b.png" src="../_images/856dea88a75d0ab36f69c05f83ead5eb3221462981445054e9f7a4612e13ba2b.png" />
+<img alt="../_images/040f2a3e7a284f78dd0e4b69c78ff13218bfd70e20649993907e471eca9de6ba.png" src="../_images/040f2a3e7a284f78dd0e4b69c78ff13218bfd70e20649993907e471eca9de6ba.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2457,7 +2461,7 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spot_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0 ns&quot;</span><span class="p">,</span> <span class="s2">&quot;1 hot spot&quot;</span><span class="p">,</span> <span class="s2">&quot;2 doughnut&quot;</span><span class="p">,</span> <span class="s2">&quot;3 cold spot&quot;</span><span class="p">,</span> <span class="s2">&quot;4 diamond&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">spot_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"0 ns"</span><span class="p">,</span> <span class="s2">"1 hot spot"</span><span class="p">,</span> <span class="s2">"2 doughnut"</span><span class="p">,</span> <span class="s2">"3 cold spot"</span><span class="p">,</span> <span class="s2">"4 diamond"</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">spot_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spots</span><span class="p">]</span>
 </code></pre></div>
 </div>
@@ -2465,16 +2469,16 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;lightblue&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;pink&quot;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">hmap</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s2">"lightgrey"</span><span class="p">,</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"lightblue"</span><span class="p">,</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"pink"</span><span class="p">])</span>
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">cl</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;cl&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"cl"</span><span class="p">,</span>
     <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="n">hmap</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
@@ -2483,7 +2487,7 @@ the four quadrants of the Moran Scatterplot above:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b41821bcb4ab619d4e9e797cdc44b66ea73e22e57d915eab6a201fffec224bc0.png" src="../_images/b41821bcb4ab619d4e9e797cdc44b66ea73e22e57d915eab6a201fffec224bc0.png" />
+<img alt="../_images/6f731f4512fc0e5c41f5a9d3eb77e3be94aa7f09927801022eec8842eef37d7e.png" src="../_images/6f731f4512fc0e5c41f5a9d3eb77e3be94aa7f09927801022eec8842eef37d7e.png" />
 </div>
 </div>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Link to this heading">¶</a></h2>

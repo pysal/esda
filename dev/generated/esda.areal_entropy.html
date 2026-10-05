@@ -1620,7 +1620,7 @@ Should not be provided if areas is provided.</p>
 <dt id="esda.areal_entropy.areas"><span class="sig-name descname">areas</span><span class="p"> : </span><span class="desctype"><span class="desctype">numpy array</span></span><a class="headerlink" href="#esda.areal_entropy.areas" title="Permalink to this definition">¶</a></dt><dd><p>areas to use to compute entropy. SHould not be provided if
 polygons are provided.</p>
 </dd>
-<dt id="esda.areal_entropy.local"><span class="sig-name descname">local</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> (default: False)</span></span><a class="headerlink" href="#esda.areal_entropy.local" title="Permalink to this definition">¶</a></dt><dd><p>whether to return the total entropy of the areal distribution
+<dt id="esda.areal_entropy.local"><span class="sig-name descname">local</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a> (default: False)</span></span><a class="headerlink" href="#esda.areal_entropy.local" title="Permalink to this definition">¶</a></dt><dd><p>whether to return the total entropy of the areal distribution
 (False), or to return the contribution to entropy made
 by each of area (True).</p>
 </dd>
@@ -1634,8 +1634,8 @@ by each of area (True).</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">areal_entropy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">geodatasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston1&#39;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston2&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'geoda.charleston1'</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'geoda.charleston2'</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">areal_entropy</span><span class="p">(</span><span class="n">polygons</span><span class="o">=</span><span class="n">ch1</span><span class="p">)</span>
 <span class="go">np.float64(3.4511996832516347)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">areal_entropy</span><span class="p">(</span><span class="n">polygons</span><span class="o">=</span><span class="n">ch2</span><span class="p">)</span>

@@ -1625,17 +1625,17 @@
 </dd>
 <dt id="esda.homogeneity.b"><span class="sig-name descname">b</span><span class="p"> : </span><span class="desctype"><span class="desctype">geometry array of polygons</span></span><a class="headerlink" href="#esda.homogeneity.b" title="Permalink to this definition">¶</a></dt><dd><p>array of polygons</p>
 </dd>
-<dt id="esda.homogeneity.local"><span class="sig-name descname">local</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> (default: False)</span></span><a class="headerlink" href="#esda.homogeneity.local" title="Permalink to this definition">¶</a></dt><dd><p>whether or not to provide local scores for each polygon. If True, the
+<dt id="esda.homogeneity.local"><span class="sig-name descname">local</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a> (default: False)</span></span><a class="headerlink" href="#esda.homogeneity.local" title="Permalink to this definition">¶</a></dt><dd><p>whether or not to provide local scores for each polygon. If True, the
 homogeneity for polygons in b are returned.</p>
 </dd>
-<dt><span class="sig-name descname">scale</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> (default: None)</span></span></dt><dd><p>whether to scale the completeness score(s). By default, completeness is
+<dt><span class="sig-name descname">scale</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a> (default: None)</span></span></dt><dd><p>whether to scale the completeness score(s). By default, completeness is
 is scaled for local scores so that the average of the local scores is
 the overall map completeness. If not local, then completeness is returned
 unscaled. You can also set local=True and scale=False to get raw components
 of the completeness, whose sum is the completeness for the entire map.
 Global re-scaled scores (local=False &amp; scale=True) are not supported.</p>
 </dd>
-<dt id="esda.homogeneity.base"><span class="sig-name descname">base</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a> (default=None)</span></span><a class="headerlink" href="#esda.homogeneity.base" title="Permalink to this definition">¶</a></dt><dd><p>what base to use for the entropy calculations. The default is base e,
+<dt id="esda.homogeneity.base"><span class="sig-name descname">base</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a> (default=None)</span></span><a class="headerlink" href="#esda.homogeneity.base" title="Permalink to this definition">¶</a></dt><dd><p>what base to use for the entropy calculations. The default is base e,
 which means entropy is measured in “nats.”</p>
 </dd>
 </dl>
@@ -1645,8 +1645,8 @@ which means entropy is measured in “nats.”</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">homogeneity</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">geodatasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston1&#39;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;geoda.charleston2&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch1</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'geoda.charleston1'</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ch2</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'geoda.charleston2'</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">homogeneity</span><span class="p">(</span><span class="n">ch1</span><span class="p">,</span> <span class="n">ch2</span><span class="p">)</span>
 <span class="go">np.float64(0.7954774928194752)</span>
 </code></pre></div>

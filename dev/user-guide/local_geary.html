@@ -1382,7 +1382,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph</span>
 
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">esda</span>
 </code></pre></div>
@@ -1394,31 +1394,31 @@
 <p>We use the same Berlin neighborhood data and median Airbnb price variable as in the global analysis. Keeping the data and weights constant makes it easier to connect the local results back to the global Geary’s <span class="math notranslate nohighlight">\(C\)</span> statistic.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/berlin-housing.gpkg&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">"data/berlin-housing.gpkg"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" src="../_images/ef3b6c89e1b0d3ba8a3fb491020dc428e7477acc272d82b7a8f739bdabdac9ef.png" />
+<img alt="../_images/971af0c877cbe1d800e7b00360864cd993c2800be50e518c899a3e63a18b4dd7.png" src="../_images/971af0c877cbe1d800e7b00360864cd993c2800be50e518c899a3e63a18b4dd7.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">column</span><span class="o">=</span><span class="s2">&quot;median_pri&quot;</span><span class="p">,</span>
-    <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;Quantiles&quot;</span><span class="p">,</span>
+    <span class="n">column</span><span class="o">=</span><span class="s2">"median_pri"</span><span class="p">,</span>
+    <span class="n">scheme</span><span class="o">=</span><span class="s2">"Quantiles"</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;GnBu&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"GnBu"</span><span class="p">,</span>
     <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
 <span class="p">)</span>
@@ -1426,10 +1426,10 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='Geodetic longitude [degree]', ylabel='Geodetic latitude [degree]'&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" src="../_images/c0dac92dcf20553703bd15fb15fbb2ae407cfaaaffe6dcbbc8b6b7af0ef28053.png" />
+<img alt="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" src="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" />
 </div>
 </div>
 <h2 id="from-global-to-local-autocorrelation">From global to local autocorrelation<a class="headerlink" href="#from-global-to-local-autocorrelation" title="Link to this heading">¶</a></h2>
@@ -1462,14 +1462,14 @@
 <h2 id="local-spatial-autocorrelation">Local Spatial Autocorrelation<a class="headerlink" href="#local-spatial-autocorrelation" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">"r"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 </code></pre></div>
 </div>
 </div>
@@ -1486,7 +1486,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
 <span class="n">lg</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">Geary_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">wq</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Significant locations (p&lt;0.05): </span><span class="si">{</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Significant locations (p&lt;0.05): </span><span class="si">{</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1499,14 +1499,14 @@
 <h3 id="map-of-local-c-i-values-continuous">Map of local <span class="math notranslate nohighlight">\(c_i\)</span> values (continuous)<a class="headerlink" href="#map-of-local-c-i-values-continuous" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">localG</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;plasma_r&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">localG</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma_r"</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Local Geary $c_i$ (lower = more similar to neighbours)&quot;</span><span class="p">);</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Local Geary $c_i$ (lower = more similar to neighbours)"</span><span class="p">);</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4bba32af238690fea192e55946bf34e59bfd344d602e4efcada675cd66d234b7.png" src="../_images/4bba32af238690fea192e55946bf34e59bfd344d602e4efcada675cd66d234b7.png" />
+<img alt="../_images/b16a6dc3167f1fb3c42c741a77faf30cd54e22d555a14c1f4b18f10ae9374215.png" src="../_images/b16a6dc3167f1fb3c42c741a77faf30cd54e22d555a14c1f4b18f10ae9374215.png" />
 </div>
 </div>
 <h3 id="map-of-significant-clusters-and-outliers">Map of significant clusters and outliers<a class="headerlink" href="#map-of-significant-clusters-and-outliers" title="Link to this heading">¶</a></h3>
@@ -1514,18 +1514,18 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;p_sim&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lg</span><span class="o">.</span><span class="n">labs</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"p_sim"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"labels"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lg</span><span class="o">.</span><span class="n">labs</span>
 
-<span class="n">label_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Outlier&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Cluster&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Other&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Not significant&quot;</span><span class="p">}</span>
+<span class="n">label_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">"Outlier"</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">"Cluster"</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">"Other"</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">"Not significant"</span><span class="p">}</span>
 <span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;Outlier&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Cluster&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Other&quot;</span><span class="p">:</span> <span class="s2">&quot;lightblue&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Not significant&quot;</span><span class="p">:</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span>
+    <span class="s2">"Outlier"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">,</span>
+    <span class="s2">"Cluster"</span><span class="p">:</span> <span class="s2">"blue"</span><span class="p">,</span>
+    <span class="s2">"Other"</span><span class="p">:</span> <span class="s2">"lightblue"</span><span class="p">,</span>
+    <span class="s2">"Not significant"</span><span class="p">:</span> <span class="s2">"lightgrey"</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;label_str&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">label_map</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label_str&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">color_map</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"label_str"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"labels"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">label_map</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"color"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label_str"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">color_map</span><span class="p">)</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpatches</span>
 
@@ -1534,7 +1534,7 @@
 <span class="n">legend_handles</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">color_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;label_str&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span>
+    <span class="n">subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label_str"</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">subset</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">subset</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
         <span class="n">patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
@@ -1542,21 +1542,21 @@
 
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
     <span class="n">handles</span><span class="o">=</span><span class="n">legend_handles</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Cluster Types&quot;</span><span class="p">,</span>
-    <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Cluster Types"</span><span class="p">,</span>
+    <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">,</span>
     <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.02</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Local Geary: clusters and outliers (p &lt; 0.05)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Local Geary: clusters and outliers (p &lt; 0.05)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1bac81f5918699779a7589e690124e3232643bb07c5b629a52fdf47f73ce58ae.png" src="../_images/1bac81f5918699779a7589e690124e3232643bb07c5b629a52fdf47f73ce58ae.png" />
+<img alt="../_images/e92d1fba3c0e4a0cc07300d12ecff12f13e9f2b46e99c11cb06a68895ebccd74.png" src="../_images/e92d1fba3c0e4a0cc07300d12ecff12f13e9f2b46e99c11cb06a68895ebccd74.png" />
 </div>
 </div>
 <h3 id="interpreting-cluster-types">Interpreting cluster types<a class="headerlink" href="#interpreting-cluster-types" title="Link to this heading">¶</a></h3>
@@ -1601,19 +1601,19 @@ The permutation test is discussed in more detail below.</p>
 <p>To overcome this, <strong>Conditional Spatial Permutation</strong> operates via the following explicit steps for each areal unit <span class="math notranslate nohighlight">\(i\)</span>:</p>
 <ol class="arabic simple">
 <li><p><strong>Freeze the Core:</strong> The observed value <span class="math notranslate nohighlight">\(y_i\)</span> at the target location <span class="math notranslate nohighlight">\(i\)</span> is held constant (“conditioned” upon).</p></li>
-<li><p><strong>Permit the Environment:</strong> The remaining <span class="math notranslate nohighlight">\(N-1\)</span> values in the dataset are randomly reshuffled across all other spatial positions except <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+<li><p><strong>Permute the Environment:</strong> The remaining <span class="math notranslate nohighlight">\(N-1\)</span> values in the dataset are randomly reshuffled across all other spatial positions except <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
 <li><p><strong>Compute Pseudo-Statistics:</strong> The local Geary’s <span class="math notranslate nohighlight">\(c_i\)</span> is recalculated using the fixed <span class="math notranslate nohighlight">\(y_i\)</span> and the newly randomized neighboring values.</p></li>
 <li><p><strong>Iterate:</strong> This process is repeated <span class="math notranslate nohighlight">\(M\)</span> times (e.g., <span class="math notranslate nohighlight">\(M=999\)</span> or <span class="math notranslate nohighlight">\(M=9999\)</span>) to build a customized empirical null distribution for <em>that specific location</em>.</p></li>
 <li><p><strong>Calculate the Pseudo <span class="math notranslate nohighlight">\(p\)</span>-value:</strong> The observed <span class="math notranslate nohighlight">\(c_i\)</span> is compared to this simulated distribution:</p></li>
 </ol>
 <div class="math notranslate nohighlight">
-\[\text{Pseudo } p = \frac{k + 1}{M + 1}\]</div>
-<p>Where <span class="math notranslate nohighlight">\(k\)</span> is the number of simulated iterations where the absolute pseudo-statistic was as extreme or more extreme than the observed local statistic.</p>
+\[\text{Pseudo } p_i = \frac{C_i + 1}{M + 1}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(C_i\)</span> is the number of simulated iterations where the pseudo-statistic for observation <span class="math notranslate nohighlight">\(i\)</span> was as extreme or more extreme than the observed local statistic at site <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <p>Let’s look at how we can implement and examine these empirical distributions using <code class="docutils literal notranslate"><span class="pre">esda</span></code> and <code class="docutils literal notranslate"><span class="pre">libpysal</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">lg</span> <span class="o">=</span> <span class="n">esda</span><span class="o">.</span><span class="n">Geary_Local</span><span class="p">(</span><span class="n">connectivity</span><span class="o">=</span><span class="n">wq</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">permutations</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;median_pri&quot;</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">"median_pri"</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="c1"># Visualizing the empirical null distribution for a single neighborhood</span>
@@ -1626,30 +1626,30 @@ The permutation test is discussed in more detail below.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
     <span class="n">simulated_stats</span><span class="p">,</span>
     <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
-    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Empirical Null Distributions&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">"Empirical Null Distributions"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
     <span class="n">observed_stat</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
-    <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span>
+    <span class="n">linestyle</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">,</span>
     <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Observed $c_i$ (</span><span class="si">{</span><span class="n">observed_stat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Observed $c_i$ (</span><span class="si">{</span><span class="n">observed_stat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Conditional Permutation Test for Unit Index&quot;</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">neigh_idx</span><span class="si">}</span><span class="s2"> (Pseudo p-value: </span><span class="si">{</span><span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span><span class="p">[</span><span class="n">neigh_idx</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Local Geary&#39;s $c_i$ Value&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Frequency&quot;</span><span class="p">)</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">"Conditional Permutation Test for Unit Index"</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">neigh_idx</span><span class="si">}</span><span class="s2"> (Pseudo p-value: </span><span class="si">{</span><span class="n">lg</span><span class="o">.</span><span class="n">p_sim</span><span class="p">[</span><span class="n">neigh_idx</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Local Geary's $c_i$ Value"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Frequency"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.legend.Legend at 0x7ffa4e6c86e0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.legend.Legend at 0x7fe6bd5baba0&gt;
 </code></pre></div>
 </div>
-<img alt="../_images/65cff10708e7fc882844c0b79fb987448a5be700a3fc53614bf38c5ba74e7059.png" src="../_images/65cff10708e7fc882844c0b79fb987448a5be700a3fc53614bf38c5ba74e7059.png" />
+<img alt="../_images/46f21d4f06d45390cd042f4c43e1e496ec7cca5d5bd91bb8e8a163173b39ab5f.png" src="../_images/46f21d4f06d45390cd042f4c43e1e496ec7cca5d5bd91bb8e8a163173b39ab5f.png" />
 </div>
 </div>
 <h2 id="methodological-issues-and-caveats">Methodological Issues and Caveats<a class="headerlink" href="#methodological-issues-and-caveats" title="Link to this heading">¶</a></h2>
