@@ -10,9 +10,10 @@ from packaging.version import Version
 from .. import moran
 
 SEED = 12345
-GPD_GE_120 = (Version(gpd.__version__) >= Version("1.1.2.dev")) and Version(
-    gpd.__version__
-).is_devrelease
+_gpd_version = Version(gpd.__version__)
+GPD_GE_120 = _gpd_version >= Version("1.2.0") or (
+    _gpd_version >= Version("1.1.2.dev") and _gpd_version.is_devrelease
+)
 
 
 parametrize_stl = pytest.mark.parametrize(
