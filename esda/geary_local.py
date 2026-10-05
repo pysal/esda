@@ -130,7 +130,7 @@ class Geary_Local(BaseEstimator):
         >>> lG.localG[0:5]
         array([0.18208704, 0.56001403, 0.97529461, 0.21590694, 0.61737256])
         >>> lG.p_sim[0:5]
-        array([0.413, 0.091, 0.129, 0.321, 0.927], dtype=float32)
+        array([0.414, 0.092, 0.13 , 0.322, 0.928], dtype=float32)
         """
         x = np.asarray(x).flatten()
 

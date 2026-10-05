@@ -101,13 +101,13 @@ class Join_Counts_Local_BV(BaseEstimator):
         >>> LJC_BV_C1.LJC
         array([0., 0., 0., 0., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 0., 0.])
         >>> LJC_BV_C1.p_sim
-        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 1.   ,
-               0.234,   nan,   nan,   nan,   nan,   nan,   nan], dtype=float32)
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.526,
+               0.18 ,   nan,   nan,   nan,   nan,   nan,   nan], dtype=float32)
         >>> LJC_BV_C2.LJC
         array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 2., 2., 0., 0., 2., 2.])
         >>> LJC_BV_C2.p_sim
         array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan, 0.389, 0.509,   nan,   nan, 0.488, 0.65 ], dtype=float32)
+                 nan, 0.264, 0.146,   nan,   nan, 0.132, 0.048], dtype=float32)
 
         Commpop data replicating GeoDa tutorial (Case 1)
 
@@ -127,14 +127,14 @@ class Join_Counts_Local_BV(BaseEstimator):
                0., 4., 0., 0., 1., 0., 1., 2., 0., 0., 0., 0., 3., 1., 0., 0., 1.,
                0., 1., 2., 0., 0., 1., 0., 0., 0.])
         >>> LJC_BV_Case1.p_sim
-        array([0.386,   nan, 1.   , 1.   ,   nan,   nan,   nan,   nan,   nan,
-                 nan, 0.576,   nan, 0.539, 1.   , 0.7  , 1.   , 0.372,   nan,
-                 nan,   nan, 1.   ,   nan,   nan, 1.   , 0.306, 0.306,   nan,
-               1.   ,   nan, 1.   ,   nan, 0.301, 0.12 ,   nan,   nan, 0.368,
+        array([0.426,   nan, 1.   , 1.   ,   nan,   nan,   nan,   nan,   nan,
+                 nan, 1.   ,   nan, 1.   , 1.   , 0.936, 1.   , 0.062,   nan,
+                 nan,   nan, 1.   ,   nan,   nan, 1.   , 0.782, 0.782,   nan,
+               1.   ,   nan, 1.   ,   nan, 0.764, 0.142,   nan,   nan, 0.386,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.26 ,   nan,
-                 nan, 1.   ,   nan, 1.   , 0.694,   nan,   nan,   nan,   nan,
-               0.274, 1.   ,   nan,   nan, 1.   ,   nan, 1.   , 0.325,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.012,   nan,
+                 nan, 1.   ,   nan, 1.   , 0.95 ,   nan,   nan,   nan,   nan,
+               0.118, 1.   ,   nan,   nan, 1.   ,   nan, 0.74 , 0.558,   nan,
                  nan, 1.   ,   nan,   nan,   nan], dtype=float32)
 
         Guerry data replicating GeoDa tutorial (Case 2)
@@ -159,14 +159,14 @@ class Join_Counts_Local_BV(BaseEstimator):
                0., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0.])
         >>> LJC_BV_Case2.p_sim
         array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan,   nan,   nan,   nan,   nan, 0.788,   nan,   nan,
-                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 1.   ,
+                 nan,   nan,   nan,   nan,   nan,   nan, 0.042,   nan,   nan,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.182,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.827,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.37 ,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan, 0.786,   nan,   nan,   nan,   nan,   nan, 0.828,
+                 nan,   nan, 0.032,   nan,   nan,   nan,   nan,   nan, 0.02 ,
                  nan,   nan,   nan,   nan], dtype=float32)
         """
         # Need to ensure that the np.array() are of dtype='float' for numba

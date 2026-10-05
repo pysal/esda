@@ -5,11 +5,19 @@ from scipy import stats
 from sklearn.base import BaseEstimator
 from sklearn.utils import check_array
 
+from .significance import _resolve_alternative, calculate_significance
+
 
 class Geary_Local_MV(BaseEstimator):
     """Local Geary - Multivariate"""
 
-    def __init__(self, connectivity=None, permutations=999, drop_islands=True):
+    def __init__(
+        self,
+        connectivity=None,
+        permutations=999,
+        drop_islands=True,
+        alternative=None,
+    ):
         """
         Initialize a Local_Geary_MV estimator
 
@@ -26,6 +34,12 @@ class Geary_Local_MV(BaseEstimator):
             list. By default, observations with no neighbors do not appear
             in the adjacency list. If islands are kept, they are coded as
             self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        alternative      : None | str
+                           The alternative hypothesis for the permutation
+                           p-values in ``p_sim``. ``None`` emits a
+                           ``DeprecationWarning`` and uses ``'directed'``. See
+                           ``esda.significance.calculate_significance()`` for
+                           the options.
 
         Attributes
         ----------
@@ -40,6 +54,7 @@ class Geary_Local_MV(BaseEstimator):
         self.connectivity = connectivity
         self.permutations = permutations
         self.drop_islands = drop_islands
+        self.alternative = alternative
 
     def fit(self, variables):
         """
@@ -104,12 +119,11 @@ class Geary_Local_MV(BaseEstimator):
 
         if permutations:
             self._crand(zvariables)
-            sim = np.transpose(self.Gs)
-            above = sim >= self.localG
-            larger = above.sum(0)
-            low_extreme = (permutations - larger) < larger
-            larger[low_extreme] = permutations - larger[low_extreme]
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = calculate_significance(
+                self.localG,
+                self.Gs,
+                alternative=_resolve_alternative(self.alternative),
+            )
 
         return self
 

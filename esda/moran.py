@@ -21,7 +21,7 @@ from scipy import sparse
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
 from .crand import njit as _njit
-from .significance import calculate_significance
+from .significance import _resolve_alternative, calculate_significance
 from .smoothing import assuncao_rate
 from .tabular import _bivariate_handler, _univariate_handler
 
@@ -79,6 +79,12 @@ class Moran:
     two_tailed      : boolean
                       If True (default) analytical p-values for Moran are two
                       tailed, otherwise if False, they are one-tailed.
+    alternative     : None | str
+                      The alternative hypothesis for the permutation p-value
+                      ``p_sim``. ``None`` emits a ``DeprecationWarning`` and
+                      uses ``'directed'``. See
+                      ``esda.significance.calculate_significance()`` for the
+                      options.
 
     Attributes
     ----------
@@ -118,9 +124,9 @@ class Moran:
                    vector of I values for permuted samples
     p_sim        : array
                    (if permutations>0)
-                   p-value based on permutations (one-tailed)
+                   p-value based on permutations
                    null: spatial randomness
-                   alternative: the observed I is extreme if
+                   default alternative: the observed I is extreme if
                    it is either extremely greater or extremely lower
                    than the values obtained based on permutations
     EI_sim       : float
@@ -180,7 +186,13 @@ class Moran:
     """  # noqa: E501
 
     def __init__(
-        self, y, w, transformation="r", permutations=PERMUTATIONS, two_tailed=True
+        self,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        two_tailed=True,
+        alternative=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -208,11 +220,9 @@ class Moran:
                 self.__calc(np.random.permutation(self.z)) for i in range(permutations)
             ]
             self.sim = sim = np.array(sim)
-            above = sim >= self.I
-            larger = above.sum()
-            if (self.permutations - larger) < larger:
-                larger = self.permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = calculate_significance(
+                self.I, sim, alternative=_resolve_alternative(alternative)
+            )
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
@@ -454,6 +464,12 @@ class Moran_BV:
     permutations    : int
                       number of random permutations for calculation of pseudo
                       p_values
+    alternative     : None | str
+                      The alternative hypothesis for the permutation p-value
+                      ``p_sim``. ``None`` emits a ``DeprecationWarning`` and
+                      uses ``'directed'``. See
+                      ``esda.significance.calculate_significance()`` for the
+                      options.
 
     Attributes
     ----------
@@ -474,7 +490,7 @@ class Moran_BV:
                     (if permutations>0)
                     p-value based on permutations (one-sided)
                     null: spatial randomness
-                    alternative: the observed I is extreme
+                    default alternative: the observed I is extreme
                     it is either extremely high or extremely low
     EI_sim        : array
                     (if permutations>0)
@@ -533,7 +549,15 @@ class Moran_BV:
     np.float64(0.001)
     """  # noqa: E501
 
-    def __init__(self, x, y, w, transformation="r", permutations=PERMUTATIONS):
+    def __init__(
+        self,
+        x,
+        y,
+        w,
+        transformation="r",
+        permutations=PERMUTATIONS,
+        alternative=None,
+    ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
         zy = (y - y.mean()) / y.std(ddof=1)
@@ -551,11 +575,9 @@ class Moran_BV:
             nrp = np.random.permutation
             sim = [self.__calc(nrp(zy)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
-            above = sim >= self.I
-            larger = above.sum()
-            if (permutations - larger) < larger:
-                larger = permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = calculate_significance(
+                self.I, sim, alternative=_resolve_alternative(alternative)
+            )
             self.EI_sim = sim.sum() / permutations
             self.seI_sim = np.array(sim).std()
             self.VI_sim = self.seI_sim**2
@@ -951,6 +973,12 @@ class Moran_Rate(Moran):
     permutations    : int
                       number of random permutations for calculation of pseudo
                       p_values
+    alternative     : None | str
+                      The alternative hypothesis for the permutation p-value
+                      ``p_sim``. ``None`` emits a ``DeprecationWarning`` and
+                      uses ``'directed'``. See
+                      ``esda.significance.calculate_significance()`` for the
+                      options.
 
     Attributes
     ----------
@@ -992,9 +1020,9 @@ class Moran_Rate(Moran):
                    vector of I values for permuted samples
     p_sim        : array
                    (if permutations>0)
-                   p-value based on permutations (one-sided)
+                   p-value based on permutations
                    null: spatial randomness
-                   alternative: the observed I is extreme if it is
+                   default alternative: the observed I is extreme if it is
                    either extremely greater or extremely lower than the values
                    obtained from permutaitons
     EI_sim       : float
@@ -1037,6 +1065,7 @@ class Moran_Rate(Moran):
         transformation="r",
         permutations=PERMUTATIONS,
         two_tailed=True,
+        alternative=None,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1048,6 +1077,7 @@ class Moran_Rate(Moran):
             transformation=transformation,
             permutations=permutations,
             two_tailed=two_tailed,
+            alternative=alternative,
         )
 
     @classmethod
@@ -1235,7 +1265,7 @@ class Moran_Local:
         (if permutations>0)
         p-values based on permutations (one-sided)
         null: spatial randomness
-        alternative: the observed Ii is further away or extreme
+        default alternative: the observed Ii is further away or extreme
         from the median of simulated values. It is either extremely
         high or extremely low in the distribution of simulated Is.
     EI_sim : array
@@ -1803,7 +1833,7 @@ class Moran_Local_BV:
         (if permutations>0)
         p-value based on permutations (one-sided)
         null: spatial randomness
-        alternative: the observed Ii is further away or extreme
+        default alternative: the observed Ii is further away or extreme
         from the median of simulated values. It is either extremelyi
         high or extremely low in the distribution of simulated Is.
     EI_sim : array
@@ -2275,7 +2305,7 @@ class Moran_Local_Rate(Moran_Local):
         (if permutations>0)
         p-value based on permutations (one-sided)
         null: spatial randomness
-        alternative: the observed Ii is further away or extreme
+        default alternative: the observed Ii is further away or extreme
         from the median of simulated Iis. It is either extremely
         high or extremely low in the distribution of simulated Is
     EI_sim : float

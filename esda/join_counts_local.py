@@ -107,8 +107,8 @@ class Join_Counts_Local(BaseEstimator):
         >>> LJC_uni.LJC
         array([0., 0., 0., 0., 0., 0., 0., 0., 2., 3., 3., 2., 2., 3., 3., 2.])
         >>> LJC_uni.p_sim
-        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.21 ,
-               0.086, 0.086, 0.21 , 0.465, 0.21 , 0.21 , 0.465], dtype=float32)
+        array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.912,
+               0.488, 0.488, 0.912, 0.436, 0.192, 0.192, 0.436], dtype=float32)
 
         Guerry data replicating GeoDa tutorial
 
@@ -129,15 +129,15 @@ class Join_Counts_Local(BaseEstimator):
                0., 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 2., 0., 3., 0., 0.])
         >>> LJC_uni.p_sim
         array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan,   nan, 0.651,   nan, 0.379, 0.379,   nan, 0.548,
-                 nan,   nan,   nan,   nan,   nan,   nan, 0.563,   nan, 0.707,
-                 nan,   nan,   nan,   nan,   nan,   nan, 0.566,   nan,   nan,
+                 nan,   nan,   nan, 0.84 ,   nan, 0.044, 0.044,   nan, 1.   ,
+                 nan,   nan,   nan,   nan,   nan,   nan, 1.   ,   nan, 0.626,
+                 nan,   nan,   nan,   nan,   nan,   nan, 1.   ,   nan,   nan,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 0.596,
+                 nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan, 1.   ,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
                  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan, 0.425,   nan,   nan,   nan,   nan,   nan, 0.507,
-                 nan, 0.36 ,   nan,   nan], dtype=float32)
+                 nan,   nan, 0.07 ,   nan,   nan,   nan,   nan,   nan, 0.262,
+                 nan, 0.112,   nan,   nan], dtype=float32)
         """
         # Need to ensure that the np.array() are of
         # dtype='float' for numba

@@ -16,6 +16,7 @@ from scipy import stats
 from .crand import _prepare_univariate
 from .crand import crand as _crand_plus
 from .crand import njit as _njit
+from .significance import _resolve_alternative, calculate_significance
 
 PERMUTATIONS = 999
 
@@ -32,6 +33,12 @@ class G:
                    spatial weights instance as W or Graph aligned with y
     permutations  : int
                     the number of random permutations for calculating pseudo p_values
+    alternative   : None | str
+                    The alternative hypothesis for the permutation p-value
+                    ``p_sim``. ``None`` emits a ``DeprecationWarning`` and
+                    uses ``'directed'``. See
+                    ``esda.significance.calculate_significance()`` for the
+                    options.
 
     Attributes
     ----------
@@ -110,7 +117,7 @@ class G:
     np.float64(0.173)
     """
 
-    def __init__(self, y, w, permutations=PERMUTATIONS):
+    def __init__(self, y, w, permutations=PERMUTATIONS, alternative=None):
         y = np.asarray(y).flatten()
         self.n = len(y)
         self.y = y
@@ -136,11 +143,9 @@ class G:
                 self.__calc(np.random.permutation(self.y)) for i in range(permutations)
             ]
             self.sim = sim = np.array(sim)
-            above = sim >= self.G
-            larger = sum(above)
-            if (self.permutations - larger) < larger:
-                larger = self.permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = calculate_significance(
+                self.G, sim, alternative=_resolve_alternative(alternative)
+            )
             self.EG_sim = sum(sim) / permutations
             self.seG_sim = sim.std()
             self.VG_sim = self.seG_sim**2
@@ -295,7 +300,7 @@ class G_Local:
     array([-1.0136729 , -0.04361589,  1.31558703, -0.31412676,  1.15373986,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
-    np.float32(0.413)
+    np.float32(0.41)
 
     P-value based on standard normal approximation from permutations.
 
@@ -314,7 +319,7 @@ class G_Local:
     array([-1.39727626, -0.28917762,  0.65064964, -0.28917762,  1.23452088,
            2.02424331])
     >>> round(lg_star.p_sim[0], 3)
-    np.float32(0.413)
+    np.float32(0.41)
 
     Applying Getis and Ord local G test using a row-standardized weights object.
 
@@ -326,7 +331,7 @@ class G_Local:
     array([-0.62074534, -0.01780611,  1.31558703, -0.12824171,  0.28843496,
            1.77833941])
     >>> round(lg.p_sim[0], 3)
-    np.float32(0.413)
+    np.float32(0.41)
 
     Applying Getis and Ord local G* test using a row-standardized weights object.
 
@@ -403,7 +408,7 @@ class G_Local:
         y = self.y
         if keep_simulations:
             rGs = np.zeros((self.n, self.permutations))
-        larger = np.zeros((self.n,))
+        p_sim = np.zeros((self.n,))
         n_1 = self.n - 1
         rid = list(range(n_1))
         prange = list(range(self.permutations))
@@ -427,12 +432,10 @@ class G_Local:
             rGs_i = (np.array(rGs_i) / den[i]) / (self.y_sum - (1 - self.star) * y[i])
             if keep_simulations:
                 rGs[i] = rGs_i
-            larger[i] = (rGs_i >= self.Gs[i]).sum()
+            p_sim[i] = calculate_significance(self.Gs[i], rGs_i, alternative="directed")
         if keep_simulations:
             self.rGs = rGs
-        below = (self.permutations - larger) < larger
-        larger[below] = self.permutations - larger[below]
-        self.p_sim = (larger + 1) / (self.permutations + 1)
+        self.p_sim = p_sim
 
     def __getCardinalities(self):
         if isinstance(self.w, W):

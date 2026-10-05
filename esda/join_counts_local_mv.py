@@ -97,7 +97,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 1., 2.])
         >>> LJC_MV.p_sim
         array([  nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,   nan,
-                 nan,   nan, 0.677,   nan,   nan, 0.661, 0.746], dtype=float32)
+                 nan,   nan, 0.7  ,   nan,   nan, 0.732, 0.014], dtype=float32)
 
         Guerry data extending GeoDa tutorial
 

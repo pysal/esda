@@ -13,6 +13,7 @@ from libpysal.weights import W, lag_spatial
 
 from .crand import _prepare_univariate
 from .crand import njit as _njit
+from .significance import _resolve_alternative, calculate_significance
 
 __all__ = ["Gamma"]
 
@@ -42,6 +43,12 @@ class Gamma:
                       True, standardize to mean zero and variance one
     permutations    : int
                       number of random permutations for calculation of pseudo-p_values
+    alternative     : None | str
+                      The alternative hypothesis for the permutation p-value
+                      ``p_sim_g``. ``None`` emits a ``DeprecationWarning`` and
+                      uses ``'directed'``. See
+                      ``esda.significance.calculate_significance()`` for the
+                      options.
 
     Attributes
     ----------
@@ -161,7 +168,13 @@ class Gamma:
     """
 
     def __init__(
-        self, y, w, operation="c", standardize=False, permutations=PERMUTATIONS
+        self,
+        y,
+        w,
+        operation="c",
+        standardize=False,
+        permutations=PERMUTATIONS,
+        alternative=None,
     ):
         y = np.asarray(y).flatten()
         self.w = w
@@ -186,8 +199,9 @@ class Gamma:
             self.min_g = np.min(self.sim_g)
             self.mean_g = np.mean(self.sim_g)
             self.max_g = np.max(self.sim_g)
-            p_sim_g = self.__pseudop(self.sim_g, self.g)
-            self.p_sim_g = p_sim_g
+            self.p_sim_g = calculate_significance(
+                self.g, self.sim_g, alternative=_resolve_alternative(alternative)
+            )
             self.g_z = (self.g - self.mean_g) / np.std(self.sim_g)
 
     @property
@@ -260,14 +274,6 @@ class Gamma:
             raise NotImplementedError
 
         return g
-
-    def __pseudop(self, sim, g):
-        above = sim >= g
-        larger = above.sum()
-        psim = (larger + 1.0) / (self.permutations + 1.0)
-        if psim > 0.5:
-            psim = (self.permutations - larger + 1.0) / (self.permutations + 1.0)
-        return psim
 
 
 # --------------------------------------------------------------

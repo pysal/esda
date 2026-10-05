@@ -10,9 +10,11 @@ from packaging.version import Version
 from .. import moran
 
 SEED = 12345
-GPD_GE_120 = (Version(gpd.__version__) >= Version("1.1.2.dev")) and Version(
-    gpd.__version__
-).is_devrelease
+# geopandas dev builds ahead of 1.2.0 were versioned 1.1.2.devN
+GPD_GE_120 = Version(gpd.__version__) >= Version("1.2.0") or (
+    Version(gpd.__version__) >= Version("1.1.2.dev")
+    and Version(gpd.__version__).is_devrelease
+)
 
 
 parametrize_stl = pytest.mark.parametrize(

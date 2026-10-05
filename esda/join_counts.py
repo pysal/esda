@@ -12,6 +12,7 @@ from libpysal.weights import W
 from scipy.stats import chi2, chi2_contingency
 
 from .crand import njit as _njit
+from .significance import calculate_significance
 
 __all__ = ["Join_Counts"]
 
@@ -251,10 +252,10 @@ class Join_Counts:
         return (bb, ww, bw + wb, stat, pvalue, dof, expected, np.array(table))
 
     def __pseudop(self, sim, jc):
-        above = sim >= jc
-        larger = sum(above)
-        psim = (larger + 1.0) / (self.permutations + 1.0)
-        return psim
+        # The simulated join counts are an object array, which numba rejects.
+        return calculate_significance(
+            float(jc), sim.astype(float), alternative="greater"
+        )
 
     @property
     def _statistic(self):

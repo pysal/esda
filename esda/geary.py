@@ -9,6 +9,8 @@ import numpy as np
 import scipy.stats as stats
 from libpysal import graph, weights
 
+from .significance import _resolve_alternative, calculate_significance
+
 __all__ = ["Geary"]
 
 
@@ -30,6 +32,12 @@ class Geary:
     permutations   : int
                      number of random permutations for calculation of
                      pseudo-p_values
+    alternative    : None | str
+                     The alternative hypothesis for the permutation p-value
+                     ``p_sim``. ``None`` emits a ``DeprecationWarning`` and
+                     uses ``'directed'``. See
+                     ``esda.significance.calculate_significance()`` for the
+                     options.
 
     Attributes
     ----------
@@ -99,7 +107,7 @@ class Geary:
 
     """
 
-    def __init__(self, y, w, transformation="r", permutations=999):
+    def __init__(self, y, w, transformation="r", permutations=999, alternative=None):
         if not isinstance(w, weights.W | graph.Graph):
             raise TypeError(
                 "w must be a libpysal.weights.W or libpysal.graph.Graph object, "
@@ -143,11 +151,9 @@ class Geary:
                 self.__calc(np.random.permutation(self.y)) for i in range(permutations)
             ]
             self.sim = sim = np.array(sim)
-            above = sim >= self.C
-            larger = sum(above)
-            if (permutations - larger) < larger:
-                larger = permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = calculate_significance(
+                self.C, sim, alternative=_resolve_alternative(alternative)
+            )
             self.EC_sim = sum(sim) / permutations
             self.seC_sim = np.array(sim).std()
             self.VC_sim = self.seC_sim**2
