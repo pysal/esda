@@ -1,5 +1,6 @@
 import libpysal
 import numpy as np
+import pandas as pd
 import pytest
 
 from esda.geary_local_mv import Geary_Local_MV
@@ -25,7 +26,25 @@ class TestGearyLocalMV:
 
     @parametrize_w
     def test_defaults(self, w):
-        lG_mv = Geary_Local_MV(connectivity=w).fit([self.y1, self.y2])
-        print(lG_mv.p_sim[0])
+        lG_mv = Geary_Local_MV(connectivity=w).fit(np.column_stack([self.y1, self.y2]))
         np.testing.assert_allclose(lG_mv.localG[0], 0.4096931479581422)
         np.testing.assert_allclose(lG_mv.p_sim[0], 0.211)
+
+    @parametrize_w
+    def test_dataframe(self, w):
+        df = pd.DataFrame({"y1": self.y1, "y2": self.y2})
+        lG_mv = Geary_Local_MV(connectivity=w, permutations=0).fit(df)
+        np.testing.assert_allclose(lG_mv.localG[0], 0.4096931479581422)
+        assert lG_mv.variables.shape == (len(self.y1), 2)
+
+    @parametrize_w
+    def test_features_as_rows_deprecated(self, w):
+        with pytest.warns(FutureWarning, match="n_features, n_samples"):
+            lG_mv = Geary_Local_MV(connectivity=w).fit([self.y1, self.y2])
+        np.testing.assert_allclose(lG_mv.localG[0], 0.4096931479581422)
+        np.testing.assert_allclose(lG_mv.p_sim[0], 0.211)
+
+    @parametrize_w
+    def test_shape_mismatch(self, w):
+        with pytest.raises(ValueError, match="does not match"):
+            Geary_Local_MV(connectivity=w).fit(np.ones((10, 2)))
