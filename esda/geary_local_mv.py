@@ -68,7 +68,11 @@ class Geary_Local_MV(BaseEstimator):
                            per variable, e.g. a DataFrame of the columns
                            to use. Passing the variables as rows, i.e. an
                            array of shape (n_features, n_samples) such as
-                           ``[x1, x2]``, is deprecated.
+                           ``[x1, x2]``, is deprecated. That layout is
+                           only recognised when the array is not square.
+                           A square array is always read as
+                           (n_samples, n_features), so pass the transpose
+                           if it holds one variable per row.
 
         Returns
         -------
