@@ -127,6 +127,14 @@ def crand(
     adj_matrix = w.sparse
 
     n = len(z)
+
+    if z.dtype != np.float64:
+        raise TypeError(
+            f"Input z must be of dtype float64, but got {z.dtype}. "
+            f"Numba operations require float64 precision. "
+            f"Please convert z using z.astype(np.float64)."
+        )
+
     if z.ndim == 2:
         if z.shape[1] == 2:
             # assume that matrix is [X Y], and scaling is moran-like
