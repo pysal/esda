@@ -72,7 +72,7 @@ docs = [
     "nbsphinx",
     "numpydoc",
     "pandoc",
-    "sphinx>8,<9",  # See PR #488
+    "sphinx>8,<10",  # See PR #488
     "sphinxcontrib-bibtex",
     "sphinx_bootstrap_theme",
     "sphinx-copybutton",
