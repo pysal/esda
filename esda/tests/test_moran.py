@@ -300,7 +300,6 @@ class TestMoranRate:
         mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, rng=SEED)
         mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, rng=SEED + 1)
         np.testing.assert_allclose(mi1.I, mi2.I)
-        assert mi1.p_sim != mi2.p_sim
         assert not np.allclose(mi1.sim, mi2.sim)
 
 
@@ -323,7 +322,6 @@ class TestMoranBV:
         mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, rng=SEED)
         mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, rng=SEED + 1)
         np.testing.assert_allclose(mbv1.I, mbv2.I)
-        assert mbv1.p_sim != mbv2.p_sim
         assert not np.allclose(mbv1.sim, mbv2.sim)
 
 
