@@ -78,6 +78,10 @@ class Moran:
     two_tailed      : boolean
                       If True (default) analytical p-values for Moran are two
                       tailed, otherwise if False, they are one-tailed.
+    rng             : {None, int, numpy.random.Generator}, optional
+                      seed or random number generator used to draw the permutations,
+                      passed to :func:`numpy.random.default_rng`. If None (default),
+                      fresh entropy is drawn from the OS.
 
     Attributes
     ----------
@@ -187,7 +191,7 @@ class Moran:
         transformation="r",
         permutations=PERMUTATIONS,
         two_tailed=True,
-        seed=None,
+        rng=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -210,7 +214,7 @@ class Moran:
             self.p_norm *= 2.0
             self.p_rand *= 2.0
 
-        rng = np.random.default_rng(seed)
+        rng = np.random.default_rng(rng)
         if permutations:
             sim = [self.__calc(rng.permutation(self.z)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
@@ -436,6 +440,10 @@ class Moran_BV:  # noqa: N801
     permutations    : int
                       number of random permutations for calculation of pseudo
                       p_values
+    rng             : {None, int, numpy.random.Generator}, optional
+                      seed or random number generator used to draw the permutations,
+                      passed to :func:`numpy.random.default_rng`. If None (default),
+                      fresh entropy is drawn from the OS.
 
     Attributes
     ----------
@@ -520,7 +528,7 @@ class Moran_BV:  # noqa: N801
     """  # noqa: E501
 
     def __init__(
-        self, x, y, w, transformation="r", permutations=PERMUTATIONS, seed=None
+        self, x, y, w, transformation="r", permutations=PERMUTATIONS, rng=None
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -535,7 +543,7 @@ class Moran_BV:  # noqa: N801
         w = _transform(w, transformation)
         self.w = w
         self.I = self.__calc(zy)  # noqa: E741
-        rng = np.random.default_rng(seed)
+        rng = np.random.default_rng(rng)
         if permutations:
             sim = [self.__calc(rng.permutation(zy)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
@@ -935,6 +943,10 @@ class Moran_Rate(Moran):  # noqa: N801
     permutations    : int
                       number of random permutations for calculation of pseudo
                       p_values
+    rng             : {None, int, numpy.random.Generator}, optional
+                      seed or random number generator used to draw the permutations,
+                      passed to :func:`numpy.random.default_rng`. If None (default),
+                      fresh entropy is drawn from the OS.
 
     Attributes
     ----------
@@ -1021,7 +1033,7 @@ class Moran_Rate(Moran):  # noqa: N801
         transformation="r",
         permutations=PERMUTATIONS,
         two_tailed=True,
-        seed=None,
+        rng=None,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1033,7 +1045,7 @@ class Moran_Rate(Moran):  # noqa: N801
             transformation=transformation,
             permutations=permutations,
             two_tailed=two_tailed,
-            seed=seed,
+            rng=rng,
         )
 
     @classmethod

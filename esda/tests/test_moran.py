@@ -288,17 +288,17 @@ class TestMoranRate:
         np.testing.assert_allclose(pval, 0.008)
 
     @parametrize_sids
-    def test_seed_reproducibility(self, w):
-        mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED)
-        mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED)
+    def test_rng_reproducibility(self, w):
+        mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, rng=SEED)
+        mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, rng=SEED)
         np.testing.assert_allclose(mi1.I, mi2.I)
         np.testing.assert_allclose(mi1.p_sim, mi2.p_sim)
         np.testing.assert_array_equal(mi1.sim, mi2.sim)
 
     @parametrize_sids
-    def test_seed_different_values(self, w):
-        mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED)
-        mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, seed=SEED + 1)
+    def test_rng_different_values(self, w):
+        mi1 = moran.Moran_Rate(self.e, self.b, w, permutations=99, rng=SEED)
+        mi2 = moran.Moran_Rate(self.e, self.b, w, permutations=99, rng=SEED + 1)
         np.testing.assert_allclose(mi1.I, mi2.I)
         assert mi1.p_sim != mi2.p_sim
         assert not np.allclose(mi1.sim, mi2.sim)
@@ -311,17 +311,17 @@ class TestMoranBV:
         self.y = np.array(f.by_col["SIDR74"])
 
     @parametrize_sids
-    def test_seed_reproducibility(self, w):
-        mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED)
-        mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED)
+    def test_rng_reproducibility(self, w):
+        mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, rng=SEED)
+        mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, rng=SEED)
         np.testing.assert_allclose(mbv1.I, mbv2.I)
         np.testing.assert_allclose(mbv1.p_sim, mbv2.p_sim)
         np.testing.assert_array_equal(mbv1.sim, mbv2.sim)
 
     @parametrize_sids
-    def test_seed_different_values(self, w):
-        mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED)
-        mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, seed=SEED + 1)
+    def test_rng_different_values(self, w):
+        mbv1 = moran.Moran_BV(self.x, self.y, w, permutations=99, rng=SEED)
+        mbv2 = moran.Moran_BV(self.x, self.y, w, permutations=99, rng=SEED + 1)
         np.testing.assert_allclose(mbv1.I, mbv2.I)
         assert mbv1.p_sim != mbv2.p_sim
         assert not np.allclose(mbv1.sim, mbv2.sim)
