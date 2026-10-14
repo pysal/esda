@@ -55,6 +55,28 @@ class TestAgeStd:
         )
         assert list(direct.flatten()) == list(direct_exp.flatten())
 
+    def test_direct_age_standardization_zero_events(self):
+        e = self.e.copy()
+        e[4:] = 0
+        direct = np.array(sm.direct_age_standardization(e, self.b, self.s_b, self.n))
+        assert list(direct[0].round(8)) == [0.02374402, 0.01920491, 0.02904848]
+        assert direct[1, 0] == 0.0
+        assert direct[1, 1] == 0.0
+        assert round(float(direct[1, 2]) * 100_000, 6) == 97.075775
+
+        larger = self.b.copy()
+        larger[4:] *= 10
+        scaled = np.array(sm.direct_age_standardization(e, larger, self.s_b, self.n))
+        assert list(scaled[0].round(8)) == [0.02374402, 0.01920491, 0.02904848]
+        assert scaled[1, 2] == pytest.approx(direct[1, 2] / 10)
+
+        one = sm.direct_age_standardization(
+            np.array([0]), np.array([487]), np.array([1000]), 1
+        )[0]
+        assert one[0] == 0.0
+        assert one[1] == 0.0
+        assert round(float(one[2]) * 1000, 6) == 7.574701
+
     def test_indirect_age_standardization(self):
         indirect = np.array(
             sm.indirect_age_standardization(self.e, self.b, self.s_e, self.s_b, self.n)
