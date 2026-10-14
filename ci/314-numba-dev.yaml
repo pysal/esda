@@ -10,6 +10,7 @@ dependencies:
   - geodatasets
   - codecov
   - folium
+  - geodatasets
   - mapclassify
   - matplotlib
   - seaborn

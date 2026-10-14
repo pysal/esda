@@ -17,3 +17,15 @@ dependencies:
   - matplotlib
   - numba
   - rtree
+  # docs
+  - nbsphinx
+  - numpydoc
+  - pandoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme
+  - mkdocs-jupyter
+  - myst-parser
+  - sphinx-immaterial
+  - myst-nb
+  - sphinx-copybutton

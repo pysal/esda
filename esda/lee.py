@@ -5,12 +5,13 @@ from sklearn.base import BaseEstimator
 
 from .crand import _prepare_bivariate
 from .crand import njit as _njit
+from .significance import _resolve_alternative, calculate_significance
 
 
-class Spatial_Pearson(BaseEstimator):  # noqa: N801
+class Spatial_Pearson(BaseEstimator):
     """Global Spatial Pearson Statistic"""
 
-    def __init__(self, connectivity=None, permutations=999):
+    def __init__(self, connectivity=None, permutations=999, alternative=None):
         """
         Initialize a spatial pearson estimator
 
@@ -22,6 +23,12 @@ class Spatial_Pearson(BaseEstimator):  # noqa: N801
         permutations:   int
                         the number of permutations to conduct for inference.
                         if < 1, no permutational inference will be conducted.
+        alternative:    None | str
+                        the alternative hypothesis for the permutation
+                        p-values in ``significance_``. ``None`` emits a
+                        ``DeprecationWarning`` and uses ``'directed'``. See
+                        ``esda.significance.calculate_significance()`` for
+                        the options.
 
         Attributes
         ----------
@@ -40,6 +47,7 @@ class Spatial_Pearson(BaseEstimator):  # noqa: N801
         """
         self.connectivity = connectivity
         self.permutations = permutations
+        self.alternative = alternative
 
     def fit(self, x, y):
         """
@@ -84,10 +92,11 @@ class Spatial_Pearson(BaseEstimator):  # noqa: N801
                 for _ in range(self.permutations)
             ]
             self.reference_distribution_ = simulations = numpy.array(simulations)
-            above = simulations >= self.association_
-            larger = above.sum(axis=0)
-            extreme = numpy.minimum(self.permutations - larger, larger)
-            self.significance_ = (extreme + 1.0) / (self.permutations + 1.0)
+            self.significance_ = calculate_significance(
+                self.association_.ravel(),
+                simulations.reshape(self.permutations, -1).T,
+                alternative=_resolve_alternative(self.alternative),
+            ).reshape(self.association_.shape)
         return self
 
     @staticmethod
@@ -97,10 +106,10 @@ class Spatial_Pearson(BaseEstimator):  # noqa: N801
         return (Z.T @ ctc @ Z) / (ones.T @ ctc @ ones)
 
 
-class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
+class Spatial_Pearson_Local(BaseEstimator):
     """Local Spatial Pearson Statistic"""
 
-    def __init__(self, connectivity=None, permutations=999):
+    def __init__(self, connectivity=None, permutations=999, alternative=None):
         """
         Initialize a spatial local pearson estimator
 
@@ -112,6 +121,12 @@ class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
         permutations:   int
                         the number of permutations to conduct for inference.
                         if < 1, no permutational inference will be conducted.
+        alternative:    None | str
+                        the alternative hypothesis for the permutation
+                        p-values in ``significance_``. ``None`` emits a
+                        ``DeprecationWarning`` and uses ``'directed'``. See
+                        ``esda.significance.calculate_significance()`` for
+                        the options.
         significance_: numpy.ndarray (2,2)
                        permutation-based p-values for the fraction of times the
                        observed correlation was more extreme than the simulated
@@ -138,6 +153,7 @@ class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
         """
         self.connectivity = connectivity
         self.permutations = permutations
+        self.alternative = alternative
 
     def fit(self, x, y):
         """
@@ -224,10 +240,11 @@ class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
                 self.reference_distribution_[i] *= (
                     (weight * random_neighbor_x).sum(axis=1) - x.mean()
                 ).squeeze()
-            above = self.reference_distribution_ >= self.associations_.reshape(-1, 1)
-            larger = above.sum(axis=1)
-            extreme = numpy.minimum(larger, self.permutations - larger)
-            self.significance_ = (extreme + 1.0) / (self.permutations + 1.0)
+            self.significance_ = calculate_significance(
+                self.associations_,
+                self.reference_distribution_,
+                alternative=_resolve_alternative(self.alternative),
+            )
             self.reference_distribution_ = self.reference_distribution_.T
         else:
             self.reference_distribution_ = None
@@ -247,20 +264,3 @@ class Spatial_Pearson_Local(BaseEstimator):  # noqa: N801
 def _local_spatial_pearson_crand(i, z, permuted_ids, weights_i, scaling):
     zxi, zxrand, zyi, zyrand = _prepare_bivariate(i, z, permuted_ids, weights_i)
     return (zyrand @ weights_i) * (zxrand @ weights_i) * scaling
-
-
-if __name__ == "__main__":
-    import geopandas
-    import libpysal
-
-    df = geopandas.read_file(libpysal.examples.get_path("columbus.shp"))
-    x = df[["HOVAL"]].values
-    y = df[["CRIME"]].values
-    zx = preprocessing.StandardScaler().fit_transform(x)
-    zy = preprocessing.StandardScaler().fit_transform(y)
-    w = libpysal.weights.Queen.from_dataframe(df)
-    w.transform = "r"
-    numpy.random.seed(2478879)
-    testglobal = Spatial_Pearson(connectivity=w.sparse).fit(x, y)
-    numpy.random.seed(2478879)
-    testlocal = Spatial_Pearson_Local(connectivity=w.sparse).fit(x, y)

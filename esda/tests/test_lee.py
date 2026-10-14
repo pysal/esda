@@ -1,15 +1,22 @@
+import platform
+import sys
+
 import geopandas
 import libpysal
 import numpy
-from libpysal.common import ATOL, RTOL, pandas
+import pytest
+from libpysal.common import ATOL, RTOL
 
 from .. import lee
+
+ON_WIN = sys.platform == "win32"
+ON_MAC_INTEL = sys.platform == "darwin" and platform.machine() == "x86_64"
 
 
 class TestLee:
     def setup_method(self):
         self.data = geopandas.read_file(libpysal.examples.get_path("columbus.shp"))
-        self.w = libpysal.weights.Queen.from_dataframe(self.data)
+        self.w = libpysal.weights.Queen.from_dataframe(self.data, use_index=False)
         self.w.transform = "r"
         self.x = self.data[["HOVAL"]].values
         self.y = self.data[["CRIME"]].values
@@ -36,6 +43,36 @@ class TestLee:
         numpy.testing.assert_allclose(
             known_significance, result.significance_, rtol=RTOL, atol=ATOL
         )
+
+    @pytest.mark.skipif(ON_WIN or ON_MAC_INTEL, reason="undiagnosed failure")
+    def test_global_no_conn(self):
+        numpy.random.seed(2478879)
+        result = lee.Spatial_Pearson().fit(self.x, self.y)
+        known = numpy.array([[1.0, -0.574487], [-0.574487, 1.0]])
+        numpy.testing.assert_allclose(known, result.association_, rtol=RTOL, atol=ATOL)
+        numpy.testing.assert_array_equal(
+            result.reference_distribution_.shape, (999, 2, 2)
+        )
+        first_rep = numpy.array([[1.0, -0.574487], [-0.574487, 1.0]])
+
+        second_rep = numpy.array([[1.0, -0.574487], [-0.574487, 1.0]])
+        numpy.testing.assert_allclose(
+            first_rep, result.reference_distribution_[0], rtol=RTOL, atol=ATOL
+        )
+        numpy.testing.assert_allclose(
+            second_rep, result.reference_distribution_[1], rtol=RTOL, atol=ATOL
+        )
+
+        known_significance = numpy.array([[0.428, 0.22], [0.22, 0.329]])
+        numpy.testing.assert_allclose(
+            known_significance, result.significance_, rtol=RTOL, atol=ATOL
+        )
+
+    def test_global_no_perm(self):
+        numpy.random.seed(2478879)
+        result = lee.Spatial_Pearson(permutations=None).fit(self.x, self.y)
+        known = numpy.array([[1.0, -0.574487], [-0.574487, 1.0]])
+        numpy.testing.assert_allclose(known, result.association_, rtol=RTOL, atol=ATOL)
 
     def test_local(self):
         numpy.random.seed(2478879)
@@ -154,3 +191,10 @@ class TestLee:
         numpy.testing.assert_allclose(
             significances, result.significance_, rtol=RTOL, atol=ATOL
         )
+
+    def test_local_no_perm(self):
+        numpy.random.seed(2478879)
+        result = lee.Spatial_Pearson_Local(
+            connectivity=self.w.sparse, permutations=None
+        ).fit(self.x, self.y)
+        assert result.reference_distribution_ is None

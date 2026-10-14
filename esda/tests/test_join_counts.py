@@ -49,24 +49,3 @@ class TestJoinCounts:
         np.testing.assert_allclose(1.0, jc.p_sim_autocorr_neg)
         np.testing.assert_allclose(0.001, jc.p_sim_autocorr_pos)
         np.testing.assert_allclose(0.2653504320039377, jc.sim_autocorr_chi2)
-
-    @parametrize_w
-    def test_by_col(self, w):
-        import pandas as pd
-
-        df = pd.DataFrame(self.y, columns=["y"])
-        np.random.seed(12345)
-        r1 = Join_Counts.by_col(
-            df, ["y"], w=w, permutations=999
-        )  # outvals = ['bb', 'bw', 'ww', 'p_sim_bw', 'p_sim_bb']
-
-        bb = np.unique(r1.y_bb.values)
-        bw = np.unique(r1.y_bw.values)
-        bb_p = np.unique(r1.y_p_sim_bb.values)
-        bw_p = np.unique(r1.y_p_sim_bw.values)
-        np.random.seed(12345)
-        c = Join_Counts(self.y, w, permutations=999)
-        np.testing.assert_allclose(bb, c.bb)
-        np.testing.assert_allclose(bw, c.bw)
-        np.testing.assert_allclose(bb_p, c.p_sim_bb)
-        np.testing.assert_allclose(bw_p, c.p_sim_bw)

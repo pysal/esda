@@ -1,8 +1,21 @@
+import importlib
+
+import geopandas
 import numpy
 import pandas
 import pytest
+from libpysal import examples, weights
+from packaging.version import Version
 
-from ..topo import isolation, prominence, to_elevation, weights
+from ..topo import isolation, prominence, to_elevation
+
+mpl_available = False
+if importlib.util.find_spec("matplotlib"):
+    mpl_available = True
+    from matplotlib import __version__ as mpl_version
+    from matplotlib.testing.decorators import image_comparison
+
+    MPL_GE_311 = Version(mpl_version) >= Version("3.11")
 
 
 class TestTopo:
@@ -119,3 +132,41 @@ class TestTopo:
         assert random.ndim == 1
         assert random.min() >= 0
         assert random.max() >= 0
+
+
+@pytest.mark.skipif(not MPL_GE_311, reason="text plotting change in 3.11")
+@pytest.mark.skipif(not mpl_available, reason="matplotlib needed for this test")
+@image_comparison(["topo4x1"], extensions=["png"], tol=1.0)
+def test_plots():
+    pytest.importorskip("rtree")
+    plt = pytest.importorskip("matplotlib.pyplot")
+
+    current_cmap = plt.get_cmap("twilight")
+    current_cmap.set_bad(color="lightgrey")
+
+    data = (
+        geopandas.read_file(examples.get_path("NAT.shp"))
+        .query('STATE_NAME == "Illinois"')
+        .reset_index()
+        .to_crs(3857)
+    )
+    coordinates = numpy.column_stack((data.centroid.x, data.centroid.y))
+    gini = data[["GI89"]].values.flatten()
+    contig_graph = weights.Rook.from_dataframe(data, use_index=False)
+
+    iso = isolation(gini, coordinates, return_all=True)
+    prom = prominence(gini, contig_graph)
+
+    f, ax = plt.subplots(1, 4)
+    for i in range(4):
+        data.plot(color="lightgrey", ax=ax[i])
+        ax[i].axis("off")
+
+    data.plot(iso.gap, ax=ax[1], cmap=current_cmap)
+    data.plot(iso.isolation, ax=ax[2], cmap=current_cmap)
+    data.plot(prom, ax=ax[3], cmap=current_cmap)
+    data.plot("GI89", ax=ax[0], cmap=current_cmap)
+    ax[0].set_title("Variable")
+    ax[1].set_title("Relief")
+    ax[2].set_title("Isolation")
+    ax[3].set_title("Prominence")

@@ -1,0 +1,39 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.14
+  # required
+  - geopandas
+  - libpysal
+  - numpy
+  - pandas
+  - scikit-learn
+  - scipy
+  - shapely
+  # testing
+  - folium
+  - geodatasets
+  - mapclassify
+  - matplotlib
+  - seaborn
+  # optional
+  - rtree
+  - numba
+  # for docs build action
+  - contextily
+  - ipykernel
+  - ipywidgets
+  - mkdocs-jupyter
+  - myst-nb
+  - myst-parser
+  - nbsphinx
+  - numpydoc
+  - pandoc
+  - sphinx>=8,<9
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme
+  - sphinx-copybutton
+  - sphinx-immaterial
+  - statsmodels
+  - watermark

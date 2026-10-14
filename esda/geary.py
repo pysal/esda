@@ -4,13 +4,12 @@ Geary's C statistic for spatial autocorrelation
 
 __author__ = "Serge Rey <sjsrey@gmail.com> "
 
-import warnings
 
 import numpy as np
 import scipy.stats as stats
 from libpysal import graph, weights
 
-from .tabular import _univariate_handler
+from .significance import _resolve_alternative, calculate_significance
 
 __all__ = ["Geary"]
 
@@ -33,6 +32,12 @@ class Geary:
     permutations   : int
                      number of random permutations for calculation of
                      pseudo-p_values
+    alternative    : None | str
+                     The alternative hypothesis for the permutation p-value
+                     ``p_sim``. ``None`` emits a ``DeprecationWarning`` and
+                     uses ``'directed'``. See
+                     ``esda.significance.calculate_significance()`` for the
+                     options.
 
     Attributes
     ----------
@@ -85,17 +90,16 @@ class Geary:
     Examples
     --------
     >>> import libpysal
-    >>> from esda.geary import Geary
+    >>> import numpy
+    >>> from esda import Geary
     >>> w = libpysal.io.open(libpysal.examples.get_path("book.gal")).read()
     >>> f = libpysal.io.open(libpysal.examples.get_path("book.txt"))
-    >>> y = np.array(f.by_col['y'])
-    >>> c = Geary(y,w,permutations=0)
-    >>> round(c.C,7)
-    0.3330108
-    >>> round(c.p_norm,7)
-    9.2e-05
-    >>>
-
+    >>> y = numpy.array(f.by_col['y'])
+    >>> c = Geary(y, w, permutations=0)
+    >>> round(c.C, 7)
+    np.float64(0.3330108)
+    >>> round(c.p_norm, 7)
+    np.float64(9.2e-05)
 
     Notes
     -----
@@ -103,7 +107,7 @@ class Geary:
 
     """
 
-    def __init__(self, y, w, transformation="r", permutations=999):
+    def __init__(self, y, w, transformation="r", permutations=999, alternative=None):
         if not isinstance(w, weights.W | graph.Graph):
             raise TypeError(
                 "w must be a libpysal.weights.W or libpysal.graph.Graph object, "
@@ -147,11 +151,9 @@ class Geary:
                 self.__calc(np.random.permutation(self.y)) for i in range(permutations)
             ]
             self.sim = sim = np.array(sim)
-            above = sim >= self.C
-            larger = sum(above)
-            if (permutations - larger) < larger:
-                larger = permutations - larger
-            self.p_sim = (larger + 1.0) / (permutations + 1.0)
+            self.p_sim = calculate_significance(
+                self.C, sim, alternative=_resolve_alternative(alternative)
+            )
             self.EC_sim = sum(sim) / permutations
             self.seC_sim = np.array(sim).std()
             self.VC_sim = self.seC_sim**2
@@ -190,63 +192,3 @@ class Geary:
         num = (self._weights * ((y[self._focal_ix] - y[self._neighbor_ix]) ** 2)).sum()
         a = (self.n - 1) * num
         return a / self.den
-
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        """
-        Function to compute a Geary statistic on a dataframe
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            a pandas dataframe with a geometry column
-        cols : string or list of string
-            name or list of names of columns to use to compute the statistic
-        w : pysal weights object
-            a weights object aligned with the dataframe. If not provided, this
-            is searched for in the dataframe's metadata
-        inplace : bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, with default configurations,
-            the derived columns will be named like 'column_geary' and 'column_p_sim'
-        pvalue  : string
-            a string denoting which pvalue should be returned. Refer to the
-            the Geary statistic's documentation for available p-values
-        outvals : list of strings
-            list of arbitrary attributes to return as columns from the
-            Geary statistic
-        **stat_kws : dict
-            options to pass to the underlying statistic. For this, see the
-            documentation for the Geary statistic.
-
-        Returns
-        --------
-        If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
-        returns a copy of the dataframe with the relevant columns attached.
-
-        Notes
-        -----
-        Technical details and derivations can be found in :cite:`cliff81`.
-
-        """
-
-        msg = (
-            "The `.by_col()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname=cls.__name__.lower(),
-            **stat_kws,
-        )

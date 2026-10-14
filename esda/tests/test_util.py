@@ -12,8 +12,9 @@ class TestFdr:
         self.y = np.array(f.by_col["HR8893"])
 
     def test_fdr(self):
-        lm = moran.Moran_Local(
-            self.y, self.w, transformation="r", permutations=999, seed=10
-        )
+        with pytest.WARN_ALT_HYPOTHESIS_DEPR:
+            lm = moran.Moran_Local(
+                self.y, self.w, transformation="r", permutations=999, seed=10
+            )
         assert pytest.approx(util.fdr(lm.p_sim, 0.1)) == 0.002564102564102564
         assert pytest.approx(util.fdr(lm.p_sim, 0.05)) == 0.001282051282051282

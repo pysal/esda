@@ -5,7 +5,6 @@ Spatial autocorrelation for binary attributes
 
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -13,14 +12,14 @@ from libpysal.weights import W
 from scipy.stats import chi2, chi2_contingency
 
 from .crand import njit as _njit
-from .tabular import _univariate_handler
+from .significance import calculate_significance
 
 __all__ = ["Join_Counts"]
 
 PERMUTATIONS = 999
 
 
-class Join_Counts:  # noqa: N801
+class Join_Counts:
     """Binary Join Counts
 
 
@@ -96,51 +95,48 @@ class Join_Counts:  # noqa: N801
         in the adjacency list. If islands are kept, they are coded as
         self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
 
-
-
     Examples
     --------
-
     >>> import numpy as np
     >>> import libpysal
     >>> w = libpysal.weights.lat2W(4, 4)
     >>> y = np.ones(16)
     >>> y[0:8] = 0
     >>> np.random.seed(12345)
-    >>> from esda.join_counts import Join_Counts
+    >>> from esda import Join_Counts
     >>> jc = Join_Counts(y, w)
     >>> jc.bb
-    10.0
+    np.float64(10.0)
     >>> jc.bw
-    4.0
+    np.float64(4.0)
     >>> jc.ww
-    10.0
+    np.float64(10.0)
     >>> jc.J
-    24.0
+    np.float64(24.0)
     >>> len(jc.sim_bb)
     999
     >>> round(jc.p_sim_bb, 3)
-    0.003
+    np.float64(0.003)
     >>> round(np.mean(jc.sim_bb), 3)
-    5.547
+    np.float64(5.547)
     >>> np.max(jc.sim_bb)
-    10.0
+    np.float64(10.0)
     >>> np.min(jc.sim_bb)
-    0.0
+    np.float64(0.0)
     >>> len(jc.sim_bw)
     999
     >>> jc.p_sim_bw
-    1.0
+    np.float64(1.0)
     >>> np.mean(jc.sim_bw)
-    12.811811811811811
+    np.float64(12.811811811811811)
     >>> np.max(jc.sim_bw)
-    24.0
+    np.float64(24.0)
     >>> np.min(jc.sim_bw)
-    7.0
+    np.float64(7.0)
     >>> round(jc.chi2_p, 3)
-    0.004
+    np.float64(0.004)
     >>> jc.p_sim_chi2
-    0.002
+    np.float64(0.008)
 
     Notes
     -----
@@ -256,75 +252,14 @@ class Join_Counts:  # noqa: N801
         return (bb, ww, bw + wb, stat, pvalue, dof, expected, np.array(table))
 
     def __pseudop(self, sim, jc):
-        above = sim >= jc
-        larger = sum(above)
-        psim = (larger + 1.0) / (self.permutations + 1.0)
-        return psim
+        # The simulated join counts are an object array, which numba rejects.
+        return calculate_significance(
+            float(jc), sim.astype(float), alternative="greater"
+        )
 
     @property
     def _statistic(self):
         return self.bw
-
-    @classmethod
-    def by_col(
-        cls, df, cols, w=None, inplace=False, pvalue="sim", outvals=None, **stat_kws
-    ):
-        """
-        Function to compute a Join_Count statistic on a dataframe
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            a pandas dataframe with a geometry column
-        cols : string or list of string
-            name or list of names of columns to use to compute the statistic
-        w : W | Graph
-            spatial weights instance as W or Graph aligned with the dataframe. If not
-            provided, this is searched for in the dataframe's metadata
-        inplace : bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, the derived columns will be named
-            'column_join_count'
-        pvalue : string
-            a string denoting which pvalue should be returned. Refer to the
-            the Join_Count statistic's documentation for available p-values
-        outvals : list of strings
-            list of arbitrary attributes to return as columns from the
-            Join_Count statistic
-        **stat_k : dict
-            options to pass to the underlying statistic. For this, see the
-            documentation for the Join_Count statistic.
-
-        Returns
-        --------
-        If inplace, None, and operation is conducted on
-        dataframe in memory. Otherwise, returns a copy of the
-        dataframe with the relevant columns attached.
-
-        """
-
-        msg = (
-            "The `.by_col()` methods are deprecated and will be "
-            "removed in a future version of `esda`."
-        )
-        warnings.warn(msg, FutureWarning, stacklevel=2)
-
-        if outvals is None:
-            outvals = []
-            outvals.extend(["bb", "p_sim_bw", "p_sim_bb"])
-            pvalue = ""
-        return _univariate_handler(
-            df,
-            cols,
-            w=w,
-            inplace=inplace,
-            pvalue=pvalue,
-            outvals=outvals,
-            stat=cls,
-            swapname="bw",
-            **stat_kws,
-        )
 
 
 # --------------------------------------------------------------
