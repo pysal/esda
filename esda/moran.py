@@ -526,10 +526,6 @@ class Moran_BV:
     --------
     >>> import libpysal, numpy
 
-    Set random number generator seed so we can replicate the example
-
-    >>> numpy.random.seed(10)
-
     Open the sudden infant death dbf file and read in rates for 74 and 79
     converting each to a numpy array
 
@@ -544,7 +540,7 @@ class Moran_BV:
     Create an instance of Moran_BV
 
     >>> from esda import Moran_BV
-    >>> mbi = Moran_BV(SIDR79,  SIDR74,  w)
+    >>> mbi = Moran_BV(SIDR79,  SIDR74,  w, rng=1)
 
     What is the bivariate Moran's I value
 
