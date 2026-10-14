@@ -3087,10 +3087,10 @@ Other options include
 “O”: restore original transformation (applicable only if <code class="docutils literal notranslate"><span class="pre">w</span></code> is  passed as <code class="docutils literal notranslate"><span class="pre">W</span></code>),
 “V”: variance-stabilizing.</p>
 </dd>
-<dt id="esda.Moran_BV.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.Moran_BV.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>number of random permutations for calculation of pseudo
+<dt id="esda.Moran_BV.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></span></span><a class="headerlink" href="#esda.Moran_BV.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>number of random permutations for calculation of pseudo
 p_values</p>
 </dd>
-<dt id="esda.Moran_BV.__init__.alternative"><span class="sig-name descname">alternative</span><span class="p"> : </span><span class="desctype"><span class="desctype">None | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a></span></span><a class="headerlink" href="#esda.Moran_BV.__init__.alternative" title="Permalink to this definition">¶</a></dt><dd><p>The alternative hypothesis for the permutation p-value
+<dt id="esda.Moran_BV.__init__.alternative"><span class="sig-name descname">alternative</span><span class="p"> : </span><span class="desctype"><span class="desctype">None | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></span></span><a class="headerlink" href="#esda.Moran_BV.__init__.alternative" title="Permalink to this definition">¶</a></dt><dd><p>The alternative hypothesis for the permutation p-value
 <code class="docutils literal notranslate"><span class="pre">p_sim</span></code>. <code class="docutils literal notranslate"><span class="pre">None</span></code> emits a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> and
 uses <code class="docutils literal notranslate"><span class="pre">'directed'</span></code>. See
 <code class="docutils literal notranslate"><span class="pre">esda.significance.calculate_significance()</span></code> for the
@@ -3138,7 +3138,7 @@ options.</p>
 <dd><p>number of permutations</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Moran_BV.permutation-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.Moran_BV.permutation-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3149,7 +3149,7 @@ options.</p>
 <dd><p>value of bivariate Moran’s I</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Moran_BV.I-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.Moran_BV.I-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3176,7 +3176,7 @@ default alternative: the observed I is extreme
 it is either extremely high or extremely low</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Moran_BV.p_sim-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.Moran_BV.p_sim-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3237,7 +3237,7 @@ p-value based on standard normal approximation from
 permutations</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Moran_BV.p_z_sim-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.Moran_BV.p_z_sim-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3302,18 +3302,18 @@ converting each to a numpy array</p>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="esda.Moran_BV.by_col.df"><span class="sig-name descname">df</span><span class="p"> : </span><span class="desctype"><span class="desctype">pandas.DataFrame</span></span><a class="headerlink" href="#esda.Moran_BV.by_col.df" title="Permalink to this definition">¶</a></dt><dd><p>a pandas dataframe with a geometry column</p>
 </dd>
-<dt><span class="sig-name descname">X</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)">list</a> of strings</span></span></dt><dd><p>column name or list of column names to use as X values to compute
+<dt><span class="sig-name descname">X</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a> of strings</span></span></dt><dd><p>column name or list of column names to use as X values to compute
 the bivariate statistic. If no Y is provided, pairwise comparisons
 among these variates are used instead.</p>
 </dd>
-<dt><span class="sig-name descname">Y</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)">list</a> of strings</span></span></dt><dd><p>column name or list of column names to use as Y values to compute
+<dt><span class="sig-name descname">Y</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a> of strings</span></span></dt><dd><p>column name or list of column names to use as Y values to compute
 the bivariate statistic. if no Y is provided, pariwise comparisons
 among the X variates are used instead.</p>
 </dd>
 <dt id="esda.Moran_BV.by_col.w"><span class="sig-name descname">w</span><span class="p"> : </span><span class="desctype"><span class="desctype">W | Graph</span></span><a class="headerlink" href="#esda.Moran_BV.by_col.w" title="Permalink to this definition">¶</a></dt><dd><p>spatial weights instance as W or Graph aligned with the dataframe. If not
 provided, this is searched for in the dataframe’s metadata</p>
 </dd>
-<dt id="esda.Moran_BV.by_col.inplace"><span class="sig-name descname">inplace</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></span></span><a class="headerlink" href="#esda.Moran_BV.by_col.inplace" title="Permalink to this definition">¶</a></dt><dd><p>a boolean denoting whether to operate on the dataframe inplace or to
+<dt id="esda.Moran_BV.by_col.inplace"><span class="sig-name descname">inplace</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a></span></span><a class="headerlink" href="#esda.Moran_BV.by_col.inplace" title="Permalink to this definition">¶</a></dt><dd><p>a boolean denoting whether to operate on the dataframe inplace or to
 return a series contaning the results of the computation. If
 operating inplace, the derived columns will be named
 ‘column_moran_local’</p>
@@ -3321,7 +3321,7 @@ operating inplace, the derived columns will be named
 <dt id="esda.Moran_BV.by_col.pvalue"><span class="sig-name descname">pvalue</span><span class="p"> : </span><span class="desctype"><span class="desctype">string</span></span><a class="headerlink" href="#esda.Moran_BV.by_col.pvalue" title="Permalink to this definition">¶</a></dt><dd><p>a string denoting which pvalue should be returned. Refer to the
 the Moran_BV statistic’s documentation for available p-values</p>
 </dd>
-<dt id="esda.Moran_BV.by_col.outvals"><span class="sig-name descname">outvals</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)">list</a> of strings</span></span><a class="headerlink" href="#esda.Moran_BV.by_col.outvals" title="Permalink to this definition">¶</a></dt><dd><p>list of arbitrary attributes to return as columns from the
+<dt id="esda.Moran_BV.by_col.outvals"><span class="sig-name descname">outvals</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a> of strings</span></span><a class="headerlink" href="#esda.Moran_BV.by_col.outvals" title="Permalink to this definition">¶</a></dt><dd><p>list of arbitrary attributes to return as columns from the
 Moran_BV statistic</p>
 </dd>
 <dt id="esda.Moran_BV.by_col.stat_kws"><span class="sig-name descname">**stat_kws</span><span class="p"> : </span><span class="desctype"><span class="desctype">keyword arguments</span></span><a class="headerlink" href="#esda.Moran_BV.by_col.stat_kws" title="Permalink to this definition">¶</a></dt><dd><p>options to pass to the underlying statistic. For this, see the
@@ -3349,9 +3349,9 @@ documentation for the Moran_BV statistic.</p>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="esda.Moran_BV.plot_scatter.ax"><span class="sig-name descname">ax</span><span class="p"> : </span><span class="desctype"><span class="desctype">matplotlib.axes.Axes, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_scatter.ax" title="Permalink to this definition">¶</a></dt><dd><p>Pre-existing axes for the plot, by default None.</p>
 </dd>
-<dt id="esda.Moran_BV.plot_scatter.scatter_kwds"><span class="sig-name descname">scatter_kwds</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_scatter.scatter_kwds" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for scatter plot, by default None.</p>
+<dt id="esda.Moran_BV.plot_scatter.scatter_kwds"><span class="sig-name descname">scatter_kwds</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_scatter.scatter_kwds" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for scatter plot, by default None.</p>
 </dd>
-<dt id="esda.Moran_BV.plot_scatter.fitline_kwds"><span class="sig-name descname">fitline_kwds</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_scatter.fitline_kwds" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for fit line, by default None.</p>
+<dt id="esda.Moran_BV.plot_scatter.fitline_kwds"><span class="sig-name descname">fitline_kwds</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_scatter.fitline_kwds" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for fit line, by default None.</p>
 </dd>
 </dl>
 </dd>
@@ -3373,9 +3373,9 @@ documentation for the Moran_BV statistic.</p>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="esda.Moran_BV.plot_simulation.ax"><span class="sig-name descname">ax</span><span class="p"> : </span><span class="desctype"><span class="desctype">matplotlib.axes.Axes, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_simulation.ax" title="Permalink to this definition">¶</a></dt><dd><p>Pre-existing axes for the plot, by default None.</p>
 </dd>
-<dt id="esda.Moran_BV.plot_simulation.legend"><span class="sig-name descname">legend</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_simulation.legend" title="Permalink to this definition">¶</a></dt><dd><p>Plot a legend, by default False</p>
+<dt id="esda.Moran_BV.plot_simulation.legend"><span class="sig-name descname">legend</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_simulation.legend" title="Permalink to this definition">¶</a></dt><dd><p>Plot a legend, by default False</p>
 </dd>
-<dt id="esda.Moran_BV.plot_simulation.fitline_kwds"><span class="sig-name descname">fitline_kwds</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_simulation.fitline_kwds" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for vertical Moran fit line, by default None.</p>
+<dt id="esda.Moran_BV.plot_simulation.fitline_kwds"><span class="sig-name descname">fitline_kwds</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a>, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_simulation.fitline_kwds" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for vertical Moran fit line, by default None.</p>
 </dd>
 <dt id="esda.Moran_BV.plot_simulation.kwargs"><span class="sig-name descname">**kwargs</span><span class="p"> : </span><span class="desctype"><span class="desctype">keyword arguments, optional</span></span><a class="headerlink" href="#esda.Moran_BV.plot_simulation.kwargs" title="Permalink to this definition">¶</a></dt><dd><p>Additional keyword arguments for KDE plot passed to <code class="docutils literal notranslate"><span class="pre">seaborn.kdeplot</span></code>,
 by default None.</p>

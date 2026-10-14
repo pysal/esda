@@ -2302,10 +2302,10 @@
 <dt id="esda.Spatial_Pearson.__init__.connectivity"><span class="sig-name descname">connectivity</span><span class="p"> : </span><span class="desctype"><span class="desctype">scipy.sparse matrix object</span></span><a class="headerlink" href="#esda.Spatial_Pearson.__init__.connectivity" title="Permalink to this definition">¶</a></dt><dd><p>the connectivity structure describing the relationships
 between observed units. Will be row-standardized.</p>
 </dd>
-<dt id="esda.Spatial_Pearson.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.Spatial_Pearson.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>the number of permutations to conduct for inference.
+<dt id="esda.Spatial_Pearson.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></span></span><a class="headerlink" href="#esda.Spatial_Pearson.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>the number of permutations to conduct for inference.
 if &lt; 1, no permutational inference will be conducted.</p>
 </dd>
-<dt id="esda.Spatial_Pearson.__init__.alternative"><span class="sig-name descname">alternative</span><span class="p"> : </span><span class="desctype"><span class="desctype">None | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a></span></span><a class="headerlink" href="#esda.Spatial_Pearson.__init__.alternative" title="Permalink to this definition">¶</a></dt><dd><p>the alternative hypothesis for the permutation
+<dt id="esda.Spatial_Pearson.__init__.alternative"><span class="sig-name descname">alternative</span><span class="p"> : </span><span class="desctype"><span class="desctype">None | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></span></span><a class="headerlink" href="#esda.Spatial_Pearson.__init__.alternative" title="Permalink to this definition">¶</a></dt><dd><p>the alternative hypothesis for the permutation
 p-values in <code class="docutils literal notranslate"><span class="pre">significance_</span></code>. <code class="docutils literal notranslate"><span class="pre">None</span></code> emits a
 <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> and uses <code class="docutils literal notranslate"><span class="pre">'directed'</span></code>. See
 <code class="docutils literal notranslate"><span class="pre">esda.significance.calculate_significance()</span></code> for
@@ -2419,7 +2419,7 @@ routing information.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Spatial_Pearson.get_params-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Spatial_Pearson.get_params-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.Spatial_Pearson.get_params.deep"><span class="sig-name descname">deep</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a>, default=True</span></span><a class="headerlink" href="#esda.Spatial_Pearson.get_params.deep" title="Permalink to this definition">¶</a></dt><dd><p>If True, will return the parameters for this estimator and
+<dt id="esda.Spatial_Pearson.get_params.deep"><span class="sig-name descname">deep</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a>, default=True</span></span><a class="headerlink" href="#esda.Spatial_Pearson.get_params.deep" title="Permalink to this definition">¶</a></dt><dd><p>If True, will return the parameters for this estimator and
 contained subobjects that are estimators.</p>
 </dd>
 </dl>
@@ -2428,7 +2428,7 @@ contained subobjects that are estimators.</p>
 <dd class="field-even"><p><strong>params</strong> – Parameter names mapped to their values.</p>
 </dd>
 <dt class="field-odd" id="esda.Spatial_Pearson.get_params-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#esda.Spatial_Pearson.get_params-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2458,7 +2458,7 @@ parameters and not others.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Spatial_Pearson.set_fit_request-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Spatial_Pearson.set_fit_request-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.Spatial_Pearson.set_fit_request.x"><span class="sig-name descname">x</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a>, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></span><a class="headerlink" href="#esda.Spatial_Pearson.set_fit_request.x" title="Permalink to this definition">¶</a></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">x</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+<dt id="esda.Spatial_Pearson.set_fit_request.x"><span class="sig-name descname">x</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a>, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></span><a class="headerlink" href="#esda.Spatial_Pearson.set_fit_request.x" title="Permalink to this definition">¶</a></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">x</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -2466,7 +2466,7 @@ parameters and not others.</p>
 <dd class="field-even"><p><strong>self</strong> – The updated object.</p>
 </dd>
 <dt class="field-odd" id="esda.Spatial_Pearson.set_fit_request-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#esda.Spatial_Pearson.set_fit_request-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)">object</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)">object</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2482,7 +2482,7 @@ possible to update each component of a nested object.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Spatial_Pearson.set_params-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Spatial_Pearson.set_params-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.Spatial_Pearson.set_params.params"><span class="sig-name descname">**params</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></span></span><a class="headerlink" href="#esda.Spatial_Pearson.set_params.params" title="Permalink to this definition">¶</a></dt><dd><p>Estimator parameters.</p>
+<dt id="esda.Spatial_Pearson.set_params.params"><span class="sig-name descname">**params</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></span></span><a class="headerlink" href="#esda.Spatial_Pearson.set_params.params" title="Permalink to this definition">¶</a></dt><dd><p>Estimator parameters.</p>
 </dd>
 </dl>
 </dd>

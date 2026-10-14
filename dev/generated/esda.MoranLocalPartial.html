@@ -2547,15 +2547,15 @@ partial dependence <span class="bibtex-citation" id="id1">[<a class="reference i
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.MoranLocalPartial-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.MoranLocalPartial-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="esda.MoranLocalPartial.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>the number of permutations to run for the inference,
+<dt id="esda.MoranLocalPartial.__init__.permutations"><span class="sig-name descname">permutations</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.permutations" title="Permalink to this definition">¶</a></dt><dd><p>the number of permutations to run for the inference,
 driven by conditional randomization.</p>
 </dd>
-<dt id="esda.MoranLocalPartial.__init__.unit_scale"><span class="sig-name descname">unit_scale</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.unit_scale" title="Permalink to this definition">¶</a></dt><dd><p>whether to enforce unit variance in the local statistics. This
+<dt id="esda.MoranLocalPartial.__init__.unit_scale"><span class="sig-name descname">unit_scale</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a></span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.unit_scale" title="Permalink to this definition">¶</a></dt><dd><p>whether to enforce unit variance in the local statistics. This
 normalizes the variance of the data at inupt, ensuring that
 the covariance statistics are not overwhelmed by any single
 covariate’s large variance.</p>
 </dd>
-<dt id="esda.MoranLocalPartial.__init__.partial_labels"><span class="sig-name descname">partial_labels</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a>, default=True</span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.partial_labels" title="Permalink to this definition">¶</a></dt><dd><p>whether to calculate the classification based on the part-regressive
+<dt id="esda.MoranLocalPartial.__init__.partial_labels"><span class="sig-name descname">partial_labels</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a>, default=True</span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.partial_labels" title="Permalink to this definition">¶</a></dt><dd><p>whether to calculate the classification based on the part-regressive
 quadrant classification or the univariate quadrant classification,
 like a classical Moran’s I. When mvquads is True,
 the variables are labelled as:
@@ -2564,7 +2564,7 @@ the variables are labelled as:
 - label 3: observations with small y - rho * x values that also have small Wy values.
 - label 4: observations with large y - rho * x values that have small Wy values.</p>
 </dd>
-<dt id="esda.MoranLocalPartial.__init__.alternative"><span class="sig-name descname">alternative</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a> (default: 'two-sided')</span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.alternative" title="Permalink to this definition">¶</a></dt><dd><p>the alternative hypothesis for the inference. One of
+<dt id="esda.MoranLocalPartial.__init__.alternative"><span class="sig-name descname">alternative</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a> (default: 'two-sided')</span></span><a class="headerlink" href="#esda.MoranLocalPartial.__init__.alternative" title="Permalink to this definition">¶</a></dt><dd><p>the alternative hypothesis for the inference. One of
 ‘two-sided’, ‘greater’, ‘lesser’, ‘directed’, or ‘folded’.
 See the esda.significance.calculate_significance() documentation
 for more information.</p>
@@ -2746,7 +2746,7 @@ Immediately row-standardized.</p>
 <dd class="field-even"><p><strong>self</strong> – this MoranLocalPartial() statistic after fitting to data</p>
 </dd>
 <dt class="field-odd" id="esda.MoranLocalPartial.fit-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#esda.MoranLocalPartial.fit-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)">object</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)">object</a></p>
 </dd>
 </dl>
 </dd></dl>
