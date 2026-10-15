@@ -259,6 +259,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+
+
 #######################################################################
 # JUNKYARD
 # Suspected no longer needed (@leehach 2026-01-23)
@@ -283,6 +285,7 @@ docsrc/_build/html/notebooks/
 docsrc/_build/html/tutorial.html
 docsrc/_static/auto/
 docsrc/generated/esda.adbscan.ADBSCAN.rst
+docs/source/generated/
 
 tools/changelog.md
 tools/changelog_2.0.0.md
@@ -298,4 +301,10 @@ tools/changelog_2.4.0.md
 .pixi/*
 !.pixi/config.toml
 
-docs/source/generated/
+
+#######################################################################
+# Gaboardi addition [2026-05-10]
+################################
+
+# baseline image creation from `image_comparison` testing
+result_images/
