@@ -85,6 +85,10 @@ class Moran:
                       uses ``'directed'``. See
                       ``esda.significance.calculate_significance()`` for the
                       options.
+    rng             : {None, int, numpy.random.Generator}, optional
+                      seed or random number generator used to draw the permutations,
+                      passed to :func:`numpy.random.default_rng`. If None (default),
+                      fresh entropy is drawn from the OS.
 
     Attributes
     ----------
@@ -193,6 +197,7 @@ class Moran:
         permutations=PERMUTATIONS,
         two_tailed=True,
         alternative=None,
+        rng=None,
     ):
         y = np.asarray(y).flatten()
         self.y = y
@@ -215,10 +220,9 @@ class Moran:
             self.p_norm *= 2.0
             self.p_rand *= 2.0
 
+        rng = np.random.default_rng(rng)
         if permutations:
-            sim = [
-                self.__calc(np.random.permutation(self.z)) for i in range(permutations)
-            ]
+            sim = [self.__calc(rng.permutation(self.z)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
             self.p_sim = calculate_significance(
                 self.I, sim, alternative=_resolve_alternative(alternative)
@@ -470,6 +474,10 @@ class Moran_BV:
                       uses ``'directed'``. See
                       ``esda.significance.calculate_significance()`` for the
                       options.
+    rng             : {None, int, numpy.random.Generator}, optional
+                      seed or random number generator used to draw the permutations,
+                      passed to :func:`numpy.random.default_rng`. If None (default),
+                      fresh entropy is drawn from the OS.
 
     Attributes
     ----------
@@ -518,10 +526,6 @@ class Moran_BV:
     --------
     >>> import libpysal, numpy
 
-    Set random number generator seed so we can replicate the example
-
-    >>> numpy.random.seed(10)
-
     Open the sudden infant death dbf file and read in rates for 74 and 79
     converting each to a numpy array
 
@@ -536,7 +540,7 @@ class Moran_BV:
     Create an instance of Moran_BV
 
     >>> from esda import Moran_BV
-    >>> mbi = Moran_BV(SIDR79,  SIDR74,  w)
+    >>> mbi = Moran_BV(SIDR79,  SIDR74,  w, rng=1)
 
     What is the bivariate Moran's I value
 
@@ -557,6 +561,7 @@ class Moran_BV:
         transformation="r",
         permutations=PERMUTATIONS,
         alternative=None,
+        rng=None,
     ):
         x = np.asarray(x).flatten()
         y = np.asarray(y).flatten()
@@ -571,9 +576,9 @@ class Moran_BV:
         w = _transform(w, transformation)
         self.w = w
         self.I = self.__calc(zy)
+        rng = np.random.default_rng(rng)
         if permutations:
-            nrp = np.random.permutation
-            sim = [self.__calc(nrp(zy)) for i in range(permutations)]
+            sim = [self.__calc(rng.permutation(zy)) for i in range(permutations)]
             self.sim = sim = np.array(sim)
             self.p_sim = calculate_significance(
                 self.I, sim, alternative=_resolve_alternative(alternative)
@@ -979,6 +984,10 @@ class Moran_Rate(Moran):
                       uses ``'directed'``. See
                       ``esda.significance.calculate_significance()`` for the
                       options.
+    rng             : {None, int, numpy.random.Generator}, optional
+                      seed or random number generator used to draw the permutations,
+                      passed to :func:`numpy.random.default_rng`. If None (default),
+                      fresh entropy is drawn from the OS.
 
     Attributes
     ----------
@@ -1066,6 +1075,7 @@ class Moran_Rate(Moran):
         permutations=PERMUTATIONS,
         two_tailed=True,
         alternative=None,
+        rng=None,
     ):
         e = np.asarray(e).flatten()
         b = np.asarray(b).flatten()
@@ -1078,6 +1088,7 @@ class Moran_Rate(Moran):
             permutations=permutations,
             two_tailed=two_tailed,
             alternative=alternative,
+            rng=rng,
         )
 
     @classmethod
