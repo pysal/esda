@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from libpysal import graph
+from libpysal.weights import KNN, W
 from libpysal.weights.util import lat2W
 
 from ..join_counts import Join_Counts
@@ -10,6 +11,19 @@ parametrize_w = pytest.mark.parametrize(
     [
         lat2W(4, 4),
         graph.Graph.from_W(lat2W(4, 4)),
+    ],
+    ids=["W", "Graph"],
+)
+
+# k=3 nearest neighbors on a 4 x 4 lattice of points. Each corner takes the
+# diagonal point as its third neighbor, but that point already has four
+# neighbors at distance 1 and does not take the corner back (GH #198).
+coords = np.array([(i, j) for i in range(4) for j in range(4)], dtype=float)
+parametrize_asymmetric_w = pytest.mark.parametrize(
+    "w",
+    [
+        KNN.from_array(coords, k=3),
+        graph.Graph.build_knn(coords, k=3),
     ],
     ids=["W", "Graph"],
 )
@@ -49,3 +63,34 @@ class TestJoinCounts:
         np.testing.assert_allclose(1.0, jc.p_sim_autocorr_neg)
         np.testing.assert_allclose(0.001, jc.p_sim_autocorr_pos)
         np.testing.assert_allclose(0.2653504320039377, jc.sim_autocorr_chi2)
+
+    @parametrize_asymmetric_w
+    def test_asymmetric_weights(self, w):
+        with pytest.raises(NotImplementedError, match="symmetric spatial weights"):
+            Join_Counts(self.y, w)
+
+    @pytest.mark.parametrize("as_graph", [False, True], ids=["W", "Graph"])
+    @pytest.mark.parametrize("transform", ["r", "d", "v"])
+    def test_transformed_weights(self, as_graph, transform):
+        """Symmetric weights pass the check whatever their transformation"""
+        w = lat2W(4, 4)
+        w.transform = transform
+        if as_graph:
+            w = graph.Graph.from_W(w)
+        jc = Join_Counts(self.y, w, permutations=0)
+        np.testing.assert_allclose(jc.bb, 10.0)
+        np.testing.assert_allclose(jc.bw, 4.0)
+        np.testing.assert_allclose(jc.ww, 10.0)
+
+    @pytest.mark.parametrize("as_graph", [False, True], ids=["W", "Graph"])
+    def test_one_way_zero_weight_link(self, as_graph):
+        """A one-way link with zero weight is still counted as a join"""
+        w = lat2W(4, 4)
+        neighbors, weights = dict(w.neighbors), dict(w.weights)
+        neighbors[0] = [*neighbors[0], 5]
+        weights[0] = [*weights[0], 0.0]
+        w = W(neighbors, weights)
+        if as_graph:
+            w = graph.Graph.from_W(w)
+        with pytest.raises(NotImplementedError, match="symmetric spatial weights"):
+            Join_Counts(self.y, w)

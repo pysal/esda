@@ -6,6 +6,7 @@ from sklearn.base import BaseEstimator
 from esda.crand import _prepare_univariate
 from esda.crand import crand as _crand_plus
 from esda.crand import njit as _njit
+from esda.join_counts import _raise_if_asymmetric
 
 PERMUTATIONS = 999
 
@@ -31,6 +32,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         ----------
         connectivity : W | Graph
             spatial weights instance as W or Graph aligned with y
+            (must be symmetric, otherwise NotImplementedError is raised)
         permutations : int
             number of random permutations for calculation of pseudo p_values
         n_jobs : int
@@ -137,6 +139,7 @@ class Join_Counts_Local_MV(BaseEstimator):
             w.transform = "b"
         else:
             w = w.assign_self_weight(0).eliminate_zeros().transform("b")
+        _raise_if_asymmetric(w)
 
         self.n = len(variables[0])
         self.w = w

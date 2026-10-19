@@ -19,6 +19,32 @@ __all__ = ["Join_Counts"]
 PERMUTATIONS = 999
 
 
+def _raise_if_asymmetric(w):
+    """Raise ``NotImplementedError`` if the links in ``w`` are not symmetric.
+
+    Join counts are only defined for symmetric weights: with asymmetric
+    weights, such as k-nearest neighbors, a black-white join is not the
+    same as a white-black join. Only the links are compared, not their
+    weights, so symmetric weights pass whatever their transformation, and
+    a one-way link with zero weight that is still counted as a join is
+    caught. ``w`` is a W or Graph as the estimator counts it.
+
+    Comparing the sparse matrix with its transpose is linear in the number
+    of links. ``W.asymmetries`` and ``Graph.asymmetry()`` also build the
+    list of asymmetric pairs, which is slow for a large k-nearest neighbor
+    Graph.
+    """
+    links = w.sparse.copy()
+    links.data[:] = 1
+    if (links != links.T).nnz:
+        raise NotImplementedError(
+            "Join count statistics are only defined for symmetric spatial "
+            "weights, but the weights passed are asymmetric (as k-nearest "
+            "neighbor weights usually are). Make the weights symmetric "
+            "before computing join counts."
+        )
+
+
 class Join_Counts:
     """Binary Join Counts
 
@@ -30,6 +56,7 @@ class Join_Counts:
                       binary variable measured across n spatial units
     w               : W | Graph
                       spatial weights instance as W or Graph aligned with y
+                      (must be symmetric, otherwise NotImplementedError is raised)
     permutations    : int
                       number of random permutations for calculation of pseudo-p_values
 
@@ -160,6 +187,7 @@ class Join_Counts:
                 self.adj_list = w.adjacency.drop(w.isolates).reset_index()
             else:
                 self.adj_list = w.adjacency.reset_index()
+        _raise_if_asymmetric(w)
         self.y = y
         self.permutations = permutations
         s0 = w.s0 if isinstance(w, W) else w._adjacency.sum()
