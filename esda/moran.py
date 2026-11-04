@@ -1605,7 +1605,7 @@ class Moran_Local:
         crit_value : float, optional
             critical value to determine statistical significance, by default 0.05
         kwargs : dict, optional
-            additional keyword arguments passed to the geopandas `explore` method
+            additional keyword arguments passed to the geopandas `plot` method
 
         Returns
         -------
