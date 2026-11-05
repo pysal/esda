@@ -129,4 +129,7 @@ filterwarnings = [
     "ignore:divide by zero encountered",
     "ignore:invalid value encountered",
     "ignore:Numba not imported, so alpha shape construction may be slower",
+    "ignore:The 'esda.smoothing' module is deprecated",  # TODO: -- ** remove this filter once `smoothing.py` is removed **
+    "ignore:The 'esda.tabular' module is deprecated",  # TODO: -- ** remove this filter once `tabular.py` is removed **
+
 ]
