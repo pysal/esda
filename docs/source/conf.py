@@ -86,7 +86,7 @@ html_theme_options = {
     },
     "site_url": "https://pysal.org/esda",
     "repo_url": "https://github.com/pysal/esda/",
-    "edit_uri": "blob/main/docs",
+    "edit_uri": "blob/main/docs/source",
     "repo_name": "pysal/esda",
     "features": [
         # "navigation.expand",
