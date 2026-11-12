@@ -188,10 +188,10 @@ def prominence(
         a sparse matrix encoding the connectivity graph pertaining to rows of X. If
         coordinates are provided, they must be (N,2), and the delaunay triangulation
         will be computed.
-    return_class : bool (default: False)
+    return_all : bool (default: False)
         whether or not to return additional information about the result, such as
         the set of dominating peaks or the set of classifications for each observation.
-    verbose : bool (default: None)
+    verbose : bool (default: False)
         whether or not to print extra information about the progress of the algorithm.
     middle : string or callable (default: "mean")
         how to compute the center of mass from X, when the dimension of X > 2.
