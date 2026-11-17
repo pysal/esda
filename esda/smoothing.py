@@ -18,7 +18,8 @@ __author__ = (
     "Serge Rey <srey@asu.edu"
 )
 
-from functools import reduce
+import warnings
+from functools import reduce, wraps
 
 import numpy as np
 from libpysal.weights.distance import Kernel
@@ -48,6 +49,23 @@ __all__ = [
 ]
 
 
+def smoothing_removal_warning(obj):
+    @wraps(obj)
+    def wrapper(*args, **kwargs):
+        warnings.warn(
+            (
+                f"The '{__name__}' module is deprecated and '{obj.__name__}()' "
+                "will be removed in future release of esda."
+            ),
+            FutureWarning,
+            stacklevel=1,
+        )
+        return obj(*args, **kwargs)
+
+    return wrapper
+
+
+@smoothing_removal_warning
 def flatten(l, unique=True):  # noqa: E741 - Ambiguous variable name: `l`
     """flatten a list of lists
 
@@ -80,6 +98,7 @@ def flatten(l, unique=True):  # noqa: E741 - Ambiguous variable name: `l`
     return list(set(l))
 
 
+@smoothing_removal_warning
 def weighted_median(d, w):
     """A utility function to find a median of d based on w
 
@@ -128,6 +147,7 @@ def weighted_median(d, w):
     return np.sort(d)[median_inx]
 
 
+@smoothing_removal_warning
 def sum_by_n(d, w, n):
     """A utility function to summarize a data array into n values
        after weighting the array with another weight array w
@@ -173,6 +193,7 @@ def sum_by_n(d, w, n):
     return np.array([sum(d[i : i + h]) for i in range(0, t, h)])
 
 
+@smoothing_removal_warning
 def crude_age_standardization(e, b, n):
     """A utility function to compute rate through crude age standardization
 
@@ -225,6 +246,7 @@ def crude_age_standardization(e, b, n):
     return sum_by_n(r, age_weight, n)
 
 
+@smoothing_removal_warning
 def direct_age_standardization(e, b, s, n, alpha=0.05):
     """A utility function to compute rate through direct age standardization
 
@@ -310,6 +332,7 @@ def direct_age_standardization(e, b, s, n, alpha=0.05):
     return res
 
 
+@smoothing_removal_warning
 def indirect_age_standardization(e, b, s_e, s_b, n, alpha=0.05):
     """A utility function to compute rate through indirect age standardization
 
@@ -393,6 +416,7 @@ def indirect_age_standardization(e, b, s_e, s_b, n, alpha=0.05):
     return res
 
 
+@smoothing_removal_warning
 def standardized_mortality_ratio(e, b, s_e, s_b, n):
     """A utility function to compute standardized mortality ratio (SMR).
 
@@ -462,6 +486,7 @@ def standardized_mortality_ratio(e, b, s_e, s_b, n):
     return smr
 
 
+@smoothing_removal_warning
 def choynowski(e, b, n, threshold=None):
     """Choynowski map probabilities [Choynowski1959]_ .
 
@@ -526,6 +551,7 @@ def choynowski(e, b, n, threshold=None):
     return np.array(p)
 
 
+@smoothing_removal_warning
 def assuncao_rate(e, b):
     """The standardized rates where the mean and stadard deviation used for
     the standardization are those of Empirical Bayes rate estimates
@@ -577,6 +603,7 @@ def assuncao_rate(e, b):
     return (y - ebi_b) / np.sqrt(ebi_v)
 
 
+@smoothing_removal_warning
 class Excess_Risk:
     """Excess Risk
 
@@ -632,6 +659,7 @@ class Excess_Risk:
         self.r = e * 1.0 / (b * r_mean)
 
 
+@smoothing_removal_warning
 class Empirical_Bayes:
     """Aspatial Empirical Bayes Smoothing
 
@@ -695,6 +723,7 @@ class Empirical_Bayes:
         self.r = weight * rate + (1.0 - weight) * r_mean
 
 
+@smoothing_removal_warning
 class Spatial_Empirical_Bayes:
     """Spatial Empirical Bayes Smoothing
 
@@ -782,6 +811,7 @@ class Spatial_Empirical_Bayes:
         self.r = r_mean + (rate - r_mean) * (r_var / (r_var + (r_mean / b)))
 
 
+@smoothing_removal_warning
 class Spatial_Rate:
     """Spatial Rate Smoothing
 
@@ -856,6 +886,7 @@ class Spatial_Rate:
             w.transform = "o"
 
 
+@smoothing_removal_warning
 class Kernel_Smoother:
     """Kernal smoothing
 
@@ -925,6 +956,7 @@ class Kernel_Smoother:
             self.r = w_e / w_b
 
 
+@smoothing_removal_warning
 class Age_Adjusted_Smoother:
     """Age-adjusted rate smoothing
 
@@ -1008,6 +1040,7 @@ class Age_Adjusted_Smoother:
         w.transform = "o"
 
 
+@smoothing_removal_warning
 class Disk_Smoother:
     """Locally weighted averages or disk smoothing
 
@@ -1083,6 +1116,7 @@ class Disk_Smoother:
             self.r = slag(w, r) / np.array(weight_sum).reshape(-1, 1)
 
 
+@smoothing_removal_warning
 class Spatial_Median_Rate:
     """Spatial Median Rate Smoothing
 
@@ -1209,6 +1243,7 @@ class Spatial_Median_Rate:
         self.r = np.asarray(new_r).reshape(r.shape)
 
 
+@smoothing_removal_warning
 class Spatial_Filtering:
     """Spatial Filtering
 
