@@ -27,8 +27,8 @@ class G:
 
     Parameters
     ----------
-    y             : array (n,1)
-                    Attribute values
+    y             : array
+                    Attribute values in a shape (n,1)
     w             : W | Graph
                    spatial weights instance as W or Graph aligned with y
     permutations  : int
