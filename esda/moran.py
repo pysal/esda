@@ -24,6 +24,7 @@ from .crand import njit as _njit
 from .significance import _resolve_alternative, calculate_significance
 from .smoothing import assuncao_rate
 from .tabular import _bivariate_handler, _univariate_handler
+from .util import warn_if_disconnected
 
 __all__ = [
     "Moran",
@@ -203,6 +204,7 @@ class Moran:
         self.y = y
         w = _transform(w, transformation)
         self.w = w
+        warn_if_disconnected(w, "Moran's I")
         self.permutations = permutations
         self.__moments()
         self.I = self.__calc(self.z)
@@ -575,6 +577,7 @@ class Moran_BV:
         self.den = n - 1.0  # zx'zx = zy'zy = n-1
         w = _transform(w, transformation)
         self.w = w
+        warn_if_disconnected(w, "Bivariate Moran's I")
         self.I = self.__calc(zy)
         rng = np.random.default_rng(rng)
         if permutations:
@@ -1400,6 +1403,7 @@ class Moran_Local:
         self.z = z
         w = _transform(w, transformation)
         self.w = w
+        warn_if_disconnected(w, "Local Moran's I")
         self.permutations = permutations
         self.den = (z * z).sum()
         self.Is = self.__calc(self.w, self.z)
