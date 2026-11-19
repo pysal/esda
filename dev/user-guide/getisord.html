@@ -1344,15 +1344,11 @@
 measures spatial autocorrelation by comparing each observation to its <em>deviation from the global mean</em>. A High-High cluster in Moran’s framework means both a neighborhood and its neighbors are above the mean.</p>
 <p>Getis-Ord <span class="math notranslate nohighlight">\(G\)</span> takes a different approach: it measures spatial concentration of <em>raw values</em>. A high <span class="math notranslate nohighlight">\(G\)</span> means large values are co-located with other large values — a true <strong>hotspot</strong>. This can be better understood by examining the form of the statistic:</p>
 <div class="math notranslate nohighlight">
-\[
-G = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} w_{ij} x_i x_j}{\sum_{i=1}^{n} \sum_{j=1}^{n} x_i x_j}, \quad \forall j \neq i
-\]</div>
+\[G = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} w_{ij} x_i x_j}{\sum_{i=1}^{n} \sum_{j=1}^{n} x_i x_j}, \quad \forall j \neq i\]</div>
 <p>where <span class="math notranslate nohighlight">\(x_i\)</span> is the value for the variable <span class="math notranslate nohighlight">\(x\)</span> at location <span class="math notranslate nohighlight">\(i\)</span> of <span class="math notranslate nohighlight">\(n\)</span> locations, and <span class="math notranslate nohighlight">\(w_{ij}\)</span> is the spatial weight expressing the neighbor relationship between locations <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>The expected value of <span class="math notranslate nohighlight">\(G\)</span> under the null hypothesis of no spatial association is:</p>
 <div class="math notranslate nohighlight">
-\[
-E[G] = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} w_{ij}}{n(n-1)}.
-\]</div>
+\[E[G] = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} w_{ij}}{n(n-1)}.\]</div>
 <p>Because <span class="math notranslate nohighlight">\(G\)</span> works with raw values rather than mean-centered deviations, it is particularly well-suited to detecting concentration of phenomena that are always non-negative (counts, prices, rates).</p>
 <p>The global statistic <span class="math notranslate nohighlight">\(G\)</span> answers: <em>is there a statistically significant overall concentration of high or low values?</em></p>
 <div class="cell docutils container">
@@ -1378,7 +1374,7 @@ E[G] = \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} w_{ij}}{n(n-1)}.
 Expected G:   0.039671
 </code></pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4488/2297414308.py:2: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4630/2297414308.py:2: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
   g_global = esda.G(y, wq)
 </code></pre></div>
 </div>
@@ -1410,11 +1406,11 @@ Whether this difference is statistically significant, or larger than what could 
 <div class="math notranslate nohighlight">
 \[Var_N(G) = \frac{1}{[n(n-1)]^2 \cdot D_1^4} \left[ S_1 \cdot D_1^2 \cdot D_2 + (S_2 - 2S_1) \cdot D_1 \cdot D_3 + (W_0^2 - S_2 + S_1) \cdot D_2^2 \right] - [E_N(G)]^2\]</div>
 <h3 id="non-free-sampling-the-randomization-assumption">Non-Free Sampling (The Randomization Assumption)<a class="headerlink" href="#non-free-sampling-the-randomization-assumption" title="Link to this heading">¶</a></h3>
-<h4 id="id1">Expected Value<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<h4 id="id1"><span id="expected-value-1"></span>Expected Value<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
 <p>Because the expectation across all permutations averages out the spatial structure, the expected value <a class="reference internal" href="global_morans_i.html#non-free-sampling-the-randomization-assumption"><span class="std std-ref">under randomization</span></a>  is identical to the free sampling expectation:</p>
 <div class="math notranslate nohighlight">
 \[E_R(G) = \frac{W_0}{n(n - 1)}\]</div>
-<h4 id="id2">Variance<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<h4 id="id2"><span id="variance-1"></span>Variance<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
 <p>The variance under randomization must account for the exact empirical distribution of the data (incorporating higher-order sample moments <span class="math notranslate nohighlight">\(D_3\)</span> and <span class="math notranslate nohighlight">\(D_4\)</span>). The formula is conventionally expressed using a series of compounded variables:</p>
 <div class="math notranslate nohighlight">
 \[Var_R(G) = E_R(G^2) - [E_R(G)]^2\]</div>
@@ -1503,7 +1499,7 @@ Whether this difference is statistically significant, or larger than what could 
 </div>
 </div>
 </div>
-<h2 id="comparing-getis-ord-and-moran-s-i-results">Comparing Getis-Ord and Moran’s I results<a class="headerlink" href="#comparing-getis-ord-and-moran-s-i-results" title="Link to this heading">¶</a></h2>
+<h2 id="comparing-getis-ord-and-moran-s-i-results"><span id="comparing-getis-ord-and-morans-i-results"></span>Comparing Getis-Ord and Moran’s I results<a class="headerlink" href="#comparing-getis-ord-and-moran-s-i-results" title="Link to this heading">¶</a></h2>
 <p>The global <span class="math notranslate nohighlight">\(G\)</span> statistic captures concentrations of High-High values, as well as concentrations of Low-Low values, similar to the global Moran’s <span class="math notranslate nohighlight">\(I\)</span>.
 The two methods can diverge when local variance is high — a neighborhood with very high prices surrounded by moderate prices may register as a spatial outlier in Moran but not a hotspot for <span class="math notranslate nohighlight">\(G\)</span>.</p>
 <h2 id="considerations">Considerations<a class="headerlink" href="#considerations" title="Link to this heading">¶</a></h2>
@@ -1583,7 +1579,7 @@ The two methods can diverge when local variance is high — a neighborhood with 
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>

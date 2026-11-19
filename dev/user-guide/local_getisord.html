@@ -1276,10 +1276,10 @@
 </div>
 </div>
 </div>
-<h2 id="from-global-to-local-g-i">From global to local: <span class="math notranslate nohighlight">\(G_i^*\)</span><a class="headerlink" href="#from-global-to-local-g-i" title="Link to this heading">¶</a></h2>
+<h2 id="from-global-to-local-g-i"><span id="from-global-to-local-"></span>From global to local: <span class="math notranslate nohighlight">\(G_i^*\)</span><a class="headerlink" href="#from-global-to-local-g-i" title="Link to this heading">¶</a></h2>
 <p>The global <span class="math notranslate nohighlight">\(G\)</span> tells us <em>whether</em> concentration exists; <span class="math notranslate nohighlight">\(G_i^*\)</span> (G-star) tells us <em>where</em>. For each location <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(G_i^*\)</span> computes the ratio of the sum of values in <span class="math notranslate nohighlight">\(i\)</span>’s neighbourhood (including <span class="math notranslate nohighlight">\(i\)</span> itself) to the sum of all values. A large positive <span class="math notranslate nohighlight">\(z\)</span>-score flags a <strong>hotspot</strong> — a neighbourhood surrounded by other high-value neighbourhoods. A large negative <span class="math notranslate nohighlight">\(z\)</span>-score flags a <strong>coldspot</strong>.</p>
 <p>The key difference from Moran’s I quadrant labels is that <span class="math notranslate nohighlight">\(G_i^*\)</span> only distinguishes hotspots from coldspots; it does not identify spatial outliers (High-Low or Low-High).</p>
-<h2 id="computing-g-i">Computing <span class="math notranslate nohighlight">\(G_i^*\)</span><a class="headerlink" href="#computing-g-i" title="Link to this heading">¶</a></h2>
+<h2 id="computing-g-i"><span id="computing-"></span>Computing <span class="math notranslate nohighlight">\(G_i^*\)</span><a class="headerlink" href="#computing-g-i" title="Link to this heading">¶</a></h2>
 <p>We pass <code class="docutils literal notranslate"><span class="pre">star=True</span></code> to include the focal observation in the local sum, producing <span class="math notranslate nohighlight">\(G_i^*\)</span> (the more commonly reported variant). Weights must be binary.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1298,7 +1298,7 @@
 </div>
 </div>
 </div>
-<h3 id="mapping-g-i-z-scores">Mapping <span class="math notranslate nohighlight">\(G_i^*\)</span> z-scores<a class="headerlink" href="#mapping-g-i-z-scores" title="Link to this heading">¶</a></h3>
+<h3 id="mapping-g-i-z-scores"><span id="mapping--z-scores"></span>Mapping <span class="math notranslate nohighlight">\(G_i^*\)</span> z-scores<a class="headerlink" href="#mapping-g-i-z-scores" title="Link to this heading">¶</a></h3>
 <p>The z-score map gives a continuous view of local concentration. Red (large positive) indicates hotspot cores; blue (large negative) indicates coldspot cores.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1354,7 +1354,7 @@
 <img alt="../_images/d820de37e01959824def1d6c109fa175a28f97436ae942a1d3d8624c0d66da5a.png" src="../_images/d820de37e01959824def1d6c109fa175a28f97436ae942a1d3d8624c0d66da5a.png" />
 </div>
 </div>
-<h3 id="comparing-getis-ord-and-moran-s-i-results">Comparing Getis-Ord and Moran’s I results<a class="headerlink" href="#comparing-getis-ord-and-moran-s-i-results" title="Link to this heading">¶</a></h3>
+<h3 id="comparing-getis-ord-and-moran-s-i-results"><span id="comparing-getis-ord-and-morans-i-results"></span>Comparing Getis-Ord and Moran’s I results<a class="headerlink" href="#comparing-getis-ord-and-moran-s-i-results" title="Link to this heading">¶</a></h3>
 <p>Hotspots identified by <span class="math notranslate nohighlight">\(G_i^*\)</span> correspond approximately to the High-High cluster quadrant from local Moran’s <span class="math notranslate nohighlight">\(I\)</span>, but the two methods can diverge when local variance is high — a neighborhood with very high prices surrounded by moderate prices may register as a spatial outlier in Moran but not a hotspot in <span class="math notranslate nohighlight">\(G_i^*\)</span>.</p>
 <p>One graphical device that can be used to explore the complementarities of the different local statistics is the local cross plot (<a class="reference external" href="https://doi.org/10.5281/zenodo.19421814">Westerholt 2026</a>).</p>
 <div class="cell docutils container">
@@ -1366,11 +1366,11 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/moran.py:1428: RuntimeWarning: invalid value encountered in divide
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/esda/moran.py:1439: RuntimeWarning: invalid value encountered in divide
   self.z_sim = (self.Is - self.EI_sim) / self.seI_sim
 </code></pre></div>
 </div>
-<img alt="../_images/af7315cb035b83dce533a45164ac884554b6a3ff2369bd749fa9f66337e2e9dd.png" src="../_images/af7315cb035b83dce533a45164ac884554b6a3ff2369bd749fa9f66337e2e9dd.png" />
+<img alt="../_images/90a46757e4d771bb4e72e44807e45f248a979488a1e6bd8b928f2635d87b9713.png" src="../_images/90a46757e4d771bb4e72e44807e45f248a979488a1e6bd8b928f2635d87b9713.png" />
 </div>
 </div>
 <h3 id="interpreting-the-local-cross-plot">Interpreting the Local Cross Plot<a class="headerlink" href="#interpreting-the-local-cross-plot" title="Link to this heading">¶</a></h3>
@@ -1460,7 +1460,7 @@ significant. Grey indicates neither local statistic is significant.</p></li>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>

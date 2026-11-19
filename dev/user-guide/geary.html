@@ -1314,7 +1314,7 @@
   
   
 
-<h1 id="global-spatial-autocorrelation-with-geary-s-c">Global Spatial Autocorrelation with Geary’s C<a class="headerlink" href="#global-spatial-autocorrelation-with-geary-s-c" title="Link to this heading">¶</a></h1>
+<h1 id="global-spatial-autocorrelation-with-geary-s-c"><span id="global-spatial-autocorrelation-with-gearys-c"></span>Global Spatial Autocorrelation with Geary’s C<a class="headerlink" href="#global-spatial-autocorrelation-with-geary-s-c" title="Link to this heading">¶</a></h1>
 <p>This notebook covers global Geary’s C  as an alternative to Moran’s I for detecting spatial autocorrelation.</p>
 <h2 id="learning-goals">Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">¶</a></h2>
 <p>By the end of this notebook, you will be able to:</p>
@@ -1371,7 +1371,7 @@
 <img alt="../_images/adf0053e7f14478f4923156891f398308fddceb2d4314d6d69f32a4c0feebb8c.png" src="../_images/adf0053e7f14478f4923156891f398308fddceb2d4314d6d69f32a4c0feebb8c.png" />
 </div>
 </div>
-<h2 id="geary-s-c">Geary’s C<a class="headerlink" href="#geary-s-c" title="Link to this heading">¶</a></h2>
+<h2 id="geary-s-c"><span id="gearys-c"></span>Geary’s C<a class="headerlink" href="#geary-s-c" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="global_morans_i.html#computing-global-moran-s-i"><span class="std std-ref">Moran’s I</span></a> measures spatial autocorrelation through the <em>cross-product</em> of mean-centered values: it is large when values above (or below) the mean cluster together. Geary’s <span class="math notranslate nohighlight">\(C\)</span> instead measures autocorrelation through the <em>squared difference</em> between neighbouring pairs:</p>
 <div class="math notranslate nohighlight">
 \[C = \frac{(n-1)}{2S_0} \frac{\sum_{i=1}^{n} \sum_{j=1}^{n} w_{ij}(x_i - x_j)^2}{\sum_{i=1}^{n} (x_i - \bar{x})^2}\]</div>
@@ -1400,7 +1400,7 @@
 </tbody>
 </table>
 <p>The two statistics are inversely related: evidence of positive autocorrelation under Moran’s <span class="math notranslate nohighlight">\(I\)</span> (<span class="math notranslate nohighlight">\(I &gt; E[I]\)</span>) corresponds to <span class="math notranslate nohighlight">\(C &lt; 1\)</span>.</p>
-<h2 id="global-geary-s-c">Global Geary’s C<a class="headerlink" href="#global-geary-s-c" title="Link to this heading">¶</a></h2>
+<h2 id="global-geary-s-c"><span id="global-gearys-c"></span>Global Geary’s C<a class="headerlink" href="#global-geary-s-c" title="Link to this heading">¶</a></h2>
 <p>We begin by building row-standardised Queen contiguity weights and computing the global statistic. The global statistic <span class="math notranslate nohighlight">\(C\)</span> answers: <em>is there a statistically significant overall concentration of similar or dissimilar adjacent values?</em></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1419,7 +1419,7 @@
 Expected C:   1.0000
 </code></pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4435/1301903815.py:5: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4577/1301903815.py:5: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
   gc = esda.Geary(y, wq)
 </code></pre></div>
 </div>
@@ -1446,11 +1446,11 @@ Expected C:   1.0000
 \[Var_N(C) = \frac{2S_1 + S_2}{4S_0^2} \cdot \frac{n-1}{n+1}\]</div>
 <hr class="docutils" />
 <h3 id="non-free-sampling-the-randomization-assumption">Non-Free Sampling (The Randomization Assumption)<a class="headerlink" href="#non-free-sampling-the-randomization-assumption" title="Link to this heading">¶</a></h3>
-<h4 id="id1">Expected Value<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<h4 id="id1"><span id="expected-value-1"></span>Expected Value<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
 <p>Because the expectation across all permutations averages out the spatial structure, the expected value under randomization is identical to the free sampling expectation:</p>
 <div class="math notranslate nohighlight">
 \[E_R(C) = 1\]</div>
-<h4 id="id2">Variance<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<h4 id="id2"><span id="variance-1"></span>Variance<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
 <p>The variance under randomization must account for the exact empirical distribution of the data by incorporating the sample kurtosis <span class="math notranslate nohighlight">\(k\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[Var_R(C) = \frac{(n-1)S_1(n^2 - 3n + 3 - (n-1)k)}{n(n-2)(n-3)S_0^2} - \frac{(n-1)S_2(n^2 - n + 2 - 2(n-1)k)}{4n(n-2)(n-3)S_0^2} + \frac{S_0^2(n^2 - 3 - (n-1)^2k)}{n(n-2)(n-3)S_0^2}\]</div>
@@ -1494,7 +1494,7 @@ p-value (norm):   0.0000
 </div>
 </div>
 </div>
-<h3 id="id3">Permutation-based inference<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<h3 id="id3"><span id="permutation-based-inference-1"></span>Permutation-based inference<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <p>As with <a class="reference internal" href="global_morans_i.html#permutation-based-inference"><span class="std std-ref">Moran’s <span class="math notranslate nohighlight">\(I\)</span></span></a>, we can also assess the observed <span class="math notranslate nohighlight">\(C\)</span> against a reference distribution generated by randomly permuting attribute values while holding the spatial structure fixed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1526,7 +1526,7 @@ p-value (norm):   0.0000
 </div>
 </div>
 </div>
-<h2 id="comparing-geary-s-c-and-moran-s-i">Comparing Geary’s C and Moran’s I<a class="headerlink" href="#comparing-geary-s-c-and-moran-s-i" title="Link to this heading">¶</a></h2>
+<h2 id="comparing-geary-s-c-and-moran-s-i"><span id="comparing-gearys-c-and-morans-i"></span>Comparing Geary’s C and Moran’s I<a class="headerlink" href="#comparing-geary-s-c-and-moran-s-i" title="Link to this heading">¶</a></h2>
 <p>Both statistics detect the same broad spatial structure, but they are not identical:</p>
 <ul class="simple">
 <li><p><strong>Moran’s I</strong> compares each observation to the <em>global mean</em>; it is more sensitive to broad trends.</p></li>
@@ -1607,7 +1607,7 @@ p-value (norm):   0.0000
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>

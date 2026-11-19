@@ -1507,11 +1507,11 @@ Total Joins (K):   386.0
 <h3 id="non-free-sampling-the-randomization-assumption">Non-Free Sampling (The Randomization Assumption)<a class="headerlink" href="#non-free-sampling-the-randomization-assumption" title="Link to this heading">¶</a></h3>
 <p>Under non-free sampling (randomization), the total counts of Black (<span class="math notranslate nohighlight">\(B\)</span>) and White (<span class="math notranslate nohighlight">\(W\)</span>) zones are treated as fixed constants. The observed labels are randomly shuffled across the spatial units, corresponding to sampling without replacement.</p>
 <p>To formalize this, let <span class="math notranslate nohighlight">\(n^{(k)} = n(n-1)\dots(n-k+1)\)</span> and <span class="math notranslate nohighlight">\(B^{(k)} = B(B-1)\dots(B-k+1)\)</span>.</p>
-<h4 id="id1">Expected Value<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
+<h4 id="id1"><span id="expected-value-1"></span>Expected Value<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
 <p>Because the expectation across all permutations averages out the spatial structure while respecting the exact counts, the expected value is:</p>
 <div class="math notranslate nohighlight">
 \[E_R(BB) = \frac{S_0}{2} \frac{B^{(2)}}{n^{(2)}} = \frac{S_0 B(B-1)}{2n(n-1)}\]</div>
-<h4 id="id2">Variance<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
+<h4 id="id2"><span id="variance-1"></span>Variance<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
 <p>The analytical variance under randomization is more complex as it accounts for joint multi-zone edge interaction parameters:</p>
 <div class="math notranslate nohighlight">
 \[Var_R(BB) = \frac{S_1}{4} \left[ \frac{B^{(2)}}{n^{(2)}} - 2\frac{B^{(3)}}{n^{(3)}} + \frac{B^{(4)}}{n^{(4)}} \right] + \frac{S_2}{4} \left[ \frac{B^{(3)}}{n^{(3)}} - \frac{B^{(4)}}{n^{(4)}} \right] + \frac{S_0^2}{4} \frac{B^{(4)}}{n^{(4)}} - \left[E_R(BB)\right]^2\]</div>
@@ -1713,7 +1713,7 @@ on join counts is one-tailed by default.</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>

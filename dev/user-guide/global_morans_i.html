@@ -1798,7 +1798,7 @@
   
   
 
-<h1 id="global-spatial-autocorrelation-with-moran-s-i">Global Spatial Autocorrelation with Moran’s I<a class="headerlink" href="#global-spatial-autocorrelation-with-moran-s-i" title="Link to this heading">¶</a></h1>
+<h1 id="global-spatial-autocorrelation-with-moran-s-i"><span id="global-spatial-autocorrelation-with-morans-i"></span>Global Spatial Autocorrelation with Moran’s I<a class="headerlink" href="#global-spatial-autocorrelation-with-moran-s-i" title="Link to this heading">¶</a></h1>
 <p>This notebook  focuses on global spatial autocorrelation for a continuous attribute using Moran’s I.</p>
 <h2 id="learning-goals">Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">¶</a></h2>
 <p>By the end of this notebook, you will be able to:</p>
@@ -1857,10 +1857,10 @@
 <img alt="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" src="../_images/a55a24ec4ac8431e35a771c587d90a4f76d83f9ffe0b9c55b04c738cdfb9e5e3.png" />
 </div>
 </div>
-<h2 id="why-moran-s-i">Why Moran’s I?<a class="headerlink" href="#why-moran-s-i" title="Link to this heading">¶</a></h2>
+<h2 id="why-moran-s-i"><span id="why-morans-i"></span>Why Moran’s I?<a class="headerlink" href="#why-moran-s-i" title="Link to this heading">¶</a></h2>
 <p>A map can suggest clustering, but visual impressions are not enough. Moran’s <span class="math notranslate nohighlight">\(I\)</span> provides a formal global test of whether nearby areas tend to have similar values more often than would be expected under spatial randomness.</p>
 <h2 id="global-spatial-autocorrelation">Global Spatial Autocorrelation<a class="headerlink" href="#global-spatial-autocorrelation" title="Link to this heading">¶</a></h2>
-<h3 id="moran-s-i">Moran’s I<a class="headerlink" href="#moran-s-i" title="Link to this heading">¶</a></h3>
+<h3 id="moran-s-i"><span id="morans-i"></span>Moran’s I<a class="headerlink" href="#moran-s-i" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">wq</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">"r"</span><span class="p">)</span>
@@ -1981,7 +1981,7 @@ similarity in space. It is, in effect, a local smoother.</p>
 </div>
 </div>
 <p>Moran’s I is a test for global autocorrelation for a continuous attribute:</p>
-<h3 id="computing-global-moran-s-i">Computing global Moran’s I<a class="headerlink" href="#computing-global-moran-s-i" title="Link to this heading">¶</a></h3>
+<h3 id="computing-global-moran-s-i"><span id="computing-global-morans-i"></span>Computing global Moran’s I<a class="headerlink" href="#computing-global-moran-s-i" title="Link to this heading">¶</a></h3>
 <p>With the outcome and weights in place, we can calculate Moran’s <span class="math notranslate nohighlight">\(I\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[I = \frac{n}{S_0} \frac{\sum_{i=1}^n \sum_{j=1}^n w_{ij} z_i z_j}{\sum_{i=1}^n z_i^2}\]</div>
@@ -1995,7 +1995,7 @@ similarity in space. It is, in effect, a local smoother.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4543/1092828695.py:2: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4679/1092828695.py:2: DeprecationWarning: The alternative hypothesis for permutation inference is changing in the next major release of esda. We recommend setting alternative='two-sided', which will generally double the p-value returned. To retain the current behavior, set alternative='directed'.
   mi = esda.moran.Moran(y, wq)
 </code></pre></div>
 </div>
@@ -2024,7 +2024,7 @@ This can be visualized through the <code class="docutils literal notranslate"><s
 <li><p>Analytical Inference</p></li>
 <li><p>Permutation Inference</p></li>
 </ul>
-<h3 id="analytical-inference-for-moran-s-i">Analytical Inference for Moran’s I<a class="headerlink" href="#analytical-inference-for-moran-s-i" title="Link to this heading">¶</a></h3>
+<h3 id="analytical-inference-for-moran-s-i"><span id="analytical-inference-for-morans-i"></span>Analytical Inference for Moran’s I<a class="headerlink" href="#analytical-inference-for-moran-s-i" title="Link to this heading">¶</a></h3>
 <p>In spatial autocorrelation analysis, establishing whether an observed Moran’s <span class="math notranslate nohighlight">\(I\)</span> value is statistically significant requires comparing it against a theoretical reference distribution under a null hypothesis of spatial randomness.</p>
 <p>The theoretical moments (expected value and variance) of this statistic are derived under two fundamentally different operational assumptions regarding how the data are generated or sampled: <strong>Normality (Free Sampling)</strong> and <strong>Randomization (Non-Free Sampling)</strong>.</p>
 <h4 id="free-sampling">Free Sampling<a class="headerlink" href="#free-sampling" title="Link to this heading">¶</a></h4>
@@ -2166,7 +2166,7 @@ This can be visualized through the <code class="docutils literal notranslate"><s
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Text(0.5, 0, "Moran's I")
 </code></pre></div>
 </div>
-<img alt="../_images/3b6fe441a52350462aecd375a57b9ea39026ccdfcc9609edab42269b84cae029.png" src="../_images/3b6fe441a52350462aecd375a57b9ea39026ccdfcc9609edab42269b84cae029.png" />
+<img alt="../_images/e8688f28a4c8144ecad7391d6d36e14a3af9bc6d8478ee415419d059033fbb28.png" src="../_images/e8688f28a4c8144ecad7391d6d36e14a3af9bc6d8478ee415419d059033fbb28.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2182,7 +2182,7 @@ This can be visualized through the <code class="docutils literal notranslate"><s
 </div>
 </div>
 <p>Here the observed value of <span class="math notranslate nohighlight">\(I\)</span> is far out in the upper tail of the distribution. The pseudo p-value reveals that none of the 999 permuted patterns generated a value as extreme as this.</p>
-<h4 id="sidedness-of-tests-and-pseudo-p-values">Sidedness of Tests and Pseudo <span class="math notranslate nohighlight">\(p\)</span>-values<a class="headerlink" href="#sidedness-of-tests-and-pseudo-p-values" title="Link to this heading">¶</a></h4>
+<h4 id="sidedness-of-tests-and-pseudo-p-values"><span id="sidedness-of-tests-and-pseudo--values"></span>Sidedness of Tests and Pseudo <span class="math notranslate nohighlight">\(p\)</span>-values<a class="headerlink" href="#sidedness-of-tests-and-pseudo-p-values" title="Link to this heading">¶</a></h4>
 <p>When performing permutation inference with <code class="docutils literal notranslate"><span class="pre">esda.moran.Moran</span></code>, the calculated pseudo <span class="math notranslate nohighlight">\(p\)</span>-value (<code class="docutils literal notranslate"><span class="pre">mi.p_sim</span></code>) requires careful interpretation depending on your substantive hypothesis. Because the empirical reference distribution is constructed dynamically from permutations, “sidedness” determines how we evaluate the rank of our observed <span class="math notranslate nohighlight">\(I\)</span> statistic (<span class="math notranslate nohighlight">\(I_{obs}\)</span>) against the simulated distribution.</p>
 <h5 id="right-tailed-test-positive-spatial-autocorrelation">Right-Tailed Test (Positive Spatial Autocorrelation)<a class="headerlink" href="#right-tailed-test-positive-spatial-autocorrelation" title="Link to this heading">¶</a></h5>
 <p>In the vast majority of economic and social geographic applications (such as analyzing Airbnb prices), our primary hypothesis is one of <strong>clustering</strong>—where similar values are located near each other. This is a right-tailed test.</p>
@@ -2212,16 +2212,16 @@ This can be visualized through the <code class="docutils literal notranslate"><s
 </code></pre></div>
 </div>
 <p><em>Note: Always decide on the sidedness of your test <strong>before</strong> running the analysis to prevent data-dredging or artificially inflating your significance levels.</em></p>
-<h2 id="next-steps-alternative-methods">Next Steps &amp; Alternative Methods<a class="headerlink" href="#next-steps-alternative-methods" title="Link to this heading">¶</a></h2>
+<h2 id="next-steps-alternative-methods"><span id="next-steps--alternative-methods"></span>Next Steps &amp; Alternative Methods<a class="headerlink" href="#next-steps-alternative-methods" title="Link to this heading">¶</a></h2>
 <p>Having evaluated global spatial autocorrelation using Moran’s <span class="math notranslate nohighlight">\(I\)</span>, you can extend your exploratory spatial data analysis (ESDA) in two distinct directions depending on your research design:</p>
-<h3 id="complementary-global-statistics">1. Complementary Global Statistics<a class="headerlink" href="#complementary-global-statistics" title="Link to this heading">¶</a></h3>
+<h3 id="complementary-global-statistics"><span id="1-complementary-global-statistics"></span>1. Complementary Global Statistics<a class="headerlink" href="#complementary-global-statistics" title="Link to this heading">¶</a></h3>
 <p>If you want to validate your findings using different mathematical formulations of spatial relationship, consider these alternative global metrics available in <code class="docutils literal notranslate"><span class="pre">esda</span></code>:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="geary.html"><span class="std std-doc">Geary’s C</span></a> – Measures localized squared differences between neighbors rather than covariation, making it highly sensitive to micro-scale spatial gradients and patches of dissimilarity.</p></li>
 <li><p><a class="reference internal" href="getisord.html"><span class="std std-doc">Getis-Ord G</span></a> – Designed explicitly to capture overall spatial concentrations of high or low values, helping you determine if the study area is dominated by hotspots or coldspots.</p></li>
 <li><p><a class="reference internal" href="join_counts.html"><span class="std std-doc">Join Counts</span></a> – Use this approach if your target attribute is categorical or nominal (such as presence/absence data) rather than continuous values.</p></li>
 </ul>
-<h3 id="transitioning-from-global-to-local-scale">2. Transitioning from Global to Local Scale<a class="headerlink" href="#transitioning-from-global-to-local-scale" title="Link to this heading">¶</a></h3>
+<h3 id="transitioning-from-global-to-local-scale"><span id="2-transitioning-from-global-to-local-scale"></span>2. Transitioning from Global to Local Scale<a class="headerlink" href="#transitioning-from-global-to-local-scale" title="Link to this heading">¶</a></h3>
 <p>Global statistics summarize spatial pattern into a single metric for an entire map, which can mask local spatial heterogeneity. To discover <em>where</em> specific clusters, spatial outliers, or hotspots are located geographically, continue to our companion guide on <a class="reference internal" href="local.html"><span class="std std-doc">Local Spatial Structure</span></a>.</p>
 
 
@@ -2289,7 +2289,7 @@ This can be visualized through the <code class="docutils literal notranslate"><s
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/esda/versions.json"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../_static/sphinx_immaterial_theme.ce3f826234c1e494c.min.js?v=6917d573"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
