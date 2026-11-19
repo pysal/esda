@@ -622,11 +622,11 @@ class Moran_BV:
         ----------
         df : pandas.DataFrame
             a pandas dataframe with a geometry column
-        X : list of strings
+        x : list of strings
             column name or list of column names to use as X values to compute
             the bivariate statistic. If no Y is provided, pairwise comparisons
             among these variates are used instead.
-        Y : list of strings
+        y : list of strings
             column name or list of column names to use as Y values to compute
             the bivariate statistic. if no Y is provided, pariwise comparisons
             among the X variates are used instead.
@@ -1803,7 +1803,7 @@ class Moran_Local_BV:
         (default=False)
         If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
         If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    njobs : int
+    n_jobs : int
         number of workers to use to compute the local statistic.
     keep_simulations : Boolean
         (default=True)
@@ -2017,11 +2017,11 @@ class Moran_Local_BV:
         ----------
         df : pandas.DataFrame
             a pandas dataframe with a geometry column
-        X : list of strings
+        x : list of strings
             column name or list of column names to use as X values to compute
             the bivariate statistic. If no Y is provided, pairwise comparisons
             among these variates are used instead.
-        Y : list of strings
+        y : list of strings
             column name or list of column names to use as Y values to compute
             the bivariate statistic. if no Y is provided, pariwise comparisons
             among the X variates are used instead.
@@ -2272,7 +2272,7 @@ class Moran_Local_Rate(Moran_Local):
          (default=False)
          If True use GeoDa scheme: HH=1, LL=2, LH=3, HL=4
          If False use PySAL Scheme: HH=1, LH=2, LL=3, HL=4
-    njobs : int
+    n_jobs : int
         number of workers to use to compute the local statistic.
     keep_simulations : Boolean
         (default=True)

@@ -127,10 +127,7 @@ class Spatial_Pearson_Local(BaseEstimator):
                         ``DeprecationWarning`` and uses ``'directed'``. See
                         ``esda.significance.calculate_significance()`` for
                         the options.
-        significance_: numpy.ndarray (2,2)
-                       permutation-based p-values for the fraction of times the
-                       observed correlation was more extreme than the simulated
-                       correlations.
+
         Attributes
         ----------
         associations_: numpy.ndarray (n_samples,)

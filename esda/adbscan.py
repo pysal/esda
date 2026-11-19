@@ -73,11 +73,12 @@ class ADBSCAN(_ClusterMixin, _BaseEstimator):
         [Only available after `fit`] Table indexed on `X.index` with
         `labels_` under the `lbls` column, and the frequency across draws of
         that label under `pct`
-    solus : DataFrame, shape = [n, reps]
-        [Only available after `fit`] Each solution of labels for every draw
-    solus_relabelled : DataFrame, shape = [n, reps]
+    solus : DataFrame
+        [Only available after `fit`] Each solution of labels for every draw.
+        Shape = [n, reps]
+    solus_relabelled : DataFrame
         [Only available after `fit`] Each solution of labels for
-        every draw, relabelled to be consistent across solutions
+        every draw, relabelled to be consistent across solutions. Shape = [n, reps]
 
     Examples
     --------
