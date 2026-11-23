@@ -236,16 +236,18 @@ class Join_Counts_Local_BV(BaseEstimator):
         if isinstance(w, weights.W):
             adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
             # First, set up a series that maps the values to the weights table
-            zseries_x = pd.Series(x, index=w.id_order)
-            zseries_z = pd.Series(z, index=w.id_order)
+            ids = w.id_order
+            zseries_x = pd.Series(x, index=ids)
+            zseries_z = pd.Series(z, index=ids)
         else:
             if drop_islands:
                 adj_list = w.adjacency.drop(w.isolates).reset_index()
             else:
                 adj_list = w.adjacency.reset_index()
             # First, set up a series that maps the values to the weights table
-            zseries_x = pd.Series(x, index=w.unique_ids)
-            zseries_z = pd.Series(z, index=w.unique_ids)
+            ids = w.unique_ids
+            zseries_x = pd.Series(x, index=ids)
+            zseries_z = pd.Series(z, index=ids)
 
         # Map the values to the focal (i) values
         focal_x = zseries_x.loc[adj_list.focal].values
@@ -255,25 +257,42 @@ class Join_Counts_Local_BV(BaseEstimator):
         neighbor_x = zseries_x.loc[adj_list.neighbor].values
         neighbor_z = zseries_z.loc[adj_list.neighbor].values
 
+        # Zero-weight links (islands coded as self-neighbors) are not joins
+        linked = adj_list.weight.values != 0
+
         if case == "BJC":
             BJC = (
-                (focal_x == 1) & (focal_z == 0) & (neighbor_x == 0) & (neighbor_z == 1)
+                (focal_x == 1)
+                & (focal_z == 0)
+                & (neighbor_x == 0)
+                & (neighbor_z == 1)
+                & linked
             )
             adj_list_BJC = pd.DataFrame(
                 adj_list.focal.values, BJC.astype("uint8")
             ).reset_index()
             adj_list_BJC.columns = ["BJC", "ID"]
-            adj_list_BJC = adj_list_BJC.groupby(by="ID").sum()
+            # Align to the weights id order; islands (absent when dropped) get 0
+            adj_list_BJC = (
+                adj_list_BJC.groupby(by="ID").sum().reindex(ids, fill_value=0)
+            )
             return np.array(adj_list_BJC.BJC.values, dtype="float")
         elif case == "CLC":
             CLC = (
-                (focal_x == 1) & (focal_z == 1) & (neighbor_x == 1) & (neighbor_z == 1)
+                (focal_x == 1)
+                & (focal_z == 1)
+                & (neighbor_x == 1)
+                & (neighbor_z == 1)
+                & linked
             )
             adj_list_CLC = pd.DataFrame(
                 adj_list.focal.values, CLC.astype("uint8")
             ).reset_index()
             adj_list_CLC.columns = ["CLC", "ID"]
-            adj_list_CLC = adj_list_CLC.groupby(by="ID").sum()
+            # Align to the weights id order; islands (absent when dropped) get 0
+            adj_list_CLC = (
+                adj_list_CLC.groupby(by="ID").sum().reindex(ids, fill_value=0)
+            )
             return np.array(adj_list_CLC.CLC.values, dtype="float")
         else:
             raise NotImplementedError(

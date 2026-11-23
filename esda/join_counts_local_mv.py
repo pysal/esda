@@ -174,13 +174,15 @@ class Join_Counts_Local_MV(BaseEstimator):
         if isinstance(w, weights.W):
             adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
             # The zseries
-            zseries = [pd.Series(i, index=w.id_order) for i in variables]
+            ids = w.id_order
+            zseries = [pd.Series(i, index=ids) for i in variables]
         else:
             if drop_islands:
                 adj_list = w.adjacency.drop(w.isolates).reset_index()
             else:
                 adj_list = w.adjacency.reset_index()
-            zseries = [pd.Series(i, index=w.unique_ids) for i in variables]
+            ids = w.unique_ids
+            zseries = [pd.Series(i, index=ids) for i in variables]
         # The focal values
         focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
         # The neighbor values
@@ -192,7 +194,9 @@ class Join_Counts_Local_MV(BaseEstimator):
         # focal and neighbor values == 1
         focal_all = np.array(np.all(np.dstack(focal) == 1, axis=2))
         neighbor_all = np.array(np.all(np.dstack(neighbor) == 1, axis=2))
-        MCLC = (focal_all) & (neighbor_all)
+        # Zero-weight links (islands coded as self-neighbors) are not joins
+        linked = adj_list.weight.values != 0
+        MCLC = (focal_all) & (neighbor_all) & linked
         # Convert list of True/False to boolean array
         # and unlist (necessary for building pd.DF)
         MCLC = list(MCLC * 1)
@@ -202,7 +206,8 @@ class Join_Counts_Local_MV(BaseEstimator):
         adj_list_MCLC = pd.DataFrame(adj_list.focal.values, MCLC).reset_index()
         # Temporarily rename the columns
         adj_list_MCLC.columns = ["MCLC", "ID"]
-        adj_list_MCLC = adj_list_MCLC.groupby(by="ID").sum()
+        # Align to the weights id order; islands (absent when dropped) get 0
+        adj_list_MCLC = adj_list_MCLC.groupby(by="ID").sum().reindex(ids, fill_value=0)
 
         return np.array(adj_list_MCLC.MCLC.values, dtype="float")
 

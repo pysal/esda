@@ -185,21 +185,26 @@ class Join_Counts_Local(BaseEstimator):
         # different from the esda.Join_Counts() function.
         if isinstance(w, weights.W):
             adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
-            zseries = pd.Series(y, index=w.id_order)
+            ids = w.id_order
+            zseries = pd.Series(y, index=ids)
         else:
             if drop_islands:
                 adj_list = w.adjacency.drop(w.isolates).reset_index()
             else:
                 adj_list = w.adjacency.reset_index()
-            zseries = pd.Series(y, index=w.unique_ids)
+            ids = w.unique_ids
+            zseries = pd.Series(y, index=ids)
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values
-        LJC = (focal == 1) & (neighbor == 1)
+        # Zero-weight links (islands coded as self-neighbors) are not joins
+        linked = adj_list.weight.values != 0
+        LJC = (focal == 1) & (neighbor == 1) & linked
         adj_list_LJC = pd.DataFrame(
             adj_list.focal.values, LJC.astype("uint8")
         ).reset_index()
         adj_list_LJC.columns = ["LJC", "ID"]
-        adj_list_LJC = adj_list_LJC.groupby(by="ID").sum()
+        # Align to the weights id order; islands (absent when dropped) get 0
+        adj_list_LJC = adj_list_LJC.groupby(by="ID").sum().reindex(ids, fill_value=0)
         LJC = np.array(adj_list_LJC.LJC.values, dtype="float")
         return LJC
 
