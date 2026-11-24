@@ -6,6 +6,7 @@ from sklearn.base import BaseEstimator
 from esda.crand import _prepare_bivariate, _prepare_univariate
 from esda.crand import crand as _crand_plus
 from esda.crand import njit as _njit
+from esda.join_counts import _warn_drop_islands
 
 PERMUTATIONS = 999
 
@@ -21,7 +22,7 @@ class Join_Counts_Local_BV(BaseEstimator):
         keep_simulations=True,
         seed=None,
         island_weight=0,
-        drop_islands=True,
+        drop_islands=None,
         alternative=None,
     ):
         """
@@ -49,11 +50,11 @@ class Join_Counts_Local_BV(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island.
             If numpy.nan, will propagate to the final local statistic depending
             on the `stat_func`. If 0, then the lag is always zero for islands.
-        drop_islands : bool (default True)
-            Whether or not to preserve islands as entries in the adjacency
-            list. By default, observations with no neighbors do not appear
-            in the adjacency list. If islands are kept, they are coded as
-            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        drop_islands : None
+            Deprecated and ignored; will be removed in a future release.
+            Islands never contribute joins, so the statistic is the same
+            whether or not they are kept in the adjacency list. Passing
+            any value other than ``None`` emits a ``FutureWarning``.
         alternative : None | str = None
             The alternative hypothesis for conditional randomization.
             See ``crand.crand()`` for complete description.
@@ -189,7 +190,8 @@ class Join_Counts_Local_BV(BaseEstimator):
 
         n_jobs = self.n_jobs
 
-        self.LJC = self._statistic(x, z, w, case, self.drop_islands)
+        _warn_drop_islands(self.drop_islands)
+        self.LJC = self._statistic(x, z, w, case, True)
 
         if permutations:
             if case == "BJC":
@@ -274,7 +276,9 @@ class Join_Counts_Local_BV(BaseEstimator):
             adj_list_BJC.columns = ["BJC", "ID"]
             # Align to the weights id order; islands (absent when dropped) get 0
             adj_list_BJC = (
-                adj_list_BJC.groupby(by="ID").sum().reindex(ids, fill_value=0)
+                adj_list_BJC.groupby(by="ID", sort=False)
+                .sum()
+                .reindex(ids, fill_value=0)
             )
             return np.array(adj_list_BJC.BJC.values, dtype="float")
         elif case == "CLC":
@@ -291,7 +295,9 @@ class Join_Counts_Local_BV(BaseEstimator):
             adj_list_CLC.columns = ["CLC", "ID"]
             # Align to the weights id order; islands (absent when dropped) get 0
             adj_list_CLC = (
-                adj_list_CLC.groupby(by="ID").sum().reindex(ids, fill_value=0)
+                adj_list_CLC.groupby(by="ID", sort=False)
+                .sum()
+                .reindex(ids, fill_value=0)
             )
             return np.array(adj_list_CLC.CLC.values, dtype="float")
         else:
