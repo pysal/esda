@@ -6,6 +6,7 @@ from sklearn.base import BaseEstimator
 from esda.crand import _prepare_univariate
 from esda.crand import crand as _crand_plus
 from esda.crand import njit as _njit
+from esda.join_counts import _warn_drop_islands
 
 PERMUTATIONS = 999
 
@@ -21,7 +22,7 @@ class Join_Counts_Local_MV(BaseEstimator):
         keep_simulations=True,
         seed=None,
         island_weight=0,
-        drop_islands=True,
+        drop_islands=None,
         alternative=None,
     ):
         """
@@ -48,11 +49,11 @@ class Join_Counts_Local_MV(BaseEstimator):
             value to use as a weight for the "fake" neighbor for every island.
             If ``numpy.nan``, will propagate to the final local statistic depending
             on the ``stat_func``. If ``0``, then the lag is always zero for islands.
-        drop_islands : bool (default True)
-            Whether or not to preserve islands as entries in the adjacency
-            list. By default, observations with no neighbors do not appear
-            in the adjacency list. If islands are kept, they are coded as
-            self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+        drop_islands : None
+            Deprecated and ignored; will be removed in a future release.
+            Islands never contribute joins, so the statistic is the same
+            whether or not they are kept in the adjacency list. Passing
+            any value other than ``None`` emits a ``FutureWarning``.
         alternative : None | str = None
             The alternative hypothesis for conditional randomization.
             See ``crand.crand()`` for complete description.
@@ -147,7 +148,8 @@ class Join_Counts_Local_MV(BaseEstimator):
         # np.array() of dtype='float' for numba
         self.ext = np.array(np.prod(np.vstack(variables), axis=0), dtype="float")
 
-        self.LJC = self._statistic(variables, w, self.drop_islands)
+        _warn_drop_islands(self.drop_islands)
+        self.LJC = self._statistic(variables, w, True)
 
         if permutations:
             self.p_sim, self.rjoins = _crand_plus(
@@ -174,13 +176,15 @@ class Join_Counts_Local_MV(BaseEstimator):
         if isinstance(w, weights.W):
             adj_list = w.to_adjlist(remove_symmetric=False, drop_islands=drop_islands)
             # The zseries
-            zseries = [pd.Series(i, index=w.id_order) for i in variables]
+            ids = w.id_order
+            zseries = [pd.Series(i, index=ids) for i in variables]
         else:
             if drop_islands:
                 adj_list = w.adjacency.drop(w.isolates).reset_index()
             else:
                 adj_list = w.adjacency.reset_index()
-            zseries = [pd.Series(i, index=w.unique_ids) for i in variables]
+            ids = w.unique_ids
+            zseries = [pd.Series(i, index=ids) for i in variables]
         # The focal values
         focal = [zseries[i].loc[adj_list.focal].values for i in range(len(variables))]
         # The neighbor values
@@ -192,7 +196,9 @@ class Join_Counts_Local_MV(BaseEstimator):
         # focal and neighbor values == 1
         focal_all = np.array(np.all(np.dstack(focal) == 1, axis=2))
         neighbor_all = np.array(np.all(np.dstack(neighbor) == 1, axis=2))
-        MCLC = (focal_all) & (neighbor_all)
+        # Zero-weight links (islands coded as self-neighbors) are not joins
+        linked = adj_list.weight.values != 0
+        MCLC = (focal_all) & (neighbor_all) & linked
         # Convert list of True/False to boolean array
         # and unlist (necessary for building pd.DF)
         MCLC = list(MCLC * 1)
@@ -202,7 +208,10 @@ class Join_Counts_Local_MV(BaseEstimator):
         adj_list_MCLC = pd.DataFrame(adj_list.focal.values, MCLC).reset_index()
         # Temporarily rename the columns
         adj_list_MCLC.columns = ["MCLC", "ID"]
-        adj_list_MCLC = adj_list_MCLC.groupby(by="ID").sum()
+        # Align to the weights id order; islands (absent when dropped) get 0
+        adj_list_MCLC = (
+            adj_list_MCLC.groupby(by="ID", sort=False).sum().reindex(ids, fill_value=0)
+        )
 
         return np.array(adj_list_MCLC.MCLC.values, dtype="float")
 

@@ -6,6 +6,8 @@ Spatial autocorrelation for binary attributes
 __author__ = "Sergio J. Rey <srey@asu.edu> , Luc Anselin <luc.anselin@asu.edu>"
 
 
+import warnings
+
 import numpy as np
 import pandas as pd
 from libpysal.weights import W
@@ -17,6 +19,17 @@ from .significance import calculate_significance
 __all__ = ["Join_Counts"]
 
 PERMUTATIONS = 999
+
+
+def _warn_drop_islands(drop_islands):
+    """Warn that ``drop_islands`` is deprecated (GH531)."""
+    if drop_islands is not None:
+        warnings.warn(
+            "The `drop_islands` keyword is deprecated, has no effect and will be "
+            "removed in a future release of esda. Islands never contribute joins.",
+            FutureWarning,
+            stacklevel=3,
+        )
 
 
 class Join_Counts:
@@ -89,11 +102,11 @@ class Join_Counts:
                    Expected contingency table for the null
     p_sim_chi2   : float
                    p-value for chi2 under random spatial permutations
-    drop_islands : bool (default True)
-        Whether or not to preserve islands as entries in the adjacency
-        list. By default, observations with no neighbors do not appear
-        in the adjacency list. If islands are kept, they are coded as
-        self-neighbors with zero weight. See ``libpysal.weights.to_adjlist()``.
+    drop_islands : None
+        Deprecated and ignored; will be removed in a future release.
+        Islands never contribute joins, so the statistic is the same
+        whether or not they are kept in the adjacency list. Passing
+        any value other than ``None`` emits a ``FutureWarning``.
 
     Examples
     --------
@@ -144,22 +157,18 @@ class Join_Counts:
 
     """
 
-    def __init__(self, y, w, permutations=PERMUTATIONS, drop_islands=True):
+    def __init__(self, y, w, permutations=PERMUTATIONS, drop_islands=None):
+        _warn_drop_islands(drop_islands)
         y = np.asarray(y).flatten()
 
         if isinstance(w, W):
             w.transform = "b"  # ensure we have binary weights
             self.w = w
-            self.adj_list = self.w.to_adjlist(
-                remove_symmetric=False, drop_islands=drop_islands
-            )
+            self.adj_list = self.w.to_adjlist(remove_symmetric=False, drop_islands=True)
         else:
             w = w.transform("b")
             self.w = w
-            if drop_islands:
-                self.adj_list = w.adjacency.drop(w.isolates).reset_index()
-            else:
-                self.adj_list = w.adjacency.reset_index()
+            self.adj_list = w.adjacency.drop(w.isolates).reset_index()
         self.y = y
         self.permutations = permutations
         s0 = w.s0 if isinstance(w, W) else w._adjacency.sum()
@@ -238,6 +247,8 @@ class Join_Counts:
             z,
             index=self.w.id_order if hasattr(self.w, "id_order") else self.w.unique_ids,
         )
+        # Zero-weight links (e.g. islands as self-neighbors) are not joins
+        adj_list = adj_list[adj_list.weight != 0]
         focal = zseries.loc[adj_list.focal].values
         neighbor = zseries.loc[adj_list.neighbor].values
         sim = focal == neighbor
