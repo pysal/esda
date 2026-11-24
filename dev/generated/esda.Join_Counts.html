@@ -1622,7 +1622,7 @@
       <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
     
     <span class="md-ellipsis">
-      <span title="esda.Join_Counts.drop_islands (Python attribute) — Whether or not to preserve islands as entries in the adjacency list. By default, observations with no neighbors do not appear in the adjacency list. If islands are kept, they are coded as self-neighbors with zero weight. See libpysal.weights.to_adjlist()."><span>drop_<wbr>islands</span></span>
+      <span title="esda.Join_Counts.drop_islands (Python attribute) — Deprecated and ignored; will be removed in a future release. Islands never contribute joins, so the statistic is the same whether or not they are kept in the adjacency list. Passing any value other than None emits a FutureWarning."><span>drop_<wbr>islands</span></span>
     </span>
   </a>
   
@@ -2783,7 +2783,7 @@
       <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
     
     <span class="md-ellipsis">
-      <span title="esda.Join_Counts.drop_islands (Python attribute) — Whether or not to preserve islands as entries in the adjacency list. By default, observations with no neighbors do not appear in the adjacency list. If islands are kept, they are coded as self-neighbors with zero weight. See libpysal.weights.to_adjlist()."><span>drop_<wbr>islands</span></span>
+      <span title="esda.Join_Counts.drop_islands (Python attribute) — Deprecated and ignored; will be removed in a future release. Islands never contribute joins, so the statistic is the same whether or not they are kept in the adjacency list. Passing any value other than None emits a FutureWarning."><span>drop_<wbr>islands</span></span>
     </span>
   </a>
   
@@ -2837,7 +2837,7 @@
 <h1 id="esda-join-counts">esda.Join_Counts<a class="headerlink" href="#esda-join-counts" title="Link to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight py" id="esda.Join_Counts">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Join_Counts</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts.__init__.y" title="esda.Join_Counts.__init__.y (Python parameter) — binary variable measured across n spatial units"><span class="n"><span class="pre">y</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts.__init__.w" title="esda.Join_Counts.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with y"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts.__init__.permutations" title="esda.Join_Counts.__init__.permutations (Python parameter) — number of random permutations for calculation of pseudo-p_values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts" title="esda.Join_Counts.__init__.drop_islands (Python parameter)"><span class="n"><span class="pre">drop_islands</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">True</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/join_counts.py#L22-L262"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">esda.</span></span><span class="sig-name descname"><span class="pre">Join_Counts</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts.__init__.y" title="esda.Join_Counts.__init__.y (Python parameter) — binary variable measured across n spatial units"><span class="n"><span class="pre">y</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts.__init__.w" title="esda.Join_Counts.__init__.w (Python parameter) — spatial weights instance as W or Graph aligned with y"><span class="n"><span class="pre">w</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts.__init__.permutations" title="esda.Join_Counts.__init__.permutations (Python parameter) — number of random permutations for calculation of pseudo-p_values"><span class="n"><span class="pre">permutations</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="mi">999</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#esda.Join_Counts" title="esda.Join_Counts.__init__.drop_islands (Python parameter)"><span class="n"><span class="pre">drop_islands</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda/join_counts.py#L35-L273"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts" title="Link to this definition">¶</a></dt>
 <dd><p>Binary Join Counts</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Join_Counts-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts-parameters" title="Permalink to this headline">¶</a></dt>
@@ -3117,13 +3117,13 @@ alternative: the observed bw is greater than under randomness</p>
 <dl class="py attribute objdesc">
 <dt class="sig sig-object highlight py" id="esda.Join_Counts.drop_islands">
 <span class="sig-name descname"><span class="pre">drop_islands</span></span><a class="reference external" href="https://github.com/pysal/esda/blob/main/esda.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#esda.Join_Counts.drop_islands" title="Link to this definition">¶</a></dt>
-<dd><p>Whether or not to preserve islands as entries in the adjacency
-list. By default, observations with no neighbors do not appear
-in the adjacency list. If islands are kept, they are coded as
-self-neighbors with zero weight. See <code class="docutils literal notranslate"><span class="pre">libpysal.weights.to_adjlist()</span></code>.</p>
+<dd><p>Deprecated and ignored; will be removed in a future release.
+Islands never contribute joins, so the statistic is the same
+whether or not they are kept in the adjacency list. Passing
+any value other than <code class="docutils literal notranslate"><span class="pre">None</span></code> emits a <code class="docutils literal notranslate"><span class="pre">FutureWarning</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="esda.Join_Counts.drop_islands-type">Type<span class="colon">:</span><a class="headerlink" href="#esda.Join_Counts.drop_islands-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a> (default True)</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
