@@ -516,7 +516,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
     normalize : bool, optional
         If True, returns moment normalized by reference cricle of same area.
         Default is False.
-    ref_pt : GeoSeries, Shapely Point or list of Points, array-like of shape (2,) or (n, 2), optional
+    ref_pt : GeoSeries, Shapely.Point or list of Points, array-like, optional
         If provided, shifts moment to be with respect to this point or points.
         The default behavior (default: ``None``) is to calculate the moment
         about the centroid of each geometry. Points may be passed as
@@ -525,6 +525,7 @@ def moment_of_inertia(collection, normalize=False, ref_pt=None):
         of length equal to collection, the moment for each geometry in
         collection is calculated with respect to the reference point with
         the same index. To return moment about the origin, explicitly set to (0, 0).
+        If array, it shaped of shape (2,) or (n, 2).
 
     Returns
     -------

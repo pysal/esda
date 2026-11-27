@@ -116,13 +116,6 @@ def completeness(a, b, local=False, base=numpy.e):
     local: bool (default: False)
         whether or not to provide local scores for each polygon. If True, the
         completeness for polygons in a are returned.
-    scale: bool (default: None)
-        whether to scale the completeness score(s). By default, completeness is
-        is scaled for local scores so that the average of the local scores is
-        the overall map completeness. If not local, then completeness is returned
-        unscaled. You can also set local=True and scale=False to get raw components
-        of the completeness, whose sum is the completeness for the entire map.
-        Global re-scaled scores (local=False & scale=True) are not supported.
     base: bool (default=None)
         what base to use for the entropy calculations. The default is base e,
         which means entropy is measured in "nats."
@@ -167,13 +160,6 @@ def homogeneity(a, b, local=False, base=numpy.e):
     local: bool (default: False)
         whether or not to provide local scores for each polygon. If True, the
         homogeneity for polygons in b are returned.
-    scale: bool (default: None)
-        whether to scale the completeness score(s). By default, completeness is
-        is scaled for local scores so that the average of the local scores is
-        the overall map completeness. If not local, then completeness is returned
-        unscaled. You can also set local=True and scale=False to get raw components
-        of the completeness, whose sum is the completeness for the entire map.
-        Global re-scaled scores (local=False & scale=True) are not supported.
     base: bool (default=None)
         what base to use for the entropy calculations. The default is base e,
         which means entropy is measured in "nats."
@@ -276,7 +262,8 @@ def areal_entropy(polygons=None, areas=None, local=False, base=numpy.e):
 
     Returns
     -------
-    Total map entropy or (n,) vector of local entropies.
+    float | np.ndarray
+        Total map entropy or (n,) vector of local entropies.
 
     Example
     -------
