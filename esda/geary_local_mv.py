@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 import pandas as pd
 from libpysal import weights
@@ -60,8 +62,17 @@ class Geary_Local_MV(BaseEstimator):
         """
         Parameters
         ----------
-        variables        : numpy.ndarray
-                           array containing continuous data
+        variables        : array-like of shape (n_samples, n_features)
+                           continuous data, with one row per observation
+                           (aligned with ``connectivity``) and one column
+                           per variable, e.g. a DataFrame of the columns
+                           to use. Passing the variables as rows, i.e. an
+                           array of shape (n_features, n_samples) such as
+                           ``[x1, x2]``, is deprecated. That layout is
+                           only recognised when the array is not square.
+                           A square array is always read as
+                           (n_samples, n_features), so pass the transpose
+                           if it holds one variable per row.
 
         Returns
         -------
@@ -81,16 +92,15 @@ class Geary_Local_MV(BaseEstimator):
         >>> guerry = libpysal.examples.load_example('Guerry')
         >>> guerry_ds = gpd.read_file(guerry.get_path('guerry.shp'))
         >>> w = libpysal.weights.Queen.from_dataframe(guerry_ds, use_index=False)
-        >>> x1 = guerry_ds['Donatns']
-        >>> x2 = guerry_ds['Suicids']
-        >>> lG_mv = Geary_Local_MV(connectivity=w).fit([x1, x2])
+        >>> X = guerry_ds[['Donatns', 'Suicids']]
+        >>> lG_mv = Geary_Local_MV(connectivity=w).fit(X)
         >>> lG_mv.localG[0:5]
         array([0.15381853, 0.30355953, 2.95472008, 0.12313959, 0.38795991])
         >>> lG_mv.p_sim[0:5]  # doctest: +SKIP
         array([0.012, 0.004, 0.016, 0.021, 0.252])
         """
 
-        self.variables = check_array(
+        variables = check_array(
             variables,
             accept_sparse=False,
             dtype="float",
@@ -104,8 +114,29 @@ class Geary_Local_MV(BaseEstimator):
         else:
             w = w.transform("r")
 
-        self.n = len(variables[0])
+        if variables.shape[0] != w.n:
+            if variables.shape[1] != w.n:
+                raise ValueError(
+                    f"`variables` has shape {variables.shape}, which does not "
+                    f"match the {w.n} observations in `connectivity`. Expected "
+                    "an array of shape (n_samples, n_features)."
+                )
+            warnings.warn(
+                "Passing `variables` with shape (n_features, n_samples) is "
+                "deprecated and will raise an error in a future version. Pass "
+                "an array of shape (n_samples, n_features) instead, e.g. a "
+                "DataFrame of the columns to use.",
+                FutureWarning,
+                stacklevel=2,
+            )
+            variables = variables.T
+
+        self.variables = variables
+        self.n = variables.shape[0]
         self.w = w
+
+        # internally, each row holds one variable
+        variables = variables.T
 
         permutations = self.permutations
 
@@ -189,7 +220,7 @@ class Geary_Local_MV(BaseEstimator):
         neighbors to i in each randomization.
 
         """
-        nvars = self.variables.shape[0]
+        nvars = self.variables.shape[1]
         Gs = np.zeros((self.n, self.permutations))
         prange = list(range(self.permutations))
         k = (
